@@ -1459,8 +1459,10 @@ hr {
 }
 
 /* On desktop, hide sidebar if active panel is dashboard */
-.app.dashboard-active #sidebar {
-  display: none !important;
+@media (min-width: 769px) {
+  .app.dashboard-active #sidebar {
+    display: none !important;
+  }
 }
 
 .table-responsive {
@@ -1497,12 +1499,12 @@ hr {
   position: relative;
   width: 100%;
   height: 600px;
-  background: var(--surface);
+  background: transparent;
   border-radius: var(--r);
-  overflow: hidden;
-  border: 1px solid var(--border);
+  overflow: visible;
+  border: none;
   margin-top: 12px;
-  box-shadow: 0 4px 20px -2px rgba(0,0,0,.015);
+  box-shadow: none;
 }
 .hub-card {
   position: absolute;
@@ -1786,6 +1788,25 @@ hr {
     padding: 6px 12px;
     font-size: 13px;
   }
+  .menu-toggle-btn {
+    display: inline-flex !important;
+  }
+  .cal-dow {
+    font-size: 11px !important;
+    padding-bottom: 4px !important;
+  }
+  .cal-grid {
+    gap: 4px !important;
+  }
+  .cal-day {
+    height: auto !important;
+    aspect-ratio: 1 !important;
+    padding: 2px !important;
+    font-size: 12px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
 }
 </style></head>
 <body>
@@ -1862,8 +1883,7 @@ hr {
     <div class="panel active" id="panel-dashboard">
       <div class="db-header">
         <div class="db-welcome">
-          <h1 id="db-welcome-greeting">¡Hola!</h1>
-          <p>Bienvenido al Panel Comercial de Evaria Solar. Le atiende hoy <strong id="db-agent-name">...</strong></p>
+          <h1 id="db-welcome-greeting" style="margin-bottom: 0;">Buenas tardes,</h1>
         </div>
         <div class="db-clock">
           <div class="db-clock-time" id="db-clock-time">00:00:00</div>
@@ -3099,6 +3119,23 @@ const COMERCIALES = {
 let currentAgentDni = null;
 let currentAgentName = "";
 
+function toTitleCase(str) {
+  return str.toLowerCase().split(' ').map(word => {
+    return word.charAt(0).toUpperCase() + word.slice(1);
+  }).join(' ');
+}
+
+function getShortName(fullName) {
+  if (!fullName) return "";
+  const parts = fullName.trim().split(/\s+/);
+  if (parts.length <= 1) return toTitleCase(fullName);
+  const firstTwo = (parts[0] + ' ' + parts[1]).toUpperCase();
+  if (["ANA ROCIO", "FRANCISCO JOSE", "JOSE MIGUEL"].includes(firstTwo)) {
+    return toTitleCase(parts[0] + ' ' + parts[1]);
+  }
+  return toTitleCase(parts[0]);
+}
+
 // ── AUTENTICACIÓN Y SESIONES ──
 function loadSession() {
   const dni = localStorage.getItem('comercial_dni');
@@ -3121,12 +3158,15 @@ function logout() {
 }
 
 function onLoginSuccess() {
-  // 1. Mostrar nombre en el saludo del Dashboard
-  document.getElementById('db-agent-name').textContent = currentAgentName;
+  const shortName = getShortName(currentAgentName);
   
-  // 2. Rellenar los placeholders de los guiones
+  // 1. Mostrar nombre en el saludo del Dashboard (si existe el elemento)
+  const dbAgentName = document.getElementById('db-agent-name');
+  if (dbAgentName) dbAgentName.textContent = shortName;
+  
+  // 2. Rellenar los placeholders de los guiones con el nombre corto formateado
   document.querySelectorAll('.agent-name-placeholder').forEach(el => {
-    el.textContent = currentAgentName;
+    el.textContent = shortName;
   });
   
   // 3. Actualizar saludo dinámico (Buenos días/tardes/noches)
@@ -3145,9 +3185,8 @@ function updateGreeting() {
   if (hour >= 12 && hour < 20) saludo = "Buenas tardes";
   else if (hour >= 20 || hour < 6) saludo = "Buenas noches";
   
-  // Extraer primer nombre en caso de compuestos o simples
-  const firstName = currentAgentName.split(' ')[0];
-  document.getElementById('db-welcome-greeting').textContent = `¡${saludo}, ${firstName}!`;
+  const shortName = getShortName(currentAgentName);
+  document.getElementById('db-welcome-greeting').textContent = `${saludo}, ${shortName}`;
 }
 
 // ── RED NEURAL DE NAVEGACIÓN (SVG HUB-AND-SPOKE) ──
