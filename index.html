@@ -503,11 +503,7 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
       Calendario
     </button>
-    <div class="nav-section-label">Admin</div>
-    <button class="nav-btn" onclick="showPanel(&#39;archivos&#39;,this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-      Archivos y precios
-    </button>
+
   </div>
   <div class="sidebar-footer" id="today-date">lun, 25 de mayo de 2026</div>
 </nav>
@@ -539,6 +535,7 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
         <button class="ctab" id="ctab-naturgy" onclick="switchCia(&#39;naturgy&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
         <button class="ctab" id="ctab-endesa" onclick="switchCia(&#39;endesa&#39;)"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
         <button class="ctab" id="ctab-naturgy-pymes" onclick="switchCia(&#39;naturgy-pymes&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy (PYMES)</button>
+        <button class="ctab" id="ctab-gana" onclick="switchCia(&#39;gana&#39;)"><span class="cdot" style="background:#E30613"></span>Gana Energía</button>
       </div>
 
       <!-- IBERDROLA -->
@@ -821,6 +818,48 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
 
         </div>
       </div>
+
+      <!-- GANA ENERGÍA -->
+      <div class="sv" id="sv-gana">
+        <div class="script-big-card">
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#E30613"></span>Apertura</div>
+            <p class="stxt">Buenas tardes, mi nombre es <span class="blank blg"></span> y le llamo de <strong>RENOSUR, empresa colaboradora de GANA ENERGÍA</strong>. ¿Me puede indicar su nombre? <span class="blank blg"></span> Encantado de saludarle Don/Doña <span class="blank blg"></span>. Le indico que, por motivos de calidad, esta llamada está siendo grabada hoy <span id="gana-fecha" style="display:inline-block;border-bottom:2px solid var(--green2);padding:0 6px;font-weight:700;color:var(--green);min-width:90px;text-align:center">25/05/2026</span> a las <span id="gana-hora" style="display:inline-block;border-bottom:2px solid var(--green2);padding:0 6px;font-weight:700;color:var(--green);min-width:55px;text-align:center">15:23</span> horas.</p>
+            <p class="stxt">Queremos explicarle una nueva oferta para la energía de su hogar que creemos que puede ser de su interés. ¿Me permite unos minutos? <strong>(CLIENTE DEBE RESPONDER SÍ)</strong></p>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#0d5c9e"></span>Oferta de Productos</div>
+            <div class="prod-block">
+              <strong>LUZ · Tarifa Plan Online 24 Horas</strong>
+              Hemos analizado el consumo de su suministro y hemos comprobado que nuestra tarifa <strong>PLAN ONLINE 24 HORAS</strong> es la que mejor se adapta a su perfil de cliente. Con esta oferta disfrutará de un precio de kilovatio de <strong>0,119 €</strong> Y CONTRATANDO TU ASISTENTE 24 HORAS y sin permanencia.
+            </div>
+            <div class="prod-block">
+              <strong>GAS · Tarifa Gana Gas</strong>
+              Hemos analizado el consumo de su suministro y hemos comprobado que nuestra tarifa <strong>GANA GAS</strong> es la que mejor se adapta a su perfil de cliente. Con esta oferta únicamente sumaremos al precio del mercado el servicio gana que es de <strong>(0,01 €/kWh para RL1 // 0,005 €/kWh para RL2 // 0,004 €/kWh para RL3)</strong> y sin permanencia.
+            </div>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#e07b00"></span>Datos de verificación</div>
+            <p class="nota">Para disfrutar de las condiciones que le acabo de explicar, solo hay que gestionar el cambio de su actual compañía de luz y/o gas a Gana Energía. El proceso es muy fácil. Para empezar, sólo necesitamos hacerle unas sencillas preguntas:</p>
+            <div class="step-list">
+              <div class="step-row"><span class="stn">1</span><div>Actualmente, ¿Es usted el titular del suministro? <strong>(SÍ/NO)</strong> Perfecto, dígame su nombre completo: <span class="blank blg"></span> y su DNI: <span class="blank bsm"></span>.</div></div>
+              <div class="step-row"><span class="stn">2</span><div>Para enviarle por escrito el contrato con las condiciones que hemos hablado, un correo electrónico: <span class="blank blg"></span> y un número de teléfono: <span class="blank bsm"></span></div></div>
+              <div class="step-row"><span class="stn">3</span><div>Ahora necesitaré el número CUPS: <span class="blank blg"></span></div></div>
+              <div class="step-row"><span class="stn">4</span><div>Tal y como hemos comentado, la tarifa que le vamos a aplicar es <span class="blank"></span> que consiste en un precio de <strong>0.119</strong>.</div></div>
+              <div class="step-row"><span class="stn">5</span><div>¿En qué compañía está actualmente? <span class="blank"></span></div></div>
+              <div class="step-row"><span class="stn">6</span><div>Perfecto, ya estamos casi finalizando, solo necesitaré la Dirección completa del suministro: <span class="blank blg"></span></div></div>
+              <div class="step-row"><span class="stn">7</span><div>Y su Número de cuenta: <span class="blank blg"></span></div></div>
+            </div>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#008B3C"></span>Cierre y Despedida</div>
+            <p class="stxt">Con esto he terminado la gestión por mi parte, para completar el trámite solo falta que firme el contrato que le ha llegado a su teléfono y a su mail. El proceso de firma de este es muy sencillo, pero si tiene alguna duda, tiene acceso a un video explicativo en la parte de abajo del link que le llega.</p>
+            <p class="stxt">Indicarle igualmente, que dispone de <strong>14 días para poder desistir</strong> su contrato.</p>
+            <p class="stxt">Por último, informarle que dispone de un teléfono gratuito <strong>900 535 689</strong> de Gana Energía. Para finalizar agradecerle la confianza depositada y darle la bienvenida a Gana Energía. Gracias y que pase un buen día.</p>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ══════ CONDICIONES ══════ -->
@@ -853,11 +892,18 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
           <div class="fgrp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" value="0.85" step="0.01" oninput="calcComp()"></div>
           <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.21">21%</option><option value="0.10">10%</option></select></div>
           <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" placeholder="138.41" step="0.01" oninput="calcComp()"></div>
+          <div class="fsec">Servicios adicionales</div>
+          <div class="fgrp" style="display:flex;align-items:center;gap:8px">
+            <input type="checkbox" id="f-sva" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
+            <label for="f-sva" style="margin-bottom:0;cursor:pointer;font-weight:600">Activar SVA (Mantenimientos)</label>
+          </div>
           <div class="fsec">Compañías a comparar</div>
           <div class="cia-filter-row">
             <button class="cf-btn active" id="cf-iberdrola" onclick="toggleCia(&#39;iberdrola&#39;,this)" style="border-color:#008B3C;color:#008B3C"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
             <button class="cf-btn active" id="cf-naturgy" onclick="toggleCia(&#39;naturgy&#39;,this)" style="border-color:#E85D3A;color:#E85D3A"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
             <button class="cf-btn active" id="cf-endesa" onclick="toggleCia(&#39;endesa&#39;,this)" style="border-color:#00A8E0;color:#00A8E0"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
+            <button class="cf-btn active" id="cf-gana" onclick="toggleCia(&#39;gana&#39;,this)" style="border-color:#E30613;color:#E30613"><span class="cdot" style="background:#E30613"></span>Gana 24h</button>
+            <button class="cf-btn active" id="cf-gana_ind" onclick="toggleCia(&#39;gana_ind&#39;,this)" style="border-color:#7c3aed;color:#7c3aed"><span class="cdot" style="background:#7c3aed"></span>Gana Indexada</button>
           </div>
         </div>
 
@@ -919,45 +965,7 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
       </div>
     </div>
 
-    <!-- ══════ ARCHIVOS Y PRECIOS ══════ -->
-    <div class="panel" id="panel-archivos">
-      <!-- Pantalla de login -->
-      <div class="admin-locked" id="admin-lock">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-        <h2>Área de administración</h2>
-        <p>Introduce la contraseña para acceder a la configuración de precios y archivos</p>
-        <div class="pin-form">
-          <input type="password" id="admin-pwd" placeholder="Contraseña" onkeydown="if(event.key===&#39;Enter&#39;)checkPwd()">
-          <button class="btn-primary" onclick="checkPwd()">Entrar</button>
-        </div>
-        <div class="pin-err" id="pin-err">Contraseña incorrecta. Inténtalo de nuevo.</div>
-      </div>
 
-      <!-- Contenido admin -->
-      <div class="admin-content" id="admin-content">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px">
-          <div style="font-size:20px;font-weight:700">Precios por compañía</div>
-          <button class="btn" onclick="lockAdmin()">🔒 Cerrar sesión</button>
-        </div>
-        <div id="price-editors"></div>
-
-        <div style="font-size:20px;font-weight:700;margin:28px 0 16px">Scripts y documentos PDF</div>
-        <div class="uzone" onclick="document.getElementById(&#39;file-input&#39;).click()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
-          <p>Subir PDF</p>
-          <span>Scripts de verificación, tarifas, condiciones · Haz clic o arrastra aquí</span>
-        </div>
-        <input type="file" id="file-input" accept=".pdf,.png,.jpg,.jpeg" multiple="" onchange="handleUpload(this)">
-        <div class="files-grid" id="files-grid"></div>
-        <div id="pdf-viewer-wrap" style="display:none;margin-top:8px">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">
-            <div style="font-size:15px;font-weight:600" id="pdf-viewer-name"></div>
-            <button class="btn" onclick="closePdf()">✕ Cerrar</button>
-          </div>
-          <iframe id="pdf-frame" style="width:100%;height:72vh;border:1.5px solid var(--border);border-radius:var(--r)" src="./index_files/saved_resource.html"></iframe>
-        </div>
-      </div>
-    </div>
 
   </div><!-- content -->
 </div><!-- main -->
@@ -1001,87 +1009,119 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
 const BASE = {
   iberdrola:{
     name:'Iberdrola', color:'#008B3C',
-    desc_sin:0.15, desc_con:0.20,
-    tp1_year:true,  // TP en €/kW·AÑO (dividir /365 para día)
+    tp1:0.1240, tp2:0.0620,
+    te_sin:0.1240, te_con:0.1170,
+    sva_luz:4.48, sva_gas:9.95,
+    gas_rl1:{tf:0.2112, tv:0.1024},
+    gas_rl2:{tf:0.3606, tv:0.1013},
+    gas_rl3:{tf:0.6945, tv:0.1013},
+    imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Impulsa 24h',             te:0.1561, tp1:45.49/365, tp2:22.99/365, nota:'', desc_sin:0.20, desc_con:0.25},
-      {n:'Plan Supertranquilidad',  te:0.1624, tp1:33.99/365, tp2:33.99/365, nota:''},
-      {n:'Plan Estable',            te:0.1686, tp1:39.99/365, tp2:21.99/365, nota:''},
-      {n:'Plan Hogar Especial',     te:0.1989, tp1:31.00/365, tp2:16.99/365, nota:''},
-      {n:'Plan Exclusivo 15%TE/TP', te:0.2246, tp1:43.99/365, tp2:22.99/365, nota:''},
+      {n:'Impulsa 24h (Sin SVA)', te:0.1240, tp1:0.1240, tp2:0.0620, nota:'Sin mantenimiento contratado'},
+      {n:'Impulsa 24h (Con SVA)', te:0.1170, tp1:0.1240, tp2:0.0620, nota:'Con Pack Iberdrola (+4.48 €/mes)'}
     ],
     tarifas_gas:[
-      {n:'RL.1 Exclusivo 10%', tv:0.120587, tf:6.55/30},
-      {n:'RL.2 Exclusivo 10%', tv:0.119244, tf:11.18/30},
-      {n:'RL.3 Exclusivo 10%', tv:0.119244, tf:21.53/30},
-    ],
-    imp_electrico:0.0511,
-    // Para comparativa usamos Plan Estable por defecto
-    comp_te:0.1686, comp_tp1:39.99/365, comp_tp2:21.99/365,
-    comp_gas_tv:0.119244, comp_gas_tf:11.18/30,
+      {n:'Iberdrola Gas RL1', tv:0.1024, tf:0.2112},
+      {n:'Iberdrola Gas RL2', tv:0.1013, tf:0.3606},
+      {n:'Iberdrola Gas RL3', tv:0.1013, tf:0.6945}
+    ]
   },
   naturgy:{
     name:'Naturgy', color:'#E85D3A',
-    desc_sin:0, desc_con:0,
+    tp1:0.1230, tp2:0.0616,
+    te_sin:0.1120, te_con:0.1120,
+    sva_luz:8.48, sva_gas:11.81,
+    gas_rl1:{tf:0.1693, tv:0.0795},
+    gas_rl2:{tf:0.3008, tv:0.0774},
+    gas_rl3:{tf:0.6496, tv:0.0740},
+    imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Por Uso Luz', te:0.112000, tp1:0.123030, tp2:0.061562, dh:false, nota:'Precio único 24h — la más barata en conjunto'},
-      {n:'Noche Luz ECO', te:null, tp1:0.123030, tp2:0.061562, dh:true,
-       periodos:[{p:'Punta (día)',te:0.173700},{p:'Llano',te:0.105200},{p:'Valle (0h–8h)',te:0.080900}],
-       nota:'Discriminación horaria: más cara de día, barata solo de noche'},
+      {n:'Por Uso Luz', te:0.1120, tp1:0.1230, tp2:0.0616, nota:'Precio único 24h sin permanencia'}
     ],
     tarifas_gas:[
-      {n:'Por Uso Gas RL1 (≤5 MWh/año)',  tv:0.079533, tf:0.169342},
-      {n:'Por Uso Gas RL2 (≤15 MWh/año)', tv:0.077434, tf:0.300815},
-      {n:'Por Uso Gas RL3 (≤50 MWh/año)', tv:0.073993, tf:0.649635},
-    ],
-    imp_electrico:0.0511,
-    comp_te:0.112000, comp_tp1:0.123030, comp_tp2:0.061562,
-    comp_gas_tv:0.079533, comp_gas_tf:0.169342,
+      {n:'Gas Por Uso RL1', tv:0.0795, tf:0.1693},
+      {n:'Gas Por Uso RL2', tv:0.0774, tf:0.3008},
+      {n:'Gas Por Uso RL3', tv:0.0740, tf:0.6496}
+    ]
   },
   endesa:{
     name:'Endesa', color:'#00A8E0',
-    desc_sin:0.10, desc_con:0.13,
+    tp1:0.0913, tp2:0.0913,
+    te_sin:0.1270, te_con:0.1230,
+    sva_luz:4.77, sva_gas:9.09,
+    gas_rl1:{tf:0.2316, tv:0.0736},
+    gas_rl2:{tf:0.4709, tv:0.0697},
+    gas_rl3:{tf:0.9894, tv:0.0643},
+    imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Luz Fija 24h', te:0.1407, tp1:2.849/30, tp2:2.849/30, dh:false, nota:'Precio único 24h — la más barata de precio plano'},
-      {n:'Luz 3 Periodos', te:null, tp1:2.849/30, tp2:2.849/30, dh:true,
-       periodos:[{p:'P1 (punta)',te:0.2252},{p:'P2 (llano)',te:0.1480},{p:'P3 (valle)',te:0.1147}],
-       nota:'Discriminación horaria: varía según el período del día'},
-      {n:'Tu Otra Casa 50', te:0.245, tp1:2.74/30, tp2:0.492/30, dh:true, nota:'50% dto en las 50h de mayor consumo mensual — discriminación horaria'},
-      {n:'Tempo Open', te:0.2122, tp1:3.444/30, tp2:1.258/30, dh:true, nota:'El cliente elige franja con descuento — discriminación horaria'},
+      {n:'Fija 24h (Sin SVA)', te:0.1270, tp1:0.0913, tp2:0.0913, nota:'Sin mantenimiento contratado'},
+      {n:'Fija 24h (Con SVA)', te:0.1230, tp1:0.0913, tp2:0.0913, nota:'Con Protección 360 (+4.77 €/mes)'}
     ],
     tarifas_gas:[
-      {n:'Gas Endesa RL.1', tv:0.0937, tf:7.181/30},
-      {n:'Gas Endesa RL.2', tv:0.0930, tf:14.60/30},
-      {n:'Gas Endesa RL.3', tv:0.0880, tf:30.67/30},
-    ],
+      {n:'Gas Endesa RL1', tv:0.0736, tf:0.2316},
+      {n:'Gas Endesa RL2', tv:0.0697, tf:0.4709},
+      {n:'Gas Endesa RL3', tv:0.0643, tf:0.9894}
+    ]
+  },
+  gana:{
+    name:'Gana Energía 24h', color:'#E30613',
+    tp1:0.0894, tp2:0.0894,
+    te_sin:0.1190, te_con:0.1190,
+    sva_luz:5.18, sva_gas:0.00,
+    gas_rl1:{tf:0.1260, tv:0.0610},
+    gas_rl2:{tf:0.2616, tv:0.0589},
+    gas_rl3:{tf:0.5830, tv:0.0555},
     imp_electrico:0.0511,
-    comp_te:0.1407, comp_tp1:2.849/30, comp_tp2:2.849/30,
-    comp_gas_tv:0.0937, comp_gas_tf:7.181/30,
+    tarifas_luz:[
+      {n:'Plan Online 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Sin permanencia, Tu Asistente 24 Horas (+5.18 €/mes)'}
+    ],
+    tarifas_gas:[
+      {n:'Gana Gas RL1', tv:0.0610, tf:0.1260},
+      {n:'Gana Gas RL2', tv:0.0589, tf:0.2616},
+      {n:'Gana Gas RL3', tv:0.0555, tf:0.5830}
+    ]
+  },
+  gana_ind:{
+    name:'Gana Indexada PDM', color:'#7c3aed',
+    tp1:0.0759, tp2:0.0020,
+    te_sin:null, te_con:null,
+    p1:0.1910, p2:0.1250, p3:0.1050,
+    sva_luz:5.18, sva_gas:0.00,
+    gas_rl1:{tf:0.1260, tv:0.0610},
+    gas_rl2:{tf:0.2616, tv:0.0589},
+    gas_rl3:{tf:0.5830, tv:0.0555},
+    imp_electrico:0.0511,
+    tarifas_luz:[
+      {n:'Plan Precio de Mercado (Indexado)', te:null, tp1:0.0759, tp2:0.0020, dh:true,
+       periodos:[{p:'P1 Punta (23%)',te:0.1910},{p:'P2 Llano (24%)',te:0.1250},{p:'P3 Valle (53%)',te:0.1050}],
+       nota:'Precio de mercado variable. Tu Asistente 24 Horas (+5.18 €/mes)'}
+    ],
+    tarifas_gas:[
+      {n:'Gana Gas RL1', tv:0.0610, tf:0.1260},
+      {n:'Gana Gas RL2', tv:0.0589, tf:0.2616},
+      {n:'Gana Gas RL3', tv:0.0555, tf:0.5830}
+    ]
   }
 };
 
-let RATES = {};
-try { RATES = JSON.parse(localStorage.getItem('evaria-rates')||'null') || JSON.parse(JSON.stringify(BASE)); }
-catch(e){ RATES = JSON.parse(JSON.stringify(BASE)); }
+const RATES = BASE;
 
 // Precios editables para comparativa (por sesión)
 let CC = {
-  iberdrola:{ te:RATES.iberdrola.comp_te, tp1:RATES.iberdrola.comp_tp1, tp2:RATES.iberdrola.comp_tp2, gtv:RATES.iberdrola.comp_gas_tv, gtf:RATES.iberdrola.comp_gas_tf },
-  naturgy:  { te:RATES.naturgy.comp_te,   tp1:RATES.naturgy.comp_tp1,   tp2:RATES.naturgy.comp_tp2,   gtv:RATES.naturgy.comp_gas_tv,   gtf:RATES.naturgy.comp_gas_tf },
-  endesa:   { te:RATES.endesa.comp_te,    tp1:RATES.endesa.comp_tp1,    tp2:RATES.endesa.comp_tp2,    gtv:RATES.endesa.comp_gas_tv,    gtf:RATES.endesa.comp_gas_tf }
+  iberdrola:{ te:RATES.iberdrola.te_sin, tp1:RATES.iberdrola.tp1, tp2:RATES.iberdrola.tp2, gtv:RATES.iberdrola.gas_rl1.tv, gtf:RATES.iberdrola.gas_rl1.tf },
+  naturgy:  { te:RATES.naturgy.te_sin,   tp1:RATES.naturgy.tp1,   tp2:RATES.naturgy.tp2,   gtv:RATES.naturgy.gas_rl1.tv,   gtf:RATES.naturgy.gas_rl1.tf },
+  endesa:   { te:RATES.endesa.te_sin,    tp1:RATES.endesa.tp1,    tp2:RATES.endesa.tp2,    gtv:RATES.endesa.gas_rl1.tv,    gtf:RATES.endesa.gas_rl1.tf },
+  gana:     { te:RATES.gana.te_sin,      tp1:RATES.gana.tp1,      tp2:RATES.gana.tp2,      gtv:RATES.gana.gas_rl1.tv,      gtf:RATES.gana.gas_rl1.tf },
+  gana_ind: { p1:RATES.gana_ind.p1, p2:RATES.gana_ind.p2, p3:RATES.gana_ind.p3, tp1:RATES.gana_ind.tp1, tp2:RATES.gana_ind.tp2, gtv:RATES.gana_ind.gas_rl1.tv, gtf:RATES.gana_ind.gas_rl1.tf }
 };
 
-let activeCias = {iberdrola:true, naturgy:true, endesa:true};
-let files = [];
-try{ files = JSON.parse(localStorage.getItem('gv-files')||'[]'); }catch(e){}
-let adminUnlocked = false;
+let activeCias = {iberdrola:true, naturgy:true, endesa:true, gana:true, gana_ind:true};
 
 const PANELS = {
   scripts:     {title:'Scripts de verificación', sub:'Selecciona la compañía y sigue el guión paso a paso', color:'#1a7a3c', icon:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>'},
   condiciones: {title:'Condiciones y tarifas',   sub:'Precios de más barato a más caro · PVP 2026', color:'#0d5c9e', icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
   comparativa: {title:'Comparativa de factura',  sub:'Calcula y ajusta la oferta para el cliente', color:'#e07b00', icon:'<rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/>'},
   calendario:  {title:'Calendario laboral',      sub:'Días laborables 2026 · Calendario RENOSUR-TM', color:'#1a7fcb', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
-  archivos:    {title:'Archivos y precios',       sub:'Gestión de documentos y configuración de tarifas', color:'#4a6657', icon:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'},
 };
 
 // ── CALENDARIO LABORAL 2026 (RENOSUR-TM) — datos exactos, sin cálculo ──
@@ -1321,7 +1361,7 @@ function switchCia(id){
 
 // ── CONDICIONES ──
 function renderCondiciones(){
-  const cias=['iberdrola','naturgy','endesa'];
+  const cias=['iberdrola','naturgy','endesa','gana','gana_ind'];
   let html='';
   cias.forEach(id=>{
     const r=RATES[id];
@@ -1344,10 +1384,10 @@ function renderCondiciones(){
           <td class="price-base"><div style="font-size:13px;color:var(--t3);margin-bottom:4px">Varía por período:</div>${t.periodos.map(p=>`<div>${p.p}: <strong>${p.te.toFixed(4)}</strong></div>`).join('')}</td>
           <td>—</td><td>—</td><td></td></tr>`;
       } else if(t.te!==null){
-        const dSin = t.desc_sin !== undefined ? t.desc_sin : r.desc_sin;
-        const dCon = t.desc_con !== undefined ? t.desc_con : r.desc_con;
+        const dSin = t.desc_sin !== undefined ? t.desc_sin : (r.desc_sin || 0);
+        const dCon = t.desc_con !== undefined ? t.desc_con : (r.desc_con || 0);
         const teSin = dSin>0 ? t.te*(1-dSin) : t.te;
-        const teCon = dCon>0 ? t.te*(1-dCon) : null;
+        const teCon = dCon>0 ? t.te*(1-dCon) : (r.te_con !== r.te_sin ? r.te_con : null);
         html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}<br><span style="font-size:12px;color:var(--t3)">Dto. sin mant.: ${(dSin*100).toFixed(0)}% · con mant.: ${teCon?(dCon*100).toFixed(0)+'%':'—'}</span></td>
           <td class="price-base">${t.te.toFixed(4)} €/kWh</td>
           <td><span class="price-sin">${teSin.toFixed(4)} €/kWh</span></td>
@@ -1359,12 +1399,12 @@ function renderCondiciones(){
     <div style="font-size:13px;color:var(--t3);margin-top:6px">Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} €/kW·día · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</div>`;
 
     // GAS
-    html+=`<div class="cond-sub-title" style="margin-top:20px">Gas — Término Variable (€/kWh)</div>
+    html+=`<div class="cond-sub-title" style="margin-top:20px">Gas — Término Variable (€/kWh) y Término Fijo (€/día)</div>
     <table class="tariff-table"><thead><tr>
-      <th>Tarifa</th><th>TV base (€/kWh)</th><th>TF (€/mes)</th>
+      <th>Tarifa</th><th>TV (€/kWh)</th><th>TF (€/día)</th><th>TF (€/mes equivalente)</th>
     </tr></thead><tbody>`;
     r.tarifas_gas.forEach(t=>{
-      html+=`<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(4)} €/kWh</span></td><td>${(t.tf*30).toFixed(3)} €/mes</td></tr>`;
+      html+=`<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(4)} €/kWh</span></td><td>${t.tf.toFixed(4)} €/día</td><td>${(t.tf*30).toFixed(2)} €/mes</td></tr>`;
     });
     html+=`</tbody></table></div>`;
   });
@@ -1376,7 +1416,7 @@ function f2(n){return(Math.round(n*100)/100).toFixed(2);}
 function gv(id){return parseFloat(document.getElementById(id).value)||0;}
 
 function toggleCia(id, btn){
-  const colors={iberdrola:'#008B3C',naturgy:'#E85D3A',endesa:'#00A8E0','naturgy-pymes':'#E85D3A'};
+  const colors={iberdrola:'#008B3C',naturgy:'#E85D3A',endesa:'#00A8E0',gana:'#E30613',gana_ind:'#7c3aed'};
   activeCias[id]=!activeCias[id];
   if(activeCias[id]){ btn.classList.add('active'); btn.style.background=colors[id]; btn.style.borderColor=colors[id]; btn.style.color='#fff'; }
   else{ btn.classList.remove('active'); btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }
@@ -1387,31 +1427,83 @@ function calcComp(){
   const dias=gv('f-dias')||30, pot1=gv('f-pot1'), pot2=gv('f-pot2')||pot1;
   const kwh1=gv('f-kwh1'), kwh2=gv('f-kwh2'), gas=gv('f-gas');
   const alq=gv('f-alquiler'), iva=gv('f-iva')||0.21, actual=gv('f-actual');
+  const useSva=document.getElementById('f-sva').checked;
 
   if(!kwh1&&!gas){ document.getElementById('comp-empty').style.display='block'; document.getElementById('comp-cards').innerHTML=''; document.getElementById('comp-summary').innerHTML=''; return; }
   document.getElementById('comp-empty').style.display='none';
 
-  const cias=['iberdrola','naturgy','endesa'].filter(c=>activeCias[c]);
+  // Determinar banda de gas basada en consumo estimado anual
+  let band = 'rl1';
+  if(gas > 0){
+    const annualGas = gas * (365 / dias);
+    if(annualGas > 5000 && annualGas <= 15000) band = 'rl2';
+    else if(annualGas > 15000) band = 'rl3';
+  }
+
+  const cias=['iberdrola','naturgy','endesa','gana','gana_ind'].filter(c=>activeCias[c]);
   const results=cias.map(cia=>{
     const cc=CC[cia]; const r=RATES[cia];
+    
+    // Potencia
     const luzPot=(pot1*cc.tp1+pot2*cc.tp2)*dias;
-    const luzP1=kwh1*cc.te, luzP2=kwh2*(cc.te*0.60);
-    const gasVar=gas*cc.gtv, gasFij=gas>0?cc.gtf*dias:0;
-    const baseElec=luzPot+luzP1+luzP2;
+    
+    // Energía
+    let luzP1 = 0, luzP2 = 0, luzP3 = 0, totalKwh = kwh1 + kwh2;
+    if(cia === 'gana_ind'){
+      const p1_kwh = totalKwh * 0.23;
+      const p2_kwh = totalKwh * 0.24;
+      const p3_kwh = totalKwh * 0.53;
+      luzP1 = p1_kwh * cc.p1;
+      luzP2 = p2_kwh * cc.p2;
+      luzP3 = p3_kwh * cc.p3;
+    } else {
+      // Si la tarifa no ha sido modificada manualmente por el usuario, la ajustamos según SVA
+      let currentTe = cc.te;
+      if (cc.te === r.te_sin || cc.te === r.te_con) {
+        currentTe = useSva ? r.te_con : r.te_sin;
+        cc.te = currentTe; // Sincronizar de vuelta
+      }
+      luzP1 = kwh1 * currentTe;
+      luzP2 = kwh2 * (currentTe * 0.60);
+    }
+    const baseElec = luzPot + luzP1 + luzP2 + luzP3;
+
+    // Gas
+    let gasVar = 0, gasFij = 0;
+    if(gas > 0){
+      // Seleccionar tarifas por defecto de la banda de gas
+      const bandObj = band === 'rl1' ? r.gas_rl1 : (band === 'rl2' ? r.gas_rl2 : r.gas_rl3);
+      // Usar precios ajustados de sesión si han cambiado respecto a la banda anterior, o el valor de la banda actual
+      const active_gtv = (cc.gtv === r.gas_rl1.tv) ? bandObj.tv : cc.gtv;
+      const active_gtf = (cc.gtf === r.gas_rl1.tf) ? bandObj.tf : cc.gtf;
+      gasVar = gas * active_gtv;
+      gasFij = active_gtf * dias;
+    }
+
+    // SVA
+    let svaLuzAmt = 0, svaGasAmt = 0;
+    if(useSva){
+      svaLuzAmt = (r.sva_luz / 30) * dias;
+      if(gas > 0){
+        svaGasAmt = (r.sva_gas / 30) * dias;
+      }
+    }
+
     const impElec=baseElec*r.imp_electrico;
-    const subtotal=baseElec+(gas>0?gasVar+gasFij:0)+impElec+alq;
+    const subtotal=baseElec+(gas>0?gasVar+gasFij:0)+impElec+alq+svaLuzAmt+svaGasAmt;
     const ivaAmt=subtotal*iva, total=subtotal+ivaAmt;
     const ahorro=actual>0?actual-total:null;
-    return{cia,cc,r,luzPot,luzP1,luzP2,gasVar,gasFij,baseElec,impElec,alq,subtotal,ivaAmt,total,ahorro,dias,iva,kwh1,kwh2,gas,pot1,pot2,actual};
+    return {cia,cc,r,luzPot,luzP1,luzP2,luzP3,totalKwh,gasVar,gasFij,baseElec,impElec,alq,svaLuzAmt,svaGasAmt,subtotal,ivaAmt,total,ahorro,dias,iva,kwh1,kwh2,gas,pot1,pot2,actual,band};
   });
+
   results.sort((a,b)=>a.total-b.total);
-  renderInvCards(results);
+  renderInvCards(results, useSva);
   renderSummary(results,actual);
 }
 
-function renderInvCards(results){
+function renderInvCards(results, useSva){
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
-    const{cia,cc,r,luzPot,luzP1,luzP2,gasVar,gasFij,impElec,alq,subtotal,ivaAmt,total,ahorro,dias,iva,kwh1,kwh2,gas,pot1,pot2}=res;
+    const{cia,cc,r,luzPot,luzP1,luzP2,luzP3,totalKwh,gasVar,gasFij,impElec,alq,svaLuzAmt,svaGasAmt,subtotal,ivaAmt,total,ahorro,dias,iva,kwh1,kwh2,gas,pot1,pot2,band}=res;
     const best=idx===0, aPos=ahorro>0, aNeg=ahorro<0;
     return`<div class="inv-card${best?' best':''}">
       <div class="inv-hdr">
@@ -1431,14 +1523,22 @@ function renderInvCards(results){
         ${pot2>0?`<tr><td>${pot2} kW × ${dias} días × ${cc.tp2.toFixed(4)} €/kW·día &nbsp;<span style="font-size:12px;color:var(--t3)">P2</span></td><td class="ftr-right">${f2(pot2*cc.tp2*dias)} €</td></tr>`:''}
         <tr style="font-size:13px;color:var(--t3)"><td style="padding-left:28px">Subtotal potencia</td><td class="ftr-right">${f2(luzPot)} €</td></tr>
         <tr><td colspan="2" class="frow-sec">Término de energía</td></tr>
-        ${kwh1>0?`<tr><td>${kwh1} kWh × ${cc.te.toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P1</span></td><td class="ftr-right">${f2(luzP1)} €</td></tr>`:''}
-        ${kwh2>0?`<tr><td>${kwh2} kWh × ${(cc.te*0.6).toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P2</span></td><td class="ftr-right">${f2(luzP2)} €</td></tr>`:''}
-        ${gas>0?`<tr><td colspan="2" class="frow-sec">Gas</td></tr>
+        ${cia==='gana_ind'?`
+          <tr><td>P1 Punta (23%): ${(totalKwh*0.23).toFixed(0)} kWh × ${cc.p1.toFixed(4)} €/kWh</td><td class="ftr-right">${f2(luzP1)} €</td></tr>
+          <tr><td>P2 Llano (24%): ${(totalKwh*0.24).toFixed(0)} kWh × ${cc.p2.toFixed(4)} €/kWh</td><td class="ftr-right">${f2(luzP2)} €</td></tr>
+          <tr><td>P3 Valle (53%): ${(totalKwh*0.53).toFixed(0)} kWh × ${cc.p3.toFixed(4)} €/kWh</td><td class="ftr-right">${f2(luzP3)} €</td></tr>
+        `:`
+          ${kwh1>0?`<tr><td>${kwh1} kWh × ${cc.te.toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P1</span></td><td class="ftr-right">${f2(luzP1)} €</td></tr>`:''}
+          ${kwh2>0?`<tr><td>${kwh2} kWh × ${(cc.te*0.6).toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P2</span></td><td class="ftr-right">${f2(luzP2)} €</td></tr>`:''}
+        `}
+        ${gas>0?`<tr><td colspan="2" class="frow-sec">Gas (Tarifa ${band.toUpperCase()})</td></tr>
           <tr><td>${gas} kWh × ${cc.gtv.toFixed(4)} €/kWh <span style="font-size:12px;color:var(--t3)">variable</span></td><td class="ftr-right">${f2(gasVar)} €</td></tr>
           <tr><td>${dias} días × ${cc.gtf.toFixed(4)} €/día <span style="font-size:12px;color:var(--t3)">fijo</span></td><td class="ftr-right">${f2(gasFij)} €</td></tr>`:''}
         <tr><td colspan="2" class="frow-sec">Impuestos y otros</td></tr>
         <tr><td>Impuesto sobre electricidad (${(r.imp_electrico*100).toFixed(2)}%)</td><td class="ftr-right">${f2(impElec)} €</td></tr>
         <tr><td>Alquiler de equipos</td><td class="ftr-right">${f2(alq)} €</td></tr>
+        ${svaLuzAmt>0?`<tr><td>Servicio Mantenimiento Luz (${r.name})</td><td class="ftr-right">${f2(svaLuzAmt)} €</td></tr>`:''}
+        ${svaGasAmt>0?`<tr><td>Servicio Mantenimiento Gas (${r.name})</td><td class="ftr-right">${f2(svaGasAmt)} €</td></tr>`:''}
         <tr class="frow-total"><td>Subtotal sin IVA</td><td class="ftr-right">${f2(subtotal)} €</td></tr>
         <tr><td>IVA (${Math.round(iva*100)}%)</td><td class="ftr-right">${f2(ivaAmt)} €</td></tr>
         <tr class="frow-total"><td><strong>TOTAL MENSUAL</strong></td><td class="ftr-right"><strong>${f2(total)} €</strong></td></tr>
@@ -1453,7 +1553,13 @@ function renderInvCards(results){
       </button>
       <div class="ep-body" id="ep-${cia}">
         <div class="ep-grid">
+          ${cia==='gana_ind'?`
+          <div class="ep-grp"><label>P1 luz (€/kWh)</label><input type="number" step="0.0001" value="${cc.p1.toFixed(4)}" oninput="updCC('${cia}','p1',this.value)"></div>
+          <div class="ep-grp"><label>P2 luz (€/kWh)</label><input type="number" step="0.0001" value="${cc.p2.toFixed(4)}" oninput="updCC('${cia}','p2',this.value)"></div>
+          <div class="ep-grp"><label>P3 luz (€/kWh)</label><input type="number" step="0.0001" value="${cc.p3.toFixed(4)}" oninput="updCC('${cia}','p3',this.value)"></div>
+          `:`
           <div class="ep-grp"><label>TE luz (€/kWh)</label><input type="number" step="0.0001" value="${cc.te.toFixed(4)}" oninput="updCC('${cia}','te',this.value)"></div>
+          `}
           <div class="ep-grp"><label>TP1 luz (€/kW·día)</label><input type="number" step="0.0001" value="${cc.tp1.toFixed(4)}" oninput="updCC('${cia}','tp1',this.value)"></div>
           <div class="ep-grp"><label>TP2 luz (€/kW·día)</label><input type="number" step="0.0001" value="${cc.tp2.toFixed(4)}" oninput="updCC('${cia}','tp2',this.value)"></div>
           <div class="ep-grp"><label>TV gas (€/kWh)</label><input type="number" step="0.0001" value="${cc.gtv.toFixed(4)}" oninput="updCC('${cia}','gtv',this.value)"></div>
@@ -1489,143 +1595,15 @@ function renderSummary(results, actual){
 function updCC(cia,f,v){ CC[cia][f]=parseFloat(v)||0; calcComp(); }
 function resetCC(cia){
   const r=RATES[cia];
-  CC[cia]={te:r.comp_te,tp1:r.comp_tp1,tp2:r.comp_tp2,gtv:r.comp_gas_tv,gtf:r.comp_gas_tf};
+  const useSva = document.getElementById('f-sva').checked;
+  const teVal = useSva ? r.te_con : r.te_sin;
+  if(cia === 'gana_ind'){
+    CC[cia]={p1:r.p1,p2:r.p2,p3:r.p3,tp1:r.tp1,tp2:r.tp2,gtv:r.gas_rl1.tv,gtf:r.gas_rl1.tf};
+  } else {
+    CC[cia]={te:teVal,tp1:r.tp1,tp2:r.tp2,gtv:r.gas_rl1.tv,gtf:r.gas_rl1.tf};
+  }
   calcComp();
 }
-
-// ── ADMIN ──
-function checkPwd(){
-  const v=document.getElementById('admin-pwd').value;
-  if(v==='T0rtugas'){
-    adminUnlocked=true;
-    document.getElementById('admin-lock').style.display='none';
-    document.getElementById('admin-content').classList.add('unlocked');
-    renderPriceEditors(); renderFiles();
-    document.getElementById('admin-pwd').value='';
-  } else {
-    document.getElementById('pin-err').style.display='block';
-    document.getElementById('admin-pwd').value='';
-    setTimeout(()=>document.getElementById('pin-err').style.display='none',2500);
-  }
-}
-function lockAdmin(){
-  adminUnlocked=false;
-  document.getElementById('admin-lock').style.display='block';
-  document.getElementById('admin-content').classList.remove('unlocked');
-}
-function renderAdmin(){ if(adminUnlocked){ renderPriceEditors(); renderFiles(); } }
-
-function renderPriceEditors(){
-  const cias=['iberdrola','naturgy','endesa'];
-  document.getElementById('price-editors').innerHTML=cias.map(id=>{
-    const r=RATES[id];
-    return`<div class="price-editor">
-      <div class="pe-hdr" onclick="togglePE('pebody-${id}',this)">
-        <div class="pe-hdr-left"><span class="cdot" style="background:${r.color};width:12px;height:12px"></span><span style="color:${r.color}">${r.name}</span></div>
-        <span style="font-size:14px;color:var(--t3)">Editar tarifas ▾</span>
-      </div>
-      <div class="pe-body" id="pebody-${id}">
-        <p style="font-size:14px;color:var(--t3);margin-bottom:16px">Los cambios se guardan en este navegador y afectan a condiciones y comparativa.</p>
-        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);margin-bottom:10px">Potencia e impuesto</div>
-        <div class="pe-grid" style="margin-bottom:16px">
-          <div class="ep-grp"><label>TP1 luz (€/kW·día)</label><input type="number" id="pe-${id}-tp1" step="0.0001" value="${r.tarifas_luz[0].tp1.toFixed(4)}"></div>
-          <div class="ep-grp"><label>TP2 luz (€/kW·día)</label><input type="number" id="pe-${id}-tp2" step="0.0001" value="${r.tarifas_luz[0].tp2.toFixed(4)}"></div>
-          <div class="ep-grp"><label>Impuesto eléctrico (%)</label><input type="number" id="pe-${id}-impe" step="0.001" value="${(r.imp_electrico*100).toFixed(3)}"></div>
-        </div>
-        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);margin-bottom:10px">Tarifas de luz — TE (€/kWh)</div>
-        <div class="pe-grid" style="margin-bottom:16px">
-          ${r.tarifas_luz.map((t,i)=>t.te!==null?`<div class="ep-grp"><label>${t.n}</label><input type="number" id="pe-${id}-luz${i}" step="0.0001" value="${t.te.toFixed(4)}"></div>`:'').join('')}
-        </div>
-        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);margin-bottom:10px">Tarifas gas</div>
-        <div class="pe-grid" style="margin-bottom:16px">
-          ${r.tarifas_gas.map((t,i)=>`<div class="ep-grp"><label>${t.n} — TV</label><input type="number" id="pe-${id}-gtv${i}" step="0.0001" value="${t.tv.toFixed(4)}"></div><div class="ep-grp"><label>${t.n} — TF (€/día)</label><input type="number" id="pe-${id}-gtf${i}" step="0.0001" value="${t.tf.toFixed(4)}"></div>`).join('')}
-        </div>
-        <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);margin-bottom:10px">Descuentos</div>
-        <div class="pe-grid" style="margin-bottom:18px">
-          <div class="ep-grp"><label>Sin mantenimiento (%)</label><input type="number" id="pe-${id}-dsin" step="1" value="${(r.desc_sin*100).toFixed(0)}"></div>
-          <div class="ep-grp"><label>Con mantenimiento (%)</label><input type="number" id="pe-${id}-dcon" step="1" value="${(r.desc_con*100).toFixed(0)}"></div>
-        </div>
-        <div style="display:flex;align-items:center;gap:12px">
-          <button class="pe-save" onclick="savePrices('${id}')">Guardar cambios</button>
-          <button class="reset-lnk" onclick="resetPrices('${id}')">Restablecer originales</button>
-          <span class="pe-msg" id="pemsg-${id}">✓ Guardado</span>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function togglePE(id, hdr){
-  const body=document.getElementById(id);
-  body.classList.toggle('open');
-}
-
-function savePrices(id){
-  const r=RATES[id];
-  r.imp_electrico=(parseFloat(document.getElementById(`pe-${id}-impe`).value)||r.imp_electrico*100)/100;
-  r.desc_sin=(parseFloat(document.getElementById(`pe-${id}-dsin`).value)||0)/100;
-  r.desc_con=(parseFloat(document.getElementById(`pe-${id}-dcon`).value)||0)/100;
-  const tp1=parseFloat(document.getElementById(`pe-${id}-tp1`).value)||r.tarifas_luz[0].tp1;
-  const tp2=parseFloat(document.getElementById(`pe-${id}-tp2`).value)||r.tarifas_luz[0].tp2;
-  r.tarifas_luz.forEach((t,i)=>{ t.tp1=tp1; t.tp2=tp2; if(t.te!==null){ const v=parseFloat(document.getElementById(`pe-${id}-luz${i}`)?.value); if(v) t.te=v; } });
-  r.tarifas_gas.forEach((t,i)=>{ const tv=parseFloat(document.getElementById(`pe-${id}-gtv${i}`)?.value); const tf=parseFloat(document.getElementById(`pe-${id}-gtf${i}`)?.value); if(tv) t.tv=tv; if(tf) t.tf=tf; });
-  // Actualizar comp_te con la tarifa plana más barata
-  const planar=r.tarifas_luz.filter(t=>t.te!==null&&!t.dh).sort((a,b)=>a.te-b.te)[0];
-  if(planar){ r.comp_te=planar.te; r.comp_tp1=tp1; r.comp_tp2=tp2; }
-  if(r.tarifas_gas[0]){ r.comp_gas_tv=r.tarifas_gas[0].tv; r.comp_gas_tf=r.tarifas_gas[0].tf; }
-  try{ localStorage.setItem('evaria-rates',JSON.stringify(RATES)); }catch(e){}
-  const msg=document.getElementById(`pemsg-${id}`);
-  msg.style.display='inline'; setTimeout(()=>msg.style.display='none',2500);
-}
-
-function resetPrices(id){
-  if(!confirm('¿Restablecer los precios originales de '+RATES[id].name+'?')) return;
-  RATES[id]=JSON.parse(JSON.stringify(BASE[id]));
-  CC[id]={te:RATES[id].comp_te,tp1:RATES[id].comp_tp1,tp2:RATES[id].comp_tp2,gtv:RATES[id].comp_gas_tv,gtf:RATES[id].comp_gas_tf};
-  try{ localStorage.setItem('evaria-rates',JSON.stringify(RATES)); }catch(e){}
-  renderPriceEditors();
-}
-
-// ── ARCHIVOS ──
-function handleUpload(input){
-  Array.from(input.files||input).forEach(file=>{
-    const reader=new FileReader();
-    reader.onload=e=>{
-      const idx=files.findIndex(f=>f.name===file.name);
-      const entry={name:file.name,size:file.size,date:new Date().toLocaleDateString('es-ES'),data:e.target.result};
-      if(idx>=0) files[idx]=entry; else files.push(entry);
-      saveFiles(); renderFiles();
-    };
-    reader.readAsDataURL(file);
-  });
-  if(input.value!==undefined) input.value='';
-}
-function saveFiles(){ try{ localStorage.setItem('gv-files',JSON.stringify(files)); }catch(e){} }
-function renderFiles(){
-  const grid=document.getElementById('files-grid');
-  const cols=['#008B3C','#E85D3A','#00A8E0','#7C3AED','#0891B2','#b45309'];
-  grid.innerHTML=files.map((f,i)=>{
-    const ext=f.name.split('.').pop().toUpperCase();
-    const kb=(f.size/1024).toFixed(0);
-    return`<div class="fcard">
-      <div class="ficon" style="background:${cols[i%cols.length]}">${ext}</div>
-      <div class="finfo"><div class="fname" title="${f.name}">${f.name.replace(/\.[^.]+$/,'').substring(0,28)}</div><div class="fmeta">${kb} KB · ${f.date}</div></div>
-      <div class="factions">
-        <button class="bico" onclick="viewPdf(${i})" title="Ver"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        <button class="bico del" onclick="deleteFile(${i})" title="Eliminar"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4h6v2"/></svg></button>
-      </div>
-    </div>`;
-  }).join('');
-}
-function viewPdf(i){
-  const f=files[i];
-  document.getElementById('pdf-viewer-name').textContent=f.name;
-  document.getElementById('pdf-frame').src=f.data;
-  document.getElementById('pdf-viewer-wrap').style.display='block';
-  document.getElementById('pdf-viewer-wrap').scrollIntoView({behavior:'smooth'});
-}
-function closePdf(){ document.getElementById('pdf-viewer-wrap').style.display='none'; document.getElementById('pdf-frame').src=''; }
-function deleteFile(i){ if(!confirm('¿Eliminar "'+files[i].name+'"?')) return; files.splice(i,1); saveFiles(); renderFiles(); closePdf(); }
 
 // ── NATURGY PROVINCIA / PDV ──
 function updateNaturgy(){
@@ -1654,9 +1632,13 @@ function updateClock(){
   const elIbFecha = document.getElementById('ib-fecha');
   const elIbHora  = document.getElementById('ib-hora');
   const elPyFecha = document.getElementById('pymes-fecha');
+  const elGaFecha = document.getElementById('gana-fecha');
+  const elGaHora  = document.getElementById('gana-hora');
   if(elIbFecha) elIbFecha.textContent = fecha;
   if(elIbHora)  elIbHora.textContent  = hora;
   if(elPyFecha) elPyFecha.textContent = fecha;
+  if(elGaFecha) elGaFecha.textContent = fecha;
+  if(elGaHora)  elGaHora.textContent  = hora;
 }
 updateClock();
 setInterval(updateClock, 10000);
@@ -1664,13 +1646,6 @@ setInterval(updateClock, 10000);
 // ── INIT ──
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('today-date').textContent=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
-  const uz=document.querySelector('#panel-archivos .uzone');
-  if(uz){
-    uz.addEventListener('dragover',e=>{e.preventDefault();uz.classList.add('dragover');});
-    uz.addEventListener('dragleave',()=>uz.classList.remove('dragover'));
-    uz.addEventListener('drop',e=>{e.preventDefault();uz.classList.remove('dragover');handleUpload(e.dataTransfer);});
-  }
-  document.getElementById('admin-pwd').addEventListener('keydown',e=>{ if(e.key==='Enter') checkPwd(); });
 });
 </script>
 
