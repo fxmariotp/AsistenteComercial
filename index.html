@@ -10,7 +10,6 @@
   --green:#1a7a3c; --green2:#25a355; --green-bg:#edfaf3; --green-light:#d1f5e0;
   --blue:#0d5c9e; --blue2:#1a7fcb; --blue-bg:#e8f4fd;
   --orange:#e07b00; --orange2:#f59e0b; --orange-bg:#fff7e6;
-  --gold:#8a6d00; --gold2:#e0b400; --gold-bg:#fff3b0;
   --white:#ffffff; --bg:#f0f7f4; --surface:#ffffff;
   --border:#d4e8dc; --bmd:#b0d4bf;
   --text:#1a2e22; --t2:#4a6657; --t3:#8aaa97;
@@ -122,15 +121,12 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
 .cal-dow{text-align:center;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--t3);padding-bottom:8px}
 .cal-day{aspect-ratio:1;border-radius:var(--rs);display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:600;position:relative;border:1.5px solid transparent}
 .cal-day.cal-empty{visibility:hidden}
-.cal-day.cal-labor{background:var(--green-bg);color:var(--green);border-color:var(--green-light)}
-.cal-day.cal-weekend{background:var(--bg);color:var(--t3);border-color:var(--border)}
-.cal-day.cal-festivo{background:var(--orange-bg);color:var(--red);border-color:#fcd9a0}
-.cal-day.cal-apertura{background:var(--green);color:#fff;border-color:var(--green)}
-.cal-day.cal-cierre{background:var(--orange);color:#fff;border-color:var(--orange)}
-.cal-day.cal-vob25{background:var(--gold-bg);color:var(--gold);border-color:var(--gold2)}
-.cal-day.cal-today{box-shadow:0 0 0 2.5px var(--blue) inset;color:var(--blue);font-weight:800}
-.cal-day.cal-today::after{content:'';position:absolute;bottom:4px;width:6px;height:6px;border-radius:50%;background:var(--blue)}
-.cal-mark{position:absolute;top:3px;right:5px;font-size:10px;line-height:1}
+.cal-day.cal-labor{background:#f0fdf4;color:#166534;border-color:#bbf7d0}
+.cal-day.cal-weekend{background:#fca5a5;color:#991b1b;border-color:#fca5a5}
+.cal-day.cal-festivo{background:#f59e0b;color:#fff;border-color:#f59e0b}
+.cal-day.cal-comienzo{background:#fef08a;color:var(--text);border-color:#fef08a}
+.cal-day.cal-cierre{background:#7c3aed;color:#fff;border-color:#7c3aed}
+.cal-day.cal-today{background:#1d4ed8;color:#fff;border-color:#1d4ed8;font-weight:800;box-shadow:0 0 0 3px rgba(29,78,216,.3)}
 .counter-extra{font-size:13px;color:var(--t2)}
 
 /* ── COMPARATIVA ── */
@@ -294,7 +290,6 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
   .cal-card{padding:16px 14px}
   .cal-day{font-size:12px}
   .cal-grid{gap:4px}
-  .cal-mark{font-size:8px;top:2px;right:3px}
   .counter-extra{font-size:12px}
 }
 </style>
@@ -879,13 +874,12 @@ hr{border:none;border-top:1px solid var(--border);margin:20px 0}
     <!-- ══════ CALENDARIO ══════ -->
     <div class="panel" id="panel-calendario">
       <div class="legend" style="margin-bottom:20px">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1.5px solid var(--green-light)"></div>Laborable</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--bg);border:1.5px solid var(--border)"></div>Fin de semana</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--orange-bg);border:1.5px solid #fcd9a0"></div>Festivo</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--blue)"></div>Hoy</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--green)"></div>★ Comienzo de mes</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--orange)"></div>✦ Cierre de mes</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--gold-bg);border:1.5px solid var(--gold2)"></div>VOB25</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>Festivo</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#fef08a;border:1px solid #eab308"></div>Comienzo de mes</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div>Cierre de mes</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#fca5a5"></div>Fin de semana</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f0fdf4;border:1px solid #bbf7d0"></div>Laborable</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#1d4ed8"></div>Hoy</div>
       </div>
 
       <div class="cal-counters">
@@ -1089,29 +1083,38 @@ const PANELS = {
   archivos:    {title:'Archivos y precios',       sub:'Gestión de documentos y configuración de tarifas', color:'#4a6657', icon:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'},
 };
 
-// ── CALENDARIO LABORAL 2026 (RENOSUR-TM) ──
-const MONTH_LABOR_DAYS = [19,21,20,20,21,21,21,22,23,21,21,18];
+// ── CALENDARIO LABORAL 2026 (RENOSUR-TM) — datos exactos, sin cálculo ──
+const FESTIVOS = [
+  '2026-01-01', '2026-01-06', '2026-04-02', '2026-04-03',
+  '2026-05-01', '2026-05-22', '2026-10-12', '2026-11-02',
+  '2026-12-08', '2026-12-25',
+];
+const VOB25 = ['2026-01-31'];
+const COMIENZOS = [
+  '2026-01-02', '2026-02-02', '2026-03-02',
+  '2026-04-01', '2026-05-04', '2026-06-01',
+  '2026-07-01', '2026-08-03', '2026-09-01',
+  '2026-10-01', '2026-11-02', '2026-12-01',
+];
+const CIERRES = [
+  '2026-01-30', '2026-02-27', '2026-03-31',
+  '2026-04-30', '2026-05-29', '2026-06-30',
+  '2026-07-31', '2026-08-31', '2026-09-30',
+  '2026-10-30', '2026-11-28', '2026-12-30',
+];
+const LABORABLES = [19,21,20,20,21,21,21,22,23,21,21,18];
 // El total oficial (249) no coincide con la suma del desglose mensual (248);
 // se mantiene 249 como total del año y la diferencia se absorbe en "restantes".
 const YEAR_LABOR_TOTAL = 249;
-const APERTURA_MES = [2,2,2,1,4,1,1,3,1,1,2,1];
-const CIERRE_MES   = [30,27,31,30,29,30,31,31,30,30,30,30];
-const FESTIVOS_2026 = [
-  {m:1,  d:1,  n:'Año Nuevo'},
-  {m:1,  d:6,  n:'Reyes'},
-  {m:1,  d:31, n:'VOB25 (especial)', tipo:'vob25'},
-  {m:3,  d:19, n:'San José'},
-  {m:4,  d:2,  n:'Jueves Santo'},
-  {m:4,  d:3,  n:'Viernes Santo'},
-  {m:5,  d:1,  n:'Fiesta del Trabajo'},
-  {m:5,  d:22, n:'Festivo calendario laboral'},
-  {m:10, d:12, n:'Fiesta Nacional'},
-  {m:11, d:2,  n:'Festivo calendario laboral'},
-  {m:12, d:8,  n:'Inmaculada'},
-  {m:12, d:25, n:'Navidad'},
-];
 const MES_NOMBRES=['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
 const DOW_NOMBRES=['Lu','Ma','Mi','Ju','Vi','Sá','Do'];
+
+function toIso(date){
+  const y=date.getFullYear(), m=String(date.getMonth()+1).padStart(2,'0'), d=String(date.getDate()).padStart(2,'0');
+  return `${y}-${m}-${d}`;
+}
+function isoDay(iso){ return parseInt(iso.split('-')[2],10); }
+function isoToDate(iso){ const [y,m,d]=iso.split('-').map(Number); return new Date(y,m-1,d); }
 
 let calMonth;
 {
@@ -1119,12 +1122,10 @@ let calMonth;
   calMonth = t.getFullYear()===2026 ? t.getMonth() : (t.getFullYear()<2026 ? 0 : 11);
 }
 
-function calFestivo(date){ return FESTIVOS_2026.find(f=>f.m===date.getMonth()+1 && f.d===date.getDate()); }
 function calIsWeekend(date){ const w=date.getDay(); return w===0||w===6; }
-function calIsLabor(date){ return !calIsWeekend(date) && !calFestivo(date); }
 function calIsToday(date){ const t=new Date(); return date.getFullYear()===t.getFullYear() && date.getMonth()===t.getMonth() && date.getDate()===t.getDate(); }
-function calIsApertura(date){ return date.getDate()===APERTURA_MES[date.getMonth()]; }
-function calIsCierre(date){ return date.getDate()===CIERRE_MES[date.getMonth()]; }
+// Festivos/VOB25 y fines de semana no cuentan como laborables; comienzo/cierre de mes sí.
+function calIsLabor(date){ const iso=toIso(date); return !FESTIVOS.includes(iso) && !VOB25.includes(iso) && !calIsWeekend(date); }
 
 function changeCalMonth(delta){
   calMonth=Math.min(11,Math.max(0,calMonth+delta));
@@ -1144,8 +1145,8 @@ function laborDaysElapsedInMonth(year, monthIdx, uptoDay){
 
 function proximoFestivo(){
   const t=new Date(); t.setHours(0,0,0,0);
-  const futuros=FESTIVOS_2026
-    .map(f=>({n:f.n, date:new Date(2026,f.m-1,f.d)}))
+  const futuros=[...FESTIVOS.map(iso=>({iso,n:'Festivo'})), ...VOB25.map(iso=>({iso,n:'VOB25'}))]
+    .map(f=>({n:f.n, date:isoToDate(f.iso)}))
     .filter(f=>f.date>=t)
     .sort((a,b)=>a.date-b.date);
   if(!futuros.length) return 'Sin más festivos en 2026';
@@ -1166,16 +1167,16 @@ function renderCalendar(){
   for(let i=0;i<firstDow;i++) html+=`<div class="cal-day cal-empty"></div>`;
   for(let d=1;d<=daysInMonth;d++){
     const date=new Date(year,calMonth,d);
-    const fest=calFestivo(date);
-    let cls='cal-day ', mark='';
-    if(fest && fest.tipo==='vob25') cls+='cal-vob25';
-    else if(fest) cls+='cal-festivo';
-    else if(calIsWeekend(date)) cls+='cal-weekend';
-    else if(calIsApertura(date)){ cls+='cal-apertura'; mark='<span class="cal-mark">★</span>'; }
-    else if(calIsCierre(date)){ cls+='cal-cierre'; mark='<span class="cal-mark">✦</span>'; }
-    else cls+='cal-labor';
-    if(calIsToday(date)) cls+=' cal-today';
-    html+=`<div class="${cls}" title="${fest?fest.n:''}">${d}${mark}</div>`;
+    const iso=toIso(date);
+    let cls='cal-day ', label='';
+    if(FESTIVOS.includes(iso)){ cls+='cal-festivo'; label='Festivo'; }
+    else if(VOB25.includes(iso)){ cls+='cal-festivo'; label='VOB25'; }
+    else if(COMIENZOS.includes(iso)){ cls+='cal-comienzo'; label='Comienzo de mes'; }
+    else if(CIERRES.includes(iso)){ cls+='cal-cierre'; label='Cierre de mes'; }
+    else if(calIsWeekend(date)){ cls+='cal-weekend'; label='Fin de semana'; }
+    else{ cls+='cal-labor'; label='Laborable'; }
+    if(calIsToday(date)){ cls+=' cal-today'; label+=' · Hoy'; }
+    html+=`<div class="${cls}" title="${label}">${d}</div>`;
   }
   document.getElementById('cal-grid').innerHTML=html;
 
@@ -1184,7 +1185,7 @@ function renderCalendar(){
 
 function renderCalCounters(year){
   const now=new Date();
-  const monthTotal=MONTH_LABOR_DAYS[calMonth];
+  const monthTotal=LABORABLES[calMonth];
   let monthElapsed;
   if(now.getFullYear()>year || (now.getFullYear()===year && now.getMonth()>calMonth)) monthElapsed=monthTotal;
   else if(now.getFullYear()<year || (now.getFullYear()===year && now.getMonth()<calMonth)) monthElapsed=0;
@@ -1195,7 +1196,7 @@ function renderCalCounters(year){
   document.getElementById('cal-mes-transc').textContent=monthElapsed;
   document.getElementById('cal-mes-rest').textContent=monthRemaining;
   document.getElementById('cal-mes-bar').style.width=(monthTotal?monthElapsed/monthTotal*100:0)+'%';
-  document.getElementById('cal-mes-cierre').textContent='Cierre de mes: día '+CIERRE_MES[calMonth];
+  document.getElementById('cal-mes-cierre').textContent='Cierre de mes: día '+isoDay(CIERRES[calMonth]);
   document.getElementById('cal-prox-festivo').textContent='Próximo festivo: '+proximoFestivo();
 
   let yearElapsed;
@@ -1203,7 +1204,7 @@ function renderCalCounters(year){
   else if(now.getFullYear()<year) yearElapsed=0;
   else{
     yearElapsed=0;
-    for(let m=0;m<now.getMonth();m++) yearElapsed+=MONTH_LABOR_DAYS[m];
+    for(let m=0;m<now.getMonth();m++) yearElapsed+=LABORABLES[m];
     yearElapsed+=laborDaysElapsedInMonth(year, now.getMonth(), now.getDate());
   }
   const yearRemaining=YEAR_LABOR_TOTAL-yearElapsed;
