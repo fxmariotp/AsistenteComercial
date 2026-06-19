@@ -1331,8 +1331,218 @@ hr {
     display: block;
   }
 }
+
+/* ── LOGIN OVERLAY ── */
+#login-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+#login-container.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+.login-card {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 20px;
+  padding: 40px 32px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  text-align: center;
+  animation: loginAppear 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes loginAppear {
+  from { opacity: 0; transform: translateY(20px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+.login-logo {
+  width: 54px;
+  height: 54px;
+  background: linear-gradient(135deg, var(--green) 0%, var(--green2) 100%);
+  border-radius: 16px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  box-shadow: 0 8px 24px rgba(16, 185, 129, 0.3);
+}
+.login-logo svg {
+  width: 26px;
+  height: 26px;
+  color: #fff;
+}
+.login-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff;
+  letter-spacing: -0.5px;
+  margin-bottom: 6px;
+}
+.login-sub {
+  font-size: 14px;
+  color: #94a3b8;
+  margin-bottom: 28px;
+}
+.login-field {
+  margin-bottom: 16px;
+}
+.login-field input {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1.5px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--rs);
+  font-size: 15px;
+  background: rgba(255, 255, 255, 0.05);
+  color: #fff;
+  outline: none;
+  text-align: center;
+  letter-spacing: 0.5px;
+  transition: all 0.2s;
+}
+.login-field input:focus {
+  border-color: var(--green2);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.2);
+}
+.login-field input::placeholder {
+  color: #64748b;
+  letter-spacing: 0px;
+}
+.login-error {
+  color: #ef4444;
+  font-size: 13px;
+  margin-top: 12px;
+  font-weight: 600;
+  min-height: 20px;
+}
+
+/* ── DASHBOARD VIEW ── */
+.db-header {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 28px 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px -2px rgba(0,0,0,.015);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.db-welcome {
+  flex: 1;
+}
+.db-welcome h1 {
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--text);
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+.db-welcome p {
+  font-size: 14px;
+  color: var(--t2);
+}
+.db-clock {
+  text-align: right;
+  background: #f1f5f9;
+  border-radius: 12px;
+  padding: 10px 18px;
+  border: 1px solid var(--border);
+  min-width: 220px;
+}
+.db-clock-time {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  font-family: monospace;
+}
+.db-clock-date {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--t2);
+  text-transform: capitalize;
+  margin-top: 2px;
+}
+.db-logout-btn {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 13.5px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: underline;
+  padding: 4px 8px;
+}
+.db-logout-btn:hover {
+  opacity: 0.8;
+}
+
+/* ── NEURAL NET CARD ── */
+.neural-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  box-shadow: 0 4px 20px -2px rgba(0,0,0,.015);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.neural-card-header {
+  padding: 20px 28px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.neural-card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--text);
+  letter-spacing: -0.2px;
+}
+.neural-canvas-container {
+  width: 100%;
+  height: 520px;
+  background: radial-gradient(circle at center, #0f172a 0%, #090d16 100%);
+  position: relative;
+}
 </style></head>
 <body>
+
+<!-- ── LOGIN SCREEN OVERLAY ── -->
+<div id="login-container">
+  <div class="login-card">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+    </div>
+    <h2 class="login-title">Acceso Comercial</h2>
+    <p class="login-sub">Introduce tu DNI para iniciar sesión</p>
+    <div class="login-field">
+      <input type="text" id="login-dni" placeholder="Escribe tu DNI (p. ej. 12345678A)" autocomplete="off">
+    </div>
+    <button class="btn-primary" id="login-submit" onclick="attemptLogin()" style="width: 100%; height: 46px; margin-top: 8px;">Acceder</button>
+    <div class="login-error" id="login-error-msg"></div>
+  </div>
+</div>
+
 <div class="app">
 
 <!-- ══════════ SIDEBAR ══════════ -->
@@ -1346,10 +1556,13 @@ hr {
   </div>
   <div class="nav-area">
     <div class="nav-section-label">Herramientas</div>
-    <button class="nav-btn active" onclick="showPanel(&#39;scripts&#39;,this)">
+    <button class="nav-btn active" id="btn-nav-dashboard" onclick="showPanel('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+      Inicio (Dashboard)
+    </button>
+    <button class="nav-btn" id="btn-nav-scripts" onclick="showPanel('scripts',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
       Scripts verificación
-      <span class="nav-dot" style="background:#4ade80"></span>
     </button>
     <button class="nav-btn" onclick="showPanel(&#39;condiciones&#39;,this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
@@ -1392,8 +1605,35 @@ hr {
 
   <div class="content">
 
+    <!-- ══════ DASHBOARD ══════ -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="db-header">
+        <div class="db-welcome">
+          <h1 id="db-welcome-greeting">¡Hola!</h1>
+          <p>Bienvenido al Panel Comercial de Evaria Solar. Le atiende hoy <strong id="db-agent-name">...</strong></p>
+        </div>
+        <div class="db-clock">
+          <div class="db-clock-time" id="db-clock-time">00:00:00</div>
+          <div class="db-clock-date" id="db-clock-date">Cargando fecha...</div>
+        </div>
+      </div>
+
+      <div class="neural-card">
+        <div class="neural-card-header">
+          <div class="neural-card-title">🔌 Red Neural de Navegación del Asistente</div>
+          <button class="db-logout-btn" onclick="logout()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+            Cerrar sesión (Salir)
+          </button>
+        </div>
+        <div class="neural-canvas-container">
+          <canvas id="neural-net-canvas"></canvas>
+        </div>
+      </div>
+    </div>
+
     <!-- ══════ SCRIPTS ══════ -->
-    <div class="panel active" id="panel-scripts">
+    <div class="panel" id="panel-scripts">
       <div class="cia-tabs">
         <button class="ctab active" id="ctab-iberdrola" onclick="switchCia(&#39;iberdrola&#39;)" style="border-color:#008B3C;color:#008B3C"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
         <button class="ctab" id="ctab-naturgy" onclick="switchCia(&#39;naturgy&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
@@ -1511,7 +1751,7 @@ hr {
 
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#E85D3A"></span>Apertura</div>
-            <p class="stxt">Buenos días/tardes, mi nombre es <span class="blank"></span> y le llamo de <strong>EVARIA SOLAR empresa colaboradora de Naturgy Clientes S.A.U.</strong> Le indico que, por motivos de calidad, la llamada está siendo grabada. ¿Es usted el Sr./Sra. <span class="blank"></span>? <span class="ry">✓ CLIENTE: SÍ</span></p>
+            <p class="stxt">Buenos días/tardes, mi nombre es <span class="blank agent-name-placeholder"></span> y le llamo de <strong>EVARIA SOLAR empresa colaboradora de Naturgy Clientes S.A.U.</strong> Le indico que, por motivos de calidad, la llamada está siendo grabada. ¿Es usted el Sr./Sra. <span class="blank"></span>? <span class="ry">✓ CLIENTE: SÍ</span></p>
             <p class="stxt">Le llamamos porque recientemente contrató con Naturgy Clientes S.A.U. y queremos comprobar que la contratación se realizó correctamente. Sus datos personales se han obtenido cumpliendo con los requisitos establecidos en el artículo 6.1.A del RGPD. Vamos a realizar un repaso. ¿Acudió Usted a un establecimiento comercial ubicado en <strong id="naturgy-loc-inline" style="color:#E85D3A">[selecciona provincia arriba]</strong>? <span class="ry">✓ CLIENTE: SÍ</span></p>
             <p class="stxt">¿Mientras estaba Usted en el establecimiento indicado recibió y aceptó un mensaje <strong>SMS/WhatsApp</strong> <em>(elegir lo que corresponda)</em> con un enlace al contrato y las condiciones de la oferta, confirmando así su contratación con Naturgy Clientes S.A.U.? <span class="ry">✓ CLIENTE: SÍ</span></p>
           </div>
@@ -1571,7 +1811,7 @@ hr {
 
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#E85D3A"></span>Apertura</div>
-            <p class="stxt">Buenos días/tardes, mi nombre es <span class="blank"></span> y le llamo de <strong>EVARIA SOLAR empresa colaboradora de Naturgy Clientes S.A.U.</strong> ¿Es usted el Sr./Sra. <span class="blank"></span>? <span class="ry">✓ CLIENTE: SÍ</span></p>
+            <p class="stxt">Buenos días/tardes, mi nombre es <span class="blank agent-name-placeholder"></span> y le llamo de <strong>EVARIA SOLAR empresa colaboradora de Naturgy Clientes S.A.U.</strong> ¿Es usted el Sr./Sra. <span class="blank"></span>? <span class="ry">✓ CLIENTE: SÍ</span></p>
             <p class="stxt">Encantado/a de saludarle. Le informo que, en cumplimiento de la normativa de la RGPD, esta conversación va a ser grabada para garantizar su seguridad, así como la calidad del servicio.</p>
             <p class="stxt">El motivo de la llamada es porque nos consta que ha solicitado recientemente un cambio de comercializadora con fecha <span id="pymes-fecha" style="display:inline-block;border-bottom:2px solid #E85D3A;padding:0 6px;font-weight:700;color:#E85D3A;min-width:100px;text-align:center">25/05/2026</span> a <strong>Naturgy Iberia</strong>. ¿Es correcto? <span class="ry">✓ CLIENTE: SÍ</span></p>
             <p class="stxt">Nos consta que usted ha recibido un mensaje <strong>SMS</strong> con un enlace al contrato y las condiciones de la oferta y las ha aceptado. ¿Es correcto? <span class="ry">✓ CLIENTE: SÍ</span></p>
@@ -1647,7 +1887,7 @@ hr {
 
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#00A8E0"></span>Apertura</div>
-            <p class="stxt">Buenos días/tardes, mi nombre es <span class="blank"></span> y le llamo de parte de <strong>Endesa</strong>. Es una llamada breve de bienvenida sujeta a grabación. ¿Hablo con <span class="blank blg"></span>?</p>
+            <p class="stxt">Buenos días/tardes, mi nombre es <span class="blank agent-name-placeholder"></span> y le llamo de parte de <strong>Endesa</strong>. Es una llamada breve de bienvenida sujeta a grabación. ¿Hablo con <span class="blank blg"></span>?</p>
             <p class="stxt">Recientemente se registró una contratación en uno de nuestros puntos de venta para su suministro de <span class="blank"></span> situado en <span class="blank blg"></span>, y queríamos confirmar que la venta ha sido realizada con usted presente.</p>
           </div>
 
@@ -1688,7 +1928,7 @@ hr {
         <div class="script-big-card">
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#E30613"></span>Apertura</div>
-            <p class="stxt">Buenas tardes, mi nombre es <span class="blank blg"></span> y le llamo de <strong>RENOSUR, empresa colaboradora de GANA ENERGÍA</strong>. ¿Me puede indicar su nombre? <span class="blank blg"></span> Encantado de saludarle Don/Doña <span class="blank blg"></span>. Le indico que, por motivos de calidad, esta llamada está siendo grabada hoy <span id="gana-fecha" style="display:inline-block;border-bottom:2px solid var(--green2);padding:0 6px;font-weight:700;color:var(--green);min-width:90px;text-align:center">25/05/2026</span> a las <span id="gana-hora" style="display:inline-block;border-bottom:2px solid var(--green2);padding:0 6px;font-weight:700;color:var(--green);min-width:55px;text-align:center">15:23</span> horas.</p>
+            <p class="stxt">Buenas tardes, mi nombre es <span class="blank blg agent-name-placeholder"></span> y le llamo de <strong>RENOSUR, empresa colaboradora de GANA ENERGÍA</strong>. ¿Me puede indicar su nombre? <span class="blank blg"></span> Encantado de saludarle Don/Doña <span class="blank blg"></span>. Le indico que, por motivos de calidad, esta llamada está siendo grabada hoy <span id="gana-fecha" style="display:inline-block;border-bottom:2px solid var(--green2);padding:0 6px;font-weight:700;color:var(--green);min-width:90px;text-align:center">25/05/2026</span> a las <span id="gana-hora" style="display:inline-block;border-bottom:2px solid var(--green2);padding:0 6px;font-weight:700;color:var(--green);min-width:55px;text-align:center">15:23</span> horas.</p>
             <p class="stxt">Queremos explicarle una nueva oferta para la energía de su hogar que creemos que puede ser de su interés. ¿Me permite unos minutos? <strong>(CLIENTE DEBE RESPONDER SÍ)</strong></p>
           </div>
           <div class="script-section">
@@ -1989,6 +2229,7 @@ let CC = {
 let activeCias = {iberdrola:true, naturgy:true, endesa:true, gana:true, gana_ind:true};
 
 const PANELS = {
+  dashboard:   {title:'Inicio', sub:'Panel de control del comercial', color:'#6366f1', icon:'<rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect>'},
   scripts:     {title:'Scripts de verificación', sub:'Selecciona la compañía y sigue el guión paso a paso', color:'#1a7a3c', icon:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>'},
   condiciones: {title:'Condiciones y tarifas',   sub:'Precios de más barato a más caro · PVP 2026', color:'#0d5c9e', icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
   comparativa: {title:'Comparativa de factura',  sub:'Calcula y ajusta la oferta para el cliente', color:'#e07b00', icon:'<rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/>'},
@@ -2216,6 +2457,7 @@ function showPanel(id, btn){
   const wrap=document.getElementById('topbar-icon-wrap');
   wrap.style.background=p.color+'22';
   document.getElementById('topbar-icon').style.color=p.color;
+  document.getElementById('topbar-icon').innerHTML=p.icon;
   document.getElementById('print-btn').style.display=id==='comparativa'?'inline-flex':'none';
   if(id==='condiciones') renderCondiciones();
   if(id==='archivos') renderAdmin();
@@ -2496,6 +2738,349 @@ function updateEndesa(){
   document.getElementById('endesa-loc-ppnn').textContent = centro ? '— ' + centro : '';
 }
 
+// ── BASE DE DATOS DE COMERCIALES (DNI -> NOMBRE) ──
+const COMERCIALES = {
+  "20102738W": "ADRIAN ROJAS ROMERO",
+  "47539234M": "ANA ROCIO GALERA MORILLO",
+  "28727453Q": "BEGOÑA CABANILLAS PIQUERO",
+  "47269867Z": "CHRISTIAN CABRERA MARQUEZ",
+  "77976681B": "CLARA TORREÑO RUIZ",
+  "28818524F": "CRISTINA SANTOS LARIOS",
+  "77927459D": "FRANCISCO JOSE VAZQUEZ FERNANDEZ",
+  "77860623B": "FRANCISCO MORENTE",
+  "45812286N": "ISMAEL MILLAN GALLARDO",
+  "47269866J": "JOSE MIGUEL CABRERA MARQUEZ",
+  "51997096F": "MANUELA SALAZAR CORTES",
+  "29537747C": "MARINA MARTINEZ DE LA ROSA",
+  "77822813J": "MARIO TIBURCIO PORRAS",
+  "30369873Y": "MERCEDES TERRON DIEZ",
+  "77843286Q": "MIGUEL HERNANDEZ JIMÉNEZ",
+  "53283415M": "MÓNICA CEJUDO HIDALGO",
+  "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES"
+};
+
+let currentAgentDni = null;
+let currentAgentName = "";
+
+// ── AUTENTICACIÓN Y SESIONES ──
+function checkSession() {
+  const dni = localStorage.getItem('comercial_dni');
+  const name = localStorage.getItem('comercial_nombre');
+  if (dni && name && COMERCIALES[dni] === name) {
+    currentAgentDni = dni;
+    currentAgentName = name;
+    document.getElementById('login-container').classList.add('hidden');
+    onLoginSuccess();
+  } else {
+    document.getElementById('login-container').classList.remove('hidden');
+    document.getElementById('login-dni').focus();
+  }
+}
+
+function attemptLogin() {
+  const input = document.getElementById('login-dni').value;
+  const dni = input.trim().toUpperCase();
+  const name = COMERCIALES[dni];
+  
+  if (name) {
+    localStorage.setItem('comercial_dni', dni);
+    localStorage.setItem('comercial_nombre', name);
+    currentAgentDni = dni;
+    currentAgentName = name;
+    document.getElementById('login-container').classList.add('hidden');
+    document.getElementById('login-error-msg').textContent = "";
+    onLoginSuccess();
+  } else {
+    document.getElementById('login-error-msg').textContent = "El DNI ingresado no está registrado.";
+  }
+}
+
+function logout() {
+  localStorage.removeItem('comercial_dni');
+  localStorage.removeItem('comercial_nombre');
+  currentAgentDni = null;
+  currentAgentName = "";
+  document.getElementById('login-dni').value = "";
+  document.getElementById('login-container').classList.remove('hidden');
+  document.getElementById('login-dni').focus();
+}
+
+function onLoginSuccess() {
+  // 1. Mostrar nombre en el saludo del Dashboard
+  document.getElementById('db-agent-name').textContent = currentAgentName;
+  
+  // 2. Rellenar los placeholders de los guiones
+  document.querySelectorAll('.agent-name-placeholder').forEach(el => {
+    el.textContent = currentAgentName;
+  });
+  
+  // 3. Actualizar saludo dinámico (Buenos días/tardes/noches)
+  updateGreeting();
+  
+  // 4. Iniciar/Reiniciar Canvas Neural
+  initNeuralNet();
+  
+  // 5. Ir a dashboard
+  showPanel('dashboard', document.getElementById('btn-nav-dashboard'));
+}
+
+function updateGreeting() {
+  const hour = new Date().getHours();
+  let saludo = "Buenos días";
+  if (hour >= 12 && hour < 20) saludo = "Buenas tardes";
+  else if (hour >= 20 || hour < 6) saludo = "Buenas noches";
+  
+  // Extraer primer nombre en caso de compuestos o simples
+  const firstName = currentAgentName.split(' ')[0];
+  document.getElementById('db-welcome-greeting').textContent = `¡${saludo}, ${firstName}!`;
+}
+
+// ── RED NEURAL DE NAVEGACIÓN (CANVAS) ──
+let nodes = [];
+let connections = [];
+let particles = [];
+let mouse = { x: null, y: null, active: false };
+
+function initNeuralNet() {
+  const canvas = document.getElementById('neural-net-canvas');
+  if (!canvas) return;
+  
+  const ctx = canvas.getContext('2d');
+  
+  function resizeCanvas() {
+    const container = canvas.parentNode;
+    canvas.width = container.clientWidth;
+    canvas.height = container.clientHeight;
+    
+    // Reposicionar nodos tras reajuste
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+    const radius = Math.min(canvas.width, canvas.height) * 0.32;
+    
+    nodes.forEach((n, idx) => {
+      const angle = (idx * 2 * Math.PI) / nodes.length - Math.PI / 2;
+      n.baseX = centerX + Math.cos(angle) * radius;
+      n.baseY = centerY + Math.sin(angle) * radius;
+    });
+  }
+  
+  const config = [
+    { id: 'scripts', label: 'Scripts de verificación', sub: 'Guiones paso a paso', color: '#10b981' },
+    { id: 'condiciones', label: 'Condiciones y tarifas', sub: 'Comparar tarifas PVP', color: '#6366f1' },
+    { id: 'comparativa', label: 'Comparativa de factura', sub: 'Calculadora de ofertas', color: '#f59e0b' },
+    { id: 'calendario', label: 'Calendario laboral', sub: 'Días hábiles y cierres', color: '#0ea5e9' },
+    { id: 'ranking', label: 'Ranking de ventas', sub: 'Rendimiento comercial', color: '#f97316' }
+  ];
+  
+  const centerX = canvas.width / 2 || 400;
+  const centerY = canvas.height / 2 || 250;
+  const radius = 150;
+  
+  nodes = config.map((c, idx) => {
+    const angle = (idx * 2 * Math.PI) / config.length - Math.PI / 2;
+    return {
+      id: c.id,
+      label: c.label,
+      sub: c.sub,
+      color: c.color,
+      baseX: centerX + Math.cos(angle) * radius,
+      baseY: centerY + Math.sin(angle) * radius,
+      x: centerX + Math.cos(angle) * radius,
+      y: centerY + Math.sin(angle) * radius,
+      radius: 46,
+      hover: false,
+      scale: 1,
+      pulse: Math.random() * Math.PI
+    };
+  });
+  
+  connections = [];
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      connections.push({ from: nodes[i], to: nodes[j] });
+    }
+  }
+  
+  particles = [];
+  for (let i = 0; i < 20; i++) {
+    particles.push(createNewParticle());
+  }
+  
+  function createNewParticle() {
+    const conn = connections[Math.floor(Math.random() * connections.length)];
+    return {
+      from: conn.from,
+      to: conn.to,
+      progress: Math.random(),
+      speed: 0.003 + Math.random() * 0.005,
+      color: conn.to.color
+    };
+  }
+  
+  // Forzar resize inicial correcto
+  resizeCanvas();
+  window.addEventListener('resize', resizeCanvas);
+  
+  canvas.onmousemove = (e) => {
+    const rect = canvas.getBoundingClientRect();
+    mouse.x = e.clientX - rect.left;
+    mouse.y = e.clientY - rect.top;
+    mouse.active = true;
+  };
+  
+  canvas.onmouseleave = () => {
+    mouse.x = null;
+    mouse.y = null;
+    mouse.active = false;
+    canvas.style.cursor = 'default';
+  };
+  
+  canvas.onclick = (e) => {
+    if (mouse.x === null || mouse.y === null) return;
+    nodes.forEach(n => {
+      const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
+      if (d < n.radius * n.scale) {
+        // Redirigir al panel correspondiente
+        const navBtn = document.getElementById('btn-nav-' + n.id) || document.querySelector(`[onclick*="showPanel('${n.id}'"]`);
+        showPanel(n.id, navBtn);
+      }
+    });
+  };
+  
+  let animId;
+  function animate() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    
+    const now = Date.now();
+    
+    // Dibujar conexiones neuronales
+    ctx.lineWidth = 1.5;
+    connections.forEach(conn => {
+      const grad = ctx.createLinearGradient(conn.from.x, conn.from.y, conn.to.x, conn.to.y);
+      grad.addColorStop(0, conn.from.color + '22');
+      grad.addColorStop(1, conn.to.color + '22');
+      ctx.strokeStyle = grad;
+      ctx.beginPath();
+      ctx.moveTo(conn.from.x, conn.from.y);
+      ctx.lineTo(conn.to.x, conn.to.y);
+      ctx.stroke();
+    });
+    
+    // Dibujar impulsos eléctricos
+    particles.forEach((p, idx) => {
+      p.progress += p.speed;
+      if (p.progress >= 1) {
+        particles[idx] = createNewParticle();
+        p = particles[idx];
+      }
+      
+      const x = p.from.x + (p.to.x - p.from.x) * p.progress;
+      const y = p.from.y + (p.to.y - p.from.y) * p.progress;
+      
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(x, y, 3, 0, 2 * Math.PI);
+      ctx.shadowColor = p.color;
+      ctx.shadowBlur = 10;
+      ctx.fill();
+      ctx.shadowBlur = 0;
+    });
+    
+    // Dibujar nodos de red
+    let anyHover = false;
+    nodes.forEach(n => {
+      const driftX = Math.sin(now * 0.001 + n.pulse) * 8;
+      const driftY = Math.cos(now * 0.0012 + n.pulse) * 8;
+      
+      let targetX = n.baseX + driftX;
+      let targetY = n.baseY + driftY;
+      
+      if (mouse.active) {
+        const distMouse = Math.hypot(mouse.x - n.x, mouse.y - n.y);
+        if (distMouse < 180) {
+          const angle = Math.atan2(n.y - mouse.y, n.x - mouse.x);
+          const force = (180 - distMouse) * 0.15;
+          targetX += Math.cos(angle) * force;
+          targetY += Math.sin(angle) * force;
+        }
+      }
+      
+      n.x += (targetX - n.x) * 0.1;
+      n.y += (targetY - n.y) * 0.1;
+      
+      let isHover = false;
+      if (mouse.active) {
+        const distMouse = Math.hypot(mouse.x - n.x, mouse.y - n.y);
+        if (distMouse < n.radius) {
+          isHover = true;
+          anyHover = true;
+        }
+      }
+      
+      n.hover = isHover;
+      n.scale += ((isHover ? 1.15 : 1) - n.scale) * 0.2;
+      n.pulse += 0.02;
+      
+      ctx.strokeStyle = n.color + '44';
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius * n.scale + (Math.sin(n.pulse * 2) * 4), 0, 2 * Math.PI);
+      ctx.stroke();
+      
+      const nodeGrad = ctx.createRadialGradient(n.x, n.y, 1, n.x, n.y, n.radius * n.scale);
+      nodeGrad.addColorStop(0, '#1e293b');
+      nodeGrad.addColorStop(0.8, '#0f172a');
+      nodeGrad.addColorStop(1, n.color);
+      
+      ctx.fillStyle = nodeGrad;
+      ctx.strokeStyle = n.color;
+      ctx.lineWidth = 3;
+      
+      ctx.shadowColor = n.color;
+      ctx.shadowBlur = n.hover ? 20 : 8;
+      
+      ctx.beginPath();
+      ctx.arc(n.x, n.y, n.radius * n.scale, 0, 2 * Math.PI);
+      ctx.fill();
+      ctx.stroke();
+      
+      ctx.shadowBlur = 0;
+      
+      // Etiquetas de los nodos
+      ctx.fillStyle = '#ffffff';
+      ctx.font = `600 ${n.hover ? '13px' : '12px'} Outfit, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      
+      const words = n.label.split(' ');
+      if (words.length > 2) {
+        ctx.fillText(words.slice(0, 2).join(' '), n.x, n.y - 7);
+        ctx.fillText(words.slice(2).join(' '), n.x, n.y + 7);
+      } else if (words.length === 2) {
+        ctx.fillText(words[0], n.x, n.y - 7);
+        ctx.fillText(words[1], n.x, n.y + 7);
+      } else {
+        ctx.fillText(n.label, n.x, n.y);
+      }
+      
+      if (n.hover) {
+        ctx.fillStyle = '#94a3b8';
+        ctx.font = '500 11px Outfit, sans-serif';
+        ctx.fillText(n.sub, n.x, n.y + n.radius * n.scale + 16);
+      }
+    });
+    
+    canvas.style.cursor = anyHover ? 'pointer' : 'default';
+    animId = requestAnimationFrame(animate);
+  }
+  
+  if (canvas.dataset.animating) {
+    cancelAnimationFrame(parseInt(canvas.dataset.animating));
+  }
+  animate();
+  canvas.dataset.animating = animId;
+}
+
 // ── RELOJ EN TIEMPO REAL ──
 function updateClock(){
   const now = new Date();
@@ -2506,18 +3091,35 @@ function updateClock(){
   const elPyFecha = document.getElementById('pymes-fecha');
   const elGaFecha = document.getElementById('gana-fecha');
   const elGaHora  = document.getElementById('gana-hora');
+  
   if(elIbFecha) elIbFecha.textContent = fecha;
   if(elIbHora)  elIbHora.textContent  = hora;
   if(elPyFecha) elPyFecha.textContent = fecha;
   if(elGaFecha) elGaFecha.textContent = fecha;
   if(elGaHora)  elGaHora.textContent  = hora;
+  
+  // Reloj digital en Dashboard
+  const elDbTime = document.getElementById('db-clock-time');
+  const elDbDate = document.getElementById('db-clock-date');
+  if(elDbTime) elDbTime.textContent = now.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
+  if(elDbDate) elDbDate.textContent = now.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
 }
 updateClock();
-setInterval(updateClock, 10000);
+setInterval(updateClock, 1000);
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('today-date').textContent=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
+  
+  // DNI enter trigger
+  const inputDni = document.getElementById('login-dni');
+  if (inputDni) {
+    inputDni.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') attemptLogin();
+    });
+  }
+  
+  checkSession();
 });
 </script>
 
