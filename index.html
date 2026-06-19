@@ -1457,12 +1457,343 @@ hr {
   background: radial-gradient(circle at center, #0f172a 0%, #090d16 100%);
   position: relative;
 }
+
+/* On desktop, hide sidebar if active panel is dashboard */
+.app.dashboard-active #sidebar {
+  display: none !important;
+}
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  margin-bottom: 12px;
+  border-radius: var(--rs);
+}
+
+.menu-toggle-btn {
+  display: none;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--rs);
+  color: var(--text);
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.04);
+  margin-right: 12px;
+  transition: all 0.2s;
+  outline: none;
+}
+.menu-toggle-btn:hover {
+  background: var(--bg);
+  border-color: var(--border-hover);
+}
+
+/* ── HUB AND SPOKE DASHBOARD NAVEGACION ── */
+.hub-container {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  background: var(--surface);
+  border-radius: var(--r);
+  overflow: hidden;
+  border: 1px solid var(--border);
+  margin-top: 12px;
+  box-shadow: 0 4px 20px -2px rgba(0,0,0,.015);
+}
+.hub-card {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10;
+  width: 250px;
+  background: var(--surface);
+  border: 2px solid var(--green2);
+  border-radius: var(--r);
+  padding: 24px 20px;
+  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.12);
+  text-align: center;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.hub-card:hover {
+  box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2);
+  transform: translate(-50%, -52%);
+}
+.hub-icon {
+  width: 48px;
+  height: 48px;
+  background: var(--green-bg);
+  color: var(--green);
+  border-radius: 12px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 12px;
+  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.1);
+}
+.hub-icon svg {
+  width: 24px;
+  height: 24px;
+}
+.hub-title {
+  font-size: 17px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+.hub-sub {
+  font-size: 12.5px;
+  color: var(--t2);
+  margin-bottom: 14px;
+}
+
+.spoke-card {
+  position: absolute;
+  z-index: 10;
+  width: 230px;
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--rs);
+  padding: 14px 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,.03);
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.spoke-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-color);
+  box-shadow: 0 8px 24px var(--card-shadow);
+}
+.spoke-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.spoke-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--spoke-bg);
+  color: var(--card-color);
+  flex-shrink: 0;
+}
+.spoke-icon svg {
+  width: 16px;
+  height: 16px;
+}
+.spoke-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text);
+}
+.spoke-desc {
+  font-size: 12px;
+  color: var(--t2);
+  line-height: 1.4;
+}
+
+/* Individual card colors using CSS variables */
+.spoke-card.sp-scripts {
+  --card-color: #10b981; /* Emerald */
+  --card-shadow: rgba(16, 185, 129, 0.12);
+  --spoke-bg: #ecfdf5;
+  top: 8%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.spoke-card.sp-condiciones {
+  --card-color: #6366f1; /* Indigo */
+  --card-shadow: rgba(99, 102, 241, 0.12);
+  --spoke-bg: #e0e7ff;
+  top: 30%;
+  right: 6%;
+}
+.spoke-card.sp-comparativa {
+  --card-color: #f59e0b; /* Amber */
+  --card-shadow: rgba(245, 158, 11, 0.12);
+  --spoke-bg: #fef3c7;
+  bottom: 8%;
+  right: 16%;
+}
+.spoke-card.sp-calendario {
+  --card-color: #0ea5e9; /* Sky */
+  --card-shadow: rgba(14, 165, 233, 0.12);
+  --spoke-bg: #e0f2fe;
+  bottom: 8%;
+  left: 16%;
+}
+.spoke-card.sp-ranking {
+  --card-color: #f97316; /* Orange */
+  --card-shadow: rgba(249, 115, 22, 0.12);
+  --spoke-bg: #ffedd5;
+  top: 30%;
+  left: 6%;
+}
+
+@keyframes strokePulse {
+  to {
+    stroke-dashoffset: -20;
+  }
+}
+.pulse-line {
+  stroke-dasharray: 6 10;
+  animation: strokePulse 1.5s linear infinite;
+}
+
+/* ── RESPONSIVE MEDIA QUERIES ── */
+@media (max-width: 768px) {
+  .app {
+    flex-direction: column;
+    height: 100vh;
+  }
+  #sidebar {
+    position: fixed;
+    left: -250px;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  #sidebar.mobile-open {
+    transform: translateX(250px);
+  }
+  #sidebar-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(3px);
+    -webkit-backdrop-filter: blur(3px);
+    z-index: 999;
+  }
+  #sidebar-overlay.active {
+    display: block;
+  }
+
+  #main {
+    flex: 1;
+    overflow: hidden;
+  }
+  .topbar {
+    padding: 0 16px;
+    height: 64px;
+  }
+  .topbar-t {
+    font-size: 16px;
+  }
+  .topbar-s {
+    font-size: 11px;
+  }
+  .topbar-icon {
+    width: 36px;
+    height: 36px;
+  }
+  .topbar-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+  .content {
+    padding: 16px;
+  }
+  
+  .db-header {
+    padding: 20px;
+    flex-direction: column;
+    align-items: stretch;
+    text-align: center;
+    gap: 12px;
+  }
+  .db-welcome h1 {
+    font-size: 22px;
+  }
+  .db-clock {
+    text-align: center;
+    margin-top: 4px;
+    min-width: auto;
+    padding: 8px 12px;
+  }
+  
+  .hub-container {
+    height: auto !important;
+    background: transparent !important;
+    border: none !important;
+    overflow: visible !important;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px 0;
+    margin-top: 12px;
+    box-shadow: none !important;
+  }
+  .hub-card {
+    position: relative !important;
+    top: auto !important;
+    left: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    margin: 0 auto 4px !important;
+  }
+  .hub-card:hover {
+    transform: none !important;
+  }
+  .spoke-card {
+    position: relative !important;
+    top: auto !important;
+    bottom: auto !important;
+    left: auto !important;
+    right: auto !important;
+    transform: none !important;
+    width: 100% !important;
+    max-width: none !important;
+  }
+  .spoke-card:hover {
+    transform: translateY(-2px) !important;
+  }
+  #hub-svg {
+    display: none !important;
+  }
+
+  .comp-layout {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .comp-form {
+    position: static !important;
+  }
+  .cal-counters {
+    grid-template-columns: 1fr !important;
+    gap: 16px;
+  }
+  .ep-grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+  .cia-tabs {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .ctab {
+    padding: 6px 12px;
+    font-size: 13px;
+  }
+}
 </style></head>
 <body>
 
 
 
-<div class="app">
+<div id="sidebar-overlay" onclick="toggleMobileSidebar()"></div>
+<div class="app dashboard-active">
 
 <!-- ══════════ SIDEBAR ══════════ -->
 <nav id="sidebar">
@@ -1508,6 +1839,9 @@ hr {
 <div id="main">
   <div class="topbar">
     <div class="topbar-left">
+      <button class="menu-toggle-btn" onclick="toggleMobileSidebar()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;display:block;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+      </button>
       <div class="topbar-icon" id="topbar-icon-wrap">
         <svg id="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path></svg>
       </div>
@@ -1537,16 +1871,75 @@ hr {
         </div>
       </div>
 
-      <div class="neural-card">
-        <div class="neural-card-header">
-          <div class="neural-card-title">🔌 Red Neural de Navegación del Asistente</div>
-          <button class="db-logout-btn" onclick="logout()">
+      <div class="hub-container">
+        <svg id="hub-svg" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 1;"></svg>
+        
+        <!-- Center Hub -->
+        <div class="hub-card">
+          <div class="hub-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+          </div>
+          <div class="hub-title">Asistente Comercial</div>
+          <div class="hub-sub">Copiloto de Ventas</div>
+          <button class="db-logout-btn" onclick="logout()" style="justify-content:center; width:100%; margin-top:8px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
             Cerrar sesión (Salir)
           </button>
         </div>
-        <div class="neural-canvas-container">
-          <canvas id="neural-net-canvas"></canvas>
+        
+        <!-- Spoke Card 1: Scripts -->
+        <div class="spoke-card sp-scripts" onclick="showPanel('scripts', document.getElementById('btn-nav-scripts'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
+            </div>
+            <div class="spoke-title">Scripts verificación</div>
+          </div>
+          <div class="spoke-desc">Guiones legales paso a paso para Naturgy, Endesa, Gana Energía...</div>
+        </div>
+
+        <!-- Spoke Card 2: Condiciones -->
+        <div class="spoke-card sp-condiciones" onclick="showPanel('condiciones', document.querySelector('[onclick*=\'condiciones\']'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            </div>
+            <div class="spoke-title">Condiciones y tarifas</div>
+          </div>
+          <div class="spoke-desc">Consulta de tarifas oficiales PVP actualizadas para 2026.</div>
+        </div>
+
+        <!-- Spoke Card 3: Comparativa -->
+        <div class="spoke-card sp-comparativa" onclick="showPanel('comparativa', document.querySelector('[onclick*=\'comparativa\']'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
+            </div>
+            <div class="spoke-title">Comparativa factura</div>
+          </div>
+          <div class="spoke-desc">Calculadora y optimizador de ofertas con o sin mantenimientos.</div>
+        </div>
+
+        <!-- Spoke Card 4: Calendario -->
+        <div class="spoke-card sp-calendario" onclick="showPanel('calendario', document.querySelector('[onclick*=\'calendario\']'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <div class="spoke-title">Calendario laboral</div>
+          </div>
+          <div class="spoke-desc">Días hábiles de mes, festivos nacionales y fechas de cierre.</div>
+        </div>
+
+        <!-- Spoke Card 5: Ranking -->
+        <div class="spoke-card sp-ranking" onclick="showPanel('ranking', document.querySelector('[onclick*=\'ranking\']'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
+            </div>
+            <div class="spoke-title">Ranking de ventas</div>
+          </div>
+          <div class="spoke-desc">Tabla de rendimiento comercial de los representantes en vivo.</div>
         </div>
       </div>
     </div>
@@ -2370,6 +2763,17 @@ function showPanel(id, btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   if(btn) btn.classList.add('active');
+  
+  // Fullscreen Dashboard sidebar hiding
+  const appContainer = document.querySelector('.app');
+  if (appContainer) {
+    if (id === 'dashboard') {
+      appContainer.classList.add('dashboard-active');
+    } else {
+      appContainer.classList.remove('dashboard-active');
+    }
+  }
+  
   const p=PANELS[id];
   document.getElementById('ptitle').textContent=p.title;
   document.getElementById('psub').textContent=p.sub;
@@ -2381,6 +2785,17 @@ function showPanel(id, btn){
   if(id==='condiciones') renderCondiciones();
   if(id==='archivos') renderAdmin();
   if(id==='calendario') renderCalendar();
+  
+  // Close mobile sidebar drawer if open
+  const sidebar = document.getElementById('sidebar');
+  if (sidebar) sidebar.classList.remove('mobile-open');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (overlay) overlay.classList.remove('active');
+  
+  // Draw Hub-and-Spoke connections
+  if (id === 'dashboard') {
+    setTimeout(drawHubLines, 60);
+  }
 }
 
 function switchCia(id){
@@ -2407,6 +2822,7 @@ function renderCondiciones(){
 
     // LUZ
     html+=`<div class="cond-sub-title">Luz — Término de Energía (€/kWh)</div>
+    <div class="table-responsive">
     <table class="tariff-table"><thead><tr>
       <th>Tarifa</th><th>Precio base</th><th>Sin mantenimiento</th><th>Con mantenimiento</th><th></th>
     </tr></thead><tbody>`;
@@ -2428,18 +2844,19 @@ function renderCondiciones(){
           <td></td></tr>`;
       }
     });
-    html+=`</tbody></table>
+    html+=`</tbody></table></div>
     <div style="font-size:13px;color:var(--t3);margin-top:6px">Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} €/kW·día · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</div>`;
 
     // GAS
     html+=`<div class="cond-sub-title" style="margin-top:20px">Gas — Término Variable (€/kWh) y Término Fijo (€/día)</div>
+    <div class="table-responsive">
     <table class="tariff-table"><thead><tr>
       <th>Tarifa</th><th>TV (€/kWh)</th><th>TF (€/día)</th><th>TF (€/mes equivalente)</th>
     </tr></thead><tbody>`;
     r.tarifas_gas.forEach(t=>{
       html+=`<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(4)} €/kWh</span></td><td>${t.tf.toFixed(4)} €/día</td><td>${(t.tf*30).toFixed(2)} €/mes</td></tr>`;
     });
-    html+=`</tbody></table></div>`;
+    html+=`</tbody></table></div></div>`;
   });
   document.getElementById('cond-render').innerHTML=html;
 }
@@ -2609,6 +3026,7 @@ function renderSummary(results, actual){
   document.getElementById('comp-summary').innerHTML=`<div class="sum-card">
     <div class="sum-card-title">Resumen comparativo</div>
     ${actual>0?`<div style="font-size:14px;color:var(--t2);margin-bottom:14px">Factura actual: <strong>${f2(actual)} €/mes</strong></div>`:''}
+    <div class="table-responsive">
     <table class="sum-table"><thead><tr>
       <th>Compañía</th><th style="text-align:right">Total/mes</th>
       <th style="text-align:right">Ahorro/mes</th><th style="text-align:right">Ahorro/año</th>
@@ -2622,7 +3040,7 @@ function renderSummary(results, actual){
         <td style="text-align:right;font-weight:700;color:${ah!==null?(pos?'var(--green)':'var(--red)'):'inherit'}">${ah!==null?(pos?'−':'+')+f2(Math.abs(ah*12))+' €':'—'}</td>
       </tr>`;
     }).join('')}
-    </tbody></table></div>`;
+    </tbody></table></div></div>`;
 }
 
 function updCC(cia,f,v){ CC[cia][f]=parseFloat(v)||0; calcComp(); }
@@ -2732,250 +3150,65 @@ function updateGreeting() {
   document.getElementById('db-welcome-greeting').textContent = `¡${saludo}, ${firstName}!`;
 }
 
-// ── RED NEURAL DE NAVEGACIÓN (CANVAS) ──
-let nodes = [];
-let connections = [];
-let particles = [];
-let mouse = { x: null, y: null, active: false };
+// ── RED NEURAL DE NAVEGACIÓN (SVG HUB-AND-SPOKE) ──
+function drawHubLines() {
+  const svg = document.getElementById('hub-svg');
+  if (!svg) return;
+  svg.innerHTML = ''; // Clear existing paths
+  
+  const hub = document.querySelector('.hub-card');
+  const spokes = document.querySelectorAll('.spoke-card');
+  if (!hub || spokes.length === 0) return;
+  
+  const containerRect = svg.getBoundingClientRect();
+  const hubRect = hub.getBoundingClientRect();
+  const hubX = hubRect.left - containerRect.left + hubRect.width / 2;
+  const hubY = hubRect.top - containerRect.top + hubRect.height / 2;
+  
+  spokes.forEach(spoke => {
+    const spokeRect = spoke.getBoundingClientRect();
+    const spokeX = spokeRect.left - containerRect.left + spokeRect.width / 2;
+    const spokeY = spokeRect.top - containerRect.top + spokeRect.height / 2;
+    
+    // Base line
+    const baseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    baseLine.setAttribute('x1', hubX);
+    baseLine.setAttribute('y1', hubY);
+    baseLine.setAttribute('x2', spokeX);
+    baseLine.setAttribute('y2', spokeY);
+    baseLine.setAttribute('stroke', '#cbd5e1'); // Slate-300
+    baseLine.setAttribute('stroke-width', '1.5');
+    svg.appendChild(baseLine);
+    
+    // Pulse line
+    const cardColor = getComputedStyle(spoke).getPropertyValue('--card-color').trim() || '#10b981';
+    const pulseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+    pulseLine.setAttribute('x1', hubX);
+    pulseLine.setAttribute('y1', hubY);
+    pulseLine.setAttribute('x2', spokeX);
+    pulseLine.setAttribute('y2', spokeY);
+    pulseLine.setAttribute('stroke', cardColor);
+    pulseLine.setAttribute('stroke-width', '1.5');
+    pulseLine.classList.add('pulse-line');
+    svg.appendChild(pulseLine);
+  });
+}
 
 function initNeuralNet() {
-  const canvas = document.getElementById('neural-net-canvas');
-  if (!canvas) return;
-  
-  const ctx = canvas.getContext('2d');
-  
-  function resizeCanvas() {
-    const container = canvas.parentNode;
-    canvas.width = container.clientWidth;
-    canvas.height = container.clientHeight;
-    
-    // Reposicionar nodos tras reajuste
-    const centerX = canvas.width / 2;
-    const centerY = canvas.height / 2;
-    const radius = Math.min(canvas.width, canvas.height) * 0.32;
-    
-    nodes.forEach((n, idx) => {
-      const angle = (idx * 2 * Math.PI) / nodes.length - Math.PI / 2;
-      n.baseX = centerX + Math.cos(angle) * radius;
-      n.baseY = centerY + Math.sin(angle) * radius;
-    });
+  setTimeout(drawHubLines, 100);
+}
+
+// Bind resize and load events for the SVG paths
+window.addEventListener('resize', drawHubLines);
+
+// Mobile Sidebar drawer controls
+function toggleMobileSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  if (sidebar && overlay) {
+    sidebar.classList.toggle('mobile-open');
+    overlay.classList.toggle('active');
   }
-  
-  const config = [
-    { id: 'scripts', label: 'Scripts de verificación', sub: 'Guiones paso a paso', color: '#10b981' },
-    { id: 'condiciones', label: 'Condiciones y tarifas', sub: 'Comparar tarifas PVP', color: '#6366f1' },
-    { id: 'comparativa', label: 'Comparativa de factura', sub: 'Calculadora de ofertas', color: '#f59e0b' },
-    { id: 'calendario', label: 'Calendario laboral', sub: 'Días hábiles y cierres', color: '#0ea5e9' },
-    { id: 'ranking', label: 'Ranking de ventas', sub: 'Rendimiento comercial', color: '#f97316' }
-  ];
-  
-  const centerX = canvas.width / 2 || 400;
-  const centerY = canvas.height / 2 || 250;
-  const radius = 150;
-  
-  nodes = config.map((c, idx) => {
-    const angle = (idx * 2 * Math.PI) / config.length - Math.PI / 2;
-    return {
-      id: c.id,
-      label: c.label,
-      sub: c.sub,
-      color: c.color,
-      baseX: centerX + Math.cos(angle) * radius,
-      baseY: centerY + Math.sin(angle) * radius,
-      x: centerX + Math.cos(angle) * radius,
-      y: centerY + Math.sin(angle) * radius,
-      radius: 46,
-      hover: false,
-      scale: 1,
-      pulse: Math.random() * Math.PI
-    };
-  });
-  
-  connections = [];
-  for (let i = 0; i < nodes.length; i++) {
-    for (let j = i + 1; j < nodes.length; j++) {
-      connections.push({ from: nodes[i], to: nodes[j] });
-    }
-  }
-  
-  particles = [];
-  for (let i = 0; i < 20; i++) {
-    particles.push(createNewParticle());
-  }
-  
-  function createNewParticle() {
-    const conn = connections[Math.floor(Math.random() * connections.length)];
-    return {
-      from: conn.from,
-      to: conn.to,
-      progress: Math.random(),
-      speed: 0.003 + Math.random() * 0.005,
-      color: conn.to.color
-    };
-  }
-  
-  // Forzar resize inicial correcto
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
-  
-  canvas.onmousemove = (e) => {
-    const rect = canvas.getBoundingClientRect();
-    mouse.x = e.clientX - rect.left;
-    mouse.y = e.clientY - rect.top;
-    mouse.active = true;
-  };
-  
-  canvas.onmouseleave = () => {
-    mouse.x = null;
-    mouse.y = null;
-    mouse.active = false;
-    canvas.style.cursor = 'default';
-  };
-  
-  canvas.onclick = (e) => {
-    if (mouse.x === null || mouse.y === null) return;
-    nodes.forEach(n => {
-      const d = Math.hypot(mouse.x - n.x, mouse.y - n.y);
-      if (d < n.radius * n.scale) {
-        // Redirigir al panel correspondiente
-        const navBtn = document.getElementById('btn-nav-' + n.id) || document.querySelector(`[onclick*="showPanel('${n.id}'"]`);
-        showPanel(n.id, navBtn);
-      }
-    });
-  };
-  
-  let animId;
-  function animate() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    
-    const now = Date.now();
-    
-    // Dibujar conexiones neuronales
-    ctx.lineWidth = 1.5;
-    connections.forEach(conn => {
-      const grad = ctx.createLinearGradient(conn.from.x, conn.from.y, conn.to.x, conn.to.y);
-      grad.addColorStop(0, conn.from.color + '22');
-      grad.addColorStop(1, conn.to.color + '22');
-      ctx.strokeStyle = grad;
-      ctx.beginPath();
-      ctx.moveTo(conn.from.x, conn.from.y);
-      ctx.lineTo(conn.to.x, conn.to.y);
-      ctx.stroke();
-    });
-    
-    // Dibujar impulsos eléctricos
-    particles.forEach((p, idx) => {
-      p.progress += p.speed;
-      if (p.progress >= 1) {
-        particles[idx] = createNewParticle();
-        p = particles[idx];
-      }
-      
-      const x = p.from.x + (p.to.x - p.from.x) * p.progress;
-      const y = p.from.y + (p.to.y - p.from.y) * p.progress;
-      
-      ctx.fillStyle = p.color;
-      ctx.beginPath();
-      ctx.arc(x, y, 3, 0, 2 * Math.PI);
-      ctx.shadowColor = p.color;
-      ctx.shadowBlur = 10;
-      ctx.fill();
-      ctx.shadowBlur = 0;
-    });
-    
-    // Dibujar nodos de red
-    let anyHover = false;
-    nodes.forEach(n => {
-      const driftX = Math.sin(now * 0.001 + n.pulse) * 8;
-      const driftY = Math.cos(now * 0.0012 + n.pulse) * 8;
-      
-      let targetX = n.baseX + driftX;
-      let targetY = n.baseY + driftY;
-      
-      if (mouse.active) {
-        const distMouse = Math.hypot(mouse.x - n.x, mouse.y - n.y);
-        if (distMouse < 180) {
-          const angle = Math.atan2(n.y - mouse.y, n.x - mouse.x);
-          const force = (180 - distMouse) * 0.15;
-          targetX += Math.cos(angle) * force;
-          targetY += Math.sin(angle) * force;
-        }
-      }
-      
-      n.x += (targetX - n.x) * 0.1;
-      n.y += (targetY - n.y) * 0.1;
-      
-      let isHover = false;
-      if (mouse.active) {
-        const distMouse = Math.hypot(mouse.x - n.x, mouse.y - n.y);
-        if (distMouse < n.radius) {
-          isHover = true;
-          anyHover = true;
-        }
-      }
-      
-      n.hover = isHover;
-      n.scale += ((isHover ? 1.15 : 1) - n.scale) * 0.2;
-      n.pulse += 0.02;
-      
-      ctx.strokeStyle = n.color + '44';
-      ctx.lineWidth = 1;
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.radius * n.scale + (Math.sin(n.pulse * 2) * 4), 0, 2 * Math.PI);
-      ctx.stroke();
-      
-      const nodeGrad = ctx.createRadialGradient(n.x, n.y, 1, n.x, n.y, n.radius * n.scale);
-      nodeGrad.addColorStop(0, '#1e293b');
-      nodeGrad.addColorStop(0.8, '#0f172a');
-      nodeGrad.addColorStop(1, n.color);
-      
-      ctx.fillStyle = nodeGrad;
-      ctx.strokeStyle = n.color;
-      ctx.lineWidth = 3;
-      
-      ctx.shadowColor = n.color;
-      ctx.shadowBlur = n.hover ? 20 : 8;
-      
-      ctx.beginPath();
-      ctx.arc(n.x, n.y, n.radius * n.scale, 0, 2 * Math.PI);
-      ctx.fill();
-      ctx.stroke();
-      
-      ctx.shadowBlur = 0;
-      
-      // Etiquetas de los nodos
-      ctx.fillStyle = '#ffffff';
-      ctx.font = `600 ${n.hover ? '13px' : '12px'} Outfit, sans-serif`;
-      ctx.textAlign = 'center';
-      ctx.textBaseline = 'middle';
-      
-      const words = n.label.split(' ');
-      if (words.length > 2) {
-        ctx.fillText(words.slice(0, 2).join(' '), n.x, n.y - 7);
-        ctx.fillText(words.slice(2).join(' '), n.x, n.y + 7);
-      } else if (words.length === 2) {
-        ctx.fillText(words[0], n.x, n.y - 7);
-        ctx.fillText(words[1], n.x, n.y + 7);
-      } else {
-        ctx.fillText(n.label, n.x, n.y);
-      }
-      
-      if (n.hover) {
-        ctx.fillStyle = '#94a3b8';
-        ctx.font = '500 11px Outfit, sans-serif';
-        ctx.fillText(n.sub, n.x, n.y + n.radius * n.scale + 16);
-      }
-    });
-    
-    canvas.style.cursor = anyHover ? 'pointer' : 'default';
-    animId = requestAnimationFrame(animate);
-  }
-  
-  if (canvas.dataset.animating) {
-    cancelAnimationFrame(parseInt(canvas.dataset.animating));
-  }
-  animate();
-  canvas.dataset.animating = animId;
 }
 
 // ── RELOJ EN TIEMPO REAL ──
