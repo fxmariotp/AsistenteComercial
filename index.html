@@ -932,10 +932,9 @@ hr {
 
 /* ── COMPARATIVA ── */
 .comp-layout {
-  display: grid;
-  grid-template-columns: 320px 1fr;
+  display: flex;
+  flex-direction: column;
   gap: 24px;
-  align-items: start;
 }
 
 .comp-form {
@@ -943,10 +942,38 @@ hr {
   border: 1px solid var(--border);
   border-radius: var(--r);
   padding: 24px;
-  position: sticky;
-  top: 24px;
   box-shadow: 0 4px 20px -2px rgba(0,0,0,.02), 0 2px 6px -1px rgba(0,0,0,.02);
-  z-index: 10;
+}
+
+.comp-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px 24px;
+}
+.comp-form-grid .fsec {
+  grid-column: 1 / -1;
+  margin: 14px 0 8px;
+  padding-top: 12px;
+  border-top: 1px solid var(--border);
+}
+.comp-form-grid .fsec:first-of-type {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: none;
+}
+.comp-form-grid .fgrp {
+  margin-bottom: 0;
+}
+.comp-form-grid .fgrp-checkbox {
+  grid-column: span 2;
+  margin-bottom: 0;
+}
+
+.fgrp-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
 }
 
 .comp-form-title {
@@ -1801,12 +1828,12 @@ hr {
     display: none !important;
   }
 
-  .comp-layout {
-    grid-template-columns: 1fr !important;
-    gap: 16px;
+  .comp-form-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
   }
-  .comp-form {
-    position: static !important;
+  .comp-form-grid .fgrp-checkbox {
+    grid-column: auto;
   }
   .cal-counters {
     grid-template-columns: 1fr !important;
@@ -2395,26 +2422,28 @@ hr {
             <button type="button" class="comp-toggle-btn" id="mode-gas" onclick="setCompMode('gas')">Gas</button>
             <button type="button" class="comp-toggle-btn" id="mode-dual" onclick="setCompMode('dual')">Luz + Gas</button>
           </div>
-          <div class="fsec">Período</div>
-          <div class="fgrp"><label>Días facturados</label><input type="number" id="f-dias" value="28" min="1" max="90" oninput="calcComp()"></div>
-          <div class="fsec luz-grp">Potencia contratada</div>
-          <div class="fgrp-row luz-grp">
-            <div class="fgrp"><label>P1 (kW)</label><input type="number" id="f-pot1" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
-            <div class="fgrp"><label>P2 (kW)</label><input type="number" id="f-pot2" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
-          </div>
-          <div class="fsec luz-grp">Consumo energía</div>
-          <div class="fgrp luz-grp"><label>Luz P1 (kWh)</label><input type="number" id="f-kwh1" placeholder="414" oninput="calcComp()"></div>
-          <div class="fgrp luz-grp"><label>Luz P2 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh2" placeholder="0" oninput="calcComp()"></div>
-          <div class="fgrp luz-grp"><label>Excedentes (kWh)</label><input type="number" id="f-excedente" placeholder="0" min="0" oninput="calcComp()"></div>
-          <div class="fgrp gas-grp hidden-grp"><label>Gas (kWh)</label><input type="number" id="f-gas" placeholder="0" oninput="calcComp()"></div>
-          <div class="fsec luz-grp">Otros conceptos</div>
-          <div class="fgrp luz-grp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" value="0.85" step="0.01" oninput="calcComp()"></div>
-          <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.21">21%</option><option value="0.10">10%</option></select></div>
-          <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" placeholder="138.41" step="0.01" oninput="calcComp()"></div>
-          <div class="fsec">Servicios adicionales</div>
-          <div class="fgrp" style="display:flex;align-items:center;gap:8px">
-            <input type="checkbox" id="f-sva" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
-            <label for="f-sva" style="margin-bottom:0;cursor:pointer;font-weight:600">Activar SVA (Mantenimientos)</label>
+          <div class="comp-form-grid">
+            <div class="fsec">Período</div>
+            <div class="fgrp"><label>Días facturados</label><input type="number" id="f-dias" value="28" min="1" max="90" oninput="calcComp()"></div>
+            <div class="fsec luz-grp">Potencia contratada</div>
+            <div class="fgrp-row luz-grp">
+              <div class="fgrp"><label>P1 (kW)</label><input type="number" id="f-pot1" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
+              <div class="fgrp"><label>P2 (kW)</label><input type="number" id="f-pot2" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
+            </div>
+            <div class="fsec luz-grp">Consumo energía</div>
+            <div class="fgrp luz-grp"><label>Luz P1 (kWh)</label><input type="number" id="f-kwh1" placeholder="414" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Luz P2 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh2" placeholder="0" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Excedentes (kWh)</label><input type="number" id="f-excedente" placeholder="0" min="0" oninput="calcComp()"></div>
+            <div class="fgrp gas-grp hidden-grp"><label>Gas (kWh)</label><input type="number" id="f-gas" placeholder="0" oninput="calcComp()"></div>
+            <div class="fsec luz-grp">Otros conceptos</div>
+            <div class="fgrp luz-grp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" value="0.85" step="0.01" oninput="calcComp()"></div>
+            <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.21">21%</option><option value="0.10">10%</option></select></div>
+            <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" placeholder="138.41" step="0.01" oninput="calcComp()"></div>
+            <div class="fsec">Servicios adicionales</div>
+            <div class="fgrp fgrp-checkbox">
+              <input type="checkbox" id="f-sva" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
+              <label for="f-sva" style="margin-bottom:0;cursor:pointer;font-weight:600">Activar SVA (Mantenimientos)</label>
+            </div>
           </div>
           <div class="fsec">Compañías a comparar</div>
           <div class="cia-filter-row">
