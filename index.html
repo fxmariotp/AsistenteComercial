@@ -219,6 +219,21 @@ body {
 .nav-btn:hover svg {
   opacity: 1;
 }
+.nav-btn-logout {
+  color: #f87171 !important;
+}
+.nav-btn-logout svg {
+  color: #f87171 !important;
+  opacity: .8;
+}
+.nav-btn-logout:hover {
+  background: rgba(239, 68, 68, 0.1) !important;
+  color: #fca5a5 !important;
+}
+.nav-btn-logout:hover svg {
+  color: #fca5a5 !important;
+  opacity: 1 !important;
+}
 
 .nav-btn.active {
   background: rgba(255, 255, 255, 0.08);
@@ -1907,6 +1922,14 @@ hr {
     </button>
 
   </div>
+  <div style="padding: 0 14px; margin-bottom: 8px;">
+    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 8px;">
+      <button class="nav-btn nav-btn-logout" onclick="logout()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
   <div class="sidebar-footer" id="today-date">lun, 25 de mayo de 2026</div>
 </nav>
 
@@ -2049,9 +2072,9 @@ hr {
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#0d5c9e"></span>Verificación de productos contratados</div>
             <p class="nota">Lee únicamente los apartados que apliquen según lo contratado</p>
-            <div class="prod-block"><strong>3.1 · Luz sin servicio — descuento 15% TE</strong>Le informamos que vamos a realizar la contratación de su suministro de luz con CUPS <span class="blank bsm"></span> con el plan <span class="blank"></span> en el que disfrutará de un <strong>descuento del 15%</strong> en el término de energía durante 12 meses.</div>
+            <div class="prod-block"><strong>3.1 · Luz sin servicio — descuento 20% TE</strong>Le informamos que vamos a realizar la contratación de su suministro de luz con CUPS <span class="blank bsm"></span> con el plan <span class="blank"></span> en el que disfrutará de un <strong>descuento del 20%</strong> en el término de energía durante 12 meses.</div>
             <div class="prod-block"><strong>3.2 · Gas sin servicio — descuento 10% + 10%</strong>Le informamos que vamos a realizar la contratación de su suministro de gas con CUPS <span class="blank bsm"></span> en el que disfrutará de un <strong>descuento del 10%</strong> en el término de energía y 10% en el Término Fijo durante 12 meses.</div>
-            <div class="prod-block"><strong>3.3 · Luz con servicio — descuento 20% (Pack Iberdrola)</strong>Le informamos que vamos a realizar la contratación de su contrato de luz con CUPS <span class="blank bsm"></span> con el plan <span class="blank"></span> en el que disfrutará de un <strong>descuento del 20%</strong> en el término de energía durante 12 meses al contratar el Pack Iberdrola.</div>
+            <div class="prod-block"><strong>3.3 · Luz con servicio — descuento 25% (Pack Iberdrola)</strong>Le informamos que vamos a realizar la contratación de su contrato de luz con CUPS <span class="blank bsm"></span> con el plan <span class="blank"></span> en el que disfrutará de un <strong>descuento del 25%</strong> en el término de energía durante 12 meses al contratar el Pack Iberdrola.</div>
             <div class="prod-block"><strong>3.4 · Gas con servicio — descuento 15% + 15% (Mantenimiento gas)</strong>Le informamos que vamos a realizar la contratación de su suministro de Gas con CUPS <span class="blank bsm"></span> que disfrutará de un <strong>descuento del 15%</strong> en el término de energía y 15% en el Término Fijo durante 12 meses al contratar el servicio de mantenimiento gas.</div>
           </div>
           <div class="script-section">
@@ -2520,9 +2543,9 @@ const BASE = {
     gas_rl2:{tf:0.3606, tv:0.1013},
     gas_rl3:{tf:0.6945, tv:0.1013},
     imp_electrico:0.0511,
+    desc_sin:0.20, desc_con:0.25,
     tarifas_luz:[
-      {n:'Impulsa 24h (Sin SVA)', te:0.1240, tp1:0.1240, tp2:0.0620, nota:'Sin mantenimiento contratado'},
-      {n:'Impulsa 24h (Con SVA)', te:0.1170, tp1:0.1240, tp2:0.0620, nota:'Con Pack Iberdrola (+4.48 €/mes)'}
+      {n:'Impulsa 24h', te:0.156125, tp1:0.1240, tp2:0.0620, te_sin:0.1240, te_con:0.1170}
     ],
     tarifas_gas:[
       {n:'Iberdrola Gas RL1', tv:0.1024, tf:0.2112},
@@ -2559,9 +2582,9 @@ const BASE = {
     gas_rl2:{tf:0.4709, tv:0.0697},
     gas_rl3:{tf:0.9894, tv:0.0643},
     imp_electrico:0.0511,
+    desc_sin:0.10, desc_con:0.13,
     tarifas_luz:[
-      {n:'Fija 24h (Sin SVA)', te:0.1270, tp1:0.0913, tp2:0.0913, nota:'Sin mantenimiento contratado'},
-      {n:'Fija 24h (Con SVA)', te:0.1230, tp1:0.0913, tp2:0.0913, nota:'Con Protección 360 (+4.77 €/mes)'}
+      {n:'Fija 24h', te:0.141875, tp1:0.0913, tp2:0.0913, te_sin:0.1270, te_con:0.1230}
     ],
     tarifas_gas:[
       {n:'Gas Endesa RL1', tv:0.0736, tf:0.2316},
@@ -2920,8 +2943,8 @@ function renderCondiciones(){
       } else if(t.te!==null){
         const dSin = t.desc_sin !== undefined ? t.desc_sin : (r.desc_sin || 0);
         const dCon = t.desc_con !== undefined ? t.desc_con : (r.desc_con || 0);
-        const teSin = dSin>0 ? t.te*(1-dSin) : t.te;
-        const teCon = dCon>0 ? t.te*(1-dCon) : (r.te_con !== r.te_sin ? r.te_con : null);
+        const teSin = t.te_sin !== undefined ? t.te_sin : (dSin>0 ? t.te*(1-dSin) : t.te);
+        const teCon = t.te_con !== undefined ? t.te_con : (dCon>0 ? t.te*(1-dCon) : (r.te_con !== r.te_sin ? r.te_con : null));
         html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}<br><span style="font-size:12px;color:var(--t3)">Dto. sin mant.: ${(dSin*100).toFixed(0)}% · con mant.: ${teCon?(dCon*100).toFixed(0)+'%':'—'}</span></td>
           <td class="price-base">${t.te.toFixed(4)} €/kWh</td>
           <td><span class="price-sin">${teSin.toFixed(4)} €/kWh</span></td>
@@ -3017,6 +3040,23 @@ function calcComp(){
     return;
   }
   document.getElementById('comp-empty').style.display='none';
+
+  // Preservar estado antes del renderizado
+  const openPanels = {};
+  document.querySelectorAll('.ep-body.open').forEach(el => {
+    openPanels[el.id.replace('ep-', '')] = true;
+  });
+
+  const activeEl = document.activeElement;
+  let activeCia = null;
+  let activeField = null;
+  if (activeEl && activeEl.tagName === 'INPUT' && activeEl.dataset.cia) {
+    activeCia = activeEl.dataset.cia;
+    activeField = activeEl.dataset.field;
+  }
+
+  const scrollContainer = document.querySelector('.content');
+  const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
 
   // Determinar banda de gas basada en consumo estimado anual
   let band = 'rl1';
@@ -3126,14 +3166,27 @@ function calcComp(){
   });
 
   results.sort((a,b)=>a.total-b.total);
-  renderInvCards(results, useSva);
+  renderInvCards(results, useSva, openPanels);
   renderSummary(results,actual);
+
+  // Restaurar scroll y foco
+  if (scrollContainer) {
+    scrollContainer.scrollTop = scrollTop;
+  }
+
+  if (activeCia && activeField) {
+    const newActiveEl = document.querySelector(`input[data-cia="${activeCia}"][data-field="${activeField}"]`);
+    if (newActiveEl) {
+      newActiveEl.focus();
+    }
+  }
 }
 
-function renderInvCards(results, useSva){
+function renderInvCards(results, useSva, openPanels){
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
     const{cia,cc,r,luzPot,luzP1,luzP2,luzP3,totalKwh,gasVar,gasFij,impElec,alq,svaLuzAmt,svaGasAmt,excPrice,excAmt,excOffset,subtotalNoExc,subtotal,ivaAmt,total,ahorro,dias,iva,kwh1,kwh2,gas,pot1,pot2,band,excedente}=res;
     const best=idx===0, aPos=ahorro>0, aNeg=ahorro<0;
+    const isOpen = openPanels[cia] ? ' open' : '';
     return`<div class="inv-card${best?' best':''}">
       <div class="inv-hdr">
         <div class="inv-hdr-left">
@@ -3212,20 +3265,20 @@ function renderInvCards(results, useSva){
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
         Ajustar precios de oferta
       </button>
-      <div class="ep-body" id="ep-${cia}">
+      <div class="ep-body${isOpen}" id="ep-${cia}">
         <div class="ep-grid">
           ${cia==='gana_ind'?`
-          <div class="ep-grp"><label>P1 luz (€/kWh)</label><input type="number" step="0.0001" value="${cc.p1.toFixed(4)}" oninput="updCC('${cia}','p1',this.value)"></div>
-          <div class="ep-grp"><label>P2 luz (€/kWh)</label><input type="number" step="0.0001" value="${cc.p2.toFixed(4)}" oninput="updCC('${cia}','p2',this.value)"></div>
-          <div class="ep-grp"><label>P3 luz (€/kWh)</label><input type="number" step="0.0001" value="${cc.p3.toFixed(4)}" oninput="updCC('${cia}','p3',this.value)"></div>
+          <div class="ep-grp"><label>P1 luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="p1" value="${cc.p1.toFixed(4)}" oninput="updCC('${cia}','p1',this.value)"></div>
+          <div class="ep-grp"><label>P2 luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="p2" value="${cc.p2.toFixed(4)}" oninput="updCC('${cia}','p2',this.value)"></div>
+          <div class="ep-grp"><label>P3 luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="p3" value="${cc.p3.toFixed(4)}" oninput="updCC('${cia}','p3',this.value)"></div>
           `:`
-          <div class="ep-grp"><label>TE luz (€/kWh)</label><input type="number" step="0.0001" value="${cc.te.toFixed(4)}" oninput="updCC('${cia}','te',this.value)"></div>
+          <div class="ep-grp"><label>TE luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="te" value="${cc.te.toFixed(4)}" oninput="updCC('${cia}','te',this.value)"></div>
           `}
-          <div class="ep-grp"><label>TP1 luz (€/kW·día)</label><input type="number" step="0.0001" value="${cc.tp1.toFixed(4)}" oninput="updCC('${cia}','tp1',this.value)"></div>
-          <div class="ep-grp"><label>TP2 luz (€/kW·día)</label><input type="number" step="0.0001" value="${cc.tp2.toFixed(4)}" oninput="updCC('${cia}','tp2',this.value)"></div>
-          <div class="ep-grp"><label>TV gas (€/kWh)</label><input type="number" step="0.0001" value="${cc.gtv.toFixed(4)}" oninput="updCC('${cia}','gtv',this.value)"></div>
-          <div class="ep-grp"><label>TF gas (€/día)</label><input type="number" step="0.0001" value="${cc.gtf.toFixed(4)}" oninput="updCC('${cia}','gtf',this.value)"></div>
-          <div class="ep-grp"><label>Exc. (€/kWh)</label><input type="number" step="0.0001" value="${excPrice.toFixed(4)}" oninput="updCC('${cia}','precio_excedente',this.value)"></div>
+          <div class="ep-grp"><label>TP1 luz (€/kW·día)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="tp1" value="${cc.tp1.toFixed(4)}" oninput="updCC('${cia}','tp1',this.value)"></div>
+          <div class="ep-grp"><label>TP2 luz (€/kW·día)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="tp2" value="${cc.tp2.toFixed(4)}" oninput="updCC('${cia}','tp2',this.value)"></div>
+          <div class="ep-grp"><label>TV gas (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="gtv" value="${cc.gtv.toFixed(4)}" oninput="updCC('${cia}','gtv',this.value)"></div>
+          <div class="ep-grp"><label>TF gas (€/día)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="gtf" value="${cc.gtf.toFixed(4)}" oninput="updCC('${cia}','gtf',this.value)"></div>
+          <div class="ep-grp"><label>Exc. (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="precio_excedente" value="${excPrice.toFixed(4)}" oninput="updCC('${cia}','precio_excedente',this.value)"></div>
         </div>
         <div class="ep-note">⚠ Precios ajustados solo para elaborar la oferta orientativa al cliente. No son precios oficiales.</div>
         <button class="reset-lnk" onclick="resetCC('${cia}')">Restablecer precios reales</button>
