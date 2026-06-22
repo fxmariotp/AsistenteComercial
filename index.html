@@ -3033,7 +3033,7 @@ function calcComp(){
   
   let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, excedente = 0, gas = 0, alq = 0;
   
-  if (compMode === 'luz' || compMode === 'dual') {
+  if (compMode === 'luz') {
     pot1 = gv('f-pot1') || 0;
     pot2 = gv('f-pot2') || pot1;
     kwh1 = gv('f-kwh1') || 0;
@@ -3041,7 +3041,7 @@ function calcComp(){
     excedente = gv('f-excedente') || 0;
     alq = gv('f-alquiler') || 0;
   }
-  if (compMode === 'gas' || compMode === 'dual') {
+  if (compMode === 'gas') {
     gas = gv('f-gas') || 0;
   }
 
@@ -3053,12 +3053,6 @@ function calcComp(){
     return;
   }
   if (compMode === 'gas' && !gas) {
-    document.getElementById('comp-empty').style.display='block';
-    document.getElementById('comp-cards').innerHTML='';
-    document.getElementById('comp-summary').innerHTML='';
-    return;
-  }
-  if (compMode === 'dual' && !kwh1 && !gas && !excedente) {
     document.getElementById('comp-empty').style.display='block';
     document.getElementById('comp-cards').innerHTML='';
     document.getElementById('comp-summary').innerHTML='';
@@ -3225,7 +3219,7 @@ function renderInvCards(results, useSva, openPanels){
         </div>
       </div>
       <table class="ftable">
-        ${(compMode === 'luz' || compMode === 'dual') ? `
+        ${(compMode === 'luz') ? `
           <tr><td colspan="2" class="frow-sec">Término de potencia</td></tr>
           ${pot1>0?`<tr><td>${pot1} kW × ${dias} días × ${cc.tp1.toFixed(4)} €/kW·día &nbsp;<span style="font-size:12px;color:var(--t3)">P1</span></td><td class="ftr-right">${f2(pot1*cc.tp1*dias)} €</td></tr>`:''}
           ${pot2>0?`<tr><td>${pot2} kW × ${dias} días × ${cc.tp2.toFixed(4)} €/kW·día &nbsp;<span style="font-size:12px;color:var(--t3)">P2</span></td><td class="ftr-right">${f2(pot2*cc.tp2*dias)} €</td></tr>`:''}
@@ -3242,13 +3236,13 @@ function renderInvCards(results, useSva, openPanels){
           `}
         ` : ''}
         
-        ${(compMode === 'gas' || compMode === 'dual') && gas>0 ? `
+        ${(compMode === 'gas') && gas>0 ? `
           <tr><td colspan="2" class="frow-sec">Gas (Tarifa ${band.toUpperCase()})</td></tr>
           <tr><td>${gas} kWh × ${cc.gtv.toFixed(4)} €/kWh <span style="font-size:12px;color:var(--t3)">variable</span></td><td class="ftr-right">${f2(gasVar)} €</td></tr>
           <tr><td>${dias} días × ${cc.gtf.toFixed(4)} €/día <span style="font-size:12px;color:var(--t3)">fijo</span></td><td class="ftr-right">${f2(gasFij)} €</td></tr>
         ` : ''}
         
-        ${(compMode === 'luz' || compMode === 'dual') && excedente>0 && !useSva ? `
+        ${(compMode === 'luz') && excedente>0 && !useSva ? `
           <tr><td colspan="2" class="frow-sec" style="color:var(--green)">Autoconsumo y Excedentes</td></tr>
           <tr>
             <td style="color:var(--green)">Compensación excedentes (${excedente} kWh × ${excPrice.toFixed(4)} €/kWh)</td>
@@ -3260,17 +3254,17 @@ function renderInvCards(results, useSva, openPanels){
         ` : ''}
         
         <tr><td colspan="2" class="frow-sec">Impuestos y otros</td></tr>
-        ${(compMode === 'luz' || compMode === 'dual') ? `
+        ${(compMode === 'luz') ? `
           <tr><td>Impuesto sobre electricidad (${(r.imp_electrico*100).toFixed(2)}%)</td><td class="ftr-right">${f2(impElec)} €</td></tr>
           <tr><td>Alquiler de equipos</td><td class="ftr-right">${f2(alq)} €</td></tr>
         ` : ''}
-        ${svaLuzAmt>0 && (compMode === 'luz' || compMode === 'dual') ? `<tr><td>Servicio Mantenimiento Luz (${r.name})</td><td class="ftr-right">${f2(svaLuzAmt)} €</td></tr>` : ''}
-        ${svaGasAmt>0 && (compMode === 'gas' || compMode === 'dual') ? `<tr><td>Servicio Mantenimiento Gas (${r.name})</td><td class="ftr-right">${f2(svaGasAmt)} €</td></tr>` : ''}
+        ${svaLuzAmt>0 && (compMode === 'luz') ? `<tr><td>Servicio Mantenimiento Luz (${r.name})</td><td class="ftr-right">${f2(svaLuzAmt)} €</td></tr>` : ''}
+        ${svaGasAmt>0 && (compMode === 'gas') ? `<tr><td>Servicio Mantenimiento Gas (${r.name})</td><td class="ftr-right">${f2(svaGasAmt)} €</td></tr>` : ''}
         
         <tr class="frow-total"><td>Subtotal sin IVA</td><td class="ftr-right">${f2(useSva ? subtotalNoExc : subtotal)} €</td></tr>
         <tr><td>IVA (${Math.round(iva*100)}%)</td><td class="ftr-right">${f2(useSva ? (subtotalNoExc * iva) : ivaAmt)} €</td></tr>
         
-        ${useSva && excedente>0 && (compMode === 'luz' || compMode === 'dual') ? `
+        ${useSva && excedente>0 && (compMode === 'luz') ? `
           <tr style="font-size:13px;color:var(--t2)"><td>Total antes de Batería Virtual</td><td class="ftr-right">${f2(subtotalNoExc * (1+iva))} €</td></tr>
           <tr style="color:var(--green)">
             <td>Descuento Batería Virtual (${excedente} kWh × ${excPrice.toFixed(4)} €/kWh + IVA)</td>
