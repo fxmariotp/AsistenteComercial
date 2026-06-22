@@ -107,6 +107,18 @@ body {
   position: relative;
   z-index: 100;
 }
+#sidebar-overlay {
+  display: none;
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(3px);
+  -webkit-backdrop-filter: blur(3px);
+  z-index: 999;
+}
+#sidebar-overlay.active {
+  display: block;
+}
 
 .logo-area {
   padding: 24px 20px;
@@ -1466,10 +1478,22 @@ hr {
   position: relative;
 }
 
-/* On desktop, hide sidebar if active panel is dashboard */
+/* On desktop, hide sidebar (make it a sliding drawer) if active panel is dashboard */
 @media (min-width: 769px) {
   .app.dashboard-active #sidebar {
-    display: none !important;
+    position: fixed;
+    left: -250px;
+    top: 0;
+    bottom: 0;
+    width: 250px;
+    z-index: 1000;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  .app.dashboard-active #sidebar.mobile-open {
+    transform: translateX(250px);
+  }
+  .app.dashboard-active .menu-toggle-btn {
+    display: inline-flex !important;
   }
 }
 
@@ -1677,18 +1701,6 @@ hr {
   }
   #sidebar.mobile-open {
     transform: translateX(250px);
-  }
-  #sidebar-overlay {
-    display: none;
-    position: fixed;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background: rgba(15, 23, 42, 0.4);
-    backdrop-filter: blur(3px);
-    -webkit-backdrop-filter: blur(3px);
-    z-index: 999;
-  }
-  #sidebar-overlay.active {
-    display: block;
   }
 
   #main {
