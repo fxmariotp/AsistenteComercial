@@ -2420,7 +2420,6 @@ hr {
           <div class="comp-toggle-container">
             <button type="button" class="comp-toggle-btn active" id="mode-luz" onclick="setCompMode('luz')">Luz</button>
             <button type="button" class="comp-toggle-btn" id="mode-gas" onclick="setCompMode('gas')">Gas</button>
-            <button type="button" class="comp-toggle-btn" id="mode-dual" onclick="setCompMode('dual')">Luz + Gas</button>
           </div>
           <div class="comp-form-grid">
             <div class="fsec">Período</div>
@@ -3022,9 +3021,6 @@ function setCompMode(mode) {
     document.querySelectorAll('.gas-grp').forEach(el => el.classList.add('hidden-grp'));
   } else if (mode === 'gas') {
     document.querySelectorAll('.luz-grp').forEach(el => el.classList.add('hidden-grp'));
-    document.querySelectorAll('.gas-grp').forEach(el => el.classList.remove('hidden-grp'));
-  } else if (mode === 'dual') {
-    document.querySelectorAll('.luz-grp').forEach(el => el.classList.remove('hidden-grp'));
     document.querySelectorAll('.gas-grp').forEach(el => el.classList.remove('hidden-grp'));
   }
   calcComp();
