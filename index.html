@@ -3017,7 +3017,7 @@ hr {
       </div>
 
       <!-- Native Minimalist View -->
-      <div id="ranking-native-container" style="display:none; margin-bottom: 20px;">
+      <div id="ranking-native-container" style="margin-bottom: 20px;">
         <div class="ranking-header-bar">
           <div class="ranking-title">Ranking de Rendimiento</div>
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
@@ -3079,14 +3079,14 @@ hr {
       </div>
       
       <!-- Iframe Fallback View -->
-      <div id="ranking-iframe-container" style="height: 76vh; width: 100%; display: flex; flex-direction: column; gap: 12px;">
+      <div id="ranking-iframe-container" style="height: 76vh; width: 100%; display: none; flex-direction: column; gap: 12px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <span style="font-size: 13px; font-weight: 600; color: var(--t2);">
-            ⚠️ Mostrando la vista original giratoria. Para activar la vista nativa profesional, usa la <a href="javascript:void(0)" onclick="toggleSetupGuide(true)" style="color:var(--blue); font-weight:700;">guía de conexión</a>.
+            Mostrando la versión original giratoria en un iframe.
           </span>
           <button class="btn" onclick="switchRankingView('native')" id="btn-switch-to-native" style="padding: 8px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-            Probar Vista Nativa
+            Volver a Vista Nativa
           </button>
         </div>
         <div style="flex: 1; height: 100%; border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
@@ -3481,8 +3481,9 @@ async function loadNativeRanking() {
     </div>`;
   }
   
-  // Try to read preference if saved
-  const connectionVerified = localStorage.getItem('ranking_connected') === 'true';
+  // Ensure native container is visible by default
+  if (nativeContainer) nativeContainer.style.display = 'block';
+  if (iframeContainer) iframeContainer.style.display = 'none';
 
   try {
     const res = await fetch(url);
@@ -3492,10 +3493,7 @@ async function loadNativeRanking() {
     if (Array.isArray(data)) {
       rawRankingData = data.filter(r => r && r[0]); // Filter empty rows
       if (rawRankingData.length > 0) {
-        // Connection is successful! Cache it
         localStorage.setItem('ranking_connected', 'true');
-        if (nativeContainer) nativeContainer.style.display = 'block';
-        if (iframeContainer) iframeContainer.style.display = 'none';
         renderNativeRanking(rawRankingData);
         return;
       }
@@ -3503,15 +3501,39 @@ async function loadNativeRanking() {
     throw new Error("Invalid data format received");
   } catch (err) {
     console.warn("No se pudo cargar el ranking nativo (CORS o script no actualizado):", err);
-    // If not verified or failed, show iframe
-    if (!connectionVerified) {
-      if (nativeContainer) nativeContainer.style.display = 'none';
-      if (iframeContainer) iframeContainer.style.display = 'flex';
-    } else {
-      // If user previously verified it but it temporarily failed, fallback to iframe
-      if (nativeContainer) nativeContainer.style.display = 'none';
-      if (iframeContainer) iframeContainer.style.display = 'flex';
+    
+    // Clear podium
+    if (podiumContainer) podiumContainer.innerHTML = '';
+    
+    // Show a beautiful error message in the list container with connection guides
+    if (listContainer) {
+      listContainer.innerHTML = `
+        <div style="grid-column: 1 / -1; text-align:center; padding: 40px 20px; border: 1px dashed var(--border); border-radius: var(--r); background: var(--surface); margin-top: 15px;">
+          <div style="font-size: 32px; margin-bottom: 12px;">🔌</div>
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px;">Conexión Premium Pendiente</h3>
+          <p style="font-size: 13.5px; color: var(--t2); max-width: 480px; margin: 0 auto 20px; line-height: 1.5;">
+            No se pudo cargar el ranking de forma nativa. Esto sucede si el script de Google aún no se ha configurado para devolver JSON, o si hay un bloqueo temporal de CORS.
+          </p>
+          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+            <button class="btn" onclick="toggleSetupGuide(true)">Ver guía de conexión</button>
+            <button class="btn btn-secondary" onclick="switchRankingView('iframe')">Abrir versión original (Iframe)</button>
+          </div>
+        </div>
+      `;
     }
+    
+    // Reset stats to placeholder values
+    const elTotal = document.getElementById('stat-total-headcount');
+    const elRate = document.getElementById('stat-success-rate');
+    const elCount = document.getElementById('stat-success-count');
+    const elLeaderName = document.getElementById('stat-leader-name');
+    const elLeaderPts = document.getElementById('stat-leader-points');
+    
+    if (elTotal) elTotal.textContent = '-';
+    if (elRate) elRate.textContent = '-%';
+    if (elCount) elCount.textContent = 'Conexión no establecida';
+    if (elLeaderName) elLeaderName.textContent = '-';
+    if (elLeaderPts) elLeaderPts.textContent = '0 puntos acumulados';
   }
 }
 
