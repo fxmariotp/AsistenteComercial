@@ -1758,6 +1758,66 @@ hr {
   animation: strokePulse 1.5s linear infinite;
 }
 
+/* ── RANKING ── */
+.ranking-header-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid var(--border);
+  padding-bottom: 14px;
+}
+.ranking-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+}
+.ranking-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--r);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--border);
+}
+.ranking-table th {
+  background: var(--bg);
+  padding: 16px 20px;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--t2);
+  border-bottom: 2px solid var(--border);
+}
+.ranking-table td {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+  color: var(--text);
+}
+.ranking-row-ok {
+  background: var(--green-bg) !important;
+}
+.ranking-row-ok td {
+  color: var(--green) !important;
+}
+.ranking-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.ranking-badge.ok {
+  background: rgba(16, 185, 129, 0.15);
+  color: #047857;
+}
+.ranking-badge.bad {
+  background: rgba(239, 68, 68, 0.15);
+  color: #b91c1c;
+}
+
 /* ── RESPONSIVE MEDIA QUERIES ── */
 @media (max-width: 768px) {
   .app {
@@ -2545,7 +2605,33 @@ hr {
 
     <!-- ══════ RANKING ══════ -->
     <div class="panel" id="panel-ranking">
-      <div style="height: 76vh; width: 100%; overflow: hidden; border-radius: var(--r); box-shadow: 0 2px 8px rgba(0,0,0,.05);">
+      <!-- Native Minimalist View -->
+      <div id="ranking-native-container" style="display:none; margin-bottom: 20px;">
+        <div class="ranking-header-bar">
+          <div class="ranking-title">Ranking de Rendimiento</div>
+          <button class="btn" onclick="loadNativeRanking()" style="padding: 8px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+            Actualizar
+          </button>
+        </div>
+        <div class="table-responsive" style="margin-top: 15px;">
+          <table class="ranking-table">
+            <thead>
+              <tr>
+                <th style="width: 15%; text-align: center;">Puesto</th>
+                <th style="width: 55%; text-align: left;">Agente</th>
+                <th style="width: 30%; text-align: right;">Puntos / Objetivo</th>
+              </tr>
+            </thead>
+            <tbody id="ranking-native-rows">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+      
+      <!-- Iframe Fallback View -->
+      <div id="ranking-iframe-container" style="height: 76vh; width: 100%; overflow: hidden; border-radius: var(--r); box-shadow: 0 2px 8px rgba(0,0,0,.05);">
         <iframe src="https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec" style="width: 100%; height: 100%; border: none;" allow="autoplay"></iframe>
       </div>
     </div>
@@ -2901,6 +2987,75 @@ function renderCalCounters(year){
   document.getElementById('cal-ano-bar').style.width=(yearElapsed/YEAR_LABOR_TOTAL*100)+'%';
 }
 
+async function loadNativeRanking() {
+  const url = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
+  const nativeContainer = document.getElementById('ranking-native-container');
+  const iframeContainer = document.getElementById('ranking-iframe-container');
+  const tbody = document.getElementById('ranking-native-rows');
+  
+  tbody.innerHTML = `<tr><td colspan="3" style="text-align:center;color:var(--t2);padding:30px;">
+    <span class="cdot" style="background:var(--blue);width:10px;height:10px;animation:pulse 1s infinite alternate;margin-right:8px;"></span>
+    Cargando ranking en tiempo real...
+  </td></tr>`;
+  nativeContainer.style.display = 'block';
+  iframeContainer.style.display = 'none';
+
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP error " + res.status);
+    const data = await res.json();
+    
+    if (Array.isArray(data)) {
+      const sorted = data
+        .filter(r => r && r[0]) // Filtrar filas vacías
+        .sort((a, b) => (parseFloat(b[1]) || 0) - (parseFloat(a[1]) || 0));
+        
+      if (sorted.length > 0) {
+        renderNativeRanking(sorted);
+        return;
+      }
+    }
+    throw new Error("Invalid data format received");
+  } catch (err) {
+    console.warn("No se pudo cargar el ranking nativo (CORS o script no actualizado). Usando fallback de iframe:", err);
+    // Fallback: Mostrar iframe original
+    nativeContainer.style.display = 'none';
+    iframeContainer.style.display = 'block';
+  }
+}
+
+function renderNativeRanking(data) {
+  const tbody = document.getElementById('ranking-native-rows');
+  tbody.innerHTML = data.map((row, idx) => {
+    const [nombre, puntos, objetivo] = row;
+    const pts = parseFloat(puntos) || 0;
+    const obj = parseFloat(objetivo) || 0;
+    const diff = (pts - obj).toFixed(1);
+    const cumple = pts >= obj;
+    const diffSign = diff >= 0 ? '+' : '';
+    
+    // Convertir nombre a Title Case y acortar apellidos
+    const parts = nombre.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
+    const shortName = parts.slice(0, 3).join(" ");
+    
+    return `<tr class="${cumple ? 'ranking-row-ok' : ''}">
+      <td style="text-align: center; font-weight: 700; font-size: 15px;">
+        ${idx === 0 ? '🏆 1' : idx === 1 ? '🥈 2' : idx === 2 ? '🥉 3' : (idx + 1)}
+      </td>
+      <td style="font-weight: 600;">
+        ${shortName}
+        ${cumple ? '<span style="color:var(--green); margin-left: 8px; font-size: 11px; font-weight:700; background:rgba(16,185,129,0.1); padding:2px 6px; border-radius:4px;">✓ Objetivo</span>' : ''}
+      </td>
+      <td style="text-align: right;">
+        <div style="font-weight: 700; font-size: 15px;">${pts.toFixed(1)} <span style="font-weight:400;color:var(--t3);font-size:12px;">/ ${obj}</span></div>
+        <div class="ranking-badge ${cumple ? 'ok' : 'bad'}" style="margin-top: 4px; font-size: 11px;">
+          ${diffSign}${diff}
+        </div>
+      </td>
+    </tr>`;
+  }).join('');
+}
+
 // ── NAV ──
 function showPanel(id, btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -2929,6 +3084,7 @@ function showPanel(id, btn){
   if(id==='condiciones') renderCondiciones();
   if(id==='archivos') renderAdmin();
   if(id==='calendario') renderCalendar();
+  if(id==='ranking') loadNativeRanking();
   
   // Close mobile sidebar drawer if open
   const sidebar = document.getElementById('sidebar');
