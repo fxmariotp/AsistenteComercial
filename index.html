@@ -2031,37 +2031,45 @@ hr {
   --card-color: #6366f1; /* Indigo */
   --card-shadow: rgba(99, 102, 241, 0.12);
   --spoke-bg: #e0e7ff;
-  top: 23%;
-  right: 4%;
+  top: 22%;
+  right: 8%;
 }
 .spoke-card.sp-comparativa {
   --card-color: #f59e0b; /* Amber */
   --card-shadow: rgba(245, 158, 11, 0.12);
   --spoke-bg: #fef3c7;
-  bottom: 23%;
+  top: 52%;
   right: 4%;
+  transform: translateY(-50%);
+}
+.spoke-card.sp-agenda {
+  --card-color: #10b981; /* Emerald */
+  --card-shadow: rgba(16, 185, 129, 0.12);
+  --spoke-bg: #ecfdf5;
+  bottom: 18%;
+  right: 12%;
 }
 .spoke-card.sp-telefonos {
   --card-color: #a855f7; /* Purple */
   --card-shadow: rgba(168, 85, 247, 0.12);
   --spoke-bg: #f3e8ff;
-  bottom: 5%;
-  left: 50%;
-  transform: translateX(-50%);
+  bottom: 18%;
+  left: 12%;
 }
 .spoke-card.sp-calendario {
   --card-color: #0ea5e9; /* Sky */
   --card-shadow: rgba(14, 165, 233, 0.12);
   --spoke-bg: #e0f2fe;
-  bottom: 23%;
+  top: 52%;
   left: 4%;
+  transform: translateY(-50%);
 }
 .spoke-card.sp-ranking {
   --card-color: #f97316; /* Orange */
   --card-shadow: rgba(249, 115, 22, 0.12);
   --spoke-bg: #ffedd5;
-  top: 23%;
-  left: 4%;
+  top: 22%;
+  left: 8%;
 }
 
 @keyframes strokePulse {
@@ -2694,6 +2702,172 @@ hr {
 .hidden-grp {
   display: none !important;
 }
+
+/* ── AGENDA PERSONAL STYLES ── */
+.agenda-list-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.agenda-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--rs);
+  padding: 14px 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,.01);
+  transition: all 0.2s ease;
+}
+.agenda-item:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 4px 12px rgba(0,0,0,.03);
+}
+.agenda-item.completed {
+  opacity: 0.65;
+  background: #f8fafc;
+}
+.agenda-item.completed .agenda-item-title {
+  text-decoration: line-through;
+  color: var(--t3);
+}
+.agenda-item-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+}
+.agenda-status-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.agenda-status-dot.red { background-color: var(--red); box-shadow: 0 0 8px rgba(220, 38, 38, 0.4); }
+.agenda-status-dot.yellow { background-color: var(--orange); box-shadow: 0 0 8px rgba(224, 128, 52, 0.4); }
+.agenda-status-dot.green { background-color: var(--green); box-shadow: 0 0 8px rgba(5, 150, 105, 0.4); }
+.agenda-status-dot.gray { background-color: var(--t3); }
+
+.agenda-item-content {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.agenda-item-meta {
+  font-size: 12px;
+  color: var(--t2);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.agenda-item-title {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+}
+.agenda-item-notes {
+  font-size: 12.5px;
+  color: var(--t2);
+  margin-top: 4px;
+  background: #f8fafc;
+  padding: 6px 10px;
+  border-left: 3px solid var(--border-hover);
+  border-radius: 4px;
+  max-width: 550px;
+  line-height: 1.4;
+  word-break: break-word;
+}
+.agenda-item-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.agenda-item-actions button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--t2);
+  padding: 6px;
+  border-radius: 6px;
+  display: inline-flex;
+  transition: all 0.2s;
+}
+.agenda-item-actions button:hover {
+  background: var(--border);
+  color: var(--text);
+}
+.agenda-item-actions button.btn-delete:hover {
+  background: var(--red-bg);
+  color: var(--red);
+}
+.agenda-item-actions button.btn-complete:hover {
+  background: var(--green-bg);
+  color: var(--green);
+}
+.agenda-item-actions button.btn-complete.active {
+  color: var(--green);
+}
+
+/* Modal Overlay & Modal Window */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(15, 23, 42, 0.4);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 999;
+  animation: fadeIn 0.2s ease-out;
+}
+.modal-content {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  border-radius: var(--r);
+  animation: scaleUp 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  overflow: hidden;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes scaleUp {
+  from { transform: scale(0.95); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* In-App Notification Toast Alert */
+.agenda-banner {
+  position: fixed;
+  top: 24px;
+  right: 24px;
+  background: var(--text); /* Deep Navy */
+  color: var(--white);
+  padding: 16px 20px;
+  border-radius: var(--r);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  z-index: 10000;
+  max-width: 380px;
+  width: 90%;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  border-left: 5px solid var(--blue);
+  animation: slideInRight 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes slideInRight {
+  from { transform: translateX(120%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
 </style></head>
 <body>
 
@@ -2736,6 +2910,10 @@ hr {
     <button class="nav-btn" onclick="showPanel('telefonos',this)" id="btn-nav-telefonos">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
       Teléfonos
+    </button>
+    <button class="nav-btn" onclick="showPanel('agenda',this)" id="btn-nav-agenda">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
+      Agenda Personal
     </button>
     <button class="nav-btn" onclick="showPanel(&#39;ranking&#39;,this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
@@ -2865,6 +3043,17 @@ hr {
             <div class="spoke-title">Teléfonos de contacto</div>
           </div>
           <div class="spoke-desc">Directorio de atención al cliente y averías de energía.</div>
+        </div>
+
+        <!-- Spoke Card 7: Agenda Personal -->
+        <div class="spoke-card sp-agenda" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
+            </div>
+            <div class="spoke-title">Agenda Personal</div>
+          </div>
+          <div class="spoke-desc">Organiza tus llamadas, tareas y recordatorios diarios.</div>
         </div>
       </div>
     </div>
@@ -3312,6 +3501,93 @@ hr {
       <!-- Will be rendered dynamically via renderTelefonos() -->
     </div>
 
+    <!-- ══════ AGENDA PERSONAL ══════ -->
+    <div class="panel" id="panel-agenda">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h3 class="cond-sub-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
+          Mi Agenda Diaria
+        </h3>
+        <button class="btn" onclick="openAgendaModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; font-size: 13.5px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Añadir
+        </button>
+      </div>
+
+      <!-- Agenda List Wrapper -->
+      <div id="agenda-list-wrapper">
+        <div id="agenda-list" class="agenda-list-container">
+          <!-- Will be rendered dynamically via renderAgenda() -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Popup for Adding/Editing Tasks -->
+    <div id="agenda-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-content" style="max-width: 480px; width: 92%; padding: 24px;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h4 id="agenda-modal-title" style="margin: 0; font-size: 16.5px; font-weight: 800; color: var(--text);">Nueva Entrada</h4>
+          <button class="close-btn" onclick="closeAgendaModal()" style="background: transparent; border: none; cursor: pointer; color: var(--t3); display: inline-flex;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <div class="cia-tabs" style="margin-bottom: 20px; width: 100%;">
+          <button class="ctab active" id="tab-agenda-call" onclick="switchAgendaModalTab('call')" style="flex: 1; justify-content: center;">
+            <span class="cdot" style="background: var(--blue);"></span>Llamar a Cliente
+          </button>
+          <button class="ctab" id="tab-agenda-task" onclick="switchAgendaModalTab('task')" style="flex: 1; justify-content: center;">
+            <span class="cdot" style="background: var(--blue);"></span>Tarea / Recordatorio
+          </button>
+        </div>
+
+        <form id="agenda-form" onsubmit="saveAgendaItem(event)" style="display: flex; flex-direction: column; gap: 14px;">
+          <!-- Hidden inputs for ID and notified status -->
+          <input type="hidden" id="agenda-id" value="">
+          
+          <!-- Shared/Call Title Field -->
+          <div class="fgrp" id="fgrp-client-name">
+            <label id="lbl-agenda-title">Nombre del cliente</label>
+            <input type="text" id="agenda-title" required autocomplete="off" placeholder="Ej. Juan Pérez">
+          </div>
+
+          <!-- Call-specific Phone Field -->
+          <div class="fgrp" id="fgrp-client-phone">
+            <label>Teléfono</label>
+            <input type="tel" id="agenda-phone" autocomplete="off" placeholder="Ej. 600123123">
+          </div>
+
+          <!-- Date & Time Row -->
+          <div style="display: flex; gap: 12px;" id="agenda-datetime-row">
+            <div class="fgrp" style="flex: 1;">
+              <label id="lbl-agenda-date">Fecha</label>
+              <input type="date" id="agenda-date">
+            </div>
+            <div class="fgrp" style="flex: 1;">
+              <label id="lbl-agenda-time">Hora</label>
+              <input type="time" id="agenda-time">
+            </div>
+          </div>
+
+          <!-- Call-specific Observations Field -->
+          <div class="fgrp" id="fgrp-observations">
+            <label>Observaciones</label>
+            <textarea id="agenda-notes" rows="3" placeholder="Ej. Quiere tarifa con SVA, volver a llamar por la tarde." style="width: 100%; border: 1px solid var(--border); border-radius: var(--rs); padding: 8px 12px; font-family: inherit; font-size: 13.5px; resize: vertical; outline: none; transition: border .2s; color: var(--text);"></textarea>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 10px; justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="closeAgendaModal()">Cancelar</button>
+            <button type="submit" class="btn">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- In-App Notification Banner overlay -->
+    <div id="agenda-alert-banner" class="agenda-banner" style="display: none;">
+      <!-- Will be rendered dynamically when alert fires -->
+    </div>
+
     <!-- ══════ RANKING ══════ -->
     <div class="panel" id="panel-ranking">
       
@@ -3568,6 +3844,7 @@ const PANELS = {
   comparativa: {title:'Comparativa de factura',  sub:'Calcula y ajusta la oferta para el cliente', color:'#e07b00', icon:'<rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/>'},
   calendario:  {title:'Calendario laboral',      sub:'Días laborables 2026 · Calendario RENOSUR-TM', color:'#1a7fcb', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
   telefonos:   {title:'Teléfonos',               sub:'Atención al cliente y averías de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
+  agenda:      {title:'Agenda Personal',         sub:'Organiza tus llamadas, tareas y recordatorios diarios', color:'#10b981', icon:'<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path>'},
   ranking:     {title:'Ranking de ventas',     sub:'Clasificación y rendimiento de los comerciales en tiempo real', color:'#e07b00', icon:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"/>'},
 };
 
@@ -4372,6 +4649,7 @@ function showPanel(id, btn){
   if(id==='calendario') renderCalendar();
   if(id==='ranking') loadNativeRanking();
   if(id==='telefonos') renderTelefonos();
+  if(id==='agenda') renderAgenda();
   
   // Close mobile sidebar drawer if open
   const sidebar = document.getElementById('sidebar');
@@ -5152,6 +5430,9 @@ function onLoginSuccess() {
   
   // 5. Ir a dashboard
   showPanel('dashboard', document.getElementById('btn-nav-dashboard'));
+  
+  // 6. Iniciar alertas de agenda
+  initAgendaNotifications();
 }
 
 function updateGreeting() {
@@ -5250,6 +5531,396 @@ function updateClock(){
 }
 updateClock();
 setInterval(updateClock, 1000);
+
+// ── AGENDA PERSONAL JS ──
+let currentModalTab = 'call';
+let agendaNotifyInterval = null;
+
+function loadAgenda() {
+  if (!currentAgentDni) return [];
+  const raw = localStorage.getItem('agenda_' + currentAgentDni);
+  try {
+    return raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error("Error parsing agenda data", e);
+    return [];
+  }
+}
+
+function saveAgenda(list) {
+  if (!currentAgentDni) return;
+  localStorage.setItem('agenda_' + currentAgentDni, JSON.stringify(list));
+}
+
+function sortAgendaItems(a, b) {
+  if (a.completed !== b.completed) {
+    return a.completed ? 1 : -1;
+  }
+  if (a.completed) {
+    return b.createdAt - a.createdAt;
+  }
+  const hasDateA = !!a.date;
+  const hasDateB = !!b.date;
+  if (hasDateA && hasDateB) {
+    if (a.date !== b.date) {
+      return a.date.localeCompare(b.date);
+    }
+    const hasTimeA = !!a.time;
+    const hasTimeB = !!b.time;
+    if (hasTimeA && hasTimeB) {
+      return a.time.localeCompare(b.time);
+    }
+    if (hasTimeA && !hasTimeB) return -1;
+    if (!hasTimeA && hasTimeB) return 1;
+    return b.createdAt - a.createdAt;
+  }
+  if (hasDateA && !hasDateB) return -1;
+  if (!hasDateA && hasDateB) return 1;
+  return b.createdAt - a.createdAt;
+}
+
+function renderAgenda() {
+  const list = loadAgenda();
+  list.sort(sortAgendaItems);
+  const container = document.getElementById('agenda-list');
+  if (!container) return;
+  
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 40px 20px; color: var(--t3);">
+        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 12px; opacity: 0.5;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+        <p style="margin: 0; font-size: 14.5px; font-weight: 500;">No tienes tareas o recordatorios en tu agenda.</p>
+        <p style="margin: 4px 0 0; font-size: 12.5px;">Pulsa "Añadir" para crear tu primera tarea.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+  
+  function formatDateLabel(dateStr) {
+    if (!dateStr) return '';
+    if (dateStr === todayStr) return 'Hoy';
+    const tom = new Date();
+    tom.setDate(tom.getDate() + 1);
+    const tomStr = `${tom.getFullYear()}-${String(tom.getMonth() + 1).padStart(2, '0')}-${String(tom.getDate()).padStart(2, '0')}`;
+    if (dateStr === tomStr) return 'Mañana';
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}/${parts[0]}`;
+    }
+    return dateStr;
+  }
+  
+  container.innerHTML = list.map(item => {
+    let statusColor = 'gray';
+    if (!item.completed && item.date) {
+      if (item.date < todayStr) {
+        statusColor = 'red';
+      } else if (item.date > todayStr) {
+        statusColor = 'green';
+      } else {
+        if (item.time) {
+          const [h, m] = item.time.split(':').map(Number);
+          const taskTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0);
+          const diffMins = (taskTime - now) / 60000;
+          if (diffMins <= 30) {
+            statusColor = 'red';
+          } else {
+            statusColor = 'yellow';
+          }
+        } else {
+          statusColor = 'yellow';
+        }
+      }
+    }
+    
+    const dateLabel = formatDateLabel(item.date);
+    const metaParts = [];
+    if (item.type === 'call') {
+      metaParts.push('<span style="color: var(--blue); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Llamada</span>');
+      if (item.phone) metaParts.push(item.phone);
+    } else {
+      metaParts.push('<span style="color: var(--t2); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Tarea</span>');
+    }
+    
+    if (dateLabel) {
+      if (item.time) {
+        metaParts.push(`${dateLabel} a las ${item.time}`);
+      } else {
+        metaParts.push(dateLabel);
+      }
+    }
+    
+    const metaHtml = metaParts.join(' • ');
+    const notesHtml = (item.type === 'call' && item.notes) ? `<div class="agenda-item-notes">${item.notes}</div>` : '';
+    
+    return `
+      <div class="agenda-item ${item.completed ? 'completed' : ''}" id="agenda-item-${item.id}">
+        <div class="agenda-item-left">
+          <div class="agenda-status-dot ${statusColor}"></div>
+          <div class="agenda-item-content">
+            <h5 class="agenda-item-title">${item.title}</h5>
+            <div class="agenda-item-meta">${metaHtml}</div>
+            ${notesHtml}
+          </div>
+        </div>
+        <div class="agenda-item-actions">
+          <button class="btn-complete ${item.completed ? 'active' : ''}" onclick="toggleTaskCompletion('${item.id}')" title="${item.completed ? 'Marcar como pendiente' : 'Marcar como completado'}">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              ${item.completed ? '<path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline>' : '<circle cx="12" cy="12" r="10"></circle>'}
+            </svg>
+          </button>
+          <button onclick="openAgendaModal('${item.id}')" title="Editar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path><path d="M18.5 2.5a2.121 2.121 0 1 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path></svg>
+          </button>
+          <button class="btn-delete" onclick="deleteAgendaItem('${item.id}')" title="Eliminar">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+          </button>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function switchAgendaModalTab(tab) {
+  currentModalTab = tab;
+  const tabCall = document.getElementById('tab-agenda-call');
+  const tabTask = document.getElementById('tab-agenda-task');
+  const lblTitle = document.getElementById('lbl-agenda-title');
+  const inpTitle = document.getElementById('agenda-title');
+  const fgrpPhone = document.getElementById('fgrp-client-phone');
+  const fgrpObs = document.getElementById('fgrp-observations');
+  
+  if (tab === 'call') {
+    tabCall.classList.add('active');
+    tabTask.classList.remove('active');
+    lblTitle.textContent = 'Nombre del cliente';
+    inpTitle.placeholder = 'Ej. Juan Pérez';
+    fgrpPhone.style.display = 'block';
+    fgrpObs.style.display = 'block';
+    document.getElementById('agenda-phone').required = true;
+  } else {
+    tabCall.classList.remove('active');
+    tabTask.classList.add('active');
+    lblTitle.textContent = 'Descripción';
+    inpTitle.placeholder = 'Ej. Revisar contratos pendientes';
+    fgrpPhone.style.display = 'none';
+    fgrpObs.style.display = 'none';
+    document.getElementById('agenda-phone').required = false;
+  }
+}
+
+function openAgendaModal(id = '') {
+  const modal = document.getElementById('agenda-modal');
+  const idInput = document.getElementById('agenda-id');
+  const titleInput = document.getElementById('agenda-title');
+  const phoneInput = document.getElementById('agenda-phone');
+  const dateInput = document.getElementById('agenda-date');
+  const timeInput = document.getElementById('agenda-time');
+  const notesInput = document.getElementById('agenda-notes');
+  const modalTitle = document.getElementById('agenda-modal-title');
+  
+  if (id) {
+    modalTitle.textContent = 'Editar Entrada';
+    const list = loadAgenda();
+    const item = list.find(i => i.id === id);
+    if (item) {
+      idInput.value = item.id;
+      titleInput.value = item.title;
+      phoneInput.value = item.phone || '';
+      dateInput.value = item.date || '';
+      timeInput.value = item.time || '';
+      notesInput.value = item.notes || '';
+      switchAgendaModalTab(item.type);
+    }
+  } else {
+    modalTitle.textContent = 'Nueva Entrada';
+    idInput.value = '';
+    titleInput.value = '';
+    phoneInput.value = '';
+    dateInput.value = '';
+    timeInput.value = '';
+    notesInput.value = '';
+    switchAgendaModalTab('call');
+  }
+  modal.style.display = 'flex';
+}
+
+function closeAgendaModal() {
+  const modal = document.getElementById('agenda-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function saveAgendaItem(event) {
+  event.preventDefault();
+  const idInput = document.getElementById('agenda-id');
+  const titleInput = document.getElementById('agenda-title');
+  const phoneInput = document.getElementById('agenda-phone');
+  const dateInput = document.getElementById('agenda-date');
+  const timeInput = document.getElementById('agenda-time');
+  const notesInput = document.getElementById('agenda-notes');
+  
+  const id = idInput.value;
+  const list = loadAgenda();
+  
+  const itemData = {
+    id: id || ('agenda_' + Date.now()),
+    type: currentModalTab,
+    title: titleInput.value.trim(),
+    phone: currentModalTab === 'call' ? phoneInput.value.trim() : '',
+    date: dateInput.value || '',
+    time: timeInput.value || '',
+    notes: currentModalTab === 'call' ? notesInput.value.trim() : '',
+    completed: false,
+    notified: false,
+    createdAt: Date.now()
+  };
+  
+  if (id) {
+    const idx = list.findIndex(i => i.id === id);
+    if (idx !== -1) {
+      const oldItem = list[idx];
+      itemData.completed = oldItem.completed;
+      if (oldItem.date !== itemData.date || oldItem.time !== itemData.time) {
+        itemData.notified = false;
+      } else {
+        itemData.notified = oldItem.notified;
+      }
+      itemData.createdAt = oldItem.createdAt;
+      list[idx] = itemData;
+    }
+  } else {
+    list.push(itemData);
+  }
+  
+  saveAgenda(list);
+  closeAgendaModal();
+  renderAgenda();
+}
+
+function toggleTaskCompletion(id) {
+  const list = loadAgenda();
+  const idx = list.findIndex(i => i.id === id);
+  if (idx !== -1) {
+    list[idx].completed = !list[idx].completed;
+    if (!list[idx].completed) {
+      list[idx].notified = false;
+    }
+    saveAgenda(list);
+    renderAgenda();
+  }
+}
+
+function deleteAgendaItem(id) {
+  if (confirm('¿Seguro que deseas eliminar esta entrada de tu agenda?')) {
+    const list = loadAgenda();
+    const newList = list.filter(i => i.id !== id);
+    saveAgenda(newList);
+    renderAgenda();
+  }
+}
+
+function playAlertSound() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
+    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.15);
+    gain.gain.setValueAtTime(0.1, ctx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
+    osc.connect(gain);
+    gain.connect(ctx.destination);
+    osc.start();
+    osc.stop(ctx.currentTime + 0.4);
+  } catch (e) {
+    console.error("AudioContext not allowed or not supported", e);
+  }
+}
+
+function fireAgendaAlert(item) {
+  playAlertSound();
+  if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
+    const title = item.type === 'call' ? `Llamar a ${item.title}` : 'Recordatorio de Tarea';
+    const body = item.type === 'call' 
+      ? `Teléfono: ${item.phone || ''}\nHora: ${item.time || ''}` 
+      : `${item.title}\nHora: ${item.time || ''}`;
+    try {
+      new Notification(title, { body: body });
+    } catch (e) {
+      console.error("Error showing browser notification", e);
+    }
+  }
+  
+  const banner = document.getElementById('agenda-alert-banner');
+  if (banner) {
+    const titleText = item.type === 'call' 
+      ? `📞 Llamar a <strong>${item.title}</strong>` 
+      : `🔔 Recordatorio: <strong>${item.title}</strong>`;
+    const detailsText = item.type === 'call' 
+      ? `Tel: ${item.phone} | Hora: ${item.time}` 
+      : `Hora: ${item.time || 'Programado'}`;
+    banner.innerHTML = `
+      <div style="display: flex; flex-direction: column; gap: 4px; position: relative; padding-right: 24px;">
+        <div style="font-size: 14.5px; font-weight: 700; color: #fff; margin: 0;">${titleText}</div>
+        <div style="font-size: 12.5px; color: rgba(255,255,255,0.85);">${detailsText}</div>
+        ${item.notes ? `<div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px; border-left: 2px solid rgba(255,255,255,0.3); padding-left: 6px; font-style: italic;">${item.notes}</div>` : ''}
+        <button onclick="document.getElementById('agenda-alert-banner').style.display='none'" style="position: absolute; top: 0; right: 0; background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.8); font-size: 16px; padding: 2px; line-height: 1;">×</button>
+      </div>
+    `;
+    banner.style.display = 'flex';
+    setTimeout(() => {
+      banner.style.display = 'none';
+    }, 10000);
+  }
+}
+
+function checkAgendaNotifications() {
+  if (!currentAgentDni) return;
+  const list = loadAgenda();
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+  const currentHours = String(now.getHours()).padStart(2, '0');
+  const currentMinutes = String(now.getMinutes()).padStart(2, '0');
+  const currentTimeStr = `${currentHours}:${currentMinutes}`;
+  
+  let updated = false;
+  list.forEach(item => {
+    if (!item.completed && !item.notified && item.date && item.time) {
+      if (item.date < todayStr || (item.date === todayStr && item.time <= currentTimeStr)) {
+        fireAgendaAlert(item);
+        item.notified = true;
+        updated = true;
+      }
+    }
+  });
+  if (updated) {
+    saveAgenda(list);
+    renderAgenda();
+  }
+}
+
+function initAgendaNotifications() {
+  if (agendaNotifyInterval) {
+    clearInterval(agendaNotifyInterval);
+  }
+  if (typeof Notification !== 'undefined') {
+    if (Notification.permission === 'default') {
+      Notification.requestPermission();
+    }
+  }
+  agendaNotifyInterval = setInterval(checkAgendaNotifications, 30000);
+  checkAgendaNotifications();
+}
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded',()=>{
