@@ -2868,6 +2868,72 @@ hr {
   from { transform: translateX(120%); opacity: 0; }
   to { transform: translateX(0); opacity: 1; }
 }
+
+/* Dashboard Widget Preview Styles */
+.db-widgets-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 15px;
+  margin-bottom: 20px;
+  position: relative;
+  z-index: 100;
+}
+.db-widget-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.02);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+.db-widget-card:hover {
+  border-color: var(--border-hover);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+}
+.db-widget-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1.5px solid var(--border);
+  padding-bottom: 8px;
+  margin-bottom: 2px;
+}
+.db-widget-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.db-widget-title svg {
+  color: var(--blue);
+}
+.db-widget-link {
+  font-size: 12px;
+  color: var(--blue);
+  font-weight: 700;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 2px;
+  transition: color 0.2s;
+}
+.db-widget-link:hover {
+  color: var(--blue2);
+}
+@media (max-width: 768px) {
+  .db-widgets-row {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
 </style></head>
 <body>
 
@@ -2960,6 +3026,41 @@ hr {
         <div class="db-clock">
           <div class="db-clock-time" id="db-clock-time">00:00:00</div>
           <div class="db-clock-date" id="db-clock-date">Cargando fecha...</div>
+        </div>
+      </div>
+
+      <!-- Dashboard widgets preview panel -->
+      <div class="db-widgets-row">
+        <!-- Widget: Agenda Diaria -->
+        <div class="db-widget-card" id="db-widget-agenda">
+          <div class="db-widget-header">
+            <h4 class="db-widget-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
+              Tareas de Hoy
+            </h4>
+            <a href="#" class="db-widget-link" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda')); return false;">
+              Ir a Agenda →
+            </a>
+          </div>
+          <div id="db-widget-agenda-list" style="display:flex; flex-direction:column; gap:8px;">
+            <!-- Loaded dynamically -->
+          </div>
+        </div>
+
+        <!-- Widget: Objetivo Diario -->
+        <div class="db-widget-card" id="db-widget-ranking">
+          <div class="db-widget-header">
+            <h4 class="db-widget-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
+              Mi Objetivo Diario
+            </h4>
+            <a href="#" class="db-widget-link" onclick="showPanel('ranking', document.querySelector('[onclick*=\'ranking\']')); return false;">
+              Ver Ranking →
+            </a>
+          </div>
+          <div id="db-widget-ranking-content">
+            <!-- Loaded dynamically -->
+          </div>
         </div>
       </div>
 
@@ -4187,6 +4288,11 @@ function renderNativeRanking(data) {
     if (elLeaderPts) elLeaderPts.textContent = '0 puntos acumulados';
   }
   
+  // Update dashboard widget if function exists
+  if (typeof updateDashboardRankingWidget === 'function') {
+    updateDashboardRankingWidget();
+  }
+  
   // Render Top 3 Podium
   const top3 = sorted.slice(0, 3);
   let podiumHtml = '';
@@ -4660,6 +4766,8 @@ function showPanel(id, btn){
   // Draw Hub-and-Spoke connections
   if (id === 'dashboard') {
     setTimeout(drawHubLines, 60);
+    if (typeof updateDashboardAgendaWidget === 'function') updateDashboardAgendaWidget();
+    if (typeof updateDashboardRankingWidget === 'function') updateDashboardRankingWidget();
   }
 }
 
@@ -5433,6 +5541,9 @@ function onLoginSuccess() {
   
   // 6. Iniciar alertas de agenda
   initAgendaNotifications();
+  
+  // 7. Cargar datos de ranking para dashboard
+  fetchRankingForDashboard();
 }
 
 function updateGreeting() {
@@ -5920,6 +6031,195 @@ function initAgendaNotifications() {
   }
   agendaNotifyInterval = setInterval(checkAgendaNotifications, 30000);
   checkAgendaNotifications();
+}
+
+// ── DASHBOARD WIDGETS JS ──
+function getAgentRankingInfo() {
+  if (!currentAgentName || !rawRankingData || rawRankingData.length === 0) {
+    return null;
+  }
+  const sorted = [...rawRankingData].sort((a, b) => (parseFloat(b[1]) || 0) - (parseFloat(a[1]) || 0));
+  const agentNameUpper = currentAgentName.toUpperCase().trim();
+  const idx = sorted.findIndex(row => row[0].toUpperCase().trim() === agentNameUpper);
+  if (idx !== -1) {
+    const [nombre, puntos, objetivo] = sorted[idx];
+    const pts = parseFloat(puntos) || 0;
+    const obj = parseFloat(objetivo) || 0;
+    return {
+      rank: idx + 1,
+      points: pts,
+      objective: obj,
+      remaining: Math.max(0, obj - pts),
+      targetMet: pts >= obj,
+      percent: obj > 0 ? Math.min(100, Math.round((pts / obj) * 100)) : 0
+    };
+  }
+  return null;
+}
+
+function updateDashboardRankingWidget() {
+  const container = document.getElementById('db-widget-ranking-content');
+  if (!container) return;
+  
+  const info = getAgentRankingInfo();
+  if (!info) {
+    container.innerHTML = `
+      <div style="display:flex; flex-direction:column; gap:4px; text-align:center; padding: 10px 0; color:var(--t3); font-size:12.5px;">
+        <span style="font-size:20px;">🏆</span>
+        <span>Ranking offline o sin conexión.</span>
+        <span style="font-size:11px;color:var(--t3);">Asegúrate de configurar la conexión de Apps Script.</span>
+      </div>
+    `;
+    return;
+  }
+  
+  const progressColor = info.targetMet ? 'var(--green)' : 'var(--blue)';
+  const badgeHtml = info.targetMet 
+    ? `<span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: var(--green-bg); color: var(--green); font-weight: 700;">✓ Cumplido</span>`
+    : `<span style="font-size: 11px; padding: 2px 6px; border-radius: 4px; background: rgba(53, 127, 191, 0.1); color: var(--blue); font-weight: 700;">En progreso</span>`;
+    
+  let statusText = '';
+  if (info.targetMet) {
+    statusText = `¡Objetivo diario cumplido! Has superado tu meta por ${(info.points - info.objective).toFixed(1)} pts.`;
+  } else {
+    statusText = `Te faltan <strong>${info.remaining.toFixed(1)} pts</strong> para alcanzar tu objetivo diario.`;
+  }
+  
+  container.innerHTML = `
+    <div style="display: grid; grid-template-columns: auto 1fr; gap: 16px; align-items: center;">
+      <div style="width: 50px; height: 50px; border-radius: 12px; background: var(--blue-bg); color: var(--blue); display: flex; flex-direction: column; align-items: center; justify-content: center; border: 1.5px solid var(--border);">
+        <span style="font-size: 10px; font-weight: 600; text-transform: uppercase; opacity: 0.8; line-height: 1;">Puesto</span>
+        <span style="font-size: 20px; font-weight: 800; line-height: 1.1;">#${info.rank}</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+          <span style="font-size: 13px; font-weight: 700; color: var(--text);">${info.points.toFixed(1)} pts <span style="font-weight:400;color:var(--t3);">de ${info.objective.toFixed(1)} pts</span></span>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            ${badgeHtml}
+            <span style="font-size: 12px; font-weight: 700; color: ${progressColor};">${info.percent}%</span>
+          </div>
+        </div>
+        <div class="ranking-progress-bar" style="height: 6px; margin: 2px 0;">
+          <div class="ranking-progress-fill ${info.targetMet ? 'target-met' : ''}" style="width: ${info.percent}%; height: 100%;"></div>
+        </div>
+        <div style="font-size: 11.5px; color: var(--t2); margin-top: 2px;">
+          ${statusText}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function updateDashboardAgendaWidget() {
+  const list = loadAgenda();
+  const pending = list.filter(item => !item.completed);
+  pending.sort(sortAgendaItems);
+  
+  const container = document.getElementById('db-widget-agenda-list');
+  if (!container) return;
+  
+  if (pending.length === 0) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 20px 10px; color: var(--t3); font-size: 13px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 8px; opacity: 0.5;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <p style="margin: 0;">¡Al día! No tienes tareas pendientes.</p>
+      </div>
+    `;
+    return;
+  }
+  
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = String(now.getMonth() + 1).padStart(2, '0');
+  const day = String(now.getDate()).padStart(2, '0');
+  const todayStr = `${year}-${month}-${day}`;
+  
+  function formatDateLabel(dateStr) {
+    if (!dateStr) return '';
+    if (dateStr === todayStr) return 'Hoy';
+    const tom = new Date();
+    tom.setDate(tom.getDate() + 1);
+    const tomStr = `${tom.getFullYear()}-${String(tom.getMonth() + 1).padStart(2, '0')}-${String(tom.getDate()).padStart(2, '0')}`;
+    if (dateStr === tomStr) return 'Mañana';
+    const parts = dateStr.split('-');
+    if (parts.length === 3) {
+      return `${parts[2]}/${parts[1]}`;
+    }
+    return dateStr;
+  }
+  
+  const top3 = pending.slice(0, 3);
+  container.innerHTML = top3.map(item => {
+    let statusColor = 'gray';
+    if (item.date) {
+      if (item.date < todayStr) {
+        statusColor = 'red';
+      } else if (item.date > todayStr) {
+        statusColor = 'green';
+      } else {
+        if (item.time) {
+          const [h, m] = item.time.split(':').map(Number);
+          const taskTime = new Date(now.getFullYear(), now.getMonth(), now.getDate(), h, m, 0, 0);
+          const diffMins = (taskTime - now) / 60000;
+          if (diffMins <= 30) {
+            statusColor = 'red';
+          } else {
+            statusColor = 'yellow';
+          }
+        } else {
+          statusColor = 'yellow';
+        }
+      }
+    }
+    
+    const dateLabel = formatDateLabel(item.date);
+    const metaParts = [];
+    if (item.type === 'call') {
+      metaParts.push('Llamada');
+    }
+    if (dateLabel) {
+      if (item.time) {
+        metaParts.push(`${dateLabel} ${item.time}`);
+      } else {
+        metaParts.push(dateLabel);
+      }
+    }
+    const metaText = metaParts.length > 0 ? `(${metaParts.join(' · ')})` : '';
+    
+    return `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: var(--bg); border: 1px solid var(--border); border-radius: var(--rs); transition: all 0.2s;">
+        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
+          <div class="agenda-status-dot ${statusColor}" style="width: 8px; height: 8px; flex-shrink: 0;"></div>
+          <span style="font-size: 13px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${item.title}</span>
+          <span style="font-size: 11px; color: var(--t2); flex-shrink: 0; margin-left: 4px;">${metaText}</span>
+        </div>
+        <button onclick="toggleTaskCompletionFromDashboard('${item.id}')" style="background: transparent; border: none; cursor: pointer; color: var(--t3); display: inline-flex; padding: 2px; border-radius: 4px; transition: color 0.2s;" onmouseover="this.style.color='var(--green)'" onmouseout="this.style.color='var(--t3)'" title="Completar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle></svg>
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function toggleTaskCompletionFromDashboard(id) {
+  toggleTaskCompletion(id);
+  updateDashboardAgendaWidget();
+}
+
+async function fetchRankingForDashboard() {
+  const url = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
+  try {
+    const res = await fetch(url);
+    if (!res.ok) throw new Error("HTTP error " + res.status);
+    const data = await res.json();
+    if (Array.isArray(data)) {
+      rawRankingData = data.filter(r => r && r[0]);
+      localStorage.setItem('ranking_connected', 'true');
+    }
+  } catch (e) {
+    console.warn("Could not fetch ranking for dashboard widget:", e);
+  }
+  updateDashboardRankingWidget();
 }
 
 // ── INIT ──
