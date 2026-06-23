@@ -598,8 +598,8 @@ hr {
   font-size: 20px;
   font-weight: 800;
   color: var(--text);
-  margin-top: 30px;
-  margin-bottom: 24px;
+  margin-top: 35px;
+  margin-bottom: 20px;
   padding-bottom: 12px;
   border-bottom: 1.5px dashed var(--border);
   display: flex;
@@ -607,8 +607,27 @@ hr {
   gap: 8px;
 }
 
+.cond-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+@media (max-width: 991px) {
+  .cond-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
 .cond-cia-block {
-  margin-bottom: 40px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
 }
 
 .cond-cia-hdr {
@@ -2463,7 +2482,6 @@ hr {
             <button class="cf-btn active" id="cf-naturgy" onclick="toggleCia(&#39;naturgy&#39;,this)" style="border-color:#E85D3A;color:#E85D3A"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
             <button class="cf-btn active" id="cf-endesa" onclick="toggleCia(&#39;endesa&#39;,this)" style="border-color:#00A8E0;color:#00A8E0"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
             <button class="cf-btn active" id="cf-gana" onclick="toggleCia(&#39;gana&#39;,this)" style="border-color:#E30613;color:#E30613"><span class="cdot" style="background:#E30613"></span>Gana 24h</button>
-            <button class="cf-btn active" id="cf-gana_ind" onclick="toggleCia(&#39;gana_ind&#39;,this)" style="border-color:#7c3aed;color:#7c3aed"><span class="cdot" style="background:#7c3aed"></span>Gana Indexada</button>
           </div>
         </div>
 
@@ -2651,28 +2669,6 @@ const BASE = {
       {n:'Gana Gas RL2', tv:0.0589, tf:0.2616},
       {n:'Gana Gas RL3', tv:0.0555, tf:0.5830}
     ]
-  },
-  gana_ind:{
-    name:'Gana Indexada PDM', color:'#7c3aed',
-    tp1:0.0759, tp2:0.0020,
-    te_sin:null, te_con:null,
-    p1:0.1910, p2:0.1250, p3:0.1050,
-    precio_excedente:0.04,
-    sva_luz:5.18, sva_gas:0.00,
-    gas_rl1:{tf:0.1260, tv:0.0610},
-    gas_rl2:{tf:0.2616, tv:0.0589},
-    gas_rl3:{tf:0.5830, tv:0.0555},
-    imp_electrico:0.0511,
-    tarifas_luz:[
-      {n:'Plan Precio de Mercado (Indexado)', te:null, tp1:0.0759, tp2:0.0020, dh:true,
-       periodos:[{p:'P1 Punta (23%)',te:0.1910},{p:'P2 Llano (24%)',te:0.1250},{p:'P3 Valle (53%)',te:0.1050}],
-       nota:'Precio de mercado variable. Tu Asistente 24 Horas (+5.18 €/mes)'}
-    ],
-    tarifas_gas:[
-      {n:'Gana Gas RL1', tv:0.0610, tf:0.1260},
-      {n:'Gana Gas RL2', tv:0.0589, tf:0.2616},
-      {n:'Gana Gas RL3', tv:0.0555, tf:0.5830}
-    ]
   }
 };
 
@@ -2683,11 +2679,10 @@ let CC = {
   iberdrola:{ te:RATES.iberdrola.te_sin, tp1:RATES.iberdrola.tp1, tp2:RATES.iberdrola.tp2, gtv:RATES.iberdrola.gas_rl1.tv, gtf:RATES.iberdrola.gas_rl1.tf, precio_excedente:RATES.iberdrola.precio_excedente },
   naturgy:  { te:RATES.naturgy.te_sin,   tp1:RATES.naturgy.tp1,   tp2:RATES.naturgy.tp2,   gtv:RATES.naturgy.gas_rl1.tv,   gtf:RATES.naturgy.gas_rl1.tf,   precio_excedente:RATES.naturgy.precio_excedente },
   endesa:   { te:RATES.endesa.te_sin,    tp1:RATES.endesa.tp1,    tp2:RATES.endesa.tp2,    gtv:RATES.endesa.gas_rl1.tv,    gtf:RATES.endesa.gas_rl1.tf,    precio_excedente:RATES.endesa.precio_excedente },
-  gana:     { te:RATES.gana.te_sin,      tp1:RATES.gana.tp1,      tp2:RATES.gana.tp2,      gtv:RATES.gana.gas_rl1.tv,      gtf:RATES.gana.gas_rl1.tf,      precio_excedente:RATES.gana.precio_excedente },
-  gana_ind: { p1:RATES.gana_ind.p1, p2:RATES.gana_ind.p2, p3:RATES.gana_ind.p3, tp1:RATES.gana_ind.tp1, tp2:RATES.gana_ind.tp2, gtv:RATES.gana_ind.gas_rl1.tv, gtf:RATES.gana_ind.gas_rl1.tf, precio_excedente:RATES.gana_ind.precio_excedente }
+  gana:     { te:RATES.gana.te_sin,      tp1:RATES.gana.tp1,      tp2:RATES.gana.tp2,      gtv:RATES.gana.gas_rl1.tv,      gtf:RATES.gana.gas_rl1.tf,      precio_excedente:RATES.gana.precio_excedente }
 };
 
-let activeCias = {iberdrola:true, naturgy:true, endesa:true, gana:true, gana_ind:true};
+let activeCias = {iberdrola:true, naturgy:true, endesa:true, gana:true};
 
 const PANELS = {
   dashboard:   {title:'Inicio', sub:'Panel de control del comercial', color:'#6366f1', icon:'<rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect>'},
@@ -2958,11 +2953,13 @@ function switchCia(id){
 
 // ── CONDICIONES ──
 function renderCondiciones(){
-  const cias=['iberdrola','naturgy','endesa','gana','gana_ind'];
+  const cias=['iberdrola','naturgy','endesa','gana'];
+  
   let html=`<h2 class="cond-sec-title">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
     Tarifas de Electricidad (Luz)
-  </h2>`;
+  </h2>
+  <div class="cond-grid">`;
   
   cias.forEach(id=>{
     const r=RATES[id];
@@ -2970,42 +2967,44 @@ function renderCondiciones(){
       <div class="cond-cia-hdr">
         <span class="cdot" style="background:${r.color};width:14px;height:14px"></span>
         <div class="cond-cia-name" style="color:${r.color}">${r.name}</div>
-        ${r.desc_sin>0?`<span style="font-size:14px;color:var(--t2)">Descuento sin mant.: <strong>${(r.desc_sin*100).toFixed(0)}%</strong> · Con mant.: <strong>${(r.desc_con*100).toFixed(0)}%</strong></span>`:''}
+        ${r.desc_sin>0?`<span style="font-size:14px;color:var(--t2)">Dto. sin/con mant.: <strong>${(r.desc_sin*100).toFixed(0)}%</strong>/<strong>${(r.desc_con*100).toFixed(0)}%</strong></span>`:''}
       </div>`;
 
     // LUZ
     html+=`<div class="cond-sub-title">Luz — Término de Energía (€/kWh)</div>
     <div class="table-responsive">
     <table class="tariff-table"><thead><tr>
-      <th>Tarifa</th><th>Precio base</th><th>Sin mantenimiento</th><th>Con mantenimiento</th><th></th>
+      <th>Tarifa</th><th>Base</th><th>Sin mant.</th><th>Con mant.</th>
     </tr></thead><tbody>`;
     r.tarifas_luz.forEach(t=>{
       if(t.dh===true && t.periodos){
         // Tarifa con discriminación horaria
-        html+=`<tr><td><strong>${t.n}</strong><br><span class="badge-dh">⏱ Discriminación horaria</span>${t.nota?`<br><span style="font-size:13px;color:var(--t3)">${t.nota}</span>`:''}</td>
-          <td class="price-base"><div style="font-size:13px;color:var(--t3);margin-bottom:4px">Varía por período:</div>${t.periodos.map(p=>`<div>${p.p}: <strong>${p.te.toFixed(4)}</strong></div>`).join('')}</td>
-          <td>—</td><td>—</td><td></td></tr>`;
+        html+=`<tr><td><strong>${t.n}</strong><br><span class="badge-dh">⏱ DH</span>${t.nota?`<br><span style="font-size:13px;color:var(--t3)">${t.nota}</span>`:''}</td>
+          <td class="price-base"><div style="font-size:13px;color:var(--t3);margin-bottom:4px">Varía:</div>${t.periodos.map(p=>`<div>${p.p}: <strong>${p.te.toFixed(4)}</strong></div>`).join('')}</td>
+          <td>—</td><td>—</td></tr>`;
       } else if(t.te!==null){
         const dSin = t.desc_sin !== undefined ? t.desc_sin : (r.desc_sin || 0);
         const dCon = t.desc_con !== undefined ? t.desc_con : (r.desc_con || 0);
         const teSin = t.te_sin !== undefined ? t.te_sin : (dSin>0 ? t.te*(1-dSin) : t.te);
         const teCon = t.te_con !== undefined ? t.te_con : (dCon>0 ? t.te*(1-dCon) : (r.te_con !== r.te_sin ? r.te_con : null));
-        html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}<br><span style="font-size:12px;color:var(--t3)">Dto. sin mant.: ${(dSin*100).toFixed(0)}% · con mant.: ${teCon?(dCon*100).toFixed(0)+'%':'—'}</span></td>
-          <td class="price-base">${t.te.toFixed(4)} €/kWh</td>
-          <td><span class="price-sin">${teSin.toFixed(4)} €/kWh</span></td>
-          <td>${teCon?`<span class="price-con">${teCon.toFixed(4)} €/kWh</span>`:'<span style="color:var(--t3)">igual</span>'}</td>
-          <td></td></tr>`;
+        html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}<br><span style="font-size:12px;color:var(--t3)">Dto: ${(dSin*100).toFixed(0)}% / ${teCon?(dCon*100).toFixed(0)+'%':'—'}</span></td>
+          <td class="price-base">${t.te.toFixed(4)}</td>
+          <td><span class="price-sin">${teSin.toFixed(4)}</span></td>
+          <td>${teCon?`<span class="price-con">${teCon.toFixed(4)}</span>`:'<span style="color:var(--t3)">igual</span>'}</td>
+          </tr>`;
       }
     });
     html+=`</tbody></table></div>
-    <div style="font-size:13px;color:var(--t3);margin-top:6px">Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} €/kW·día · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</div>
+    <div style="font-size:13px;color:var(--t3);margin-top:6px">Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</div>
     </div>`;
   });
 
-  html+=`<h2 class="cond-sec-title" style="margin-top:50px">
+  html+=`</div>
+  <h2 class="cond-sec-title" style="margin-top:20px">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><path d="M12 2c-4 4-5 7.5-5 10a5 5 0 0 0 10 0c0-2.5-1-6-5-10z"></path></svg>
     Tarifas de Gas
-  </h2>`;
+  </h2>
+  <div class="cond-grid">`;
 
   cias.forEach(id=>{
     const r=RATES[id];
@@ -3016,16 +3015,18 @@ function renderCondiciones(){
       </div>`;
 
     // GAS
-    html+=`<div class="cond-sub-title">Gas — Término Variable (€/kWh) y Término Fijo (€/día)</div>
+    html+=`<div class="cond-sub-title">Gas — Término Variable (€/kWh) y Fijo (€/día)</div>
     <div class="table-responsive">
     <table class="tariff-table"><thead><tr>
-      <th>Tarifa</th><th>TV (€/kWh)</th><th>TF (€/día)</th><th>TF (€/mes equivalente)</th>
+      <th>Tarifa</th><th>TV (€/kWh)</th><th>TF (€/día)</th><th>Equiv. mes</th>
     </tr></thead><tbody>`;
     r.tarifas_gas.forEach(t=>{
-      html+=`<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(4)} €/kWh</span></td><td>${t.tf.toFixed(4)} €/día</td><td>${(t.tf*30).toFixed(2)} €/mes</td></tr>`;
+      html+=`<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(4)}</span></td><td>${t.tf.toFixed(4)}</td><td>${(t.tf*30).toFixed(2)} €</td></tr>`;
     });
     html+=`</tbody></table></div></div>`;
   });
+
+  html+=`</div>`;
 
   document.getElementById('cond-render').innerHTML=html;
 }
@@ -3035,7 +3036,7 @@ function f2(n){return(Math.round(n*100)/100).toFixed(2);}
 function gv(id){return parseFloat(document.getElementById(id).value)||0;}
 
 function toggleCia(id, btn){
-  const colors={iberdrola:'#008B3C',naturgy:'#E85D3A',endesa:'#00A8E0',gana:'#E30613',gana_ind:'#7c3aed'};
+  const colors={iberdrola:'#008B3C',naturgy:'#E85D3A',endesa:'#00A8E0',gana:'#E30613'};
   activeCias[id]=!activeCias[id];
   if(activeCias[id]){ btn.classList.add('active'); btn.style.background=colors[id]; btn.style.borderColor=colors[id]; btn.style.color='#fff'; }
   else{ btn.classList.remove('active'); btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }
@@ -3118,7 +3119,7 @@ function calcComp(){
     else if(annualGas > 15000) band = 'rl3';
   }
 
-  const cias=['iberdrola','naturgy','endesa','gana','gana_ind'].filter(c=>activeCias[c]);
+  const cias=['iberdrola','naturgy','endesa','gana'].filter(c=>activeCias[c]);
   const results=cias.map(cia=>{
     const cc=CC[cia]; const r=RATES[cia];
     
@@ -3126,23 +3127,15 @@ function calcComp(){
     const luzPot=(pot1*cc.tp1+pot2*cc.tp2)*dias;
     
     // Energía
-    let luzP1 = 0, luzP2 = 0, luzP3 = 0, totalKwh = kwh1 + kwh2;
-    if(cia === 'gana_ind'){
-      const p1_kwh = totalKwh * 0.23;
-      const p2_kwh = totalKwh * 0.24;
-      const p3_kwh = totalKwh * 0.53;
-      luzP1 = p1_kwh * cc.p1;
-      luzP2 = p2_kwh * cc.p2;
-      luzP3 = p3_kwh * cc.p3;
-    } else {
-      let currentTe = cc.te;
-      if (cc.te === r.te_sin || cc.te === r.te_con) {
-        currentTe = useSva ? r.te_con : r.te_sin;
-        cc.te = currentTe; // Sincronizar de vuelta
-      }
-      luzP1 = kwh1 * currentTe;
-      luzP2 = kwh2 * (currentTe * 0.60);
+    let luzP1 = 0, luzP2 = 0, luzP3 = 0;
+    let currentTe = cc.te;
+    if (cc.te === r.te_sin || cc.te === r.te_con) {
+      currentTe = useSva ? r.te_con : r.te_sin;
+      cc.te = currentTe; // Sincronizar de vuelta
     }
+    luzP1 = kwh1 * currentTe;
+    luzP2 = kwh2 * (currentTe * 0.60);
+    
     const baseElec = luzPot + luzP1 + luzP2 + luzP3;
 
     // Gas
@@ -3259,14 +3252,8 @@ function renderInvCards(results, useSva, openPanels){
           <tr style="font-size:13px;color:var(--t3)"><td style="padding-left:28px">Subtotal potencia</td><td class="ftr-right">${f2(luzPot)} €</td></tr>
           
           <tr><td colspan="2" class="frow-sec">Término de energía</td></tr>
-          ${cia==='gana_ind'?`
-            <tr><td>P1 Punta (23%): ${(totalKwh*0.23).toFixed(0)} kWh × ${cc.p1.toFixed(4)} €/kWh</td><td class="ftr-right">${f2(luzP1)} €</td></tr>
-            <tr><td>P2 Llano (24%): ${(totalKwh*0.24).toFixed(0)} kWh × ${cc.p2.toFixed(4)} €/kWh</td><td class="ftr-right">${f2(luzP2)} €</td></tr>
-            <tr><td>P3 Valle (53%): ${(totalKwh*0.53).toFixed(0)} kWh × ${cc.p3.toFixed(4)} €/kWh</td><td class="ftr-right">${f2(luzP3)} €</td></tr>
-          `:`
-            ${kwh1>0?`<tr><td>${kwh1} kWh × ${cc.te.toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P1</span></td><td class="ftr-right">${f2(luzP1)} €</td></tr>`:''}
-            ${kwh2>0?`<tr><td>${kwh2} kWh × ${(cc.te*0.6).toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P2</span></td><td class="ftr-right">${f2(luzP2)} €</td></tr>`:''}
-          `}
+          ${kwh1>0?`<tr><td>${kwh1} kWh × ${cc.te.toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P1</span></td><td class="ftr-right">${f2(luzP1)} €</td></tr>`:''}
+          ${kwh2>0?`<tr><td>${kwh2} kWh × ${(cc.te*0.6).toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P2</span></td><td class="ftr-right">${f2(luzP2)} €</td></tr>`:''}
         ` : ''}
         
         ${(compMode === 'gas') && gas>0 ? `
@@ -3319,13 +3306,7 @@ function renderInvCards(results, useSva, openPanels){
       </button>
       <div class="ep-body${isOpen}" id="ep-${cia}">
         <div class="ep-grid">
-          ${cia==='gana_ind'?`
-          <div class="ep-grp"><label>P1 luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="p1" value="${cc.p1.toFixed(4)}" oninput="updCC('${cia}','p1',this.value)"></div>
-          <div class="ep-grp"><label>P2 luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="p2" value="${cc.p2.toFixed(4)}" oninput="updCC('${cia}','p2',this.value)"></div>
-          <div class="ep-grp"><label>P3 luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="p3" value="${cc.p3.toFixed(4)}" oninput="updCC('${cia}','p3',this.value)"></div>
-          `:`
           <div class="ep-grp"><label>TE luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="te" value="${cc.te.toFixed(4)}" oninput="updCC('${cia}','te',this.value)"></div>
-          `}
           <div class="ep-grp"><label>TP1 luz (€/kW·día)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="tp1" value="${cc.tp1.toFixed(4)}" oninput="updCC('${cia}','tp1',this.value)"></div>
           <div class="ep-grp"><label>TP2 luz (€/kW·día)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="tp2" value="${cc.tp2.toFixed(4)}" oninput="updCC('${cia}','tp2',this.value)"></div>
           <div class="ep-grp"><label>TV gas (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="gtv" value="${cc.gtv.toFixed(4)}" oninput="updCC('${cia}','gtv',this.value)"></div>
@@ -3365,11 +3346,7 @@ function resetCC(cia){
   const r=RATES[cia];
   const useSva = document.getElementById('f-sva').checked;
   const teVal = useSva ? r.te_con : r.te_sin;
-  if(cia === 'gana_ind'){
-    CC[cia]={p1:r.p1,p2:r.p2,p3:r.p3,tp1:r.tp1,tp2:r.tp2,gtv:r.gas_rl1.tv,gtf:r.gas_rl1.tf,precio_excedente:r.precio_excedente};
-  } else {
-    CC[cia]={te:teVal,tp1:r.tp1,tp2:r.tp2,gtv:r.gas_rl1.tv,gtf:r.gas_rl1.tf,precio_excedente:r.precio_excedente};
-  }
+  CC[cia]={te:teVal,tp1:r.tp1,tp2:r.tp2,gtv:r.gas_rl1.tv,gtf:r.gas_rl1.tf,precio_excedente:r.precio_excedente};
   calcComp();
 }
 
