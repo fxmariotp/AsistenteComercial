@@ -594,6 +594,19 @@ hr {
 }
 
 /* ── CONDICIONES ── */
+.cond-sec-title {
+  font-size: 20px;
+  font-weight: 800;
+  color: var(--text);
+  margin-top: 30px;
+  margin-bottom: 24px;
+  padding-bottom: 12px;
+  border-bottom: 1.5px dashed var(--border);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
 .cond-cia-block {
   margin-bottom: 40px;
 }
@@ -2776,7 +2789,7 @@ function getPeriodElapsedDays(periodIndex, now) {
   
   let count = 0;
   let iter = new Date(start);
-  while (iter <= current) {
+  while (iter < current) {
     if (calIsLabor(iter)) count++;
     iter.setDate(iter.getDate() + 1);
   }
@@ -2946,7 +2959,11 @@ function switchCia(id){
 // ── CONDICIONES ──
 function renderCondiciones(){
   const cias=['iberdrola','naturgy','endesa','gana','gana_ind'];
-  let html='';
+  let html=`<h2 class="cond-sec-title">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--yellow)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+    Tarifas de Electricidad (Luz)
+  </h2>`;
+  
   cias.forEach(id=>{
     const r=RATES[id];
     html+=`<div class="cond-cia-block">
@@ -2981,10 +2998,25 @@ function renderCondiciones(){
       }
     });
     html+=`</tbody></table></div>
-    <div style="font-size:13px;color:var(--t3);margin-top:6px">Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} €/kW·día · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</div>`;
+    <div style="font-size:13px;color:var(--t3);margin-top:6px">Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} €/kW·día · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</div>
+    </div>`;
+  });
+
+  html+=`<h2 class="cond-sec-title" style="margin-top:50px">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><path d="M12 2c-4 4-5 7.5-5 10a5 5 0 0 0 10 0c0-2.5-1-6-5-10z"></path></svg>
+    Tarifas de Gas
+  </h2>`;
+
+  cias.forEach(id=>{
+    const r=RATES[id];
+    html+=`<div class="cond-cia-block">
+      <div class="cond-cia-hdr">
+        <span class="cdot" style="background:${r.color};width:14px;height:14px"></span>
+        <div class="cond-cia-name" style="color:${r.color}">${r.name}</div>
+      </div>`;
 
     // GAS
-    html+=`<div class="cond-sub-title" style="margin-top:20px">Gas — Término Variable (€/kWh) y Término Fijo (€/día)</div>
+    html+=`<div class="cond-sub-title">Gas — Término Variable (€/kWh) y Término Fijo (€/día)</div>
     <div class="table-responsive">
     <table class="tariff-table"><thead><tr>
       <th>Tarifa</th><th>TV (€/kWh)</th><th>TF (€/día)</th><th>TF (€/mes equivalente)</th>
@@ -2994,6 +3026,7 @@ function renderCondiciones(){
     });
     html+=`</tbody></table></div></div>`;
   });
+
   document.getElementById('cond-render').innerHTML=html;
 }
 
