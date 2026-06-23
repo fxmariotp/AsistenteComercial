@@ -2010,7 +2010,7 @@ hr {
   --card-color: #10b981; /* Emerald */
   --card-shadow: rgba(16, 185, 129, 0.12);
   --spoke-bg: #ecfdf5;
-  top: 8%;
+  top: 5%;
   left: 50%;
   transform: translateX(-50%);
 }
@@ -2018,29 +2018,37 @@ hr {
   --card-color: #6366f1; /* Indigo */
   --card-shadow: rgba(99, 102, 241, 0.12);
   --spoke-bg: #e0e7ff;
-  top: 30%;
-  right: 6%;
+  top: 23%;
+  right: 4%;
 }
 .spoke-card.sp-comparativa {
   --card-color: #f59e0b; /* Amber */
   --card-shadow: rgba(245, 158, 11, 0.12);
   --spoke-bg: #fef3c7;
-  bottom: 8%;
-  right: 16%;
+  bottom: 23%;
+  right: 4%;
+}
+.spoke-card.sp-telefonos {
+  --card-color: #a855f7; /* Purple */
+  --card-shadow: rgba(168, 85, 247, 0.12);
+  --spoke-bg: #f3e8ff;
+  bottom: 5%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .spoke-card.sp-calendario {
   --card-color: #0ea5e9; /* Sky */
   --card-shadow: rgba(14, 165, 233, 0.12);
   --spoke-bg: #e0f2fe;
-  bottom: 8%;
-  left: 16%;
+  bottom: 23%;
+  left: 4%;
 }
 .spoke-card.sp-ranking {
   --card-color: #f97316; /* Orange */
   --card-shadow: rgba(249, 115, 22, 0.12);
   --spoke-bg: #ffedd5;
-  top: 30%;
-  left: 6%;
+  top: 23%;
+  left: 4%;
 }
 
 @keyframes strokePulse {
@@ -2708,9 +2716,13 @@ hr {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
       Comparativa
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;calendario&#39;,this)">
+    <button class="nav-btn" onclick="showPanel('calendario',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
       Calendario
+    </button>
+    <button class="nav-btn" onclick="showPanel('telefonos',this)" id="btn-nav-telefonos">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+      Teléfonos
     </button>
     <button class="nav-btn" onclick="showPanel(&#39;ranking&#39;,this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
@@ -2829,6 +2841,17 @@ hr {
             <div class="spoke-title">Ranking de ventas</div>
           </div>
           <div class="spoke-desc">Tabla de rendimiento comercial de los representantes en vivo.</div>
+        </div>
+
+        <!-- Spoke Card 6: Teléfonos -->
+        <div class="spoke-card sp-telefonos" onclick="showPanel('telefonos', document.getElementById('btn-nav-telefonos'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div class="spoke-title">Teléfonos de contacto</div>
+          </div>
+          <div class="spoke-desc">Directorio de atención al cliente y averías de energía.</div>
         </div>
       </div>
     </div>
@@ -3271,6 +3294,11 @@ hr {
       </div>
     </div>
 
+    <!-- ══════ TELÉFONOS ══════ -->
+    <div class="panel" id="panel-telefonos">
+      <!-- Will be rendered dynamically via renderTelefonos() -->
+    </div>
+
     <!-- ══════ RANKING ══════ -->
     <div class="panel" id="panel-ranking">
       
@@ -3317,7 +3345,7 @@ hr {
             </button>
             <button class="btn btn-secondary" onclick="switchRankingView('iframe')" style="padding: 8px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><line x1="9" y1="3" x2="9" y2="21"></line></svg>
-              Ver original (Iframe)
+              Ver original
             </button>
             <button class="btn" onclick="loadNativeRanking()" style="padding: 8px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
@@ -3372,7 +3400,7 @@ hr {
       <div id="ranking-iframe-container" style="height: 76vh; width: 100%; display: none; flex-direction: column; gap: 12px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
           <span style="font-size: 13px; font-weight: 600; color: var(--t2);">
-            Mostrando la versión original giratoria en un iframe.
+            Mostrando la versión original giratoria.
           </span>
           <button class="btn" onclick="switchRankingView('native')" id="btn-switch-to-native" style="padding: 8px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
@@ -3452,7 +3480,7 @@ const BASE = {
     name:'Naturgy', color:'#E85D3A',
     tp1:0.1230, tp2:0.0616,
     te_sin:0.1120, te_con:0.1120,
-    precio_excedente:0.06,
+    precio_excedente:0.05,
     sva_luz:8.48, sva_gas:11.81,
     gas_rl1:{tf:0.1693, tv:0.0795},
     gas_rl2:{tf:0.3008, tv:0.0774},
@@ -3471,7 +3499,7 @@ const BASE = {
     name:'Endesa', color:'#00A8E0',
     tp1:0.0913, tp2:0.0913,
     te_sin:0.1270, te_con:0.1230,
-    precio_excedente:0.06,
+    precio_excedente:0.05,
     sva_luz:4.77, sva_gas:9.09,
     gas_rl1:{tf:0.2316, tv:0.0736},
     gas_rl2:{tf:0.4709, tv:0.0697},
@@ -3491,7 +3519,7 @@ const BASE = {
     name:'Gana Energía 24h', color:'#E30613',
     tp1:0.0894, tp2:0.0894,
     te_sin:0.1190, te_con:0.1190,
-    precio_excedente:0.04,
+    precio_excedente:0.05,
     sva_luz:5.18, sva_gas:0.00,
     gas_rl1:{tf:0.1260, tv:0.0610},
     gas_rl2:{tf:0.2616, tv:0.0589},
@@ -3526,6 +3554,7 @@ const PANELS = {
   condiciones: {title:'Condiciones y tarifas',   sub:'Precios de más barato a más caro · PVP 2026', color:'#0d5c9e', icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
   comparativa: {title:'Comparativa de factura',  sub:'Calcula y ajusta la oferta para el cliente', color:'#e07b00', icon:'<rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/>'},
   calendario:  {title:'Calendario laboral',      sub:'Días laborables 2026 · Calendario RENOSUR-TM', color:'#1a7fcb', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
+  telefonos:   {title:'Teléfonos',               sub:'Atención al cliente y averías de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
   ranking:     {title:'Ranking de ventas',     sub:'Clasificación y rendimiento de los comerciales en tiempo real', color:'#e07b00', icon:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"/>'},
 };
 
@@ -3807,7 +3836,7 @@ async function loadNativeRanking() {
           </p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button class="btn" onclick="toggleSetupGuide(true)">Ver guía de conexión</button>
-            <button class="btn btn-secondary" onclick="switchRankingView('iframe')">Abrir versión original (Iframe)</button>
+            <button class="btn btn-secondary" onclick="switchRankingView('iframe')">Abrir versión original</button>
           </div>
         </div>
       `;
@@ -4065,6 +4094,204 @@ async function testRankingConnection() {
   }
 }
 
+// ── TELÉFONOS DE COMPAÑÍAS Y DISTRIBUIDORAS ──
+const TELEFONOS_CIAS = [
+  { name: 'Iberdrola', tel: '900 225 235', averias: '900 224 522', area: 'Nacional' },
+  { name: 'Endesa', tel: '900 907 880', averias: '900 850 840', area: 'Nacional' },
+  { name: 'Naturgy', tel: '900 100 251', averias: '900 333 999', area: 'Nacional' },
+  { name: 'Gana Energía', tel: '960 202 020', averias: '—', area: 'Nacional' },
+  { name: 'Repsol', tel: '900 102 101', averias: '900 101 010', area: 'Nacional' },
+  { name: 'TotalEnergies', tel: '900 907 000', averias: '900 907 001', area: 'Nacional' },
+  { name: 'Plenitude', tel: '900 264 842', averias: '—', area: 'Nacional' }
+];
+
+const DISTRIBUIDORAS_LUZ = [
+  { name: 'e-distribución (Endesa)', averias: '900 850 840', provincias: 'Andalucía, Extremadura, Murcia, Cataluña, Aragón, Baleares, Canarias', cups: 'ES0031' },
+  { name: 'i-DE (Iberdrola)', averias: '900 171 171', provincias: 'Madrid, Castilla y León, Castilla-La Mancha, Comunidad Valenciana, Murcia, País Vasco, Navarra, La Rioja, Extremadura', cups: 'ES0021' },
+  { name: 'UFD (Naturgy)', averias: '900 333 999', provincias: 'Galicia, Madrid, Castilla y León, Castilla-La Mancha', cups: 'ES0022' },
+  { name: 'Viesgo (Repsol)', averias: '900 101 051', provincias: 'Cantabria, Asturias, Galicia, Castilla y León', cups: 'ES0027' },
+  { name: 'E-Redes (EDP)', averias: '900 907 001', provincias: 'Asturias, Galicia, Madrid, Aragón', cups: 'ES0026' },
+  { name: 'Begasa (Repsol)', averias: '900 505 249', provincias: 'Galicia (Lugo)', cups: 'ES0033' }
+];
+
+const DISTRIBUIDORAS_GAS = [
+  { name: 'Nedgia (Naturgy)', averias: '900 750 750', provincias: 'Cataluña, Madrid, Galicia, Castilla y León, Castilla-La Mancha, Comunidad Valenciana, Andalucía, Aragón, Navarra, La Rioja', cups: 'ES0201, ES0203, ES0217, ES0218, ES0220, ES0221, ES0222, ES0223, ES0224, ES0226, ES0227, ES0230, ES0237, ES0239' },
+  { name: 'Nortegas', averias: '900 400 523', provincias: 'País Vasco, Asturias, Cantabria', cups: 'ES0229' },
+  { name: 'Madrileña Red de Gas', averias: '900 701 123', provincias: 'Madrid', cups: 'ES0234' },
+  { name: 'Redexis Gas', averias: '900 902 080', provincias: 'Aragón, Baleares, Andalucía, Castilla y León, Castilla-La Mancha, Comunidad Valenciana, Madrid, Murcia', cups: 'ES0206' },
+  { name: 'Gas Extremadura', averias: '900 200 150', provincias: 'Badajoz, Cáceres', cups: 'ES0207' }
+];
+
+let currentTelefonosTab = 'ias';
+
+function renderTelefonos() {
+  const isCias = currentTelefonosTab === 'ias';
+  
+  let html = `
+    <div class="cia-tabs" style="margin-bottom: 20px;">
+      <button class="ctab ${isCias ? 'active' : ''}" onclick="switchTelefonosTab('ias')" style="${isCias ? 'border-color:var(--blue);color:var(--blue);' : ''}">
+        <span class="cdot" style="background:var(--blue)"></span>Compañías Eléctricas
+      </button>
+      <button class="ctab ${!isCias ? 'active' : ''}" onclick="switchTelefonosTab('dist')" style="${!isCias ? 'border-color:var(--blue);color:var(--blue);' : ''}">
+        <span class="cdot" style="background:var(--blue)"></span>Distribuidoras
+      </button>
+    </div>
+  `;
+  
+  if (isCias) {
+    html += `
+      <div class="cond-cia-block" style="padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);">
+        <h3 class="cond-sub-title" style="margin-top:0;">Compañías Eléctricas — Atención al Cliente</h3>
+        <div class="table-responsive">
+          <table class="tariff-table" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Compañía</th>
+                <th>Atención al Cliente</th>
+                <th>Averías</th>
+                <th>Área</th>
+                <th style="text-align:center;">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${TELEFONOS_CIAS.map(c => {
+                const telClean = c.tel.replace(/\s+/g, '');
+                return `
+                  <tr>
+                    <td><strong>${c.name}</strong></td>
+                    <td><a href="tel:${telClean}" style="color:var(--blue);font-weight:700;text-decoration:none;">${c.tel}</a></td>
+                    <td>${c.averias !== '—' ? `<a href="tel:${c.averias.replace(/\s+/g, '')}" style="color:var(--t2);text-decoration:none;">${c.averias}</a>` : '—'}</td>
+                    <td><span style="font-size:12px;padding:2px 6px;border-radius:10px;background:var(--border);color:var(--t2);">${c.area}</span></td>
+                    <td style="text-align:center;">
+                      <a href="tel:${telClean}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+                        Llamar
+                      </a>
+                    </td>
+                  </tr>
+                `;
+              }).join('')}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="ranking-search-wrapper" style="margin-bottom: 20px; background:var(--surface); border:1px solid var(--border); border-radius:var(--r); padding:16px; display:flex; gap:12px; align-items:center;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--t3)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-left:4px;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="dist-search-input" placeholder="Buscar por provincia, distribuidora o inicio de CUPS..." oninput="filterDistribuidoras()" style="flex:1; border:none; background:transparent; font-size:14px; outline:none; color:var(--text);" />
+      </div>
+      
+      <!-- Distribuidoras Luz -->
+      <div class="cond-cia-block" style="padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 20px;">
+        <h3 class="cond-sub-title" style="margin-top:0; color:var(--blue); display:flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+          Distribuidoras de Luz
+        </h3>
+        <div class="table-responsive">
+          <table class="tariff-table dist-table" id="dist-luz-table" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Distribuidora</th>
+                <th>CUPS Inicial</th>
+                <th>Teléfono Averías</th>
+                <th>Provincias de Actuación</th>
+                <th style="text-align:center;">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="dist-luz-tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Distribuidoras Gas -->
+      <div class="cond-cia-block" style="padding: 24px; background: var(--surface); border: 1px solid var(--border); border-radius: var(--r);">
+        <h3 class="cond-sub-title" style="margin-top:0; color:var(--orange); display:flex; align-items:center; gap:8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2c-4 4-5 7.5-5 10a5 5 0 0 0 10 0c0-2.5-1-6-5-10z"></path></svg>
+          Distribuidoras de Gas
+        </h3>
+        <div class="table-responsive">
+          <table class="tariff-table dist-table" id="dist-gas-table" style="width: 100%;">
+            <thead>
+              <tr>
+                <th>Distribuidora</th>
+                <th>CUPS Inicial</th>
+                <th>Teléfono Averías</th>
+                <th>Provincias de Actuación</th>
+                <th style="text-align:center;">Acción</th>
+              </tr>
+            </thead>
+            <tbody id="dist-gas-tbody">
+            </tbody>
+          </table>
+        </div>
+      </div>
+    `;
+  }
+  
+  document.getElementById('panel-telefonos').innerHTML = html;
+  
+  if (!isCias) {
+    renderDistributorsRows();
+  }
+}
+
+function renderDistributorsRows() {
+  const query = document.getElementById('dist-search-input') ? document.getElementById('dist-search-input').value.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") : '';
+  
+  const filterFn = d => {
+    if (!query) return true;
+    const nameMatch = d.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(query);
+    const cupsMatch = d.cups.toLowerCase().includes(query);
+    const provMatch = d.provincias.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").includes(query);
+    return nameMatch || cupsMatch || provMatch;
+  };
+  
+  const luzFiltered = DISTRIBUIDORAS_LUZ.filter(filterFn);
+  const gasFiltered = DISTRIBUIDORAS_GAS.filter(filterFn);
+  
+  document.getElementById('dist-luz-tbody').innerHTML = luzFiltered.length > 0 ? luzFiltered.map(d => `
+    <tr>
+      <td><strong>${d.name}</strong></td>
+      <td><span class="badge-dh" style="background:#e0f2fe;color:#0369a1;font-weight:700;">${d.cups}</span></td>
+      <td><a href="tel:${d.averias.replace(/\s+/g, '')}" style="color:var(--red);font-weight:700;text-decoration:none;">${d.averias}</a></td>
+      <td style="font-size:13px;color:var(--t2);max-width:320px;line-height:1.4;">${d.provincias}</td>
+      <td style="text-align:center;">
+        <a href="tel:${d.averias.replace(/\s+/g, '')}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          Avería
+        </a>
+      </td>
+    </tr>
+  `).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:20px;">No se encontraron distribuidoras de luz</td></tr>`;
+
+  document.getElementById('dist-gas-tbody').innerHTML = gasFiltered.length > 0 ? gasFiltered.map(d => `
+    <tr>
+      <td><strong>${d.name}</strong></td>
+      <td><span class="badge-dh" style="background:#ffedd5;color:#c2410c;font-weight:700;">${d.cups}</span></td>
+      <td><a href="tel:${d.averias.replace(/\s+/g, '')}" style="color:var(--red);font-weight:700;text-decoration:none;">${d.averias}</a></td>
+      <td style="font-size:13px;color:var(--t2);max-width:320px;line-height:1.4;">${d.provincias}</td>
+      <td style="text-align:center;">
+        <a href="tel:${d.averias.replace(/\s+/g, '')}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          Avería
+        </a>
+      </td>
+    </tr>
+  `).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:20px;">No se encontraron distribuidoras de gas</td></tr>`;
+}
+
+function switchTelefonosTab(tab) {
+  currentTelefonosTab = tab;
+  renderTelefonos();
+}
+
+function filterDistribuidoras() {
+  renderDistributorsRows();
+}
+
 // ── NAV ──
 function showPanel(id, btn){
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
@@ -4094,6 +4321,7 @@ function showPanel(id, btn){
   if(id==='archivos') renderAdmin();
   if(id==='calendario') renderCalendar();
   if(id==='ranking') loadNativeRanking();
+  if(id==='telefonos') renderTelefonos();
   
   // Close mobile sidebar drawer if open
   const sidebar = document.getElementById('sidebar');
@@ -4109,7 +4337,7 @@ function showPanel(id, btn){
 
 function switchCia(id){
   const colors={iberdrola:'#008B3C',naturgy:'#E85D3A',endesa:'#00A8E0','naturgy-pymes':'#E85D3A',gana:'#E30613'};
-  document.querySelectorAll('.ctab').forEach(t=>{t.classList.remove('active');t.style.background='';t.style.borderColor='';t.style.color='';});
+  document.querySelectorAll('#panel-scripts .ctab').forEach(t=>{t.classList.remove('active');t.style.background='';t.style.borderColor='';t.style.color='';});
   document.querySelectorAll('.sv').forEach(v=>v.classList.remove('active'));
   const t=document.getElementById('ctab-'+id);
   t.classList.add('active'); t.style.background=colors[id]; t.style.borderColor=colors[id]; t.style.color='#fff';
@@ -4160,7 +4388,10 @@ function renderCondiciones(){
       }
     });
     html+=`</tbody></table></div>
-    <div style="font-size:13px;color:var(--t3);margin-top:6px">Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</div>
+    <div style="font-size:12px;color:var(--t3);margin-top:6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
+      <span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</span>
+      <span>Excedentes: <strong>${r.precio_excedente.toFixed(2)} €/kWh</strong></span>
+    </div>
     </div>`;
   });
 
@@ -4299,9 +4530,6 @@ function calcComp(){
 
     // Excedentes
     let excPrice = r.precio_excedente;
-    if (cia === 'endesa') {
-      excPrice = useSva ? 0.10 : 0.06;
-    }
     
     const excAmt = excedente * excPrice;
     let excOffset = 0;
@@ -4359,6 +4587,7 @@ function calcComp(){
 }
 
 function renderInvCards(results, useSva){
+  const isLuz = compMode === 'luz';
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
     const{cia,r,total,ahorro,actual}=res;
     const best=idx===0, aPos=ahorro>0, aNeg=ahorro<0;
@@ -4372,6 +4601,11 @@ function renderInvCards(results, useSva){
           <div class="inv-cia-name" style="color:${r.color}">${r.name}</div>
           ${best?'<span class="best-badge">✓ Mejor opción</span>':''}
         </div>
+        ${isLuz ? `
+        <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;">
+          Excedentes: <strong style="color:var(--text);">${res.excPrice.toFixed(2)} €/kWh</strong>
+        </div>
+        ` : ''}
       </div>
       
       <!-- Savings Grid -->
@@ -4413,18 +4647,22 @@ function renderInvCards(results, useSva){
 }
 
 function renderSummary(results, actual){
+  const isLuz = compMode === 'luz';
   document.getElementById('comp-summary').innerHTML=`<div class="sum-card">
     <div class="sum-card-title">Resumen comparativo</div>
     ${actual>0?`<div style="font-size:14px;color:var(--t2);margin-bottom:14px">Factura actual: <strong>${f2(actual)} €/mes</strong></div>`:''}
     <div class="table-responsive">
     <table class="sum-table"><thead><tr>
-      <th>Compañía</th><th style="text-align:right">Total/mes</th>
+      <th>Compañía</th>
+      ${isLuz ? `<th style="text-align:right">Exc. (€/kWh)</th>` : ''}
+      <th style="text-align:right">Total/mes</th>
       <th style="text-align:right">Ahorro/mes</th><th style="text-align:right">Ahorro/año</th>
     </tr></thead><tbody>
     ${results.map((r,i)=>{
       const ah=r.ahorro, pos=ah>0;
       return`<tr class="${i===0?'brow':''}">
         <td><span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>${r.r.name}${i===0?'<span class="badge-best">✓ mejor</span>':''}</td>
+        ${isLuz ? `<td style="text-align:right;color:var(--t2)">${r.excPrice.toFixed(2)} €</td>` : ''}
         <td style="text-align:right;font-weight:700">${f2(r.total)} €</td>
         <td style="text-align:right;font-weight:700;color:${ah!==null?(pos?'var(--green)':'var(--red)'):'inherit'}">${ah!==null?(pos?'−':'+')+f2(Math.abs(ah))+' €':'—'}</td>
         <td style="text-align:right;font-weight:700;color:${ah!==null?(pos?'var(--green)':'var(--red)'):'inherit'}">${ah!==null?(pos?'−':'+')+f2(Math.abs(ah*12))+' €':'—'}</td>
