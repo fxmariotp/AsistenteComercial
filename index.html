@@ -3603,7 +3603,7 @@ function renderNativeRanking(data) {
         <div class="podium-avatar">${initials}</div>
         <div class="podium-name" title="${nombre}">${shortName}</div>
         <div class="podium-points">${pts.toFixed(1)} <span style="font-size:12px;color:var(--t3);font-weight:400;">pts</span></div>
-        <div class="podium-target">Objetivo: ${obj.toFixed(1)}</div>
+        <div class="podium-target">Objetivo diario: ${obj.toFixed(1)}</div>
         <div style="font-size: 11px; font-weight:700; color:${cumple ? 'var(--green)' : 'var(--blue)'}; text-align:right; margin-bottom:2px;">
           ${pct}%
         </div>
@@ -3646,14 +3646,14 @@ function renderNativeRanking(data) {
           ${cumple ? '<span style="color:var(--green); font-size:10px; font-weight:800; background:var(--green-bg); padding:2px 6px; border-radius:4px;">Objetivo</span>' : ''}
         </div>
         <div class="row-progress-container">
-          <div class="row-pct">${pct}% del objetivo completado</div>
+          <div class="row-pct">${pct}% del objetivo diario completado</div>
           <div class="ranking-progress-bar" style="margin: 0;">
             <div class="ranking-progress-fill ${cumple ? 'target-met' : ''}" style="width: ${pct}%"></div>
           </div>
         </div>
         <div class="row-values">
           <div>${pts.toFixed(1)}</div>
-          <div class="row-values-sub">Objetivo: ${obj.toFixed(1)}</div>
+          <div class="row-values-sub">Objetivo diario: ${obj.toFixed(1)}</div>
         </div>
         <div class="row-badge-container">
           <span class="ranking-badge ${cumple ? 'ok' : 'bad'}">
