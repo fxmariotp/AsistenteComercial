@@ -3473,7 +3473,7 @@ const BASE = {
     name:'Iberdrola', color:'#008B3C',
     tp1:0.1240, tp2:0.0620,
     te_sin:0.1240, te_con:0.1170,
-    precio_excedente:0.06,
+    precio_excedente:0.05,
     sva_luz:4.48, sva_gas:9.95,
     gas_rl1:{tf:0.2112, tv:0.1024},
     gas_rl2:{tf:0.3606, tv:0.1013},
@@ -3493,7 +3493,7 @@ const BASE = {
     name:'Naturgy', color:'#E85D3A',
     tp1:0.1230, tp2:0.0616,
     te_sin:0.1120, te_con:0.1120,
-    precio_excedente:0.05,
+    precio_excedente:0.06,
     sva_luz:8.48, sva_gas:11.81,
     gas_rl1:{tf:0.1693, tv:0.0795},
     gas_rl2:{tf:0.3008, tv:0.0774},
@@ -3512,7 +3512,7 @@ const BASE = {
     name:'Endesa', color:'#00A8E0',
     tp1:0.0913, tp2:0.0913,
     te_sin:0.1270, te_con:0.1230,
-    precio_excedente:0.05,
+    precio_excedente:0.06,
     sva_luz:4.77, sva_gas:9.09,
     gas_rl1:{tf:0.2316, tv:0.0736},
     gas_rl2:{tf:0.4709, tv:0.0697},
@@ -3532,7 +3532,7 @@ const BASE = {
     name:'Gana Energía 24h', color:'#E30613',
     tp1:0.0894, tp2:0.0894,
     te_sin:0.1190, te_con:0.1190,
-    precio_excedente:0.05,
+    precio_excedente:0.06,
     sva_luz:5.18, sva_gas:0.00,
     gas_rl1:{tf:0.1260, tv:0.0610},
     gas_rl2:{tf:0.2616, tv:0.0589},
@@ -4731,7 +4731,7 @@ function printCompanyOffer(cia) {
         <div class="print-logo-text">RENOSUR</div>
       </div>
       <div class="print-title-area">
-        <div class="print-report-title">Estudio Comparativo de Suministro</div>
+        <div class="print-report-title">Estudio Comparativo de Suministro de ${compMode === 'luz' ? 'Luz' : 'Gas'}</div>
         <div class="print-report-date">Fecha: ${dateStr} &nbsp;|&nbsp; Asesor: ${agentName}</div>
       </div>
     </div>
@@ -4998,7 +4998,7 @@ function printCompanyOffer(cia) {
   if (typeof html2pdf !== 'undefined') {
     const opt = {
       margin:       [10, 10, 10, 10],
-      filename:     `Estudio_Comparativo_${targetRes.r.name.replace(/\s+/g, '_')}_${dateStr.replace(/\//g, '-')}.pdf`,
+      filename:     `Estudio_Comparativo_${compMode === 'luz' ? 'Luz' : 'Gas'}_${targetRes.r.name.replace(/\s+/g, '_')}_${dateStr.replace(/\//g, '-')}.pdf`,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true, width: 760 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
