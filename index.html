@@ -1961,7 +1961,7 @@ hr {
     </button>
     <button class="nav-btn" id="btn-nav-scripts" onclick="showPanel('scripts',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
-      Scripts verificación
+      Textos legales
     </button>
     <button class="nav-btn" onclick="showPanel(&#39;condiciones&#39;,this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
@@ -2003,7 +2003,7 @@ hr {
         <svg id="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path></svg>
       </div>
       <div>
-        <div class="topbar-t" id="ptitle">Scripts de verificación</div>
+        <div class="topbar-t" id="ptitle">Textos legales</div>
         <div class="topbar-s" id="psub">Selecciona la compañía y sigue el guión</div>
       </div>
     </div>
@@ -2049,9 +2049,9 @@ hr {
             <div class="spoke-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
             </div>
-            <div class="spoke-title">Scripts verificación</div>
+            <div class="spoke-title">Textos legales</div>
           </div>
-          <div class="spoke-desc">Guiones legales paso a paso para Naturgy, Endesa, Gana Energía...</div>
+          <div class="spoke-desc">Textos legales paso a paso para Naturgy, Endesa, Gana Energía...</div>
         </div>
 
         <!-- Spoke Card 2: Condiciones -->
@@ -2106,8 +2106,8 @@ hr {
         <button class="ctab active" id="ctab-iberdrola" onclick="switchCia(&#39;iberdrola&#39;)" style="border-color:#008B3C;color:#008B3C"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
         <button class="ctab" id="ctab-naturgy" onclick="switchCia(&#39;naturgy&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
         <button class="ctab" id="ctab-endesa" onclick="switchCia(&#39;endesa&#39;)"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
-        <button class="ctab" id="ctab-naturgy-pymes" onclick="switchCia(&#39;naturgy-pymes&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy (PYMES)</button>
         <button class="ctab" id="ctab-gana" onclick="switchCia(&#39;gana&#39;)"><span class="cdot" style="background:#E30613"></span>Gana Energía</button>
+        <button class="ctab" id="ctab-naturgy-pymes" onclick="switchCia(&#39;naturgy-pymes&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy (PYMES)</button>
       </div>
 
       <!-- IBERDROLA -->
@@ -2686,7 +2686,7 @@ let activeCias = {iberdrola:true, naturgy:true, endesa:true, gana:true};
 
 const PANELS = {
   dashboard:   {title:'Inicio', sub:'Panel de control del comercial', color:'#6366f1', icon:'<rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect>'},
-  scripts:     {title:'Scripts de verificación', sub:'Selecciona la compañía y sigue el guión paso a paso', color:'#1a7a3c', icon:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>'},
+  scripts:     {title:'Textos legales', sub:'Selecciona la compañía y sigue el guión paso a paso', color:'#1a7a3c', icon:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>'},
   condiciones: {title:'Condiciones y tarifas',   sub:'Precios de más barato a más caro · PVP 2026', color:'#0d5c9e', icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
   comparativa: {title:'Comparativa de factura',  sub:'Calcula y ajusta la oferta para el cliente', color:'#e07b00', icon:'<rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/>'},
   calendario:  {title:'Calendario laboral',      sub:'Días laborables 2026 · Calendario RENOSUR-TM', color:'#1a7fcb', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
