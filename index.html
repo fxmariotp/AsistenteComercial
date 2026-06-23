@@ -986,13 +986,13 @@ hr {
 
 .comp-form-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: 16px 24px;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px 12px;
 }
 .comp-form-grid .fsec {
   grid-column: 1 / -1;
-  margin: 14px 0 8px;
-  padding-top: 12px;
+  margin: 10px 0 6px;
+  padding-top: 8px;
   border-top: 1px solid var(--border);
 }
 .comp-form-grid .fsec:first-of-type {
@@ -1004,7 +1004,9 @@ hr {
   margin-bottom: 0;
 }
 .comp-form-grid .fgrp-checkbox {
-  grid-column: span 2;
+  display: flex;
+  align-items: center;
+  margin-top: 18px;
   margin-bottom: 0;
 }
 
@@ -1012,7 +1014,7 @@ hr {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .comp-form-title {
@@ -1043,23 +1045,23 @@ hr {
 }
 
 .fgrp {
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .fgrp label {
   display: block;
-  font-size: 13.5px;
+  font-size: 12px;
   color: var(--t2);
-  margin-bottom: 6px;
+  margin-bottom: 4px;
   font-weight: 600;
 }
 
 .fgrp input, .fgrp select {
   width: 100%;
-  padding: 10px 14px;
+  padding: 6px 10px;
   border: 1.5px solid var(--border);
   border-radius: var(--rs);
-  font-size: 14.5px;
+  font-size: 13px;
   background: var(--surface);
   color: var(--text);
   outline: none;
@@ -2597,6 +2599,10 @@ hr {
   }
   .comp-form-grid .fgrp-checkbox {
     grid-column: auto;
+    margin-top: 10px;
+  }
+  .comp-form-grid .gas-grp {
+    grid-column: auto !important;
   }
   .cal-counters {
     grid-template-columns: 1fr !important;
@@ -3182,22 +3188,24 @@ hr {
           </div>
           <div class="comp-form-grid">
             <div class="fsec">Período</div>
-            <div class="fgrp"><label>Días facturados</label><input type="number" id="f-dias" value="28" min="1" max="90" oninput="calcComp()"></div>
-            <div class="fsec luz-grp">Potencia contratada</div>
-            <div class="fgrp-row luz-grp">
-              <div class="fgrp"><label>P1 (kW)</label><input type="number" id="f-pot1" value="4.6" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
-              <div class="fgrp"><label>P2 (kW)</label><input type="number" id="f-pot2" value="4.6" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
-            </div>
-            <div class="fsec luz-grp">Consumo energía</div>
-            <div class="fgrp luz-grp"><label>Luz P1 (kWh)</label><input type="number" id="f-kwh1" value="414" placeholder="414" oninput="calcComp()"></div>
-            <div class="fgrp luz-grp"><label>Luz P2 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh2" value="0" placeholder="0" oninput="calcComp()"></div>
-            <div class="fgrp luz-grp"><label>Excedentes (kWh)</label><input type="number" id="f-excedente" value="0" placeholder="0" min="0" oninput="calcComp()"></div>
-            <div class="fgrp gas-grp hidden-grp"><label>Gas (kWh)</label><input type="number" id="f-gas" value="0" placeholder="0" oninput="calcComp()"></div>
-            <div class="fsec luz-grp">Otros conceptos</div>
-            <div class="fgrp luz-grp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" value="0.85" step="0.01" oninput="calcComp()"></div>
+            <div class="fgrp"><label>Días facturados</label><input type="number" id="f-dias" placeholder="" autocomplete="off" value="" min="1" max="90" oninput="calcComp()"></div>
             <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.21">21%</option><option value="0.10">10%</option></select></div>
-            <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" value="138.41" placeholder="138.41" step="0.01" oninput="calcComp()"></div>
-            <div class="fsec">Servicios adicionales</div>
+            
+            <div class="fsec luz-grp">Potencia contratada</div>
+            <div class="fgrp luz-grp"><label>P1 (kW)</label><input type="number" id="f-pot1" placeholder="" autocomplete="off" value="" step="0.001" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>P2 (kW)</label><input type="number" id="f-pot2" placeholder="" autocomplete="off" value="" step="0.001" oninput="calcComp()"></div>
+            
+            <div class="fsec luz-grp">Consumo energía</div>
+            <div class="fgrp luz-grp"><label>Luz P1 (kWh)</label><input type="number" id="f-kwh1" placeholder="" autocomplete="off" value="" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Luz P2 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh2" placeholder="" autocomplete="off" value="" oninput="calcComp()"></div>
+            
+            <div class="fgrp luz-grp"><label>Excedentes (kWh)</label><input type="number" id="f-excedente" placeholder="" autocomplete="off" value="" min="0" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" placeholder="" autocomplete="off" value="" step="0.01" oninput="calcComp()"></div>
+            
+            <div class="fgrp gas-grp hidden-grp" style="grid-column: span 2"><label>Gas (kWh)</label><input type="number" id="f-gas" placeholder="" autocomplete="off" value="" oninput="calcComp()"></div>
+            
+            <div class="fsec">Facturación actual</div>
+            <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" placeholder="" autocomplete="off" value="" step="0.01" oninput="calcComp()"></div>
             <div class="fgrp fgrp-checkbox">
               <input type="checkbox" id="f-sva" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
               <label for="f-sva" style="margin-bottom:0;cursor:pointer;font-weight:600">Activar SVA (Mantenimientos)</label>
