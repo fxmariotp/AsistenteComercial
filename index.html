@@ -8,6 +8,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script>
   (function() {
     const COMERCIALES = {
@@ -1551,6 +1552,7 @@ hr {
     display: block !important;
     padding: 10px;
   }
+}
   .print-header {
     display: flex;
     justify-content: space-between;
@@ -1619,6 +1621,7 @@ hr {
     padding: 10px;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    page-break-inside: avoid;
   }
   .print-card-title {
     font-size: 10px;
@@ -1643,6 +1646,7 @@ hr {
     align-items: center;
     -webkit-print-color-adjust: exact;
     print-color-adjust: exact;
+    page-break-inside: avoid;
   }
   .print-hero-left {
     flex: 1;
@@ -1694,6 +1698,9 @@ hr {
     border-bottom: 1px solid #e2e8f0;
     color: #334155;
   }
+  table.print-table tr {
+    page-break-inside: avoid;
+  }
   .print-best-row {
     background-color: #f0fdf4 !important;
     font-weight: 700;
@@ -1715,6 +1722,7 @@ hr {
     border: 1px solid #e2e8f0;
     border-radius: 6px;
     padding: 10px;
+    page-break-inside: avoid;
   }
   .print-detail-block-title {
     font-size: 11px;
@@ -1747,7 +1755,6 @@ hr {
     text-align: center;
     line-height: 1.4;
   }
-}
 
 
 
@@ -4977,7 +4984,28 @@ function printCompanyOffer(cia) {
   `;
   
   document.getElementById('print-report-container').innerHTML = html;
-  window.print();
+  
+  if (typeof html2pdf !== 'undefined') {
+    const opt = {
+      margin:       [10, 10, 10, 10],
+      filename:     `Estudio_Comparativo_${targetRes.r.name.replace(/\s+/g, '_')}_${dateStr.replace(/\//g, '-')}.pdf`,
+      image:        { type: 'jpeg', quality: 0.98 },
+      html2canvas:  { scale: 2, useCORS: true },
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    
+    const container = document.getElementById('print-report-container');
+    container.style.display = 'block';
+    html2pdf().set(opt).from(container).save().then(() => {
+      container.style.display = 'none';
+    }).catch(err => {
+      console.error("Error generating PDF:", err);
+      container.style.display = 'none';
+      window.print();
+    });
+  } else {
+    window.print();
+  }
 }
 
 // ── NATURGY PROVINCIA / PDV ──
