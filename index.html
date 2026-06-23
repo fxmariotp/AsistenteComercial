@@ -4141,6 +4141,39 @@ const DISTRIBUIDORAS_GAS = [
 
 let currentTelefonosTab = 'ias';
 
+function copyToClipboard(text, btn) {
+  if (!navigator.clipboard) {
+    const el = document.createElement('textarea');
+    el.value = text;
+    document.body.appendChild(el);
+    el.select();
+    document.execCommand('copy');
+    document.body.removeChild(el);
+    showCopySuccess(btn);
+    return;
+  }
+  navigator.clipboard.writeText(text).then(() => {
+    showCopySuccess(btn);
+  }).catch(err => {
+    console.error("Error al copiar: ", err);
+  });
+}
+
+function showCopySuccess(btn) {
+  const oldHTML = btn.innerHTML;
+  btn.innerHTML = `
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--green)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"></polyline></svg>
+    ¡Copiado!
+  `;
+  btn.style.color = 'var(--green)';
+  btn.style.borderColor = 'var(--green)';
+  setTimeout(() => {
+    btn.innerHTML = oldHTML;
+    btn.style.color = '';
+    btn.style.borderColor = '';
+  }, 1500);
+}
+
 function renderTelefonos() {
   const isCias = currentTelefonosTab === 'ias';
   
@@ -4180,10 +4213,10 @@ function renderTelefonos() {
                     <td>${c.averias !== '—' ? `<a href="tel:${c.averias.replace(/\s+/g, '')}" style="color:var(--t2);text-decoration:none;">${c.averias}</a>` : '—'}</td>
                     <td><span style="font-size:12px;padding:2px 6px;border-radius:10px;background:var(--border);color:var(--t2);">${c.area}</span></td>
                     <td style="text-align:center;">
-                      <a href="tel:${telClean}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
-                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-                        Llamar
-                      </a>
+                      <button class="btn btn-secondary" onclick="copyToClipboard('${c.tel}', this)" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                        Copiar
+                      </button>
                     </td>
                   </tr>
                 `;
@@ -4276,10 +4309,10 @@ function renderDistributorsRows() {
       <td><a href="tel:${d.averias.replace(/\s+/g, '')}" style="color:var(--red);font-weight:700;text-decoration:none;">${d.averias}</a></td>
       <td style="font-size:13px;color:var(--t2);max-width:320px;line-height:1.4;">${d.provincias}</td>
       <td style="text-align:center;">
-        <a href="tel:${d.averias.replace(/\s+/g, '')}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-          Avería
-        </a>
+        <button class="btn btn-secondary" onclick="copyToClipboard('${d.averias}', this)" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copiar
+        </button>
       </td>
     </tr>
   `).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:20px;">No se encontraron distribuidoras de luz</td></tr>`;
@@ -4291,10 +4324,10 @@ function renderDistributorsRows() {
       <td><a href="tel:${d.averias.replace(/\s+/g, '')}" style="color:var(--red);font-weight:700;text-decoration:none;">${d.averias}</a></td>
       <td style="font-size:13px;color:var(--t2);max-width:320px;line-height:1.4;">${d.provincias}</td>
       <td style="text-align:center;">
-        <a href="tel:${d.averias.replace(/\s+/g, '')}" class="btn btn-secondary" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-          Avería
-        </a>
+        <button class="btn btn-secondary" onclick="copyToClipboard('${d.averias}', this)" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copiar
+        </button>
       </td>
     </tr>
   `).join('') : `<tr><td colspan="5" style="text-align:center;color:var(--t3);padding:20px;">No se encontraron distribuidoras de gas</td></tr>`;
