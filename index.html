@@ -1189,6 +1189,101 @@ hr {
   color: var(--red);
 }
 
+/* Minimalist Invoice card styles */
+.inv-hdr-minimal {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 24px 12px 24px;
+}
+.inv-savings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  padding: 0 24px 16px 24px;
+}
+@media (min-width: 640px) {
+  .inv-savings-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+.saving-box {
+  background: var(--bg-level2, #f8fafc);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 8px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: all 0.2s ease;
+}
+.saving-box.pos {
+  background: #f0fdf4 !important;
+  border-color: #bbf7d0 !important;
+}
+.saving-box.neg {
+  background: #fef2f2 !important;
+  border-color: #fca5a5 !important;
+}
+.saving-lbl {
+  font-size: 11px;
+  font-weight: 700;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+  margin-bottom: 6px;
+}
+.saving-box.pos .saving-lbl {
+  color: #166534 !important;
+}
+.saving-box.neg .saving-lbl {
+  color: #991b1b !important;
+}
+.saving-val {
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.1;
+}
+.saving-box.pos .saving-val {
+  color: #15803d !important;
+}
+.saving-box.neg .saving-val {
+  color: #b91c1c !important;
+}
+.inv-actions {
+  padding: 0 24px 24px 24px;
+  display: flex;
+  justify-content: center;
+}
+.btn-pdf {
+  width: 100%;
+  background: #202854;
+  color: #fff;
+  font-weight: 700;
+  border: none;
+  border-radius: 8px;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 14.5px;
+}
+.btn-pdf:hover {
+  background: #357FBF;
+  transform: translateY(-1px);
+}
+.btn-pdf svg {
+  transition: transform 0.2s ease;
+}
+.btn-pdf:hover svg {
+  transform: translateY(2px);
+}
+
 .ftable {
   width: 100%;
   border-collapse: collapse;
@@ -2643,10 +2738,6 @@ hr {
         <div class="topbar-s" id="psub">Selecciona la compañía y sigue el guión</div>
       </div>
     </div>
-    <button class="btn" id="print-btn" style="display:none" onclick="prepareAndPrint()">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
-      Imprimir oferta
-    </button>
   </div>
 
   <div class="content">
@@ -3112,13 +3203,7 @@ hr {
               <label for="f-sva" style="margin-bottom:0;cursor:pointer;font-weight:600">Activar SVA (Mantenimientos)</label>
             </div>
           </div>
-          <div class="fsec">Compañías a comparar</div>
-          <div class="cia-filter-row">
-            <button class="cf-btn active" id="cf-iberdrola" onclick="toggleCia(&#39;iberdrola&#39;,this)" style="border-color:#008B3C;background:#008B3C;color:#fff"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
-            <button class="cf-btn active" id="cf-naturgy" onclick="toggleCia(&#39;naturgy&#39;,this)" style="border-color:#E85D3A;background:#E85D3A;color:#fff"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
-            <button class="cf-btn active" id="cf-endesa" onclick="toggleCia(&#39;endesa&#39;,this)" style="border-color:#00A8E0;background:#00A8E0;color:#fff"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
-            <button class="cf-btn active" id="cf-gana" onclick="toggleCia(&#39;gana&#39;,this)" style="border-color:#E30613;background:#E30613;color:#fff"><span class="cdot" style="background:#E30613"></span>Gana 24h</button>
-          </div>
+
         </div>
         <div>
           <div class="empty-state" id="comp-empty">
@@ -3996,7 +4081,6 @@ function showPanel(id, btn){
   wrap.style.background=p.color+'22';
   document.getElementById('topbar-icon').style.color=p.color;
   document.getElementById('topbar-icon').innerHTML=p.icon;
-  document.getElementById('print-btn').style.display=id==='comparativa'?'inline-flex':'none';
   if(id==='comparativa') calcComp();
   if(id==='condiciones') renderCondiciones();
   if(id==='archivos') renderAdmin();
@@ -4108,13 +4192,7 @@ function renderCondiciones(){
 function f2(n){return(Math.round(n*100)/100).toFixed(2);}
 function gv(id){return parseFloat(document.getElementById(id).value)||0;}
 
-function toggleCia(id, btn){
-  const colors={iberdrola:'#008B3C',naturgy:'#E85D3A',endesa:'#00A8E0',gana:'#E30613'};
-  activeCias[id]=!activeCias[id];
-  if(activeCias[id]){ btn.classList.add('active'); btn.style.background=colors[id]; btn.style.borderColor=colors[id]; btn.style.color='#fff'; }
-  else{ btn.classList.remove('active'); btn.style.background=''; btn.style.borderColor=''; btn.style.color=''; }
-  calcComp();
-}
+
 
 let compMode = 'luz';
 
@@ -4167,20 +4245,6 @@ function calcComp(){
   }
   document.getElementById('comp-empty').style.display='none';
 
-  // Preservar estado antes del renderizado
-  const openPanels = {};
-  document.querySelectorAll('.ep-body.open').forEach(el => {
-    openPanels[el.id.replace('ep-', '')] = true;
-  });
-
-  const activeEl = document.activeElement;
-  let activeCia = null;
-  let activeField = null;
-  if (activeEl && activeEl.tagName === 'INPUT' && activeEl.dataset.cia) {
-    activeCia = activeEl.dataset.cia;
-    activeField = activeEl.dataset.field;
-  }
-
   const scrollContainer = document.querySelector('.content');
   const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
 
@@ -4192,22 +4256,18 @@ function calcComp(){
     else if(annualGas > 15000) band = 'rl3';
   }
 
-  const cias=['iberdrola','naturgy','endesa','gana'].filter(c=>activeCias[c]);
+  const cias=['iberdrola','naturgy','endesa','gana'];
   const results=cias.map(cia=>{
-    const cc=CC[cia]; const r=RATES[cia];
+    const r=RATES[cia];
     
     // Potencia
-    const luzPot=(pot1*cc.tp1+pot2*cc.tp2)*dias;
+    const luzPot=(pot1*r.tp1+pot2*r.tp2)*dias;
     
     // Energía
-    let luzP1 = 0, luzP2 = 0, luzP3 = 0;
-    let currentTe = cc.te;
-    if (cc.te === r.te_sin || cc.te === r.te_con) {
-      currentTe = useSva ? r.te_con : r.te_sin;
-      cc.te = currentTe; // Sincronizar de vuelta
-    }
-    luzP1 = kwh1 * currentTe;
-    luzP2 = kwh2 * (currentTe * 0.60);
+    const currentTe = useSva ? r.te_con : r.te_sin;
+    const luzP1 = kwh1 * currentTe;
+    const luzP2 = kwh2 * (currentTe * 0.60);
+    const luzP3 = 0;
     
     const totalKwh = kwh1 + kwh2;
     const baseElec = luzPot + luzP1 + luzP2 + luzP3;
@@ -4216,10 +4276,8 @@ function calcComp(){
     let gasVar = 0, gasFij = 0;
     if(gas > 0){
       const bandObj = band === 'rl1' ? r.gas_rl1 : (band === 'rl2' ? r.gas_rl2 : r.gas_rl3);
-      const active_gtv = (cc.gtv === r.gas_rl1.tv) ? bandObj.tv : cc.gtv;
-      const active_gtf = (cc.gtf === r.gas_rl1.tf) ? bandObj.tf : cc.gtf;
-      gasVar = gas * active_gtv;
-      gasFij = active_gtf * dias;
+      gasVar = gas * bandObj.tv;
+      gasFij = bandObj.tf * dias;
     }
 
     // SVA
@@ -4232,12 +4290,9 @@ function calcComp(){
     }
 
     // Excedentes
-    let excPrice = cc.precio_excedente;
+    let excPrice = r.precio_excedente;
     if (cia === 'endesa') {
-      if (cc.precio_excedente === 0.06 || cc.precio_excedente === 0.10) {
-        excPrice = useSva ? 0.10 : 0.06;
-        cc.precio_excedente = excPrice;
-      }
+      excPrice = useSva ? 0.10 : 0.06;
     }
     
     const excAmt = excedente * excPrice;
@@ -4278,118 +4333,72 @@ function calcComp(){
 
     const ahorro = actual > 0 ? actual - total : null;
     return {
-      cia, cc, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
+      cia, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
-      dias, iva, kwh1, kwh2, gas, pot1, pot2, actual, band, excedente
+      dias, iva, kwh1, kwh2, gas, pot1, pot2, actual, band, excedente, useSva
     };
   });
 
   results.sort((a,b)=>a.total-b.total);
   window.lastCompResults = results; // Save for print report
-  renderInvCards(results, useSva, openPanels);
+  renderInvCards(results, useSva);
   renderSummary(results,actual);
 
-  // Restaurar scroll y foco
+  // Restaurar scroll
   if (scrollContainer) {
     scrollContainer.scrollTop = scrollTop;
   }
-
-  if (activeCia && activeField) {
-    const newActiveEl = document.querySelector(`input[data-cia="${activeCia}"][data-field="${activeField}"]`);
-    if (newActiveEl) {
-      newActiveEl.focus();
-    }
-  }
 }
 
-function renderInvCards(results, useSva, openPanels){
+function renderInvCards(results, useSva){
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
-    const{cia,cc,r,luzPot,luzP1,luzP2,luzP3,totalKwh,gasVar,gasFij,impElec,alq,svaLuzAmt,svaGasAmt,excPrice,excAmt,excOffset,subtotalNoExc,subtotal,ivaAmt,total,ahorro,dias,iva,kwh1,kwh2,gas,pot1,pot2,band,excedente}=res;
+    const{cia,r,total,ahorro,actual}=res;
     const best=idx===0, aPos=ahorro>0, aNeg=ahorro<0;
-    const isOpen = openPanels[cia] ? ' open' : '';
-    return`<div class="inv-card${best?' best':''}">
-      <div class="inv-hdr">
+    const pct=(actual>0 && ahorro!==null)?(ahorro/actual)*100:null;
+    
+    return `<div class="inv-card${best?' best':''}">
+      <!-- Header -->
+      <div class="inv-hdr-minimal">
         <div class="inv-hdr-left">
           <span class="cdot" style="background:${r.color};width:14px;height:14px"></span>
           <div class="inv-cia-name" style="color:${r.color}">${r.name}</div>
           ${best?'<span class="best-badge">✓ Mejor opción</span>':''}
         </div>
-        <div class="inv-savings">
-          <div class="inv-savings-lbl">${ahorro!==null?(aPos?'Ahorro mensual':'Diferencia'):'Total mensual'}</div>
-          <div class="inv-savings-val ${aPos?'pos':aNeg?'neg':''}">${ahorro!==null?(aPos?'−':'+')+''+f2(Math.abs(ahorro))+' €':f2(total)+' €'}</div>
+      </div>
+      
+      <!-- Savings Grid -->
+      <div class="inv-savings-grid">
+        <!-- Total Box -->
+        <div class="saving-box">
+          <span class="saving-lbl">Total mensual</span>
+          <span class="saving-val">${f2(total)} €</span>
+        </div>
+        
+        <!-- Monthly Savings Box -->
+        <div class="saving-box ${ahorro!==null?(aPos?'pos':'neg'):''}">
+          <span class="saving-lbl">${ahorro!==null ? (aPos?'Ahorro mensual':'Diferencia mensual') : 'Ahorro mensual'}</span>
+          <span class="saving-val">${ahorro!==null ? (aPos?'−':'+')+f2(Math.abs(ahorro))+' €' : '—'}</span>
+        </div>
+        
+        <!-- Annual Savings Box -->
+        <div class="saving-box ${ahorro!==null?(aPos?'pos':'neg'):''}">
+          <span class="saving-lbl">${ahorro!==null ? (aPos?'Ahorro anual':'Diferencia anual') : 'Ahorro anual'}</span>
+          <span class="saving-val">${ahorro!==null ? (aPos?'−':'+')+f2(Math.abs(ahorro*12))+' €' : '—'}</span>
+        </div>
+
+        <!-- Percentage Box -->
+        <div class="saving-box ${pct!==null?(aPos?'pos':'neg'):''}">
+          <span class="saving-lbl">% Ahorro</span>
+          <span class="saving-val">${pct!==null ? (aPos?'−':'+')+f2(Math.abs(pct))+' %' : '—'}</span>
         </div>
       </div>
-      <table class="ftable">
-        ${(compMode === 'luz') ? `
-          <tr><td colspan="2" class="frow-sec">Término de potencia</td></tr>
-          ${pot1>0?`<tr><td>${pot1} kW × ${dias} días × ${cc.tp1.toFixed(4)} €/kW·día &nbsp;<span style="font-size:12px;color:var(--t3)">P1</span></td><td class="ftr-right">${f2(pot1*cc.tp1*dias)} €</td></tr>`:''}
-          ${pot2>0?`<tr><td>${pot2} kW × ${dias} días × ${cc.tp2.toFixed(4)} €/kW·día &nbsp;<span style="font-size:12px;color:var(--t3)">P2</span></td><td class="ftr-right">${f2(pot2*cc.tp2*dias)} €</td></tr>`:''}
-          <tr style="font-size:13px;color:var(--t3)"><td style="padding-left:28px">Subtotal potencia</td><td class="ftr-right">${f2(luzPot)} €</td></tr>
-          
-          <tr><td colspan="2" class="frow-sec">Término de energía</td></tr>
-          ${kwh1>0?`<tr><td>${kwh1} kWh × ${cc.te.toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P1</span></td><td class="ftr-right">${f2(luzP1)} €</td></tr>`:''}
-          ${kwh2>0?`<tr><td>${kwh2} kWh × ${(cc.te*0.6).toFixed(4)} €/kWh &nbsp;<span style="font-size:12px;color:var(--t3)">P2</span></td><td class="ftr-right">${f2(luzP2)} €</td></tr>`:''}
-        ` : ''}
-        
-        ${(compMode === 'gas') && gas>0 ? `
-          <tr><td colspan="2" class="frow-sec">Gas (Tarifa ${band.toUpperCase()})</td></tr>
-          <tr><td>${gas} kWh × ${cc.gtv.toFixed(4)} €/kWh <span style="font-size:12px;color:var(--t3)">variable</span></td><td class="ftr-right">${f2(gasVar)} €</td></tr>
-          <tr><td>${dias} días × ${cc.gtf.toFixed(4)} €/día <span style="font-size:12px;color:var(--t3)">fijo</span></td><td class="ftr-right">${f2(gasFij)} €</td></tr>
-        ` : ''}
-        
-        ${(compMode === 'luz') && excedente>0 && !useSva ? `
-          <tr><td colspan="2" class="frow-sec" style="color:var(--green)">Autoconsumo y Excedentes</td></tr>
-          <tr>
-            <td style="color:var(--green)">Compensación excedentes (${excedente} kWh × ${excPrice.toFixed(4)} €/kWh)</td>
-            <td class="ftr-right" style="color:var(--green)">−${f2(excOffset)} €</td>
-          </tr>
-          ${excAmt > excOffset ? `
-            <tr style="font-size:12px;color:var(--orange)"><td colspan="2" style="padding-left:28px;line-height:1.3">⚠ Excedente sobrante no compensado: ${f2(excAmt - excOffset)} €<br><span style="font-size:11px;color:var(--t3)">Activa SVA (Batería Virtual) para no perderlo</span></td></tr>
-          ` : ''}
-        ` : ''}
-        
-        <tr><td colspan="2" class="frow-sec">Impuestos y otros</td></tr>
-        ${(compMode === 'luz') ? `
-          <tr><td>Impuesto sobre electricidad (${(r.imp_electrico*100).toFixed(2)}%)</td><td class="ftr-right">${f2(impElec)} €</td></tr>
-          <tr><td>Alquiler de equipos</td><td class="ftr-right">${f2(alq)} €</td></tr>
-        ` : ''}
-        ${svaLuzAmt>0 && (compMode === 'luz') ? `<tr><td>Servicio Mantenimiento Luz (${r.name})</td><td class="ftr-right">${f2(svaLuzAmt)} €</td></tr>` : ''}
-        ${svaGasAmt>0 && (compMode === 'gas') ? `<tr><td>Servicio Mantenimiento Gas (${r.name})</td><td class="ftr-right">${f2(svaGasAmt)} €</td></tr>` : ''}
-        
-        <tr class="frow-total"><td>Subtotal sin IVA</td><td class="ftr-right">${f2(useSva ? subtotalNoExc : subtotal)} €</td></tr>
-        <tr><td>IVA (${Math.round(iva*100)}%)</td><td class="ftr-right">${f2(useSva ? (subtotalNoExc * iva) : ivaAmt)} €</td></tr>
-        
-        ${useSva && excedente>0 && (compMode === 'luz') ? `
-          <tr style="font-size:13px;color:var(--t2)"><td>Total antes de Batería Virtual</td><td class="ftr-right">${f2(subtotalNoExc * (1+iva))} €</td></tr>
-          <tr style="color:var(--green)">
-            <td>Descuento Batería Virtual (${excedente} kWh × ${excPrice.toFixed(4)} €/kWh + IVA)</td>
-            <td class="ftr-right">−${f2(Math.min(excAmt * (1+iva), subtotalNoExc * (1+iva)))} €</td>
-          </tr>
-          ${excAmt * (1+iva) > subtotalNoExc * (1+iva) ? `
-            <tr style="font-size:12px;color:var(--green)"><td colspan="2" style="padding-left:28px;line-height:1.3">✓ Saldo guardado en Batería Virtual para el próximo mes: ${f2((excAmt - excOffset) * (1+iva))} €</td></tr>
-          ` : ''}
-        ` : ''}
-        <tr class="frow-total"><td><strong>TOTAL MENSUAL</strong></td><td class="ftr-right"><strong>${f2(total)} €</strong></td></tr>
-        ${res.actual>0?`
-        <tr class="frow-actual"><td>Factura actual cliente</td><td class="ftr-right">${f2(res.actual)} €</td></tr>
-        <tr class="frow-ahorro${aNeg?' neg':''}"><td>${aPos?'✓ Ahorro estimado en esta factura':'✗ Diferencia en esta factura'}</td><td class="ftr-right">${aPos?'−':'+'}${f2(Math.abs(ahorro))} €</td></tr>
-        <tr class="frow-ahorro-ano${aNeg?' neg':''}"><td>${aPos?'✓ Ahorro estimado anual':'✗ Diferencia anual'}</td><td class="ftr-right">${aPos?'−':'+'}${f2(Math.abs(ahorro*12))} €</td></tr>`:''}
-      </table>
-      <button class="ep-toggle" onclick="document.getElementById('ep-${cia}').classList.toggle('open')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-        Ajustar precios de oferta
-      </button>
-      <div class="ep-body${isOpen}" id="ep-${cia}">
-        <div class="ep-grid">
-          <div class="ep-grp"><label>TE luz (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="te" value="${cc.te.toFixed(4)}" oninput="updCC('${cia}','te',this.value)"></div>
-          <div class="ep-grp"><label>TP1 luz (€/kW·día)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="tp1" value="${cc.tp1.toFixed(4)}" oninput="updCC('${cia}','tp1',this.value)"></div>
-          <div class="ep-grp"><label>TP2 luz (€/kW·día)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="tp2" value="${cc.tp2.toFixed(4)}" oninput="updCC('${cia}','tp2',this.value)"></div>
-          <div class="ep-grp"><label>TV gas (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="gtv" value="${cc.gtv.toFixed(4)}" oninput="updCC('${cia}','gtv',this.value)"></div>
-          <div class="ep-grp"><label>TF gas (€/día)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="gtf" value="${cc.gtf.toFixed(4)}" oninput="updCC('${cia}','gtf',this.value)"></div>
-          <div class="ep-grp"><label>Exc. (€/kWh)</label><input type="number" step="0.0001" data-cia="${cia}" data-field="precio_excedente" value="${excPrice.toFixed(4)}" oninput="updCC('${cia}','precio_excedente',this.value)"></div>
-        </div>
-        <div class="ep-note">⚠ Precios ajustados solo para elaborar la oferta orientativa al cliente. No son precios oficiales.</div>
-        <button class="reset-lnk" onclick="resetCC('${cia}')">Restablecer precios reales</button>
+      
+      <!-- Actions Area -->
+      <div class="inv-actions">
+        <button class="btn btn-pdf" onclick="printCompanyOffer('${cia}')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;display:inline-block;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Descargar PDF Comparativa
+        </button>
       </div>
     </div>`;
   }).join('');
@@ -4416,16 +4425,7 @@ function renderSummary(results, actual){
     </tbody></table></div></div>`;
 }
 
-function updCC(cia,f,v){ CC[cia][f]=parseFloat(v)||0; calcComp(); }
-function resetCC(cia){
-  const r=RATES[cia];
-  const useSva = document.getElementById('f-sva').checked;
-  const teVal = useSva ? r.te_con : r.te_sin;
-  CC[cia]={te:teVal,tp1:r.tp1,tp2:r.tp2,gtv:r.gas_rl1.tv,gtf:r.gas_rl1.tf,precio_excedente:r.precio_excedente};
-  calcComp();
-}
-
-function prepareAndPrint() {
+function printCompanyOffer(cia) {
   if (!window.lastCompResults || window.lastCompResults.length === 0) {
     calcComp();
   }
@@ -4435,24 +4435,27 @@ function prepareAndPrint() {
     return;
   }
   
-  const dias = gv('f-dias') || 30;
-  const useSva = document.getElementById('f-sva').checked;
-  const iva = gv('f-iva') || 0.21;
-  const actual = gv('f-actual');
-  const alq = gv('f-alquiler') || 0;
-  
-  let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, excedente = 0, gas = 0;
-  if (compMode === 'luz') {
-    pot1 = gv('f-pot1') || 0;
-    pot2 = gv('f-pot2') || pot1;
-    kwh1 = gv('f-kwh1') || 0;
-    kwh2 = gv('f-kwh2') || 0;
-    excedente = gv('f-excedente') || 0;
-  } else {
-    gas = gv('f-gas') || 0;
+  const targetRes = results.find(r => r.cia === cia);
+  if (!targetRes) {
+    alert("No hay datos de comparativa para esta compañía.");
+    return;
   }
   
-  const best = results[0];
+  const dias = targetRes.dias;
+  const useSva = targetRes.useSva || document.getElementById('f-sva').checked;
+  const iva = targetRes.iva;
+  const actual = targetRes.actual;
+  const alq = targetRes.alq;
+  const kwh1 = targetRes.kwh1;
+  const kwh2 = targetRes.kwh2;
+  const excedente = targetRes.excedente;
+  const gas = targetRes.gas;
+  const pot1 = targetRes.pot1;
+  const pot2 = targetRes.pot2;
+  
+  const te = useSva ? targetRes.r.te_con : targetRes.r.te_sin;
+  const bandObj = targetRes.band === 'rl1' ? targetRes.r.gas_rl1 : (targetRes.band === 'rl2' ? targetRes.r.gas_rl2 : targetRes.r.gas_rl3);
+  
   const dateStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   const agentName = getShortName(currentAgentName) || "Asesor Comercial";
   
@@ -4499,7 +4502,7 @@ function prepareAndPrint() {
     html += `
       <div class="print-card">
         <div class="print-card-title">Consumo Estimado de Gas</div>
-        <div class="print-card-value">${gas} kWh (Banda RL${best.band === 'rl1' ? '1' : best.band === 'rl2' ? '2' : '3'})</div>
+        <div class="print-card-value">${gas} kWh (Banda RL${targetRes.band === 'rl1' ? '1' : targetRes.band === 'rl2' ? '2' : '3'})</div>
       </div>
     `;
   }
@@ -4516,17 +4519,32 @@ function prepareAndPrint() {
     </div>
   `;
   
-  // Savings recommendation hero box
-  if (actual > 0 && best.ahorro > 0) {
+  const ahorro = targetRes.ahorro;
+  const aPos = ahorro > 0;
+  
+  if (actual > 0 && ahorro > 0) {
     html += `
       <div class="print-hero-box">
         <div class="print-hero-left">
           <div class="print-hero-title">¡Propuesta de ahorro disponible!</div>
-          <div class="print-hero-desc">Recomendamos realizar la contratación con <strong>${best.r.name}</strong>. Esta opción reduce su facturación actual optimizando los costes de potencia y energía.</div>
+          <div class="print-hero-desc">Recomendamos realizar la contratación con <strong>${targetRes.r.name}</strong>. Esta opción reduce su facturación actual optimizando los costes de potencia y energía.</div>
         </div>
         <div class="print-hero-right">
           <div class="print-hero-savings-lbl">Ahorro Estimado Anual</div>
-          <div class="print-hero-savings-val">−${f2(best.ahorro * 12)} €</div>
+          <div class="print-hero-savings-val">−${f2(ahorro * 12)} €</div>
+        </div>
+      </div>
+    `;
+  } else if (actual > 0 && ahorro <= 0) {
+    html += `
+      <div class="print-hero-box" style="background:#fee2e2;border-color:#fca5a5">
+        <div class="print-hero-left">
+          <div class="print-hero-title" style="color:#991b1b">Estudio comparativo</div>
+          <div class="print-hero-desc" style="color:#7f1d1d">La oferta económica con la compañía <strong>${targetRes.r.name}</strong> tiene un coste superior de <strong>+${f2(Math.abs(ahorro))} €/mes</strong> en comparación con su factura actual.</div>
+        </div>
+        <div class="print-hero-right" style="text-align:right">
+          <div class="print-hero-savings-lbl" style="color:#991b1b">Diferencia Estimada Anual</div>
+          <div class="print-hero-savings-val" style="color:#b91c1c">+${f2(Math.abs(ahorro * 12))} €</div>
         </div>
       </div>
     `;
@@ -4535,11 +4553,11 @@ function prepareAndPrint() {
       <div class="print-hero-box" style="background:#ecf4fa;border-color:#bce0fd">
         <div class="print-hero-left">
           <div class="print-hero-title" style="color:#1d4ed8">Estudio optimizado</div>
-          <div class="print-hero-desc" style="color:#1e293b">La mejor oferta económica disponible para su suministro es con la compañía <strong>${best.r.name}</strong>, ofreciendo tarifas fijas estables sin permanencia.</div>
+          <div class="print-hero-desc" style="color:#1e293b">Tarifa analizada con la compañía <strong>${targetRes.r.name}</strong>, ofreciendo tarifas fijas estables sin permanencia.</div>
         </div>
         <div class="print-hero-right" style="text-align:right">
           <div class="print-hero-savings-lbl" style="color:#1d4ed8">Coste Estimado/Mes</div>
-          <div class="print-hero-savings-val" style="color:#1e3a8a">${f2(best.total)} €</div>
+          <div class="print-hero-savings-val" style="color:#1e3a8a">${f2(targetRes.total)} €</div>
         </div>
       </div>
     `;
@@ -4561,16 +4579,16 @@ function prepareAndPrint() {
       <tbody>
   `;
   
-  results.forEach((res, idx) => {
-    const isBest = idx === 0;
+  results.forEach((res) => {
+    const isTarget = res.cia === cia;
     const ah = res.ahorro;
     const pos = ah > 0;
     
     html += `
-      <tr class="${isBest ? 'print-best-row' : ''}">
+      <tr class="${isTarget ? 'print-best-row' : ''}">
         <td>
           <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${res.r.color};margin-right:8px"></span>
-          <strong>${res.r.name}</strong> ${isBest ? '<span style="font-size:10px;padding:2px 6px;border-radius:10px;background:#d1fae5;color:#065f46;margin-left:6px">✓ Recomendado</span>' : ''}
+          <strong>${res.r.name}</strong> ${isTarget ? '<span style="font-size:10px;padding:2px 6px;border-radius:10px;background:#d1fae5;color:#065f46;margin-left:6px">✓ Seleccionada</span>' : ''}
         </td>
         <td style="text-align:right">${f2(res.useSva ? res.subtotalNoExc : res.subtotal)} €</td>
         <td style="text-align:right">${f2(res.useSva ? (res.subtotalNoExc * res.iva) : res.ivaAmt)} €</td>
@@ -4585,7 +4603,7 @@ function prepareAndPrint() {
       </tbody>
     </table>
     
-    <div class="print-section-title">3. Detalle de Conceptos de la Opción Recomendada: ${best.r.name}</div>
+    <div class="print-section-title">3. Detalle de Conceptos de la Opción Seleccionada: ${targetRes.r.name}</div>
     <div class="print-details-container">
       <div class="print-detail-block">
         <div class="print-detail-block-title">Detalle de Facturación</div>
@@ -4595,39 +4613,39 @@ function prepareAndPrint() {
     html += `
       <div class="print-detail-row">
         <span>Término Potencia P1:</span>
-        <span>${pot1} kW × ${dias} días × ${best.cc.tp1.toFixed(4)} €/kW·día</span>
-        <span>${f2(pot1 * best.cc.tp1 * dias)} €</span>
+        <span>${pot1} kW × ${dias} días × ${targetRes.r.tp1.toFixed(4)} €/kW·día</span>
+        <span>${f2(pot1 * targetRes.r.tp1 * dias)} €</span>
       </div>
       ${pot2 > 0 ? `
       <div class="print-detail-row">
         <span>Término Potencia P2:</span>
-        <span>${pot2} kW × ${dias} días × ${best.cc.tp2.toFixed(4)} €/kW·día</span>
-        <span>${f2(pot2 * best.cc.tp2 * dias)} €</span>
+        <span>${pot2} kW × ${dias} días × ${targetRes.r.tp2.toFixed(4)} €/kW·día</span>
+        <span>${f2(pot2 * targetRes.r.tp2 * dias)} €</span>
       </div>
       ` : ''}
       <div class="print-detail-row" style="color:#64748b;font-size:11px;padding-left:10px">
         <span>Subtotal Potencia:</span>
-        <span>${f2(best.luzPot)} €</span>
+        <span>${f2(targetRes.luzPot)} €</span>
       </div>
       
       <div class="print-detail-row" style="margin-top:8px">
         <span>Término Energía P1:</span>
-        <span>${kwh1} kWh × ${best.cc.te.toFixed(4)} €/kWh</span>
-        <span>${f2(best.luzP1)} €</span>
+        <span>${kwh1} kWh × ${te.toFixed(4)} €/kWh</span>
+        <span>${f2(targetRes.luzP1)} €</span>
       </div>
       ${kwh2 > 0 ? `
       <div class="print-detail-row">
         <span>Término Energía P2:</span>
-        <span>${kwh2} kWh × ${(best.cc.te * 0.6).toFixed(4)} €/kWh</span>
-        <span>${f2(best.luzP2)} €</span>
+        <span>${kwh2} kWh × ${(te * 0.6).toFixed(4)} €/kWh</span>
+        <span>${f2(targetRes.luzP2)} €</span>
       </div>
       ` : ''}
       
       ${excedente > 0 ? `
       <div class="print-detail-row" style="margin-top:8px;color:#166534">
         <span>Compensación Excedentes:</span>
-        <span>${excedente} kWh × ${best.excPrice.toFixed(4)} €/kWh</span>
-        <span>−${f2(best.excOffset)} €</span>
+        <span>${excedente} kWh × ${targetRes.excPrice.toFixed(4)} €/kWh</span>
+        <span>−${f2(targetRes.excOffset)} €</span>
       </div>
       ` : ''}
     `;
@@ -4635,13 +4653,13 @@ function prepareAndPrint() {
     html += `
       <div class="print-detail-row">
         <span>Término Variable Gas:</span>
-        <span>${gas} kWh × ${best.cc.gtv.toFixed(4)} €/kWh</span>
-        <span>${f2(best.gasVar)} €</span>
+        <span>${gas} kWh × ${bandObj.tv.toFixed(4)} €/kWh</span>
+        <span>${f2(targetRes.gasVar)} €</span>
       </div>
       <div class="print-detail-row">
         <span>Término Fijo Gas:</span>
-        <span>${dias} días × ${best.cc.gtf.toFixed(4)} €/día</span>
-        <span>${f2(best.gasFij)} €</span>
+        <span>${dias} días × ${bandObj.tf.toFixed(4)} €/día</span>
+        <span>${f2(targetRes.gasFij)} €</span>
       </div>
     `;
   }
@@ -4653,11 +4671,11 @@ function prepareAndPrint() {
         ${compMode === 'luz' ? `
         <div class="print-detail-row">
           <span>Suma de Términos de Energía/Potencia:</span>
-          <span>${f2(best.baseElec)} €</span>
+          <span>${f2(targetRes.baseElec)} €</span>
         </div>
         <div class="print-detail-row">
-          <span>Impuesto Eléctrico (${(best.r.imp_electrico * 100).toFixed(2)}%):</span>
-          <span>${f2(best.impElec)} €</span>
+          <span>Impuesto Eléctrico (${(targetRes.r.imp_electrico * 100).toFixed(2)}%):</span>
+          <span>${f2(targetRes.impElec)} €</span>
         </div>
         <div class="print-detail-row">
           <span>Alquiler de equipos de medida:</span>
@@ -4666,40 +4684,40 @@ function prepareAndPrint() {
         ` : `
         <div class="print-detail-row">
           <span>Suma de Términos de Gas (Fijo + Variable):</span>
-          <span>${f2(best.gasVar + best.gasFij)} €</span>
+          <span>${f2(targetRes.gasVar + targetRes.gasFij)} €</span>
         </div>
         `}
         
-        ${best.svaLuzAmt > 0 ? `
+        ${targetRes.svaLuzAmt > 0 ? `
         <div class="print-detail-row">
-          <span>Servicio Mantenimiento Luz (${best.r.name}):</span>
-          <span>${f2(best.svaLuzAmt)} €</span>
+          <span>Servicio Mantenimiento Luz (${targetRes.r.name}):</span>
+          <span>${f2(targetRes.svaLuzAmt)} €</span>
         </div>
         ` : ''}
-        ${best.svaGasAmt > 0 ? `
+        ${targetRes.svaGasAmt > 0 ? `
         <div class="print-detail-row">
-          <span>Servicio Mantenimiento Gas (${best.r.name}):</span>
-          <span>${f2(best.svaGasAmt)} €</span>
+          <span>Servicio Mantenimiento Gas (${targetRes.r.name}):</span>
+          <span>${f2(targetRes.svaGasAmt)} €</span>
         </div>
         ` : ''}
         
         <div class="print-detail-row total" style="margin-top:12px">
           <span>Subtotal base facturable:</span>
-          <span>${f2(best.useSva ? best.subtotalNoExc : best.subtotal)} €</span>
+          <span>${f2(targetRes.useSva ? targetRes.subtotalNoExc : targetRes.subtotal)} €</span>
         </div>
         <div class="print-detail-row">
-          <span>Impuestos (IVA ${Math.round(best.iva * 100)}%):</span>
-          <span>${f2(best.useSva ? (best.subtotalNoExc * best.iva) : best.ivaAmt)} €</span>
+          <span>Impuestos (IVA ${Math.round(targetRes.iva * 100)}%):</span>
+          <span>${f2(targetRes.useSva ? (targetRes.subtotalNoExc * targetRes.iva) : targetRes.ivaAmt)} €</span>
         </div>
         ${useSva && excedente > 0 && compMode === 'luz' ? `
         <div class="print-detail-row" style="color:#166534">
           <span>Descuento Batería Virtual:</span>
-          <span>−${f2(Math.min(best.excAmt * (1 + best.iva), best.subtotalNoExc * (1 + best.iva)))} €</span>
+          <span>−${f2(Math.min(targetRes.excAmt * (1 + targetRes.iva), targetRes.subtotalNoExc * (1 + targetRes.iva)))} €</span>
         </div>
         ` : ''}
         <div class="print-detail-row total" style="border-top:2px solid #202854;font-size:13px;color:#202854">
           <span>TOTAL ESTIMADO MENSUAL:</span>
-          <span>${f2(best.total)} €</span>
+          <span>${f2(targetRes.total)} €</span>
         </div>
       </div>
     </div>
