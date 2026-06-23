@@ -968,6 +968,13 @@ hr {
   flex-direction: column;
   gap: 24px;
 }
+@media (min-width: 1024px) {
+  .comp-layout {
+    display: grid;
+    grid-template-columns: 420px 1fr;
+    align-items: start;
+  }
+}
 
 .comp-form {
   background: var(--surface);
@@ -1429,28 +1436,219 @@ hr {
   font-size: 16px;
 }
 
+#print-report-container {
+  display: none;
+}
 @media print {
-  #sidebar, .topbar, .comp-form, .ep-toggle, .ep-body, .reset-lnk, .btn {
+  body {
+    background: #ffffff !important;
+    color: #202854 !important;
+    font-family: 'Outfit', -apple-system, sans-serif !important;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+  .app, #sidebar, .topbar, #sidebar-overlay {
     display: none !important;
   }
-  .comp-layout {
-    display: block;
+  #print-report-container {
+    display: block !important;
+    padding: 10px;
   }
-  .app {
-    display: block;
-    height: auto;
-    overflow: visible;
+  .print-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 2px solid #357FBF;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
   }
-  .content {
-    overflow: visible;
-    padding: 20px;
+  .print-logo-area {
+    display: flex;
+    align-items: center;
+    gap: 10px;
   }
-  .panel.active {
-    display: block;
+  .print-logo-icon {
+    width: 32px;
+    height: 32px;
+    background: #357FBF;
+    color: #fff;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
   }
-  #main {
-    overflow: visible;
-    display: block;
+  .print-logo-text {
+    font-size: 20px;
+    font-weight: 800;
+    color: #202854;
+    letter-spacing: -0.5px;
+  }
+  .print-title-area {
+    text-align: right;
+  }
+  .print-report-title {
+    font-size: 16px;
+    font-weight: 800;
+    color: #357FBF;
+    margin-bottom: 4px;
+    text-transform: uppercase;
+  }
+  .print-report-date {
+    font-size: 11px;
+    color: #64748b;
+  }
+  .print-section-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: #202854;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 6px;
+    margin-top: 20px;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+  }
+  .print-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 15px;
+  }
+  .print-card {
+    background: #f8fafc !important;
+    border: 1px solid #e2e8f0 !important;
+    border-radius: 6px;
+    padding: 10px;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-card-title {
+    font-size: 10px;
+    font-weight: 700;
+    color: #64748b;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+  .print-card-value {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #202854;
+  }
+  .print-hero-box {
+    background: #f0fdf4 !important;
+    border: 1px solid #bbf7d0 !important;
+    border-radius: 8px;
+    padding: 14px;
+    margin-bottom: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-hero-left {
+    flex: 1;
+  }
+  .print-hero-title {
+    font-size: 14px;
+    font-weight: 800;
+    color: #166534;
+    margin-bottom: 4px;
+  }
+  .print-hero-desc {
+    font-size: 11.5px;
+    color: #1e293b;
+    line-height: 1.4;
+  }
+  .print-hero-right {
+    text-align: right;
+    margin-left: 20px;
+  }
+  .print-hero-savings-lbl {
+    font-size: 10px;
+    font-weight: 700;
+    color: #166534;
+    text-transform: uppercase;
+  }
+  .print-hero-savings-val {
+    font-size: 22px;
+    font-weight: 800;
+    color: #15803d;
+  }
+  table.print-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 15px;
+    font-size: 12px;
+  }
+  table.print-table th {
+    background: #f1f5f9 !important;
+    color: #475569 !important;
+    font-weight: 700;
+    text-align: left;
+    padding: 8px 10px;
+    border-bottom: 2px solid #cbd5e1;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  table.print-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #334155;
+  }
+  .print-best-row {
+    background-color: #f0fdf4 !important;
+    font-weight: 700;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+  .print-best-row td {
+    border-top: 1px solid #86efac !important;
+    border-bottom: 1px solid #86efac !important;
+    color: #15803d !important;
+  }
+  .print-details-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+  }
+  .print-detail-block {
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 10px;
+  }
+  .print-detail-block-title {
+    font-size: 11px;
+    font-weight: 800;
+    color: #202854;
+    border-bottom: 1px solid #e2e8f0;
+    padding-bottom: 4px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+  }
+  .print-detail-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    margin-bottom: 4px;
+  }
+  .print-detail-row.total {
+    border-top: 1px solid #cbd5e1;
+    padding-top: 4px;
+    font-weight: 700;
+    font-size: 11.5px;
+    color: #202854;
+  }
+  .print-footer {
+    margin-top: 30px;
+    border-top: 1px solid #e2e8f0;
+    padding-top: 12px;
+    font-size: 9.5px;
+    color: #94a3b8;
+    text-align: center;
+    line-height: 1.4;
   }
 }
 
@@ -2445,7 +2643,7 @@ hr {
         <div class="topbar-s" id="psub">Selecciona la compañía y sigue el guión</div>
       </div>
     </div>
-    <button class="btn" id="print-btn" style="display:none" onclick="window.print()">
+    <button class="btn" id="print-btn" style="display:none" onclick="prepareAndPrint()">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 6 2 18 2 18 9"></polyline><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
       Imprimir oferta
     </button>
@@ -2896,18 +3094,18 @@ hr {
             <div class="fgrp"><label>Días facturados</label><input type="number" id="f-dias" value="28" min="1" max="90" oninput="calcComp()"></div>
             <div class="fsec luz-grp">Potencia contratada</div>
             <div class="fgrp-row luz-grp">
-              <div class="fgrp"><label>P1 (kW)</label><input type="number" id="f-pot1" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
-              <div class="fgrp"><label>P2 (kW)</label><input type="number" id="f-pot2" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
+              <div class="fgrp"><label>P1 (kW)</label><input type="number" id="f-pot1" value="4.6" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
+              <div class="fgrp"><label>P2 (kW)</label><input type="number" id="f-pot2" value="4.6" placeholder="4.6" step="0.001" oninput="calcComp()"></div>
             </div>
             <div class="fsec luz-grp">Consumo energía</div>
-            <div class="fgrp luz-grp"><label>Luz P1 (kWh)</label><input type="number" id="f-kwh1" placeholder="414" oninput="calcComp()"></div>
-            <div class="fgrp luz-grp"><label>Luz P2 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh2" placeholder="0" oninput="calcComp()"></div>
-            <div class="fgrp luz-grp"><label>Excedentes (kWh)</label><input type="number" id="f-excedente" placeholder="0" min="0" oninput="calcComp()"></div>
-            <div class="fgrp gas-grp hidden-grp"><label>Gas (kWh)</label><input type="number" id="f-gas" placeholder="0" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Luz P1 (kWh)</label><input type="number" id="f-kwh1" value="414" placeholder="414" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Luz P2 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh2" value="0" placeholder="0" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Excedentes (kWh)</label><input type="number" id="f-excedente" value="0" placeholder="0" min="0" oninput="calcComp()"></div>
+            <div class="fgrp gas-grp hidden-grp"><label>Gas (kWh)</label><input type="number" id="f-gas" value="0" placeholder="0" oninput="calcComp()"></div>
             <div class="fsec luz-grp">Otros conceptos</div>
             <div class="fgrp luz-grp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" value="0.85" step="0.01" oninput="calcComp()"></div>
             <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.21">21%</option><option value="0.10">10%</option></select></div>
-            <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" placeholder="138.41" step="0.01" oninput="calcComp()"></div>
+            <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" value="138.41" placeholder="138.41" step="0.01" oninput="calcComp()"></div>
             <div class="fsec">Servicios adicionales</div>
             <div class="fgrp fgrp-checkbox">
               <input type="checkbox" id="f-sva" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
@@ -2916,13 +3114,12 @@ hr {
           </div>
           <div class="fsec">Compañías a comparar</div>
           <div class="cia-filter-row">
-            <button class="cf-btn active" id="cf-iberdrola" onclick="toggleCia(&#39;iberdrola&#39;,this)" style="border-color:#008B3C;color:#008B3C"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
-            <button class="cf-btn active" id="cf-naturgy" onclick="toggleCia(&#39;naturgy&#39;,this)" style="border-color:#E85D3A;color:#E85D3A"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
-            <button class="cf-btn active" id="cf-endesa" onclick="toggleCia(&#39;endesa&#39;,this)" style="border-color:#00A8E0;color:#00A8E0"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
-            <button class="cf-btn active" id="cf-gana" onclick="toggleCia(&#39;gana&#39;,this)" style="border-color:#E30613;color:#E30613"><span class="cdot" style="background:#E30613"></span>Gana 24h</button>
+            <button class="cf-btn active" id="cf-iberdrola" onclick="toggleCia(&#39;iberdrola&#39;,this)" style="border-color:#008B3C;background:#008B3C;color:#fff"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
+            <button class="cf-btn active" id="cf-naturgy" onclick="toggleCia(&#39;naturgy&#39;,this)" style="border-color:#E85D3A;background:#E85D3A;color:#fff"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
+            <button class="cf-btn active" id="cf-endesa" onclick="toggleCia(&#39;endesa&#39;,this)" style="border-color:#00A8E0;background:#00A8E0;color:#fff"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
+            <button class="cf-btn active" id="cf-gana" onclick="toggleCia(&#39;gana&#39;,this)" style="border-color:#E30613;background:#E30613;color:#fff"><span class="cdot" style="background:#E30613"></span>Gana 24h</button>
           </div>
         </div>
-
         <div>
           <div class="empty-state" id="comp-empty">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
@@ -3100,6 +3297,7 @@ hr {
   </div><!-- content -->
 </div><!-- main -->
 </div><!-- app -->
+<div id="print-report-container"></div>
 
 <script>
 // ══════════════════════════════════
@@ -3799,6 +3997,7 @@ function showPanel(id, btn){
   document.getElementById('topbar-icon').style.color=p.color;
   document.getElementById('topbar-icon').innerHTML=p.icon;
   document.getElementById('print-btn').style.display=id==='comparativa'?'inline-flex':'none';
+  if(id==='comparativa') calcComp();
   if(id==='condiciones') renderCondiciones();
   if(id==='archivos') renderAdmin();
   if(id==='calendario') renderCalendar();
@@ -3954,7 +4153,7 @@ function calcComp(){
   }
 
   // Check empty states
-  if (compMode === 'luz' && !kwh1 && !excedente) {
+  if (compMode === 'luz' && !kwh1 && !pot1 && !excedente) {
     document.getElementById('comp-empty').style.display='block';
     document.getElementById('comp-cards').innerHTML='';
     document.getElementById('comp-summary').innerHTML='';
@@ -4010,6 +4209,7 @@ function calcComp(){
     luzP1 = kwh1 * currentTe;
     luzP2 = kwh2 * (currentTe * 0.60);
     
+    const totalKwh = kwh1 + kwh2;
     const baseElec = luzPot + luzP1 + luzP2 + luzP3;
 
     // Gas
@@ -4085,6 +4285,7 @@ function calcComp(){
   });
 
   results.sort((a,b)=>a.total-b.total);
+  window.lastCompResults = results; // Save for print report
   renderInvCards(results, useSva, openPanels);
   renderSummary(results,actual);
 
@@ -4222,6 +4423,296 @@ function resetCC(cia){
   const teVal = useSva ? r.te_con : r.te_sin;
   CC[cia]={te:teVal,tp1:r.tp1,tp2:r.tp2,gtv:r.gas_rl1.tv,gtf:r.gas_rl1.tf,precio_excedente:r.precio_excedente};
   calcComp();
+}
+
+function prepareAndPrint() {
+  if (!window.lastCompResults || window.lastCompResults.length === 0) {
+    calcComp();
+  }
+  const results = window.lastCompResults;
+  if (!results || results.length === 0) {
+    alert("Por favor, introduce los datos de la factura primero.");
+    return;
+  }
+  
+  const dias = gv('f-dias') || 30;
+  const useSva = document.getElementById('f-sva').checked;
+  const iva = gv('f-iva') || 0.21;
+  const actual = gv('f-actual');
+  const alq = gv('f-alquiler') || 0;
+  
+  let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, excedente = 0, gas = 0;
+  if (compMode === 'luz') {
+    pot1 = gv('f-pot1') || 0;
+    pot2 = gv('f-pot2') || pot1;
+    kwh1 = gv('f-kwh1') || 0;
+    kwh2 = gv('f-kwh2') || 0;
+    excedente = gv('f-excedente') || 0;
+  } else {
+    gas = gv('f-gas') || 0;
+  }
+  
+  const best = results[0];
+  const dateStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const agentName = getShortName(currentAgentName) || "Asesor Comercial";
+  
+  let html = `
+    <div class="print-header">
+      <div class="print-logo-area">
+        <div class="print-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#fff"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
+        </div>
+        <div class="print-logo-text">RENOSUR</div>
+      </div>
+      <div class="print-title-area">
+        <div class="print-report-title">Estudio Comparativo de Suministro</div>
+        <div class="print-report-date">Fecha: ${dateStr} &nbsp;|&nbsp; Asesor: ${agentName}</div>
+      </div>
+    </div>
+    
+    <div class="print-section-title">1. Datos de Facturación del Cliente (Factura Antigua)</div>
+    <div class="print-grid">
+      <div class="print-card">
+        <div class="print-card-title">Período de Facturación</div>
+        <div class="print-card-value">${dias} días</div>
+      </div>
+  `;
+  
+  if (compMode === 'luz') {
+    html += `
+      <div class="print-card">
+        <div class="print-card-title">Potencia Contratada</div>
+        <div class="print-card-value">P1: ${pot1.toFixed(2)} kW ${pot2 > 0 ? `| P2: ${pot2.toFixed(2)} kW` : ''}</div>
+      </div>
+      <div class="print-card">
+        <div class="print-card-title">Consumo de Energía</div>
+        <div class="print-card-value">P1: ${kwh1} kWh ${kwh2 > 0 ? `| P2: ${kwh2} kWh` : ''}</div>
+      </div>
+      ${excedente > 0 ? `
+      <div class="print-card">
+        <div class="print-card-title">Autoconsumo / Excedentes</div>
+        <div class="print-card-value">${excedente} kWh</div>
+      </div>
+      ` : ''}
+    `;
+  } else {
+    html += `
+      <div class="print-card">
+        <div class="print-card-title">Consumo Estimado de Gas</div>
+        <div class="print-card-value">${gas} kWh (Banda RL${best.band === 'rl1' ? '1' : best.band === 'rl2' ? '2' : '3'})</div>
+      </div>
+    `;
+  }
+  
+  html += `
+      <div class="print-card">
+        <div class="print-card-title">Impuestos y Servicios</div>
+        <div class="print-card-value">IVA: ${Math.round(iva * 100)}% | Mantenimiento: ${useSva ? 'SÍ' : 'NO'}</div>
+      </div>
+      <div class="print-card" style="border-color:#cbd5e1;background:#f1f5f9">
+        <div class="print-card-title" style="color:#475569">Gasto Actual de Factura</div>
+        <div class="print-card-value" style="color:#0f172a">${actual > 0 ? `${f2(actual)} €` : 'No facilitado'}</div>
+      </div>
+    </div>
+  `;
+  
+  // Savings recommendation hero box
+  if (actual > 0 && best.ahorro > 0) {
+    html += `
+      <div class="print-hero-box">
+        <div class="print-hero-left">
+          <div class="print-hero-title">¡Propuesta de ahorro disponible!</div>
+          <div class="print-hero-desc">Recomendamos realizar la contratación con <strong>${best.r.name}</strong>. Esta opción reduce su facturación actual optimizando los costes de potencia y energía.</div>
+        </div>
+        <div class="print-hero-right">
+          <div class="print-hero-savings-lbl">Ahorro Estimado Anual</div>
+          <div class="print-hero-savings-val">−${f2(best.ahorro * 12)} €</div>
+        </div>
+      </div>
+    `;
+  } else {
+    html += `
+      <div class="print-hero-box" style="background:#ecf4fa;border-color:#bce0fd">
+        <div class="print-hero-left">
+          <div class="print-hero-title" style="color:#1d4ed8">Estudio optimizado</div>
+          <div class="print-hero-desc" style="color:#1e293b">La mejor oferta económica disponible para su suministro es con la compañía <strong>${best.r.name}</strong>, ofreciendo tarifas fijas estables sin permanencia.</div>
+        </div>
+        <div class="print-hero-right" style="text-align:right">
+          <div class="print-hero-savings-lbl" style="color:#1d4ed8">Coste Estimado/Mes</div>
+          <div class="print-hero-savings-val" style="color:#1e3a8a">${f2(best.total)} €</div>
+        </div>
+      </div>
+    `;
+  }
+  
+  html += `
+    <div class="print-section-title">2. Tabla Comparativa de Ofertas (Factura Nueva)</div>
+    <table class="print-table">
+      <thead>
+        <tr>
+          <th>Compañía Comercializadora</th>
+          <th style="text-align:right">Subtotal sin IVA</th>
+          <th style="text-align:right">IVA (${Math.round(iva * 100)}%)</th>
+          <th style="text-align:right">Total Mensual</th>
+          <th style="text-align:right">Ahorro Mensual</th>
+          <th style="text-align:right">Ahorro Anual</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+  
+  results.forEach((res, idx) => {
+    const isBest = idx === 0;
+    const ah = res.ahorro;
+    const pos = ah > 0;
+    
+    html += `
+      <tr class="${isBest ? 'print-best-row' : ''}">
+        <td>
+          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${res.r.color};margin-right:8px"></span>
+          <strong>${res.r.name}</strong> ${isBest ? '<span style="font-size:10px;padding:2px 6px;border-radius:10px;background:#d1fae5;color:#065f46;margin-left:6px">✓ Recomendado</span>' : ''}
+        </td>
+        <td style="text-align:right">${f2(res.useSva ? res.subtotalNoExc : res.subtotal)} €</td>
+        <td style="text-align:right">${f2(res.useSva ? (res.subtotalNoExc * res.iva) : res.ivaAmt)} €</td>
+        <td style="text-align:right;font-weight:bold">${f2(res.total)} €</td>
+        <td style="text-align:right;font-weight:bold;color:${ah !== null ? (pos ? '#15803d' : '#b91c1c') : 'inherit'}">${ah !== null ? (pos ? '−' : '+') + f2(Math.abs(ah)) + ' €' : '—'}</td>
+        <td style="text-align:right;font-weight:bold;color:${ah !== null ? (pos ? '#15803d' : '#b91c1c') : 'inherit'}">${ah !== null ? (pos ? '−' : '+') + f2(Math.abs(ah * 12)) + ' €' : '—'}</td>
+      </tr>
+    `;
+  });
+  
+  html += `
+      </tbody>
+    </table>
+    
+    <div class="print-section-title">3. Detalle de Conceptos de la Opción Recomendada: ${best.r.name}</div>
+    <div class="print-details-container">
+      <div class="print-detail-block">
+        <div class="print-detail-block-title">Detalle de Facturación</div>
+  `;
+  
+  if (compMode === 'luz') {
+    html += `
+      <div class="print-detail-row">
+        <span>Término Potencia P1:</span>
+        <span>${pot1} kW × ${dias} días × ${best.cc.tp1.toFixed(4)} €/kW·día</span>
+        <span>${f2(pot1 * best.cc.tp1 * dias)} €</span>
+      </div>
+      ${pot2 > 0 ? `
+      <div class="print-detail-row">
+        <span>Término Potencia P2:</span>
+        <span>${pot2} kW × ${dias} días × ${best.cc.tp2.toFixed(4)} €/kW·día</span>
+        <span>${f2(pot2 * best.cc.tp2 * dias)} €</span>
+      </div>
+      ` : ''}
+      <div class="print-detail-row" style="color:#64748b;font-size:11px;padding-left:10px">
+        <span>Subtotal Potencia:</span>
+        <span>${f2(best.luzPot)} €</span>
+      </div>
+      
+      <div class="print-detail-row" style="margin-top:8px">
+        <span>Término Energía P1:</span>
+        <span>${kwh1} kWh × ${best.cc.te.toFixed(4)} €/kWh</span>
+        <span>${f2(best.luzP1)} €</span>
+      </div>
+      ${kwh2 > 0 ? `
+      <div class="print-detail-row">
+        <span>Término Energía P2:</span>
+        <span>${kwh2} kWh × ${(best.cc.te * 0.6).toFixed(4)} €/kWh</span>
+        <span>${f2(best.luzP2)} €</span>
+      </div>
+      ` : ''}
+      
+      ${excedente > 0 ? `
+      <div class="print-detail-row" style="margin-top:8px;color:#166534">
+        <span>Compensación Excedentes:</span>
+        <span>${excedente} kWh × ${best.excPrice.toFixed(4)} €/kWh</span>
+        <span>−${f2(best.excOffset)} €</span>
+      </div>
+      ` : ''}
+    `;
+  } else {
+    html += `
+      <div class="print-detail-row">
+        <span>Término Variable Gas:</span>
+        <span>${gas} kWh × ${best.cc.gtv.toFixed(4)} €/kWh</span>
+        <span>${f2(best.gasVar)} €</span>
+      </div>
+      <div class="print-detail-row">
+        <span>Término Fijo Gas:</span>
+        <span>${dias} días × ${best.cc.gtf.toFixed(4)} €/día</span>
+        <span>${f2(best.gasFij)} €</span>
+      </div>
+    `;
+  }
+  
+  html += `
+      </div>
+      <div class="print-detail-block">
+        <div class="print-detail-block-title">Resumen de Importes</div>
+        ${compMode === 'luz' ? `
+        <div class="print-detail-row">
+          <span>Suma de Términos de Energía/Potencia:</span>
+          <span>${f2(best.baseElec)} €</span>
+        </div>
+        <div class="print-detail-row">
+          <span>Impuesto Eléctrico (${(best.r.imp_electrico * 100).toFixed(2)}%):</span>
+          <span>${f2(best.impElec)} €</span>
+        </div>
+        <div class="print-detail-row">
+          <span>Alquiler de equipos de medida:</span>
+          <span>${f2(alq)} €</span>
+        </div>
+        ` : `
+        <div class="print-detail-row">
+          <span>Suma de Términos de Gas (Fijo + Variable):</span>
+          <span>${f2(best.gasVar + best.gasFij)} €</span>
+        </div>
+        `}
+        
+        ${best.svaLuzAmt > 0 ? `
+        <div class="print-detail-row">
+          <span>Servicio Mantenimiento Luz (${best.r.name}):</span>
+          <span>${f2(best.svaLuzAmt)} €</span>
+        </div>
+        ` : ''}
+        ${best.svaGasAmt > 0 ? `
+        <div class="print-detail-row">
+          <span>Servicio Mantenimiento Gas (${best.r.name}):</span>
+          <span>${f2(best.svaGasAmt)} €</span>
+        </div>
+        ` : ''}
+        
+        <div class="print-detail-row total" style="margin-top:12px">
+          <span>Subtotal base facturable:</span>
+          <span>${f2(best.useSva ? best.subtotalNoExc : best.subtotal)} €</span>
+        </div>
+        <div class="print-detail-row">
+          <span>Impuestos (IVA ${Math.round(best.iva * 100)}%):</span>
+          <span>${f2(best.useSva ? (best.subtotalNoExc * best.iva) : best.ivaAmt)} €</span>
+        </div>
+        ${useSva && excedente > 0 && compMode === 'luz' ? `
+        <div class="print-detail-row" style="color:#166534">
+          <span>Descuento Batería Virtual:</span>
+          <span>−${f2(Math.min(best.excAmt * (1 + best.iva), best.subtotalNoExc * (1 + best.iva)))} €</span>
+        </div>
+        ` : ''}
+        <div class="print-detail-row total" style="border-top:2px solid #202854;font-size:13px;color:#202854">
+          <span>TOTAL ESTIMADO MENSUAL:</span>
+          <span>${f2(best.total)} €</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="print-footer">
+      Este estudio energético es de carácter informativo. Los cálculos se estiman según el consumo facilitado por el cliente,<br>
+      las tarifas contractuales de las comercializadoras y la legislación vigente. RENOSUR no se hace responsable de posibles<br>
+      variaciones en las condiciones comerciales reales en el momento de la contratación definitiva.
+    </div>
+  `;
+  
+  document.getElementById('print-report-container').innerHTML = html;
+  window.print();
 }
 
 // ── NATURGY PROVINCIA / PDV ──
