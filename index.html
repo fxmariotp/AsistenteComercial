@@ -2806,9 +2806,37 @@ hr {
 /* Dashboard Tools Grid */
 .db-tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 20px;
   margin-bottom: 30px;
+}
+.db-tool-card.span-2 {
+  grid-column: span 2;
+}
+.db-tool-card.span-4 {
+  grid-column: span 4;
+}
+
+@media (max-width: 1024px) {
+  .db-tools-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+  .db-tool-card.span-2 {
+    grid-column: span 2;
+  }
+  .db-tool-card.span-4 {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 768px) {
+  .db-tools-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .db-tool-card {
+    grid-column: span 1 !important;
+  }
 }
 .db-tool-card {
   background: var(--surface);
@@ -3056,7 +3084,7 @@ hr {
           </div>
 
           <!-- Card 2: Agenda Personal -->
-          <div class="db-tool-card" style="--card-color: #10b981; --card-color-bg: rgba(16, 185, 129, 0.08); --card-color-alpha: rgba(16, 185, 129, 0.05);" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
+          <div class="db-tool-card span-2" style="--card-color: #10b981; --card-color-bg: rgba(16, 185, 129, 0.08); --card-color-alpha: rgba(16, 185, 129, 0.05);" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
@@ -3088,7 +3116,7 @@ hr {
           </div>
 
           <!-- Card 4: Comparativas -->
-          <div class="db-tool-card" style="--card-color: #e07b00; --card-color-bg: rgba(224, 123, 0, 0.08); --card-color-alpha: rgba(224, 123, 0, 0.05);" onclick="showPanel('comparativa', document.getElementById('btn-nav-comparativa'))">
+          <div class="db-tool-card span-2" style="--card-color: #e07b00; --card-color-bg: rgba(224, 123, 0, 0.08); --card-color-alpha: rgba(224, 123, 0, 0.05);" onclick="showPanel('comparativa', document.getElementById('btn-nav-comparativa'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
@@ -3136,7 +3164,7 @@ hr {
           </div>
 
           <!-- Card 7: Teléfonos -->
-          <div class="db-tool-card" style="--card-color: #a855f7; --card-color-bg: rgba(168, 85, 247, 0.08); --card-color-alpha: rgba(168, 85, 247, 0.05);" onclick="showPanel('telefonos', document.getElementById('btn-nav-telefonos'))">
+          <div class="db-tool-card span-4" style="--card-color: #a855f7; --card-color-bg: rgba(168, 85, 247, 0.08); --card-color-alpha: rgba(168, 85, 247, 0.05);" onclick="showPanel('telefonos', document.getElementById('btn-nav-telefonos'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
@@ -3151,12 +3179,6 @@ hr {
             </div>
           </div>
 
-        </div>
-      </div>.92z"></path></svg>
-            </div>
-            <div class="spoke-title">Teléfonos</div>
-          </div>
-          <div class="spoke-desc">Directorio de atención al cliente y averías de energía.</div>
         </div>
       </div>
     </div>
@@ -3515,6 +3537,11 @@ hr {
             <button type="button" class="comp-toggle-btn" id="mode-gas" onclick="setCompMode('gas')">Gas</button>
           </div>
           <div class="comp-form-grid">
+            <div class="fgrp" style="grid-column: span 2;">
+              <label>Nombre del cliente</label>
+              <input type="text" id="f-cliente-nombre" placeholder="Ej. Juan Pérez" autocomplete="off" oninput="calcComp()">
+            </div>
+
             <div class="fsec">Período</div>
             <div class="fgrp"><label>Días facturados</label><input type="number" id="f-dias" placeholder="30" autocomplete="off" value="" min="1" max="90" oninput="calcComp()"></div>
             <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.21">21%</option><option value="0.10">10%</option></select></div>
@@ -5591,9 +5618,14 @@ function printCompanyOffer(cia) {
   document.getElementById('print-report-container').innerHTML = html;
   
   if (typeof html2pdf !== 'undefined') {
+    const clientNameVal = (document.getElementById('f-cliente-nombre') ? document.getElementById('f-cliente-nombre').value.trim() : '');
+    const cleanClientName = clientNameVal.replace(/[\\\/:\*\?"<>\|]/g, '');
+    const cleanCompanyName = targetRes.r.name.replace(/[\\\/:\*\?"<>\|]/g, '');
+    const pdfFilename = cleanClientName ? `Comparativa (${cleanClientName}) de (${cleanCompanyName}).pdf` : `Comparativa de (${cleanCompanyName}).pdf`;
+
     const opt = {
       margin:       [10, 10, 10, 10],
-      filename:     `Estudio_Comparativo_${compMode === 'luz' ? 'Luz' : 'Gas'}_${targetRes.r.name.replace(/\s+/g, '_')}_${dateStr.replace(/\//g, '-')}.pdf`,
+      filename:     pdfFilename,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true, width: 760 },
       jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
