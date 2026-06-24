@@ -5303,6 +5303,97 @@ function calcComp(){
   if (scrollContainer) {
     scrollContainer.scrollTop = scrollTop;
   }
+  
+  // Save comparison inputs to localStorage
+  saveComparisonInputs();
+}
+
+let isRestoringInputs = false;
+
+function saveComparisonInputs() {
+  if (!currentAgentDni || isRestoringInputs) return;
+  const inputs = {
+    clienteNombre: document.getElementById('f-cliente-nombre') ? document.getElementById('f-cliente-nombre').value : '',
+    dias: document.getElementById('f-dias') ? document.getElementById('f-dias').value : '',
+    iva: document.getElementById('f-iva') ? document.getElementById('f-iva').value : '0.21',
+    pot1: document.getElementById('f-pot1') ? document.getElementById('f-pot1').value : '',
+    pot2: document.getElementById('f-pot2') ? document.getElementById('f-pot2').value : '',
+    kwh1: document.getElementById('f-kwh1') ? document.getElementById('f-kwh1').value : '',
+    kwh2: document.getElementById('f-kwh2') ? document.getElementById('f-kwh2').value : '',
+    excedente: document.getElementById('f-excedente') ? document.getElementById('f-excedente').value : '',
+    alquiler: document.getElementById('f-alquiler') ? document.getElementById('f-alquiler').value : '0.85',
+    gas: document.getElementById('f-gas') ? document.getElementById('f-gas').value : '',
+    actual: document.getElementById('f-actual') ? document.getElementById('f-actual').value : '',
+    sva: document.getElementById('f-sva') ? document.getElementById('f-sva').checked : false,
+    asesorNombre: document.getElementById('f-asesor-nombre') ? document.getElementById('f-asesor-nombre').value : '',
+    mode: compMode
+  };
+  localStorage.setItem('comp_inputs_' + currentAgentDni, JSON.stringify(inputs));
+}
+
+function loadComparisonInputs() {
+  if (!currentAgentDni) return;
+  const raw = localStorage.getItem('comp_inputs_' + currentAgentDni);
+  if (!raw) {
+    clearComparisonInputs();
+    return;
+  }
+  try {
+    isRestoringInputs = true;
+    const inputs = JSON.parse(raw);
+    if (document.getElementById('f-cliente-nombre')) document.getElementById('f-cliente-nombre').value = inputs.clienteNombre || '';
+    if (document.getElementById('f-dias')) document.getElementById('f-dias').value = inputs.dias || '';
+    if (document.getElementById('f-iva')) document.getElementById('f-iva').value = inputs.iva || '0.21';
+    if (document.getElementById('f-pot1')) document.getElementById('f-pot1').value = inputs.pot1 || '';
+    if (document.getElementById('f-pot2')) document.getElementById('f-pot2').value = inputs.pot2 || '';
+    if (document.getElementById('f-kwh1')) document.getElementById('f-kwh1').value = inputs.kwh1 || '';
+    if (document.getElementById('f-kwh2')) document.getElementById('f-kwh2').value = inputs.kwh2 || '';
+    if (document.getElementById('f-excedente')) document.getElementById('f-excedente').value = inputs.excedente || '';
+    if (document.getElementById('f-alquiler')) document.getElementById('f-alquiler').value = inputs.alquiler !== undefined ? inputs.alquiler : '0.85';
+    if (document.getElementById('f-gas')) document.getElementById('f-gas').value = inputs.gas || '';
+    if (document.getElementById('f-actual')) document.getElementById('f-actual').value = inputs.actual || '';
+    if (document.getElementById('f-sva')) document.getElementById('f-sva').checked = !!inputs.sva;
+    if (document.getElementById('f-asesor-nombre')) document.getElementById('f-asesor-nombre').value = inputs.asesorNombre || '';
+    
+    compMode = inputs.mode || 'luz';
+    document.querySelectorAll('.comp-toggle-btn').forEach(btn => btn.classList.remove('active'));
+    document.getElementById('mode-' + compMode).classList.add('active');
+    
+    if (compMode === 'luz') {
+      document.querySelectorAll('.luz-grp').forEach(el => el.classList.remove('hidden-grp'));
+      document.querySelectorAll('.gas-grp').forEach(el => el.classList.add('hidden-grp'));
+    } else {
+      document.querySelectorAll('.luz-grp').forEach(el => el.classList.add('hidden-grp'));
+      document.querySelectorAll('.gas-grp').forEach(el => el.classList.remove('hidden-grp'));
+    }
+    
+    calcComp();
+  } catch (e) {
+    console.error("Error parsing comparison inputs", e);
+  } finally {
+    isRestoringInputs = false;
+  }
+}
+
+function clearComparisonInputs() {
+  if (document.getElementById('f-cliente-nombre')) document.getElementById('f-cliente-nombre').value = '';
+  if (document.getElementById('f-dias')) document.getElementById('f-dias').value = '';
+  if (document.getElementById('f-iva')) document.getElementById('f-iva').value = '0.21';
+  if (document.getElementById('f-pot1')) document.getElementById('f-pot1').value = '';
+  if (document.getElementById('f-pot2')) document.getElementById('f-pot2').value = '';
+  if (document.getElementById('f-kwh1')) document.getElementById('f-kwh1').value = '';
+  if (document.getElementById('f-kwh2')) document.getElementById('f-kwh2').value = '';
+  if (document.getElementById('f-excedente')) document.getElementById('f-excedente').value = '';
+  if (document.getElementById('f-alquiler')) document.getElementById('f-alquiler').value = '0.85';
+  if (document.getElementById('f-gas')) document.getElementById('f-gas').value = '';
+  if (document.getElementById('f-actual')) document.getElementById('f-actual').value = '';
+  if (document.getElementById('f-sva')) document.getElementById('f-sva').checked = false;
+  if (document.getElementById('f-asesor-nombre')) document.getElementById('f-asesor-nombre').value = '';
+  compMode = 'luz';
+  document.querySelectorAll('.comp-toggle-btn').forEach(btn => btn.classList.remove('active'));
+  document.getElementById('mode-luz').classList.add('active');
+  document.querySelectorAll('.luz-grp').forEach(el => el.classList.remove('hidden-grp'));
+  document.querySelectorAll('.gas-grp').forEach(el => el.classList.add('hidden-grp'));
 }
 
 function renderInvCards(results, useSva){
@@ -5816,6 +5907,9 @@ function loadSession() {
 }
 
 function logout() {
+  if (typeof clearComparisonInputs === 'function') {
+    clearComparisonInputs();
+  }
   localStorage.removeItem('comercial_dni');
   localStorage.removeItem('comercial_nombre');
   currentAgentDni = null;
@@ -5842,6 +5936,11 @@ function onLoginSuccess() {
   
   // 5. Ir a dashboard
   showPanel('dashboard', document.getElementById('btn-nav-dashboard'));
+  
+  // Restore saved comparison inputs
+  if (typeof loadComparisonInputs === 'function') {
+    loadComparisonInputs();
+  }
   
   // 6. Iniciar alertas de agenda
   initAgendaNotifications();
