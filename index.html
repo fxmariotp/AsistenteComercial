@@ -2747,8 +2747,13 @@ hr {
 
 .normas-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+@media (max-width: 1024px) {
+  .normas-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
 }
 @media (max-width: 768px) {
   .normas-grid {
@@ -2759,16 +2764,20 @@ hr {
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--r);
-  padding: 20px;
+  padding: 14px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 8px;
   transition: all 0.2s ease;
 }
 .norma-card:hover {
   border-color: var(--blue);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(53, 127, 191, 0.06);
+}
+
+.app:has(#panel-normas.active) .content {
+  overflow: hidden !important;
 }
 .norma-card-header {
   display: flex;
@@ -3637,15 +3646,11 @@ hr {
 
   <!-- ══════ NORMAS DE SALA ══════ -->
   <div class="panel" id="panel-normas">
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+    <div style="display: flex; align-items: center; margin-bottom: 24px; gap: 12px;">
       <h3 class="cond-sub-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
         Normas de Sala
       </h3>
-      <a href="NORMAS DE SALA.pdf" target="_blank" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; font-size: 13.5px; text-decoration: none;">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-        Ver / Descargar PDF
-      </a>
     </div>
 
     <div class="normas-container" style="display: flex; flex-direction: column; gap: 20px; max-width: 800px; margin: 0 auto;">
