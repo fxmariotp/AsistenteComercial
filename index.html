@@ -2951,6 +2951,54 @@ hr {
   border-color: var(--green);
   box-shadow: 0 4px 15px rgba(16, 185, 129, 0.05);
 }
+
+.normas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+@media (max-width: 768px) {
+  .normas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+.norma-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  transition: all 0.2s ease;
+}
+.norma-card:hover {
+  border-color: var(--blue);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(53, 127, 191, 0.06);
+}
+.norma-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.norma-num {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+.norma-num-1 { background: rgba(53, 127, 191, 0.1); color: var(--blue); }
+.norma-num-2 { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.norma-num-3 { background: rgba(16, 185, 129, 0.1); color: var(--green); }
+.norma-num-4 { background: rgba(245, 158, 11, 0.1); color: #d97706; }
+.norma-num-5 { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+.norma-num-6 { background: rgba(100, 116, 139, 0.1); color: var(--t2); }
 </style></head>
 <body>
 
@@ -3006,6 +3054,10 @@ hr {
   </div>
   <div style="padding: 0 14px; margin-bottom: 8px;">
     <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 8px;">
+      <button class="nav-btn" id="btn-nav-normas" onclick="showPanel('normas',this)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        Normas de sala
+      </button>
       <button class="nav-btn nav-btn-logout" onclick="logout()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         Cerrar sesión
@@ -3640,6 +3692,114 @@ hr {
       </div>
     </div>
 
+  <!-- ══════ NORMAS DE SALA ══════ -->
+  <div class="panel" id="panel-normas">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; flex-wrap: wrap; gap: 12px;">
+      <h3 class="cond-sub-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+        Normas de Sala
+      </h3>
+      <a href="NORMAS DE SALA.pdf" target="_blank" class="btn btn-secondary" style="display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px; font-size: 13.5px; text-decoration: none;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+        Ver / Descargar PDF
+      </a>
+    </div>
+
+    <div class="normas-container" style="display: flex; flex-direction: column; gap: 20px; max-width: 800px; margin: 0 auto;">
+      
+      <!-- Welcome / Mission statement card -->
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); text-align: center; position: relative; overflow: hidden;">
+        <div style="position: absolute; top: -10px; right: -10px; font-size: 80px; opacity: 0.03; font-weight: 900; user-select: none;">💡</div>
+        <p style="font-size: 15.0px; font-weight: 500; color: var(--text); margin: 0; line-height: 1.6; font-style: italic;">
+          "Garantizar un entorno de trabajo profesional, respetuoso, saludable y orientado al rendimiento dentro de la sala de Contratación."
+        </p>
+      </div>
+
+      <div class="normas-grid">
+        
+        <!-- Card 1 -->
+        <div class="norma-card">
+          <div class="norma-card-header">
+            <div class="norma-num norma-num-1">1</div>
+            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Uso adecuado del espacio</h4>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+            <li>La sala de Contratación es un espacio profesional destinado exclusivamente a la actividad laboral.</li>
+            <li>Todas las personas deberán mantener su puesto de trabajo en condiciones adecuadas de orden y limpieza durante la jornada.</li>
+            <li>No está permitido generar o introducir olores molestos o persistentes que puedan afectar al entorno común.</li>
+          </ul>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="norma-card">
+          <div class="norma-card-header">
+            <div class="norma-num norma-num-2">2</div>
+            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Prohibición de fumar y uso de dispositivos</h4>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+            <li>Queda terminantemente prohibido fumar dentro de la sala, incluyendo el uso de cigarrillos electrónicos, vapers o dispositivos similares.</li>
+            <li>Esta norma responde a criterios de salud, higiene y respeto al resto del equipo.</li>
+            <li>El incumplimiento de esta norma será considerado una falta y podrá conllevar la aplicación de medidas disciplinarias conforme a la normativa interna de la empresa.</li>
+          </ul>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="norma-card">
+          <div class="norma-card-header">
+            <div class="norma-num norma-num-3">3</div>
+            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Respeto y convivencia</h4>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+            <li>Se deberá mantener en todo momento un comportamiento respetuoso hacia el resto de compañeros.</li>
+            <li>No se permitirán conductas que generen incomodidad en el entorno de trabajo, tales como ruidos innecesarios, comentarios inapropiados o cualquier otra actuación que altere la convivencia.</li>
+          </ul>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="norma-card">
+          <div class="norma-card-header">
+            <div class="norma-num norma-num-4">4</div>
+            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Profesionalidad en el entorno de trabajo</h4>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+            <li>Se espera de todas las personas una actitud alineada con los valores de la empresa: compromiso, responsabilidad y respeto.</li>
+            <li>No está permitido realizar actividades ajenas al trabajo que interfieran en el desempeño propio o del equipo.</li>
+          </ul>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="norma-card">
+          <div class="norma-card-header">
+            <div class="norma-num norma-num-5">5</div>
+            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Responsabilidad individual</h4>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+            <li>Cada persona es responsable del cumplimiento de estas normas.</li>
+            <li>Cualquier incidencia deberá ser comunicada a la persona coordinadora o responsable del área.</li>
+          </ul>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="norma-card">
+          <div class="norma-card-header">
+            <div class="norma-num norma-num-6">6</div>
+            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Seguimiento y cumplimiento</h4>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+            <li>El incumplimiento de estas normas podrá dar lugar a la aplicación de medidas disciplinarias conforme al régimen interno de la empresa.</li>
+          </ul>
+        </div>
+
+      </div>
+
+      <!-- Disclaimer -->
+      <div style="text-align: center; color: var(--t3); font-size: 12.5px; margin-top: 10px; font-style: italic;">
+        La empresa se reserva el derecho de revisar y actualizar estas normas cuando sea necesario.
+      </div>
+
+    </div>
+  </div>
+
     <!-- Modal Popup for Adding/Editing Tasks -->
     <div id="agenda-modal" class="modal-overlay" style="display: none;">
       <div class="modal-content" style="max-width: 480px; width: 92%; padding: 24px;">
@@ -3969,6 +4129,7 @@ const PANELS = {
   condiciones: {title:'Condiciones',   sub:'Precios de más barato a más caro · PVP 2026', color:'#0d5c9e', icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
   calendario:  {title:'Calendario',      sub:'Días laborables 2026 · Calendario RENOSUR-TM', color:'#1a7fcb', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
   telefonos:   {title:'Teléfonos',               sub:'Atención al cliente y averías de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
+  normas:      {title:'Normas de sala',          sub:'Normativa interna para la sala de contratación', color:'#64748b', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>'},
 };
 
 // ── CALENDARIO LABORAL 2026 (RENOSUR-TM) — datos exactos, sin cálculo ──
