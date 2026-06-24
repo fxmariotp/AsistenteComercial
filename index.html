@@ -3645,6 +3645,10 @@ hr {
               <input type="checkbox" id="f-sva" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
               <label for="f-sva" style="margin-bottom:0;cursor:pointer;font-weight:600">Activar SVA (Mantenimientos)</label>
             </div>
+            <div class="fgrp" style="grid-column: span 2; margin-top: 4px;">
+              <label>Nombre del asesor <span style="font-weight:400;color:var(--t3)">opcional</span></label>
+              <input type="text" id="f-asesor-nombre" placeholder="Si se deja en blanco se usará tu nombre" autocomplete="off" oninput="calcComp()" style="width: 100%;">
+            </div>
           </div>
 
         </div>
@@ -5418,7 +5422,15 @@ function printCompanyOffer(cia) {
   const bandObj = targetRes.band === 'rl1' ? targetRes.r.gas_rl1 : (targetRes.band === 'rl2' ? targetRes.r.gas_rl2 : targetRes.r.gas_rl3);
   
   const dateStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  const agentName = getShortName(currentAgentName) || "Asesor Comercial";
+  
+  // Read advisor name from input, fallback to commercial name
+  const inputAsesor = document.getElementById('f-asesor-nombre');
+  const advisorNameVal = inputAsesor ? inputAsesor.value.trim() : '';
+  const agentName = advisorNameVal || getShortName(currentAgentName) || "Asesor Comercial";
+  
+  // Read client name from input
+  const inputCliente = document.getElementById('f-cliente-nombre');
+  const clientNameVal = inputCliente ? inputCliente.value.trim() : '';
   
   let html = `
     <div class="print-header">
@@ -5430,12 +5442,21 @@ function printCompanyOffer(cia) {
       </div>
       <div class="print-title-area">
         <div class="print-report-title">Estudio Comparativo de Suministro de ${compMode === 'luz' ? 'Luz' : 'Gas'}</div>
-        <div class="print-report-date">Fecha: ${dateStr} &nbsp;|&nbsp; Asesor: ${agentName}</div>
+        <div class="print-report-date">
+          Fecha: ${dateStr} &nbsp;|&nbsp; Asesor: ${agentName}
+          ${clientNameVal ? `&nbsp;|&nbsp; Cliente: ${clientNameVal}` : ''}
+        </div>
       </div>
     </div>
     
     <div class="print-section-title">1. Datos de Facturación del Cliente (Factura Antigua)</div>
     <div class="print-grid">
+      ${clientNameVal ? `
+      <div class="print-card">
+        <div class="print-card-title">Nombre del Cliente</div>
+        <div class="print-card-value">${clientNameVal}</div>
+      </div>
+      ` : ''}
       <div class="print-card">
         <div class="print-card-title">Período de Facturación</div>
         <div class="print-card-value">${dias} días</div>
