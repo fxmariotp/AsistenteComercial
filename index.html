@@ -1908,179 +1908,7 @@ hr {
   border-color: var(--border-hover);
 }
 
-/* ── HUB AND SPOKE DASHBOARD NAVEGACION ── */
-.hub-container {
-  position: relative;
-  width: 100%;
-  height: 600px;
-  background: transparent;
-  border-radius: var(--r);
-  overflow: visible;
-  border: none;
-  margin-top: 12px;
-  box-shadow: none;
-}
-.hub-card {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 10;
-  width: 250px;
-  background: var(--surface);
-  border: 2px solid var(--green2);
-  border-radius: var(--r);
-  padding: 24px 20px;
-  box-shadow: 0 10px 30px rgba(16, 185, 129, 0.12);
-  text-align: center;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
-.hub-card:hover {
-  box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2);
-  transform: translate(-50%, -52%);
-}
-.hub-icon {
-  width: 48px;
-  height: 48px;
-  background: var(--green-bg);
-  color: var(--green);
-  border-radius: 12px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  margin-bottom: 12px;
-  box-shadow: 0 4px 10px rgba(16, 185, 129, 0.1);
-}
-.hub-icon svg {
-  width: 24px;
-  height: 24px;
-}
-.hub-title {
-  font-size: 17px;
-  font-weight: 800;
-  color: var(--text);
-  margin-bottom: 4px;
-}
-.hub-sub {
-  font-size: 12.5px;
-  color: var(--t2);
-  margin-bottom: 14px;
-}
-
-.spoke-card {
-  position: absolute;
-  z-index: 10;
-  width: 230px;
-  background: var(--surface);
-  border: 1.5px solid var(--border);
-  border-radius: var(--rs);
-  padding: 14px 16px;
-  box-shadow: 0 4px 12px rgba(0,0,0,.03);
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.spoke-card:hover {
-  transform: translateY(-4px);
-  border-color: var(--card-color);
-  box-shadow: 0 8px 24px var(--card-shadow);
-}
-.spoke-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-.spoke-icon {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: var(--spoke-bg);
-  color: var(--card-color);
-  flex-shrink: 0;
-}
-.spoke-icon svg {
-  width: 16px;
-  height: 16px;
-}
-.spoke-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--text);
-}
-.spoke-desc {
-  font-size: 12px;
-  color: var(--t2);
-  line-height: 1.4;
-}
-
-/* Individual card colors using CSS variables */
-.spoke-card.sp-scripts {
-  --card-color: #10b981; /* Emerald */
-  --card-shadow: rgba(16, 185, 129, 0.12);
-  --spoke-bg: #ecfdf5;
-  top: 22%;
-  right: 8%;
-}
-.spoke-card.sp-condiciones {
-  --card-color: #6366f1; /* Indigo */
-  --card-shadow: rgba(99, 102, 241, 0.12);
-  --spoke-bg: #e0e7ff;
-  bottom: 18%;
-  right: 12%;
-}
-.spoke-card.sp-comparativa {
-  --card-color: #f59e0b; /* Amber */
-  --card-shadow: rgba(245, 158, 11, 0.12);
-  --spoke-bg: #fef3c7;
-  top: 52%;
-  right: 4%;
-  transform: translateY(-50%);
-}
-.spoke-card.sp-agenda {
-  --card-color: #10b981; /* Emerald */
-  --card-shadow: rgba(16, 185, 129, 0.12);
-  --spoke-bg: #ecfdf5;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
-}
-.spoke-card.sp-telefonos {
-  --card-color: #a855f7; /* Purple */
-  --card-shadow: rgba(168, 85, 247, 0.12);
-  --spoke-bg: #f3e8ff;
-  top: 52%;
-  left: 4%;
-  transform: translateY(-50%);
-}
-.spoke-card.sp-calendario {
-  --card-color: #0ea5e9; /* Sky */
-  --card-shadow: rgba(14, 165, 233, 0.12);
-  --spoke-bg: #e0f2fe;
-  bottom: 18%;
-  left: 12%;
-}
-.spoke-card.sp-ranking {
-  --card-color: #f97316; /* Orange */
-  --card-shadow: rgba(249, 115, 22, 0.12);
-  --spoke-bg: #ffedd5;
-  top: 22%;
-  left: 8%;
-}
-
-@keyframes strokePulse {
-  to {
-    stroke-dashoffset: -20;
-  }
-}
-.pulse-line {
-  stroke-dasharray: 6 10;
-  animation: strokePulse 1.5s linear infinite;
-}
+/* Old Hub navigation styles removed */
 
 /* ── RANKING ── */
 .ranking-header-bar {
@@ -2582,44 +2410,9 @@ hr {
     padding: 8px 12px;
   }
   
-  .hub-container {
-    height: auto !important;
-    background: transparent !important;
-    border: none !important;
-    overflow: visible !important;
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    padding: 12px 0;
-    margin-top: 12px;
-    box-shadow: none !important;
-  }
-  .hub-card {
-    position: relative !important;
-    top: auto !important;
-    left: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    margin: 0 auto 4px !important;
-  }
-  .hub-card:hover {
-    transform: none !important;
-  }
-  .spoke-card {
-    position: relative !important;
-    top: auto !important;
-    bottom: auto !important;
-    left: auto !important;
-    right: auto !important;
-    transform: none !important;
-    width: 100% !important;
-    max-width: none !important;
-  }
-  .spoke-card:hover {
-    transform: translateY(-2px) !important;
-  }
-  #hub-svg {
-    display: none !important;
+  .db-tools-grid {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
 
   .comp-form-grid {
@@ -2999,6 +2792,106 @@ hr {
 .norma-num-4 { background: rgba(245, 158, 11, 0.1); color: #d97706; }
 .norma-num-5 { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
 .norma-num-6 { background: rgba(100, 116, 139, 0.1); color: var(--t2); }
+
+/* Header Logout responsive */
+@media (max-width: 576px) {
+  .topbar-logout-text {
+    display: none;
+  }
+  .topbar-right button {
+    padding: 10px !important;
+  }
+}
+
+/* Dashboard Tools Grid */
+.db-tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px;
+  margin-bottom: 30px;
+}
+.db-tool-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.01), 0 2px 4px -1px rgba(0,0,0,0.01);
+}
+.db-tool-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: var(--card-color, var(--blue));
+  opacity: 0.8;
+  transition: opacity 0.2s;
+}
+.db-tool-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--card-color, var(--blue));
+  box-shadow: 0 12px 20px -8px rgba(0, 0, 0, 0.08), 0 0 15px var(--card-color-alpha, rgba(53, 127, 191, 0.05));
+}
+.db-tool-card-content {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+.db-tool-icon-wrap {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: var(--card-color-bg, rgba(53, 127, 191, 0.08));
+  color: var(--card-color, var(--blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+.db-tool-card:hover .db-tool-icon-wrap {
+  transform: scale(1.05);
+}
+.db-tool-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.db-tool-title {
+  font-size: 16px;
+  font-weight: 800;
+  color: var(--text);
+  margin: 0;
+}
+.db-tool-desc {
+  font-size: 13px;
+  color: var(--t2);
+  line-height: 1.5;
+  margin: 0;
+}
+.db-tool-action {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--card-color, var(--blue));
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+  align-self: flex-start;
+  transition: gap 0.2s;
+}
+.db-tool-card:hover .db-tool-action {
+  gap: 10px;
+}
 </style></head>
 <body>
 
@@ -3082,6 +2975,12 @@ hr {
         <div class="topbar-s" id="psub">Selecciona la compañía y sigue el guión</div>
       </div>
     </div>
+    <div class="topbar-right">
+      <button class="nav-btn nav-btn-logout" onclick="logout()" style="width: auto; margin-bottom: 0; padding: 10px 16px; font-weight: 700; font-size: 13.5px; border: 1.5px solid rgba(239, 68, 68, 0.15); border-radius: var(--rs); display: flex; align-items: center; gap: 8px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+        <span class="topbar-logout-text">Cerrar sesión</span>
+      </button>
+    </div>
   </div>
 
   <div class="content">
@@ -3133,93 +3032,127 @@ hr {
         </div>
       </div>
 
-      <div class="hub-container">
-        <svg id="hub-svg" style="position: absolute; top:0; left:0; width:100%; height:100%; pointer-events: none; z-index: 1;"></svg>
-        
-        <!-- Center Hub -->
-        <div class="hub-card">
-          <div class="hub-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-          </div>
-          <div class="hub-title">Asistente Comercial</div>
-          <div class="hub-sub">Copiloto de Ventas</div>
-          <button class="db-logout-btn" onclick="logout()" style="justify-content:center; width:100%; margin-top:8px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="vertical-align:middle;margin-right:4px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-            Cerrar sesión (Salir)
-          </button>
-        </div>
-        
-        <!-- Spoke Card 1: Ranking Ventas -->
-        <div class="spoke-card sp-ranking" onclick="showPanel('ranking', document.getElementById('btn-nav-ranking'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
+      <div class="db-tools-section" style="margin-top: 30px;">
+        <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 20px; display: flex; align-items: center; gap: 8px;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          Herramientas de Trabajo
+        </h3>
+        <div class="db-tools-grid">
+          
+          <!-- Card 1: Ranking Ventas -->
+          <div class="db-tool-card" style="--card-color: #e07b00; --card-color-bg: rgba(224, 123, 0, 0.08); --card-color-alpha: rgba(224, 123, 0, 0.05);" onclick="showPanel('ranking', document.getElementById('btn-nav-ranking'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Ranking Ventas</h4>
+                <p class="db-tool-desc">Visualiza la clasificación de ventas y el rendimiento en tiempo real de todo el equipo.</p>
+              </div>
             </div>
-            <div class="spoke-title">Ranking Ventas</div>
-          </div>
-          <div class="spoke-desc">Tabla de rendimiento comercial de los representantes en vivo.</div>
-        </div>
-
-        <!-- Spoke Card 2: Agenda Personal -->
-        <div class="spoke-card sp-agenda" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
+            <div class="db-tool-action">
+              Ver clasificación <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
-            <div class="spoke-title">Agenda Personal</div>
           </div>
-          <div class="spoke-desc">Organiza tus llamadas, tareas y recordatorios diarios.</div>
-        </div>
 
-        <!-- Spoke Card 3: Textos Legales -->
-        <div class="spoke-card sp-scripts" onclick="showPanel('scripts', document.getElementById('btn-nav-scripts'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
+          <!-- Card 2: Agenda Personal -->
+          <div class="db-tool-card" style="--card-color: #10b981; --card-color-bg: rgba(16, 185, 129, 0.08); --card-color-alpha: rgba(16, 185, 129, 0.05);" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Agenda Personal</h4>
+                <p class="db-tool-desc">Planifica llamadas de clientes y gestiona tus tareas y recordatorios diarios sin esfuerzo.</p>
+              </div>
             </div>
-            <div class="spoke-title">Textos Legales</div>
-          </div>
-          <div class="spoke-desc">Textos legales paso a paso para Naturgy, Endesa, Gana Energía...</div>
-        </div>
-
-        <!-- Spoke Card 4: Comparativas -->
-        <div class="spoke-card sp-comparativa" onclick="showPanel('comparativa', document.getElementById('btn-nav-comparativa'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
+            <div class="db-tool-action">
+              Abrir agenda <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
-            <div class="spoke-title">Comparativas</div>
           </div>
-          <div class="spoke-desc">Calculadora y optimizador de ofertas con o sin mantenimientos.</div>
-        </div>
 
-        <!-- Spoke Card 5: Condiciones -->
-        <div class="spoke-card sp-condiciones" onclick="showPanel('condiciones', document.getElementById('btn-nav-condiciones'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          <!-- Card 3: Textos Legales -->
+          <div class="db-tool-card" style="--card-color: #1a7a3c; --card-color-bg: rgba(26, 122, 60, 0.08); --card-color-alpha: rgba(26, 122, 60, 0.05);" onclick="showPanel('scripts', document.getElementById('btn-nav-scripts'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Textos Legales</h4>
+                <p class="db-tool-desc">Guiones de venta estructurados y lecturas obligatorias para formalizar contratos.</p>
+              </div>
             </div>
-            <div class="spoke-title">Condiciones</div>
-          </div>
-          <div class="spoke-desc">Consulta de tarifas oficiales PVP actualizadas para 2026.</div>
-        </div>
-
-        <!-- Spoke Card 6: Calendario -->
-        <div class="spoke-card sp-calendario" onclick="showPanel('calendario', document.getElementById('btn-nav-calendario'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            <div class="db-tool-action">
+              Ver guiones <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
-            <div class="spoke-title">Calendario</div>
           </div>
-          <div class="spoke-desc">Días hábiles de mes, festivos nacionales y fechas de cierre.</div>
-        </div>
 
-        <!-- Spoke Card 7: Teléfonos -->
-        <div class="spoke-card sp-telefonos" onclick="showPanel('telefonos', document.getElementById('btn-nav-telefonos'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          <!-- Card 4: Comparativas -->
+          <div class="db-tool-card" style="--card-color: #e07b00; --card-color-bg: rgba(224, 123, 0, 0.08); --card-color-alpha: rgba(224, 123, 0, 0.05);" onclick="showPanel('comparativa', document.getElementById('btn-nav-comparativa'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Comparativas</h4>
+                <p class="db-tool-desc">Calcula ofertas personalizadas, aplica mantenimientos y compara tarifas de luz o gas.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Crear comparativa <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
+          <!-- Card 5: Condiciones -->
+          <div class="db-tool-card" style="--card-color: #0d5c9e; --card-color-bg: rgba(13, 92, 158, 0.08); --card-color-alpha: rgba(13, 92, 158, 0.05);" onclick="showPanel('condiciones', document.getElementById('btn-nav-condiciones'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Condiciones</h4>
+                <p class="db-tool-desc">Consulta los precios de energía actualizados, tarifas reguladas, fijas e indexadas para 2026.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Ver tarifas <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
+          <!-- Card 6: Calendario -->
+          <div class="db-tool-card" style="--card-color: #1a7fcb; --card-color-bg: rgba(26, 127, 203, 0.08); --card-color-alpha: rgba(26, 127, 203, 0.05);" onclick="showPanel('calendario', document.getElementById('btn-nav-calendario'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Calendario</h4>
+                <p class="db-tool-desc">Consulta los días laborables del mes, cierres del ejercicio y festividades oficiales.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Ver calendario <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
+          <!-- Card 7: Teléfonos -->
+          <div class="db-tool-card" style="--card-color: #a855f7; --card-color-bg: rgba(168, 85, 247, 0.08); --card-color-alpha: rgba(168, 85, 247, 0.05);" onclick="showPanel('telefonos', document.getElementById('btn-nav-telefonos'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Teléfonos</h4>
+                <p class="db-tool-desc">Directorio telefónico rápido de contacto y averías de comercializadoras y distribuidoras.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Ver teléfonos <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
+        </div>
+      </div>.92z"></path></svg>
             </div>
             <div class="spoke-title">Teléfonos</div>
           </div>
@@ -5008,9 +4941,7 @@ function showPanel(id, btn){
   const overlay = document.getElementById('sidebar-overlay');
   if (overlay) overlay.classList.remove('active');
   
-  // Draw Hub-and-Spoke connections
   if (id === 'dashboard') {
-    setTimeout(drawHubLines, 60);
     if (typeof updateDashboardAgendaWidget === 'function') updateDashboardAgendaWidget();
     if (typeof updateDashboardRankingWidget === 'function') updateDashboardRankingWidget();
   }
@@ -5778,8 +5709,7 @@ function onLoginSuccess() {
   // 3. Actualizar saludo dinámico (Buenos días/tardes/noches)
   updateGreeting();
   
-  // 4. Iniciar/Reiniciar Canvas Neural
-  initNeuralNet();
+  // 4. Canvas Neural removed
   
   // 5. Ir a dashboard
   showPanel('dashboard', document.getElementById('btn-nav-dashboard'));
@@ -5801,56 +5731,7 @@ function updateGreeting() {
   document.getElementById('db-welcome-greeting').textContent = `${saludo}, ${shortName}`;
 }
 
-// ── RED NEURAL DE NAVEGACIÓN (SVG HUB-AND-SPOKE) ──
-function drawHubLines() {
-  const svg = document.getElementById('hub-svg');
-  if (!svg) return;
-  svg.innerHTML = ''; // Clear existing paths
-  
-  const hub = document.querySelector('.hub-card');
-  const spokes = document.querySelectorAll('.spoke-card');
-  if (!hub || spokes.length === 0) return;
-  
-  const containerRect = svg.getBoundingClientRect();
-  const hubRect = hub.getBoundingClientRect();
-  const hubX = hubRect.left - containerRect.left + hubRect.width / 2;
-  const hubY = hubRect.top - containerRect.top + hubRect.height / 2;
-  
-  spokes.forEach(spoke => {
-    const spokeRect = spoke.getBoundingClientRect();
-    const spokeX = spokeRect.left - containerRect.left + spokeRect.width / 2;
-    const spokeY = spokeRect.top - containerRect.top + spokeRect.height / 2;
-    
-    // Base line
-    const baseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    baseLine.setAttribute('x1', hubX);
-    baseLine.setAttribute('y1', hubY);
-    baseLine.setAttribute('x2', spokeX);
-    baseLine.setAttribute('y2', spokeY);
-    baseLine.setAttribute('stroke', '#cbd5e1'); // Slate-300
-    baseLine.setAttribute('stroke-width', '1.5');
-    svg.appendChild(baseLine);
-    
-    // Pulse line
-    const cardColor = getComputedStyle(spoke).getPropertyValue('--card-color').trim() || '#10b981';
-    const pulseLine = document.createElementNS('http://www.w3.org/2000/svg', 'line');
-    pulseLine.setAttribute('x1', hubX);
-    pulseLine.setAttribute('y1', hubY);
-    pulseLine.setAttribute('x2', spokeX);
-    pulseLine.setAttribute('y2', spokeY);
-    pulseLine.setAttribute('stroke', cardColor);
-    pulseLine.setAttribute('stroke-width', '1.5');
-    pulseLine.classList.add('pulse-line');
-    svg.appendChild(pulseLine);
-  });
-}
-
-function initNeuralNet() {
-  setTimeout(drawHubLines, 100);
-}
-
-// Bind resize and load events for the SVG paths
-window.addEventListener('resize', drawHubLines);
+// Hub navigation lines removed
 
 // Mobile Sidebar drawer controls
 function toggleMobileSidebar() {
