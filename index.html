@@ -5621,7 +5621,7 @@ function printCompanyOffer(cia) {
     const clientNameVal = (document.getElementById('f-cliente-nombre') ? document.getElementById('f-cliente-nombre').value.trim() : '');
     const cleanClientName = clientNameVal.replace(/[\\\/:\*\?"<>\|]/g, '');
     const cleanCompanyName = targetRes.r.name.replace(/[\\\/:\*\?"<>\|]/g, '');
-    const pdfFilename = cleanClientName ? `Comparativa (${cleanClientName}) de (${cleanCompanyName}).pdf` : `Comparativa de (${cleanCompanyName}).pdf`;
+    const pdfFilename = cleanClientName ? `Comparativa ${cleanClientName} de ${cleanCompanyName}.pdf` : `Comparativa de ${cleanCompanyName}.pdf`;
 
     const opt = {
       margin:       [10, 10, 10, 10],
