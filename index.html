@@ -2934,6 +2934,23 @@ hr {
     gap: 12px;
   }
 }
+
+.ranking-motivation-card {
+  background: var(--surface);
+  border: 1.5px solid var(--blue);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  box-shadow: 0 4px 15px rgba(53, 127, 191, 0.05);
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  animation: fadeIn 0.3s ease-out;
+  margin-top: 15px;
+}
+.ranking-motivation-card.target-met {
+  border-color: var(--green);
+  box-shadow: 0 4px 15px rgba(16, 185, 129, 0.05);
+}
 </style></head>
 <body>
 
@@ -3775,6 +3792,11 @@ hr {
           </div>
         </div>
 
+        <!-- Personal Motivation Message Card -->
+        <div id="ranking-motivation-card" class="ranking-motivation-card" style="display: none; margin-bottom: 20px;">
+          <!-- Loaded dynamically -->
+        </div>
+
         <!-- Top 3 Podium -->
         <div class="ranking-podium" id="ranking-podium-container">
           <!-- Rendered dynamically -->
@@ -4291,6 +4313,68 @@ function renderNativeRanking(data) {
   // Update dashboard widget if function exists
   if (typeof updateDashboardRankingWidget === 'function') {
     updateDashboardRankingWidget();
+  }
+  
+  // Personal motivation box render
+  const motivationCard = document.getElementById('ranking-motivation-card');
+  if (motivationCard && currentAgentName) {
+    const agentNameUpper = currentAgentName.toUpperCase().trim();
+    const agentIdx = sorted.findIndex(row => row[0].toUpperCase().trim() === agentNameUpper);
+    
+    let nombre = currentAgentName;
+    let pts = 0;
+    let obj = 16.0;
+    let rank = sorted.length + 1;
+    
+    if (agentIdx !== -1) {
+      const row = sorted[agentIdx];
+      nombre = row[0];
+      pts = parseFloat(row[1]) || 0;
+      obj = parseFloat(row[2]) || 0;
+      rank = agentIdx + 1;
+    }
+    
+    const remaining = Math.max(0, obj - pts);
+    const targetMet = pts >= obj;
+    const percent = obj > 0 ? Math.min(100, Math.round((pts / obj) * 100)) : 0;
+    
+    let msgHtml = '';
+    if (targetMet) {
+      motivationCard.className = 'ranking-motivation-card target-met';
+      msgHtml = `
+        <div style="font-size: 24px; flex-shrink: 0;">🏆</div>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div style="font-size: 14.5px; font-weight: 800; color: var(--text);">¡Felicidades, ${formatName(nombre)}! Puesto #${rank} en el Ranking</div>
+          <div style="font-size: 13px; color: var(--t2);">
+            Has acumulado <strong>${pts.toFixed(1)} pts</strong> y cumplido con éxito tu objetivo diario de ${obj.toFixed(1)} pts (<strong>${percent}%</strong>). ¡Excelente trabajo, sigue sumando! 🚀🔥
+          </div>
+        </div>
+      `;
+    } else {
+      motivationCard.className = 'ranking-motivation-card';
+      const phrases = [
+        "¡Te faltan sólo unos puntos! ¡Vamos a por todas en esta jornada! 💪✨",
+        "¡Estás muy cerca de la meta diaria! ¡Un último esfuerzo! 🚀🔥",
+        "¡Cada llamada es una oportunidad! ¡A por tu objetivo! 🎯🌟",
+        "¡No te rindas, tu constancia te llevará a la meta! 💥🙌",
+        "¡Sigue adelante, tienes todo el potencial para lograrlo hoy! ⚡🏆"
+      ];
+      const phraseIdx = Math.floor((remaining * 10 + nombre.length) % phrases.length);
+      const motivationalPhrase = phrases[phraseIdx];
+      msgHtml = `
+        <div style="font-size: 24px; flex-shrink: 0;">⚡</div>
+        <div style="display: flex; flex-direction: column; gap: 2px;">
+          <div style="font-size: 14.5px; font-weight: 800; color: var(--text);">Hola ${formatName(nombre)}, estás en el puesto #${rank}</div>
+          <div style="font-size: 13px; color: var(--t2);">
+            Llevas <strong>${pts.toFixed(1)} pts</strong> de un objetivo de ${obj.toFixed(1)} pts. Te quedan <strong>${remaining.toFixed(1)} pts</strong> para estar en objetivos. <span style="color: var(--blue); font-weight: 700;">${motivationalPhrase}</span>
+          </div>
+        </div>
+      `;
+    }
+    motivationCard.innerHTML = msgHtml;
+    motivationCard.style.display = 'flex';
+  } else if (motivationCard) {
+    motivationCard.style.display = 'none';
   }
   
   // Render Top 3 Podium
@@ -5691,6 +5775,9 @@ function sortAgendaItems(a, b) {
 }
 
 function renderAgenda() {
+  if (typeof updateDashboardAgendaWidget === 'function') {
+    updateDashboardAgendaWidget();
+  }
   const list = loadAgenda();
   list.sort(sortAgendaItems);
   const container = document.getElementById('agenda-list');
@@ -6054,7 +6141,17 @@ function getAgentRankingInfo() {
       percent: obj > 0 ? Math.min(100, Math.round((pts / obj) * 100)) : 0
     };
   }
-  return null;
+  
+  // Commercial not found in rawRankingData but ranking is loaded (0 points, default objective)
+  const defaultObj = 16.0;
+  return {
+    rank: sorted.length + 1,
+    points: 0,
+    objective: defaultObj,
+    remaining: defaultObj,
+    targetMet: false,
+    percent: 0
+  };
 }
 
 function updateDashboardRankingWidget() {
@@ -6080,9 +6177,18 @@ function updateDashboardRankingWidget() {
     
   let statusText = '';
   if (info.targetMet) {
-    statusText = `¡Objetivo diario cumplido! Has superado tu meta por ${(info.points - info.objective).toFixed(1)} pts.`;
+    statusText = `¡Objetivo diario cumplido! Has superado tu meta por ${(info.points - info.objective).toFixed(1)} pts. ¡Excelente trabajo, sigue así! 🏆🎉`;
   } else {
-    statusText = `Te faltan <strong>${info.remaining.toFixed(1)} pts</strong> para alcanzar tu objetivo diario.`;
+    const phrases = [
+      "¡Vamos, tú puedes lograrlo hoy! 💪✨",
+      "¡Estás a solo un paso de tu meta diaria! ¡Un último empujón! 🚀🔥",
+      "¡Cada venta cuenta! ¡A por el objetivo de hoy! 🎯🌟",
+      "¡Tu esfuerzo dará frutos, no te rindas hoy! 💥🙌",
+      "¡Sigue adelante, tienes todo para alcanzarlo! ⚡🏆"
+    ];
+    const phraseIdx = Math.floor((info.remaining * 10) % phrases.length);
+    const motivationalPhrase = phrases[phraseIdx];
+    statusText = `Te faltan <strong>${info.remaining.toFixed(1)} pts</strong> para estar en objetivos. ${motivationalPhrase}`;
   }
   
   container.innerHTML = `
@@ -6120,9 +6226,12 @@ function updateDashboardAgendaWidget() {
   
   if (pending.length === 0) {
     container.innerHTML = `
-      <div style="text-align: center; padding: 20px 10px; color: var(--t3); font-size: 13px;">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom: 8px; opacity: 0.5;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-        <p style="margin: 0;">¡Al día! No tienes tareas pendientes.</p>
+      <div style="text-align: center; padding: 20px 10px; color: var(--t3); font-size: 13px; display: flex; flex-direction: column; align-items: center; gap: 8px;">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="opacity: 0.5;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+        <p style="margin: 0;">No tienes tareas pendientes.</p>
+        <button class="btn btn-secondary" onclick="openAgendaModal()" style="padding: 6px 12px; font-size: 11.5px; margin-top: 2px;">
+          Crear tarea
+        </button>
       </div>
     `;
     return;
