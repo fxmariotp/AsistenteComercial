@@ -2023,16 +2023,15 @@ hr {
   --card-color: #10b981; /* Emerald */
   --card-shadow: rgba(16, 185, 129, 0.12);
   --spoke-bg: #ecfdf5;
-  top: 5%;
-  left: 50%;
-  transform: translateX(-50%);
+  top: 22%;
+  right: 8%;
 }
 .spoke-card.sp-condiciones {
   --card-color: #6366f1; /* Indigo */
   --card-shadow: rgba(99, 102, 241, 0.12);
   --spoke-bg: #e0e7ff;
-  top: 22%;
-  right: 8%;
+  bottom: 18%;
+  right: 12%;
 }
 .spoke-card.sp-comparativa {
   --card-color: #f59e0b; /* Amber */
@@ -2046,23 +2045,24 @@ hr {
   --card-color: #10b981; /* Emerald */
   --card-shadow: rgba(16, 185, 129, 0.12);
   --spoke-bg: #ecfdf5;
-  bottom: 18%;
-  right: 12%;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
 }
 .spoke-card.sp-telefonos {
   --card-color: #a855f7; /* Purple */
   --card-shadow: rgba(168, 85, 247, 0.12);
   --spoke-bg: #f3e8ff;
-  bottom: 18%;
-  left: 12%;
+  top: 52%;
+  left: 4%;
+  transform: translateY(-50%);
 }
 .spoke-card.sp-calendario {
   --card-color: #0ea5e9; /* Sky */
   --card-shadow: rgba(14, 165, 233, 0.12);
   --spoke-bg: #e0f2fe;
-  top: 52%;
-  left: 4%;
-  transform: translateY(-50%);
+  bottom: 18%;
+  left: 12%;
 }
 .spoke-card.sp-ranking {
   --card-color: #f97316; /* Orange */
@@ -2955,35 +2955,35 @@ hr {
     <div class="nav-section-label">Herramientas</div>
     <button class="nav-btn active" id="btn-nav-dashboard" onclick="showPanel('dashboard',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-      Inicio (Dashboard)
+      Inicio
     </button>
-    <button class="nav-btn" id="btn-nav-scripts" onclick="showPanel('scripts',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
-      Textos legales
+    <button class="nav-btn" id="btn-nav-ranking" onclick="showPanel('ranking',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
+      Ranking Ventas
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;condiciones&#39;,this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-      Condiciones
-    </button>
-    <button class="nav-btn" onclick="showPanel(&#39;comparativa&#39;,this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
-      Comparativa
-    </button>
-    <button class="nav-btn" onclick="showPanel('calendario',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-      Calendario
-    </button>
-    <button class="nav-btn" onclick="showPanel('telefonos',this)" id="btn-nav-telefonos">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-      Teléfonos
-    </button>
-    <button class="nav-btn" onclick="showPanel('agenda',this)" id="btn-nav-agenda">
+    <button class="nav-btn" id="btn-nav-agenda" onclick="showPanel('agenda',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
       Agenda Personal
     </button>
-    <button class="nav-btn" onclick="showPanel(&#39;ranking&#39;,this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
-      Ranking ventas
+    <button class="nav-btn" id="btn-nav-scripts" onclick="showPanel('scripts',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
+      Textos Legales
+    </button>
+    <button class="nav-btn" id="btn-nav-comparativa" onclick="showPanel('comparativa',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
+      Comparativas
+    </button>
+    <button class="nav-btn" id="btn-nav-condiciones" onclick="showPanel('condiciones',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+      Condiciones
+    </button>
+    <button class="nav-btn" id="btn-nav-calendario" onclick="showPanel('calendario',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+      Calendario
+    </button>
+    <button class="nav-btn" id="btn-nav-telefonos" onclick="showPanel('telefonos',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+      Teléfonos
     </button>
 
   </div>
@@ -3080,73 +3080,18 @@ hr {
           </button>
         </div>
         
-        <!-- Spoke Card 1: Scripts -->
-        <div class="spoke-card sp-scripts" onclick="showPanel('scripts', document.getElementById('btn-nav-scripts'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
-            </div>
-            <div class="spoke-title">Textos legales</div>
-          </div>
-          <div class="spoke-desc">Textos legales paso a paso para Naturgy, Endesa, Gana Energía...</div>
-        </div>
-
-        <!-- Spoke Card 2: Condiciones -->
-        <div class="spoke-card sp-condiciones" onclick="showPanel('condiciones', document.querySelector('[onclick*=\'condiciones\']'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-            </div>
-            <div class="spoke-title">Condiciones y tarifas</div>
-          </div>
-          <div class="spoke-desc">Consulta de tarifas oficiales PVP actualizadas para 2026.</div>
-        </div>
-
-        <!-- Spoke Card 3: Comparativa -->
-        <div class="spoke-card sp-comparativa" onclick="showPanel('comparativa', document.querySelector('[onclick*=\'comparativa\']'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
-            </div>
-            <div class="spoke-title">Comparativa factura</div>
-          </div>
-          <div class="spoke-desc">Calculadora y optimizador de ofertas con o sin mantenimientos.</div>
-        </div>
-
-        <!-- Spoke Card 4: Calendario -->
-        <div class="spoke-card sp-calendario" onclick="showPanel('calendario', document.querySelector('[onclick*=\'calendario\']'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-            </div>
-            <div class="spoke-title">Calendario laboral</div>
-          </div>
-          <div class="spoke-desc">Días hábiles de mes, festivos nacionales y fechas de cierre.</div>
-        </div>
-
-        <!-- Spoke Card 5: Ranking -->
-        <div class="spoke-card sp-ranking" onclick="showPanel('ranking', document.querySelector('[onclick*=\'ranking\']'))">
+        <!-- Spoke Card 1: Ranking Ventas -->
+        <div class="spoke-card sp-ranking" onclick="showPanel('ranking', document.getElementById('btn-nav-ranking'))">
           <div class="spoke-header">
             <div class="spoke-icon">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
             </div>
-            <div class="spoke-title">Ranking de ventas</div>
+            <div class="spoke-title">Ranking Ventas</div>
           </div>
           <div class="spoke-desc">Tabla de rendimiento comercial de los representantes en vivo.</div>
         </div>
 
-        <!-- Spoke Card 6: Teléfonos -->
-        <div class="spoke-card sp-telefonos" onclick="showPanel('telefonos', document.getElementById('btn-nav-telefonos'))">
-          <div class="spoke-header">
-            <div class="spoke-icon">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-            </div>
-            <div class="spoke-title">Teléfonos de contacto</div>
-          </div>
-          <div class="spoke-desc">Directorio de atención al cliente y averías de energía.</div>
-        </div>
-
-        <!-- Spoke Card 7: Agenda Personal -->
+        <!-- Spoke Card 2: Agenda Personal -->
         <div class="spoke-card sp-agenda" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
           <div class="spoke-header">
             <div class="spoke-icon">
@@ -3155,6 +3100,61 @@ hr {
             <div class="spoke-title">Agenda Personal</div>
           </div>
           <div class="spoke-desc">Organiza tus llamadas, tareas y recordatorios diarios.</div>
+        </div>
+
+        <!-- Spoke Card 3: Textos Legales -->
+        <div class="spoke-card sp-scripts" onclick="showPanel('scripts', document.getElementById('btn-nav-scripts'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
+            </div>
+            <div class="spoke-title">Textos Legales</div>
+          </div>
+          <div class="spoke-desc">Textos legales paso a paso para Naturgy, Endesa, Gana Energía...</div>
+        </div>
+
+        <!-- Spoke Card 4: Comparativas -->
+        <div class="spoke-card sp-comparativa" onclick="showPanel('comparativa', document.getElementById('btn-nav-comparativa'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
+            </div>
+            <div class="spoke-title">Comparativas</div>
+          </div>
+          <div class="spoke-desc">Calculadora y optimizador de ofertas con o sin mantenimientos.</div>
+        </div>
+
+        <!-- Spoke Card 5: Condiciones -->
+        <div class="spoke-card sp-condiciones" onclick="showPanel('condiciones', document.getElementById('btn-nav-condiciones'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            </div>
+            <div class="spoke-title">Condiciones</div>
+          </div>
+          <div class="spoke-desc">Consulta de tarifas oficiales PVP actualizadas para 2026.</div>
+        </div>
+
+        <!-- Spoke Card 6: Calendario -->
+        <div class="spoke-card sp-calendario" onclick="showPanel('calendario', document.getElementById('btn-nav-calendario'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+            </div>
+            <div class="spoke-title">Calendario</div>
+          </div>
+          <div class="spoke-desc">Días hábiles de mes, festivos nacionales y fechas de cierre.</div>
+        </div>
+
+        <!-- Spoke Card 7: Teléfonos -->
+        <div class="spoke-card sp-telefonos" onclick="showPanel('telefonos', document.getElementById('btn-nav-telefonos'))">
+          <div class="spoke-header">
+            <div class="spoke-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+            </div>
+            <div class="spoke-title">Teléfonos</div>
+          </div>
+          <div class="spoke-desc">Directorio de atención al cliente y averías de energía.</div>
         </div>
       </div>
     </div>
@@ -3940,13 +3940,13 @@ let activeCias = {iberdrola:true, naturgy:true, endesa:true, gana:true};
 
 const PANELS = {
   dashboard:   {title:'Inicio', sub:'Panel de control del comercial', color:'#6366f1', icon:'<rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect>'},
-  scripts:     {title:'Textos legales', sub:'Selecciona la compañía y sigue el guión paso a paso', color:'#1a7a3c', icon:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>'},
-  condiciones: {title:'Condiciones y tarifas',   sub:'Precios de más barato a más caro · PVP 2026', color:'#0d5c9e', icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
-  comparativa: {title:'Comparativa de factura',  sub:'Calcula y ajusta la oferta para el cliente', color:'#e07b00', icon:'<rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/>'},
-  calendario:  {title:'Calendario laboral',      sub:'Días laborables 2026 · Calendario RENOSUR-TM', color:'#1a7fcb', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
-  telefonos:   {title:'Teléfonos',               sub:'Atención al cliente y averías de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
+  ranking:     {title:'Ranking Ventas',     sub:'Clasificación y rendimiento de los comerciales en tiempo real', color:'#e07b00', icon:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"/>'},
   agenda:      {title:'Agenda Personal',         sub:'Organiza tus llamadas, tareas y recordatorios diarios', color:'#10b981', icon:'<rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path>'},
-  ranking:     {title:'Ranking de ventas',     sub:'Clasificación y rendimiento de los comerciales en tiempo real', color:'#e07b00', icon:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"/>'},
+  scripts:     {title:'Textos Legales', sub:'Selecciona la compañía y sigue el guión paso a paso', color:'#1a7a3c', icon:'<path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="22"/><line x1="8" y1="22" x2="16" y2="22"/>'},
+  comparativa: {title:'Comparativas',  sub:'Calcula y ajusta la oferta para el cliente', color:'#e07b00', icon:'<rect x="18" y="3" width="4" height="18"/><rect x="10" y="8" width="4" height="13"/><rect x="2" y="13" width="4" height="8"/>'},
+  condiciones: {title:'Condiciones',   sub:'Precios de más barato a más caro · PVP 2026', color:'#0d5c9e', icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
+  calendario:  {title:'Calendario',      sub:'Días laborables 2026 · Calendario RENOSUR-TM', color:'#1a7fcb', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
+  telefonos:   {title:'Teléfonos',               sub:'Atención al cliente y averías de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
 };
 
 // ── CALENDARIO LABORAL 2026 (RENOSUR-TM) — datos exactos, sin cálculo ──
