@@ -4777,13 +4777,13 @@ async function testRankingConnection() {
 
 // ── TELÉFONOS DE COMPAÑÍAS Y DISTRIBUIDORAS ──
 const TELEFONOS_CIAS = [
-  { name: 'Iberdrola', tel: '900 225 235', averias: '900 224 522', area: 'Nacional' },
-  { name: 'Endesa', tel: '900 907 880', averias: '900 850 840', area: 'Nacional' },
-  { name: 'Naturgy', tel: '900 100 251', averias: '900 333 999', area: 'Nacional' },
-  { name: 'Gana Energía', tel: '960 202 020', averias: '—', area: 'Nacional' },
-  { name: 'Repsol', tel: '900 102 101', averias: '900 101 010', area: 'Nacional' },
-  { name: 'TotalEnergies', tel: '900 907 000', averias: '900 907 001', area: 'Nacional' },
-  { name: 'Plenitude', tel: '900 264 842', averias: '—', area: 'Nacional' }
+  { name: 'Iberdrola', tel: '900 225 235' },
+  { name: 'Endesa', tel: '800 760 909 (particulares)' },
+  { name: 'Naturgy', tel: '912 100 100 / 900 385 425' },
+  { name: 'Gana Energía', tel: '900 535 689' },
+  { name: 'Repsol', tel: '900 118 866' },
+  { name: 'TotalEnergies', tel: '900 907 000' },
+  { name: 'Plenitude', tel: '900 264 666' }
 ];
 
 const DISTRIBUIDORAS_LUZ = [
@@ -4866,20 +4866,21 @@ function renderTelefonos() {
               <tr>
                 <th>Compañía</th>
                 <th>Atención al Cliente</th>
-                <th>Averías</th>
-                <th>Área</th>
                 <th style="text-align:center;">Acción</th>
               </tr>
             </thead>
             <tbody>
               ${TELEFONOS_CIAS.map(c => {
-                const telClean = c.tel.replace(/\s+/g, '');
+                const links = c.tel.split('/').map(part => {
+                  const label = part.trim();
+                  const telClean = label.replace(/\D/g, '');
+                  return `<a href="tel:${telClean}" style="color:var(--blue);font-weight:700;text-decoration:none;display:inline-block;">${label}</a>`;
+                }).join('<span style="color:var(--t3);margin:0 8px;">/</span>');
+                
                 return `
                   <tr>
                     <td><strong>${c.name}</strong></td>
-                    <td><a href="tel:${telClean}" style="color:var(--blue);font-weight:700;text-decoration:none;">${c.tel}</a></td>
-                    <td>${c.averias !== '—' ? `<a href="tel:${c.averias.replace(/\s+/g, '')}" style="color:var(--t2);text-decoration:none;">${c.averias}</a>` : '—'}</td>
-                    <td><span style="font-size:12px;padding:2px 6px;border-radius:10px;background:var(--border);color:var(--t2);">${c.area}</span></td>
+                    <td>${links}</td>
                     <td style="text-align:center;">
                       <button class="btn btn-secondary" onclick="copyToClipboard('${c.tel}', this)" style="padding: 6px 12px; font-size: 12.5px; display: inline-flex; align-items: center; gap: 4px;">
                         <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
