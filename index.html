@@ -4921,19 +4921,20 @@ function onControlVacAgentChange() {
   
   content.style.display = 'grid';
   
-  // Load and merge default vacations for selected commercial if not present
-  const defaults = DEFAULT_VACATIONS[dni] || [];
-  let stored = [];
-  try {
-    stored = JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
-  } catch(e) {}
-  defaults.forEach(d => {
-    if (!stored.includes(d)) {
-      stored.push(d);
+  // Seed default vacations only once for selected commercial
+  const initializedKey = 'vacaciones_inicializadas_' + dni;
+  if (localStorage.getItem(initializedKey) === null) {
+    if (localStorage.getItem('vacaciones_' + dni) !== null) {
+      localStorage.setItem(initializedKey, 'true');
+      controlAgentVacations = JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
+    } else {
+      controlAgentVacations = DEFAULT_VACATIONS[dni] || [];
+      localStorage.setItem('vacaciones_' + dni, JSON.stringify(controlAgentVacations));
+      localStorage.setItem(initializedKey, 'true');
     }
-  });
-  controlAgentVacations = stored;
-  localStorage.setItem('vacaciones_' + dni, JSON.stringify(controlAgentVacations));
+  } else {
+    controlAgentVacations = JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
+  }
   
   document.getElementById('ctrl-vac-start').value = '';
   document.getElementById('ctrl-vac-end').value = '';
@@ -6701,19 +6702,20 @@ function loadSession() {
     currentAgentDni = dni;
     currentAgentName = name;
     
-    // Seed and merge default vacations
-    const defaults = DEFAULT_VACATIONS[currentAgentDni] || [];
-    let stored = [];
-    try {
-      stored = JSON.parse(localStorage.getItem('vacaciones_' + currentAgentDni) || '[]');
-    } catch(e) {}
-    defaults.forEach(d => {
-      if (!stored.includes(d)) {
-        stored.push(d);
+    // Seed default vacations only once
+    const initializedKey = 'vacaciones_inicializadas_' + currentAgentDni;
+    if (localStorage.getItem(initializedKey) === null) {
+      if (localStorage.getItem('vacaciones_' + currentAgentDni) !== null) {
+        localStorage.setItem(initializedKey, 'true');
+        agentVacations = JSON.parse(localStorage.getItem('vacaciones_' + currentAgentDni) || '[]');
+      } else {
+        agentVacations = DEFAULT_VACATIONS[currentAgentDni] || [];
+        localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
+        localStorage.setItem(initializedKey, 'true');
       }
-    });
-    agentVacations = stored;
-    localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
+    } else {
+      agentVacations = JSON.parse(localStorage.getItem('vacaciones_' + currentAgentDni) || '[]');
+    }
     
     onLoginSuccess();
   } else {
