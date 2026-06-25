@@ -5544,6 +5544,17 @@ function printCompanyOffer(cia) {
     
   const pct = (actual > 0 && ahorro !== null) ? (ahorro / actual) * 100 : null;
 
+  let printColor = r.color;
+  if (cia === 'naturgy') {
+    printColor = '#e08034'; // Orange
+  } else if (cia === 'iberdrola') {
+    printColor = '#059669'; // Green
+  } else if (cia === 'endesa') {
+    printColor = '#2563eb'; // Blue
+  } else if (cia === 'gana') {
+    printColor = '#0891b2'; // Cyan
+  }
+
   const clientNameVal = document.getElementById('f-cliente-nombre') ? document.getElementById('f-cliente-nombre').value.trim() : '';
   const advisorInput = document.getElementById('f-asesor-nombre');
   const advisorVal = advisorInput ? advisorInput.value.trim() : '';
@@ -5769,9 +5780,9 @@ function printCompanyOffer(cia) {
       3. Compañía seleccionada
     </div>
     <div style="margin-top: 15px; margin-bottom: 30px;">
-      <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 8px; background: #ffffff !important; border: 1.5px solid var(--border); -webkit-print-color-adjust: exact; print-color-adjust: exact; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-        <span class="cdot" style="background: ${r.color} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${r.color}33;"></span>
-        <span style="font-size: 18px; font-weight: 900; color: ${r.color} !important; letter-spacing: -0.5px; text-transform: uppercase;">${r.name}</span>
+      <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 6px 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <span class="cdot" style="background: ${printColor} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${printColor}33;"></span>
+        <span style="font-size: 20px; font-weight: 900; color: ${printColor} !important; letter-spacing: -0.5px; text-transform: uppercase;">${r.name}</span>
       </div>
     </div>
     
