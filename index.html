@@ -5707,10 +5707,10 @@ function printCompanyOffer(cia) {
     
     <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
       <thead>
-        <tr style="background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-          <th style="padding: 8px 10px; text-align: left; font-weight: 700; color: #ffffff !important;">Concepto</th>
-          <th style="padding: 8px 10px; text-align: center; font-weight: 700; color: #ffffff !important;">Cálculo</th>
-          <th style="padding: 8px 10px; text-align: right; font-weight: 700; color: #ffffff !important;">Importe</th>
+        <tr style="background: var(--blue) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <th style="padding: 8px 10px; text-align: left; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Concepto</th>
+          <th style="padding: 8px 10px; text-align: center; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Cálculo</th>
+          <th style="padding: 8px 10px; text-align: right; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Importe</th>
         </tr>
       </thead>
       <tbody>
@@ -5769,9 +5769,9 @@ function printCompanyOffer(cia) {
       3. Compañía seleccionada
     </div>
     <div style="margin-top: 15px; margin-bottom: 30px;">
-      <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 8px; background: ${r.color} !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
-        <span class="cdot" style="background: #ffffff !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block;"></span>
-        <span style="font-size: 18px; font-weight: 900; color: #ffffff !important; letter-spacing: -0.5px; text-transform: uppercase;">${r.name}</span>
+      <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 8px; background: #ffffff !important; border: 1.5px solid var(--border); -webkit-print-color-adjust: exact; print-color-adjust: exact; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+        <span class="cdot" style="background: ${r.color} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${r.color}33;"></span>
+        <span style="font-size: 18px; font-weight: 900; color: ${r.color} !important; letter-spacing: -0.5px; text-transform: uppercase;">${r.name}</span>
       </div>
     </div>
     
