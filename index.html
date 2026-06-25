@@ -4504,8 +4504,8 @@ function renderCalendar(){
     let cls='cal-day ', label='', extraHtml='';
     if(FESTIVOS.includes(iso)){ cls+='cal-festivo'; label='Festivo'; extraHtml='FESTIVO'; }
     else if(VOB25.includes(iso)){ cls+='cal-festivo'; label='VOB25'; extraHtml='FESTIVO'; }
-    else if(COMIENZOS.includes(iso)){ cls+='cal-comienzo'; label='Comienzo de mes'; }
-    else if(CIERRES.includes(iso)){ cls+='cal-cierre'; label='Cierre de mes'; }
+    else if(COMIENZOS.includes(iso)){ cls+='cal-comienzo'; label='Comienzo de mes'; extraHtml='INICIO'; }
+    else if(CIERRES.includes(iso)){ cls+='cal-cierre'; label='Cierre de mes'; extraHtml='CIERRE'; }
     else if(calIsWeekend(date)){ cls+='cal-weekend'; label='Fin de semana'; }
     else{ cls+='cal-labor'; label='Laborable'; }
     
@@ -4518,8 +4518,18 @@ function renderCalendar(){
     
     let cellContent = `<span>${dayNum}</span>`;
     if (extraHtml) {
-      let badgeBg = extraHtml === 'FESTIVO' ? 'rgba(224, 128, 52, 0.15)' : 'rgba(73, 84, 96, 0.1)';
-      let badgeColor = extraHtml === 'FESTIVO' ? '#ea580c' : '#475569';
+      let badgeBg = 'rgba(73, 84, 96, 0.1)';
+      let badgeColor = '#475569';
+      if (extraHtml === 'FESTIVO') {
+        badgeBg = 'rgba(224, 128, 52, 0.15)';
+        badgeColor = '#ea580c';
+      } else if (extraHtml === 'INICIO') {
+        badgeBg = 'rgba(234, 179, 8, 0.15)';
+        badgeColor = '#a16207';
+      } else if (extraHtml === 'CIERRE') {
+        badgeBg = 'rgba(124, 58, 237, 0.15)';
+        badgeColor = '#6d28d9';
+      }
       cellContent += `<span style="font-size: 8.5px; font-weight: 800; letter-spacing: 0.2px; margin-top: auto; align-self: flex-start; color: ${badgeColor}; background: ${badgeBg}; padding: 2px 4px; border-radius: 4px; text-transform: uppercase;">${extraHtml}</span>`;
     }
     
