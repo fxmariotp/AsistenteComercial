@@ -901,7 +901,7 @@ hr {
   position: relative;
   border: 1.5px solid transparent;
   transition: all 0.2s;
-  cursor: pointer;
+  cursor: default;
 }
 
 .cal-day:hover:not(.cal-empty):not(.cal-outside) {
@@ -4501,18 +4501,29 @@ function renderCalendar(){
     const iso=toIso(date);
     const dayNum=date.getDate();
     
-    let cls='cal-day ', label='';
-    if(FESTIVOS.includes(iso)){ cls+='cal-festivo'; label='Festivo'; }
-    else if(VOB25.includes(iso)){ cls+='cal-festivo'; label='VOB25'; }
+    let cls='cal-day ', label='', extraHtml='';
+    if(FESTIVOS.includes(iso)){ cls+='cal-festivo'; label='Festivo'; extraHtml='FESTIVO'; }
+    else if(VOB25.includes(iso)){ cls+='cal-festivo'; label='VOB25'; extraHtml='FESTIVO'; }
     else if(COMIENZOS.includes(iso)){ cls+='cal-comienzo'; label='Comienzo de mes'; }
     else if(CIERRES.includes(iso)){ cls+='cal-cierre'; label='Cierre de mes'; }
     else if(calIsWeekend(date)){ cls+='cal-weekend'; label='Fin de semana'; }
     else{ cls+='cal-labor'; label='Laborable'; }
     
-    if(agentVacations.includes(iso)){ cls+=' cal-vacation'; label+=' (Vacaciones)'; }
+    if(agentVacations.includes(iso)){ 
+      cls+=' cal-vacation'; 
+      label+=' (Vacaciones)'; 
+      extraHtml='VACACIONES';
+    }
     if(calIsToday(date)){ cls+=' cal-today'; label+=' · Hoy'; }
     
-    html+=`<div class="${cls}" onclick="toggleVacation('${iso}')" title="${label}">${dayNum}</div>`;
+    let cellContent = `<span>${dayNum}</span>`;
+    if (extraHtml) {
+      let badgeBg = extraHtml === 'FESTIVO' ? 'rgba(224, 128, 52, 0.15)' : 'rgba(73, 84, 96, 0.1)';
+      let badgeColor = extraHtml === 'FESTIVO' ? '#ea580c' : '#475569';
+      cellContent += `<span style="font-size: 8.5px; font-weight: 800; letter-spacing: 0.2px; margin-top: auto; align-self: flex-start; color: ${badgeColor}; background: ${badgeBg}; padding: 2px 4px; border-radius: 4px; text-transform: uppercase;">${extraHtml}</span>`;
+    }
+    
+    html+=`<div class="${cls}" title="${label}">${cellContent}</div>`;
   }
 
   // Render trailing days
