@@ -5772,9 +5772,11 @@ function printCompanyOffer(cia) {
   document.getElementById('print-report-container').innerHTML = html;
   
   if (typeof html2pdf !== 'undefined') {
-    const cleanClientName = clientNameVal.replace(/[\\\/:\*\?"<>\|]/g, '');
-    const cleanCompanyName = r.name.replace(/[\\\/:\*\?"<>\|]/g, '');
-    const pdfFilename = cleanClientName ? `Comparativa ${cleanClientName} de ${cleanCompanyName}.pdf` : `Comparativa de ${cleanCompanyName}.pdf`;
+    const cleanClientName = clientNameVal.replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
+    const cleanCompanyName = r.name.replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
+    const pdfFilename = cleanClientName 
+      ? `COMPARATIVA ${cleanClientName} ${cleanCompanyName}.pdf` 
+      : `COMPARATIVA ${cleanCompanyName}.pdf`;
 
     const opt = {
       margin:       [10, 10, 10, 10],
