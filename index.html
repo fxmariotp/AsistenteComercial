@@ -1466,6 +1466,16 @@ hr {
   border-color: var(--border-hover);
 }
 
+.btn-clear {
+  border-color: var(--orange) !important;
+  color: var(--orange) !important;
+}
+
+.btn-clear:hover {
+  background: var(--orange-bg) !important;
+  border-color: var(--orange) !important;
+}
+
 .sum-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -3655,6 +3665,13 @@ hr {
             <div class="fgrp" style="grid-column: span 2; margin-top: 4px;">
               <label>Nombre del asesor <span style="font-weight:400;color:var(--t3)">opcional</span></label>
               <input type="text" id="f-asesor-nombre" placeholder="Si se deja en blanco se usará tu nombre" autocomplete="off" oninput="calcComp()" style="width: 100%;">
+            </div>
+            
+            <div class="fgrp" style="grid-column: span 2; margin-top: 10px; display: flex; justify-content: flex-end;">
+              <button type="button" class="btn btn-clear" onclick="clearComparisonInputs(); calcComp();">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-right: 6px; display: inline-block; vertical-align: middle;"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                Limpiar datos
+              </button>
             </div>
           </div>
 
