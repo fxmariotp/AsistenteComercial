@@ -959,14 +959,14 @@ hr {
 }
 
 .cal-day.cal-vacation {
-  background: #ffedd5 !important;
-  color: #ea580c !important;
-  border-color: #fdba74 !important;
+  background: #f1f5f9 !important;
+  color: #475569 !important;
+  border-color: #cbd5e1 !important;
 }
 
 .cal-day.cal-vacation.cal-today {
-  background: #ffedd5 !important;
-  color: #ea580c !important;
+  background: #f1f5f9 !important;
+  color: #475569 !important;
   border-color: var(--blue) !important;
   border-width: 2px !important;
   box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25) !important;
@@ -3709,7 +3709,7 @@ hr {
         <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div>Cierre de mes</div>
         <div class="legend-item"><div class="legend-dot" style="background:#fca5a5"></div>Fin de semana</div>
         <div class="legend-item"><div class="legend-dot" style="background:#f0fdf4;border:1px solid #bbf7d0"></div>Laborable</div>
-        <div class="legend-item"><div class="legend-dot" style="background:#ffedd5;border:1px solid #fdba74"></div>Vacaciones</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#f1f5f9;border:1px solid #cbd5e1"></div>Vacaciones</div>
         <div class="legend-item"><div class="legend-dot" style="background:#1d4ed8"></div>Hoy</div>
       </div>
 
@@ -4394,7 +4394,7 @@ function getPeriodElapsedDaysExcludingVacations(periodIndex, now) {
   current.setHours(0,0,0,0);
   
   if (current < start) return 0;
-  if (current > end) return getPeriodLaborableCount(periodIndex);
+  if (current > end) return LABORABLES[periodIndex] - getPeriodVacationCount(periodIndex);
   
   let count = 0;
   let iter = new Date(start);
@@ -4402,6 +4402,24 @@ function getPeriodElapsedDaysExcludingVacations(periodIndex, now) {
     if (calIsLabor(iter)) {
       const iso = toIso(iter);
       if (!agentVacations.includes(iso)) {
+        count++;
+      }
+    }
+    iter.setDate(iter.getDate() + 1);
+  }
+  return count;
+}
+
+function getPeriodVacationCount(periodIndex) {
+  const period = PERIODS[periodIndex];
+  const start = isoToDate(period.start);
+  const end = isoToDate(period.end);
+  let count = 0;
+  let iter = new Date(start);
+  while (iter <= end) {
+    if (calIsLabor(iter)) {
+      const iso = toIso(iter);
+      if (agentVacations.includes(iso)) {
         count++;
       }
     }
@@ -4495,9 +4513,10 @@ function renderCalendar(){
 
 function renderCalCounters(year){
   const now=new Date();
-  const monthTotal=getPeriodLaborableCount(calMonth);
+  const monthTotal=LABORABLES[calMonth];
   const monthElapsed=getPeriodElapsedDaysExcludingVacations(calMonth, now);
-  const monthRemaining=monthTotal-monthElapsed;
+  const monthVacations=getPeriodVacationCount(calMonth);
+  const monthRemaining=monthTotal-monthElapsed-monthVacations;
 
   document.getElementById('cal-mes-total').textContent=monthTotal;
   document.getElementById('cal-mes-transc').textContent=monthElapsed;
@@ -4511,13 +4530,13 @@ function renderCalCounters(year){
   document.getElementById('cal-mes-cierre').textContent=`Cierre de mes: ${cierreDiaSemana} ${cierreDiaNum} de ${cierreMesNom}`;
   document.getElementById('cal-prox-festivo').textContent='Próximo festivo: '+proximoFestivo();
 
-  let yearTotal = 0;
+  const yearTotal = YEAR_LABOR_TOTAL;
   let yearElapsed = 0;
   for (let m = 0; m < 12; m++) {
-    yearTotal += getPeriodLaborableCount(m);
     yearElapsed += getPeriodElapsedDaysExcludingVacations(m, now);
   }
-  const yearRemaining=yearTotal-yearElapsed;
+  const yearVacations = agentVacations.length;
+  const yearRemaining = yearTotal - yearElapsed - yearVacations;
 
   document.getElementById('cal-ano-total').textContent=yearTotal;
   document.getElementById('cal-ano-transc').textContent=yearElapsed;
@@ -4527,6 +4546,8 @@ function renderCalCounters(year){
 
 function toggleVacation(iso) {
   if (!currentAgentDni) return;
+  const date = isoToDate(iso);
+  if (!calIsLabor(date)) return;
   const idx = agentVacations.indexOf(iso);
   if (idx === -1) {
     agentVacations.push(iso);
@@ -4594,9 +4615,11 @@ function saveVacationDays(event) {
   let added = false;
   while (iter <= end) {
     const iso = toIso(iter);
-    if (!agentVacations.includes(iso)) {
-      agentVacations.push(iso);
-      added = true;
+    if (calIsLabor(iter)) {
+      if (!agentVacations.includes(iso)) {
+        agentVacations.push(iso);
+        added = true;
+      }
     }
     iter.setDate(iter.getDate() + 1);
   }
