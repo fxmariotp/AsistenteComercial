@@ -3133,6 +3133,7 @@ hr {
             <button class="db-filter-pill active" id="db-filter-all" onclick="filterDbAgenda('all', this)">Todas</button>
             <button class="db-filter-pill" id="db-filter-call" onclick="filterDbAgenda('call', this)">Llamadas</button>
             <button class="db-filter-pill" id="db-filter-task" onclick="filterDbAgenda('task', this)">Recordatorios</button>
+            <button class="db-filter-pill" id="db-filter-note" onclick="filterDbAgenda('note', this)">Notas</button>
           </div>
           
           <div class="db-quick-add" style="position: relative; margin-bottom: 6px;">
@@ -3866,6 +3867,9 @@ hr {
           </button>
           <button class="ctab" id="tab-agenda-task" onclick="switchAgendaModalTab('task')" style="flex: 1; justify-content: center;">
             <span class="cdot" style="background: var(--blue);"></span>Tarea / Recordatorio
+          </button>
+          <button class="ctab" id="tab-agenda-note" onclick="switchAgendaModalTab('note')" style="flex: 1; justify-content: center;">
+            <span class="cdot" style="background: var(--blue);"></span>Anotación
           </button>
         </div>
 
@@ -6126,8 +6130,10 @@ function renderAgenda() {
     if (item.type === 'call') {
       metaParts.push('<span style="color: var(--blue); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Llamada</span>');
       if (item.phone) metaParts.push(item.phone);
-    } else {
+    } else if (item.type === 'task') {
       metaParts.push('<span style="color: var(--t2); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Tarea</span>');
+    } else if (item.type === 'note') {
+      metaParts.push('<span style="color: var(--orange); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>Nota</span>');
     }
     
     if (dateLabel) {
@@ -6180,27 +6186,41 @@ function switchAgendaModalTab(tab) {
   currentModalTab = tab;
   const tabCall = document.getElementById('tab-agenda-call');
   const tabTask = document.getElementById('tab-agenda-task');
+  const tabNote = document.getElementById('tab-agenda-note');
   const lblTitle = document.getElementById('lbl-agenda-title');
   const inpTitle = document.getElementById('agenda-title');
   const fgrpPhone = document.getElementById('fgrp-client-phone');
   const fgrpObs = document.getElementById('fgrp-observations');
+  const datetimeRow = document.getElementById('agenda-datetime-row');
+  
+  if (tabCall) tabCall.classList.toggle('active', tab === 'call');
+  if (tabTask) tabTask.classList.toggle('active', tab === 'task');
+  if (tabNote) tabNote.classList.toggle('active', tab === 'note');
   
   if (tab === 'call') {
-    tabCall.classList.add('active');
-    tabTask.classList.remove('active');
     lblTitle.textContent = 'Nombre del cliente';
     inpTitle.placeholder = 'Ej. Juan Pérez';
-    fgrpPhone.style.display = 'block';
-    fgrpObs.style.display = 'block';
-    document.getElementById('agenda-phone').required = true;
-  } else {
-    tabCall.classList.remove('active');
-    tabTask.classList.add('active');
+    if (fgrpPhone) fgrpPhone.style.display = 'block';
+    if (fgrpObs) fgrpObs.style.display = 'block';
+    if (datetimeRow) datetimeRow.style.display = 'flex';
+    const phoneInput = document.getElementById('agenda-phone');
+    if (phoneInput) phoneInput.required = true;
+  } else if (tab === 'task') {
     lblTitle.textContent = 'Descripción';
     inpTitle.placeholder = 'Ej. Revisar contratos pendientes';
-    fgrpPhone.style.display = 'none';
-    fgrpObs.style.display = 'none';
-    document.getElementById('agenda-phone').required = false;
+    if (fgrpPhone) fgrpPhone.style.display = 'none';
+    if (fgrpObs) fgrpObs.style.display = 'none';
+    if (datetimeRow) datetimeRow.style.display = 'flex';
+    const phoneInput = document.getElementById('agenda-phone');
+    if (phoneInput) phoneInput.required = false;
+  } else if (tab === 'note') {
+    lblTitle.textContent = 'Anotación';
+    inpTitle.placeholder = 'Ej. Recordar hablar con el supervisor sobre las tarifas nuevas';
+    if (fgrpPhone) fgrpPhone.style.display = 'none';
+    if (fgrpObs) fgrpObs.style.display = 'none';
+    if (datetimeRow) datetimeRow.style.display = 'none';
+    const phoneInput = document.getElementById('agenda-phone');
+    if (phoneInput) phoneInput.required = false;
   }
 }
 
@@ -6262,8 +6282,8 @@ function saveAgendaItem(event) {
     type: currentModalTab,
     title: titleInput.value.trim(),
     phone: currentModalTab === 'call' ? phoneInput.value.trim() : '',
-    date: dateInput.value || '',
-    time: timeInput.value || '',
+    date: currentModalTab === 'note' ? '' : (dateInput.value || ''),
+    time: currentModalTab === 'note' ? '' : (timeInput.value || ''),
     notes: currentModalTab === 'call' ? notesInput.value.trim() : '',
     completed: false,
     notified: false,
@@ -6523,37 +6543,56 @@ function quickAddAgendaItem(text) {
   const now = new Date();
   let targetDate = new Date();
   
-  // Parse tomorrow
+  // Parse tomorrow or today
   let isTomorrow = false;
+  let hasDateKeyword = false;
   if (/\bmañana\b/i.test(text)) {
     isTomorrow = true;
     targetDate.setDate(targetDate.getDate() + 1);
     text = text.replace(/\bmañana\b/i, '').trim();
+    hasDateKeyword = true;
   } else if (/\bhoy\b/i.test(text)) {
     text = text.replace(/\bhoy\b/i, '').trim();
+    hasDateKeyword = true;
   }
   
-  const year = targetDate.getFullYear();
-  const month = String(targetDate.getMonth() + 1).padStart(2, '0');
-  const day = String(targetDate.getDate()).padStart(2, '0');
-  const dateStr = `${year}-${month}-${day}`;
+  let dateStr = '';
+  if (hasDateKeyword) {
+    const year = targetDate.getFullYear();
+    const month = String(targetDate.getMonth() + 1).padStart(2, '0');
+    const day = String(targetDate.getDate()).padStart(2, '0');
+    dateStr = `${year}-${month}-${day}`;
+  }
   
   // Parse phone number (Spanish 9 digits starting with 6,7,8,9, option +34 prefix)
   const phoneRegex = /(?:\+34|0034)?\s*[6789]\d{8}/;
   const phoneMatch = text.match(phoneRegex);
-  let type = 'task';
+  let type = hasDateKeyword ? 'task' : 'note';
   let phone = '';
   
   if (phoneMatch) {
     type = 'call';
     phone = phoneMatch[0].replace(/\s+/g, '');
     text = text.replace(phoneRegex, '').trim();
+    if (!dateStr) {
+      // Calls default to today's date if not specified
+      const year = now.getFullYear();
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const day = String(now.getDate()).padStart(2, '0');
+      dateStr = `${year}-${month}-${day}`;
+    }
   }
   
   // Clean up title
   let title = text.replace(/\s+/g, ' ').trim();
   if (!title) {
-    title = type === 'call' ? `Llamar a ${phone}` : 'Nueva tarea rápida';
+    if (type === 'call') {
+      title = `Llamar a ${phone}`;
+    } else if (type === 'task') {
+      title = 'Nueva tarea rápida';
+    } else {
+      title = 'Nueva nota rápida';
+    }
   }
   
   const itemData = {
@@ -6739,11 +6778,20 @@ function updateDashboardAgendaWidget() {
     agendaItems = agendaItems.filter(item => item.type === 'call');
   } else if (currentDbAgendaFilter === 'task') {
     agendaItems = agendaItems.filter(item => item.type === 'task');
+  } else if (currentDbAgendaFilter === 'note') {
+    agendaItems = agendaItems.filter(item => item.type === 'note');
   }
   
-  // Update Tasks KPI in welcome card
-  const totalTasksCount = agendaItems.length;
-  const completedTasksCount = agendaItems.filter(item => item.completed).length;
+  // Update Tasks KPI in welcome card (excluding notes since they are dateless annotations)
+  const kpiItems = list.filter(item => {
+    if (item.type === 'note') return false;
+    if (item.completed) {
+      return item.date === todayStr;
+    }
+    return !item.date || item.date <= todayStr;
+  });
+  const totalTasksCount = kpiItems.length;
+  const completedTasksCount = kpiItems.filter(item => item.completed).length;
   const elKpiTasks = document.getElementById('db-kpi-tasks');
   if (elKpiTasks) {
     elKpiTasks.textContent = `${completedTasksCount} / ${totalTasksCount}`;
@@ -6818,6 +6866,10 @@ function updateDashboardAgendaWidget() {
     if (item.type === 'call') {
       metaParts.push('Llamada');
       if (item.phone) metaParts.push(item.phone);
+    } else if (item.type === 'task') {
+      metaParts.push('Tarea');
+    } else if (item.type === 'note') {
+      metaParts.push('Nota');
     }
     if (dateLabel) {
       if (item.time) {
