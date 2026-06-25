@@ -5684,10 +5684,6 @@ function printCompanyOffer(cia) {
         <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${clientNameVal || '—'}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Consumo anual estimado</span>
-        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${annualCons.toLocaleString('es-ES')} kWh</span>
-      </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa</span>
         <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${compMode === 'luz' ? '2.0TD' : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
       </div>
@@ -5700,7 +5696,7 @@ function printCompanyOffer(cia) {
         <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${agentName}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Fecha de emisión</span>
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Fecha de comparativa</span>
         <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${dateStr}</span>
       </div>
     </div>
@@ -5732,8 +5728,8 @@ function printCompanyOffer(cia) {
   
   if (ahorro > 0) {
     html += `
-      <div style="border: 2px solid #10b981; border-radius: 8px; overflow: hidden; margin-bottom: 25px; page-break-inside: avoid; font-family: inherit;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #10b981; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+      <div style="border: 2px solid #047857; border-radius: 8px; overflow: hidden; margin-bottom: 25px; page-break-inside: avoid; font-family: inherit;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #047857; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div style="border-right: 1px solid rgba(255,255,255,0.3);">Resultado ahorro</div>
           <div>Ahorro anual (estimado)</div>
         </div>
@@ -5743,15 +5739,15 @@ function printCompanyOffer(cia) {
           </div>
           <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #202854; line-height: 1.3;">
             <span>${f2(ahorro * 12)} € al año</span>
-            ${pct !== null ? `<span style="font-size: 13px; font-weight: 700; color: #059669; margin-top: 2px;">${Math.round(pct)}% al año</span>` : ''}
+            ${pct !== null ? `<span style="font-size: 13px; font-weight: 700; color: #047857; margin-top: 2px;">${Math.round(pct)}% al año</span>` : ''}
           </div>
         </div>
       </div>
     `;
   } else {
     html += `
-      <div style="border: 2px solid #64748b; border-radius: 8px; overflow: hidden; margin-bottom: 25px; page-break-inside: avoid; font-family: inherit;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #64748b; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+      <div style="border: 2px solid #202854; border-radius: 8px; overflow: hidden; margin-bottom: 25px; page-break-inside: avoid; font-family: inherit;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #202854; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div style="border-right: 1px solid rgba(255,255,255,0.3);">Coste estimado mensual</div>
           <div>Diferencia con actual</div>
         </div>
@@ -5773,9 +5769,9 @@ function printCompanyOffer(cia) {
       3. Compañía seleccionada
     </div>
     <div style="margin-top: 15px; margin-bottom: 30px;">
-      <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 8px; background: #f8fafc; border: 1.5px solid var(--border); -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <span class="cdot" style="background:${r.color}; width: 20px; height: 20px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${r.color}33;"></span>
-        <span style="font-size: 18px; font-weight: 900; color: ${r.color}; letter-spacing: -0.5px;">${r.name.toUpperCase()}</span>
+      <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 8px; background: ${r.color} !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1);">
+        <span class="cdot" style="background: #ffffff !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block;"></span>
+        <span style="font-size: 18px; font-weight: 900; color: #ffffff !important; letter-spacing: -0.5px; text-transform: uppercase;">${r.name}</span>
       </div>
     </div>
     
