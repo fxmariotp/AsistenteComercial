@@ -958,6 +958,20 @@ hr {
   box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25);
 }
 
+.cal-day.cal-vacation {
+  background: #ffedd5 !important;
+  color: #ea580c !important;
+  border-color: #fdba74 !important;
+}
+
+.cal-day.cal-vacation.cal-today {
+  background: #ffedd5 !important;
+  color: #ea580c !important;
+  border-color: var(--blue) !important;
+  border-width: 2px !important;
+  box-shadow: 0 8px 16px rgba(79, 70, 229, 0.25) !important;
+}
+
 .counter-extra {
   font-size: 13px;
   color: var(--t2);
@@ -3695,6 +3709,7 @@ hr {
         <div class="legend-item"><div class="legend-dot" style="background:#7c3aed"></div>Cierre de mes</div>
         <div class="legend-item"><div class="legend-dot" style="background:#fca5a5"></div>Fin de semana</div>
         <div class="legend-item"><div class="legend-dot" style="background:#f0fdf4;border:1px solid #bbf7d0"></div>Laborable</div>
+        <div class="legend-item"><div class="legend-dot" style="background:#ffedd5;border:1px solid #fdba74"></div>Vacaciones</div>
         <div class="legend-item"><div class="legend-dot" style="background:#1d4ed8"></div>Hoy</div>
       </div>
 
@@ -3727,6 +3742,13 @@ hr {
           <div class="cal-nav">
             <button class="cal-nav-btn" id="cal-prev" onclick="changeCalMonth(-1)" title="Mes anterior"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"></polyline></svg></button>
             <button class="btn" onclick="goToToday()" style="font-size:13px;padding:8px 14px">Hoy</button>
+            <button class="btn btn-secondary" onclick="openVacationModal()" style="font-size:13px;padding:8px 14px;display:inline-flex;align-items:center;gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="3" y="8" width="18" height="13" rx="2"></rect>
+                <path d="M16 8V5a3 3 0 0 0-6 0v3"></path>
+              </svg>
+              Vacaciones
+            </button>
             <button class="cal-nav-btn" id="cal-next" onclick="changeCalMonth(1)" title="Mes siguiente"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="9 18 15 12 9 6"></polyline></svg></button>
           </div>
         </div>
@@ -3927,6 +3949,47 @@ hr {
           <div style="display: flex; gap: 12px; margin-top: 10px; justify-content: flex-end;">
             <button type="button" class="btn btn-secondary" onclick="closeAgendaModal()">Cancelar</button>
             <button type="submit" class="btn">Guardar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Modal Popup for Managing Vacation Days -->
+    <div id="vacation-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-content" style="max-width: 440px; width: 92%; padding: 24px;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h4 style="margin: 0; font-size: 16.5px; font-weight: 800; color: var(--text);">Gestionar Vacaciones</h4>
+          <button class="close-btn" onclick="closeVacationModal()" style="background: transparent; border: none; cursor: pointer; color: var(--t3); display: inline-flex;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <form id="vacation-form" onsubmit="saveVacationDays(event)" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; gap: 12px;">
+            <div class="fgrp" style="flex: 1;">
+              <label>Fecha de Inicio</label>
+              <input type="date" id="vac-start" required>
+            </div>
+            <div class="fgrp" style="flex: 1;">
+              <label>Fecha de Fin <span style="font-weight:400;color:var(--t3)">(opcional)</span></label>
+              <input type="date" id="vac-end">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 6px; justify-content: flex-end;">
+            <button type="submit" class="btn" style="width: 100%;">Añadir Días</button>
+          </div>
+
+          <!-- List of current vacation days -->
+          <div style="margin-top: 14px; border-top: 1px solid var(--border); padding-top: 14px;">
+            <label style="font-weight: 700; margin-bottom: 8px; display: block; color: var(--text); font-size: 14px;">Días de vacaciones registrados</label>
+            <div id="vacation-list" style="max-height: 160px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; padding-right: 4px;">
+              <!-- Filled dynamically by JavaScript -->
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 12px; margin-top: 10px; justify-content: flex-end;">
+            <button type="button" class="btn btn-secondary" onclick="closeVacationModal()">Cerrar</button>
           </div>
         </form>
       </div>
@@ -4301,6 +4364,52 @@ function getPeriodElapsedDays(periodIndex, now) {
   return count;
 }
 
+function getPeriodLaborableCount(periodIndex) {
+  const period = PERIODS[periodIndex];
+  const start = isoToDate(period.start);
+  const end = isoToDate(period.end);
+  let count = 0;
+  let iter = new Date(start);
+  while (iter <= end) {
+    if (calIsLabor(iter)) {
+      const iso = toIso(iter);
+      if (!agentVacations.includes(iso)) {
+        count++;
+      }
+    }
+    iter.setDate(iter.getDate() + 1);
+  }
+  return count;
+}
+
+function getPeriodElapsedDaysExcludingVacations(periodIndex, now) {
+  const period = PERIODS[periodIndex];
+  const start = isoToDate(period.start);
+  const end = isoToDate(period.end);
+  
+  start.setHours(0,0,0,0);
+  end.setHours(0,0,0,0);
+  
+  const current = new Date(now);
+  current.setHours(0,0,0,0);
+  
+  if (current < start) return 0;
+  if (current > end) return getPeriodLaborableCount(periodIndex);
+  
+  let count = 0;
+  let iter = new Date(start);
+  while (iter < current) {
+    if (calIsLabor(iter)) {
+      const iso = toIso(iter);
+      if (!agentVacations.includes(iso)) {
+        count++;
+      }
+    }
+    iter.setDate(iter.getDate() + 1);
+  }
+  return count;
+}
+
 let calMonth = getPeriodIndexForDate(new Date());
 
 function changeCalMonth(delta){
@@ -4363,8 +4472,11 @@ function renderCalendar(){
     else if(CIERRES.includes(iso)){ cls+='cal-cierre'; label='Cierre de mes'; }
     else if(calIsWeekend(date)){ cls+='cal-weekend'; label='Fin de semana'; }
     else{ cls+='cal-labor'; label='Laborable'; }
+    
+    if(agentVacations.includes(iso)){ cls+=' cal-vacation'; label+=' (Vacaciones)'; }
     if(calIsToday(date)){ cls+=' cal-today'; label+=' · Hoy'; }
-    html+=`<div class="${cls}" title="${label}">${dayNum}</div>`;
+    
+    html+=`<div class="${cls}" onclick="toggleVacation('${iso}')" title="${label}">${dayNum}</div>`;
   }
 
   // Render trailing days
@@ -4383,8 +4495,8 @@ function renderCalendar(){
 
 function renderCalCounters(year){
   const now=new Date();
-  const monthTotal=LABORABLES[calMonth];
-  const monthElapsed=getPeriodElapsedDays(calMonth, now);
+  const monthTotal=getPeriodLaborableCount(calMonth);
+  const monthElapsed=getPeriodElapsedDaysExcludingVacations(calMonth, now);
   const monthRemaining=monthTotal-monthElapsed;
 
   document.getElementById('cal-mes-total').textContent=monthTotal;
@@ -4399,16 +4511,113 @@ function renderCalCounters(year){
   document.getElementById('cal-mes-cierre').textContent=`Cierre de mes: ${cierreDiaSemana} ${cierreDiaNum} de ${cierreMesNom}`;
   document.getElementById('cal-prox-festivo').textContent='Próximo festivo: '+proximoFestivo();
 
+  let yearTotal = 0;
   let yearElapsed = 0;
   for (let m = 0; m < 12; m++) {
-    yearElapsed += getPeriodElapsedDays(m, now);
+    yearTotal += getPeriodLaborableCount(m);
+    yearElapsed += getPeriodElapsedDaysExcludingVacations(m, now);
   }
-  const yearRemaining=YEAR_LABOR_TOTAL-yearElapsed;
+  const yearRemaining=yearTotal-yearElapsed;
 
-  document.getElementById('cal-ano-total').textContent=YEAR_LABOR_TOTAL;
+  document.getElementById('cal-ano-total').textContent=yearTotal;
   document.getElementById('cal-ano-transc').textContent=yearElapsed;
   document.getElementById('cal-ano-rest').textContent=yearRemaining;
-  document.getElementById('cal-ano-bar').style.width=(yearElapsed/YEAR_LABOR_TOTAL*100)+'%';
+  document.getElementById('cal-ano-bar').style.width=(yearTotal?yearElapsed/yearTotal*100:0)+'%';
+}
+
+function toggleVacation(iso) {
+  if (!currentAgentDni) return;
+  const idx = agentVacations.indexOf(iso);
+  if (idx === -1) {
+    agentVacations.push(iso);
+  } else {
+    agentVacations.splice(idx, 1);
+  }
+  localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
+  renderCalendar();
+}
+
+function openVacationModal() {
+  if (!currentAgentDni) return;
+  document.getElementById('vacation-modal').style.display = 'flex';
+  renderVacationList();
+  document.getElementById('vac-start').value = '';
+  document.getElementById('vac-end').value = '';
+}
+
+function closeVacationModal() {
+  const modal = document.getElementById('vacation-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+function renderVacationList() {
+  const container = document.getElementById('vacation-list');
+  if (!container) return;
+  if (!agentVacations || agentVacations.length === 0) {
+    container.innerHTML = `<div style="text-align: center; color: var(--t3); font-size: 13px; padding: 10px 0;">No hay días de vacaciones registrados.</div>`;
+    return;
+  }
+  
+  // Ordenar fechas cronológicamente
+  const sorted = [...agentVacations].sort((a, b) => new Date(a) - new Date(b));
+  
+  container.innerHTML = sorted.map(iso => {
+    const d = isoToDate(iso);
+    const formatted = d.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
+    return `
+      <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--rs);">
+        <span style="font-size: 13.5px; color: var(--text); font-weight: 500;">${formatted}</span>
+        <button type="button" onclick="deleteVacationDay('${iso}')" style="background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 4px; display: inline-flex; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1" title="Eliminar">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+        </button>
+      </div>
+    `;
+  }).join('');
+}
+
+function saveVacationDays(event) {
+  if (event) event.preventDefault();
+  const startInput = document.getElementById('vac-start').value;
+  const endInput = document.getElementById('vac-end').value;
+  if (!startInput) return;
+  
+  let start = new Date(startInput);
+  let end = endInput ? new Date(endInput) : new Date(startInput);
+  
+  if (end < start) {
+    const temp = end;
+    end = start;
+    start = temp;
+  }
+  
+  let iter = new Date(start);
+  let added = false;
+  while (iter <= end) {
+    const iso = toIso(iter);
+    if (!agentVacations.includes(iso)) {
+      agentVacations.push(iso);
+      added = true;
+    }
+    iter.setDate(iter.getDate() + 1);
+  }
+  
+  if (added) {
+    localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
+    renderCalendar();
+    renderVacationList();
+    document.getElementById('vac-start').value = '';
+    document.getElementById('vac-end').value = '';
+  }
+}
+
+function deleteVacationDay(iso) {
+  const idx = agentVacations.indexOf(iso);
+  if (idx !== -1) {
+    agentVacations.splice(idx, 1);
+    localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
+    renderCalendar();
+    renderVacationList();
+  }
 }
 
 // State for ranking
@@ -5691,12 +5900,12 @@ function printCompanyOffer(cia) {
     </div>
     <div class="print-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 25px; border: 1.5px solid var(--border); border-radius: 8px; padding: 16px; background: #fff;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Razón social</span>
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nombre del cliente</span>
         <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${clientNameVal || '—'}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa</span>
-        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${compMode === 'luz' ? '2.0TD' : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
+        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${compMode === 'luz' ? (pot1 > 10 && pot1 <= 15 ? '2.1TD' : (pot1 > 15 ? '3.0TD' : '2.0TD')) : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Período facturado</span>
@@ -5866,6 +6075,7 @@ const COMERCIALES = {
 
 let currentAgentDni = null;
 let currentAgentName = "";
+let agentVacations = [];
 
 function toTitleCase(str) {
   return str.toLowerCase().split(' ').map(word => {
@@ -5891,6 +6101,7 @@ function loadSession() {
   if (dni && name && COMERCIALES[dni] === name) {
     currentAgentDni = dni;
     currentAgentName = name;
+    agentVacations = JSON.parse(localStorage.getItem('vacaciones_' + currentAgentDni) || '[]');
     onLoginSuccess();
   } else {
     logout();
@@ -5905,6 +6116,7 @@ function logout() {
   localStorage.removeItem('comercial_nombre');
   currentAgentDni = null;
   currentAgentName = "";
+  agentVacations = [];
   window.location.href = 'login.html';
 }
 
@@ -6286,6 +6498,7 @@ function saveAgendaItem(event) {
   saveAgenda(list);
   closeAgendaModal();
   renderAgenda();
+  checkAgendaNotifications();
 }
 
 function toggleTaskCompletion(id) {
@@ -6298,6 +6511,7 @@ function toggleTaskCompletion(id) {
     }
     saveAgenda(list);
     renderAgenda();
+    checkAgendaNotifications();
   }
 }
 
@@ -6403,7 +6617,7 @@ function initAgendaNotifications() {
       Notification.requestPermission();
     }
   }
-  agendaNotifyInterval = setInterval(checkAgendaNotifications, 30000);
+  agendaNotifyInterval = setInterval(checkAgendaNotifications, 5000);
   checkAgendaNotifications();
 }
 
@@ -6594,6 +6808,7 @@ function quickAddAgendaItem(text) {
   // Sync agenda panel & dashboard
   if (typeof renderAgenda === 'function') renderAgenda();
   updateDashboardAgendaWidget();
+  checkAgendaNotifications();
 }
 
 function handleQuickAddKey(event) {
