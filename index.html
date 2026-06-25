@@ -5508,38 +5508,145 @@ function printCompanyOffer(cia) {
   
   const targetRes = results.find(r => r.cia === cia);
   if (!targetRes) {
-    alert("No hay datos de comparativa para esta compañía.");
+    alert("No se encontró el resultado de la compañía seleccionada.");
     return;
   }
-  
-  const dias = targetRes.dias;
-  const useSva = targetRes.useSva || document.getElementById('f-sva').checked;
-  const iva = targetRes.iva;
-  const actual = targetRes.actual;
-  const alq = targetRes.alq;
-  const kwh1 = targetRes.kwh1;
-  const kwh2 = targetRes.kwh2;
-  const excedente = targetRes.excedente;
-  const gas = targetRes.gas;
-  const pot1 = targetRes.pot1;
-  const pot2 = targetRes.pot2;
-  
-  const te = useSva ? targetRes.r.te_con : targetRes.r.te_sin;
-  const bandObj = targetRes.band === 'rl1' ? targetRes.r.gas_rl1 : (targetRes.band === 'rl2' ? targetRes.r.gas_rl2 : targetRes.r.gas_rl3);
-  
-  const dateStr = new Date().toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  
-  // Read advisor name from input, fallback to commercial name
-  const inputAsesor = document.getElementById('f-asesor-nombre');
-  const advisorNameVal = inputAsesor ? inputAsesor.value.trim() : '';
-  const agentName = advisorNameVal || getShortName(currentAgentName) || "Asesor Comercial";
-  
-  // Read client name from input
-  const inputCliente = document.getElementById('f-cliente-nombre');
-  const clientNameVal = inputCliente ? inputCliente.value.trim() : '';
-  
+
+  const {
+    r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
+    excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
+    dias, iva, kwh1, kwh2, gas, pot1, pot2, actual, band, excedente, useSva
+  } = targetRes;
+
+  const te = useSva ? r.te_con : r.te_sin;
+  const bandObj = band === 'rl1' ? r.gas_rl1 : (band === 'rl2' ? r.gas_rl2 : r.gas_rl3);
+
+  const annualCons = compMode === 'luz' 
+    ? Math.round((kwh1 + kwh2) * (365 / dias)) 
+    : Math.round(gas * (365 / dias));
+    
+  const pct = (actual > 0 && ahorro !== null) ? (ahorro / actual) * 100 : null;
+
+  const clientNameVal = document.getElementById('f-cliente-nombre') ? document.getElementById('f-cliente-nombre').value.trim() : '';
+  const advisorInput = document.getElementById('f-asesor-nombre');
+  const advisorVal = advisorInput ? advisorInput.value.trim() : '';
+  const agentName = advisorVal || currentAgentName || '—';
+
+  const dateStr = new Date().toLocaleDateString('es-ES', {
+    day: '2-digit',
+    month: 'long',
+    year: 'numeric'
+  });
+
+  // Build rows for Point 2: Propuesta de ahorro
+  const rows = [];
+  if (compMode === 'luz') {
+    rows.push({
+      concept: 'Consumo Punta',
+      calc: `${kwh1.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
+      val: `${f2(luzP1)} €`
+    });
+    if (kwh2 > 0) {
+      rows.push({
+        concept: 'Consumo Llano/Valle',
+        calc: `${kwh2.toFixed(2)} kWh × ${(te * 0.6).toFixed(4)} €/kWh`,
+        val: `${f2(luzP2)} €`
+      });
+    }
+    rows.push({
+      concept: 'Potencia Punta',
+      calc: `${pot1.toFixed(2)} kW × ${dias} días × ${r.tp1.toFixed(6)} €/kW/día`,
+      val: `${f2(pot1 * r.tp1 * dias)} €`
+    });
+    if (pot2 > 0) {
+      rows.push({
+        concept: 'Potencia Valle',
+        calc: `${pot2.toFixed(2)} kW × ${dias} días × ${r.tp2.toFixed(6)} €/kW/día`,
+        val: `${f2(pot2 * r.tp2 * dias)} €`
+      });
+    }
+    if (excedente > 0) {
+      rows.push({
+        concept: 'Compensación Excedentes',
+        calc: `${excedente.toFixed(2)} kWh × ${excPrice.toFixed(4)} €/kWh`,
+        val: `−${f2(excOffset)} €`,
+        isGreen: true
+      });
+    }
+    rows.push({
+      concept: 'Impuesto Electricidad',
+      calc: `${f2(baseElec)} € × ${(r.imp_electrico * 100).toFixed(4)}%`,
+      val: `${f2(impElec)} €`
+    });
+    rows.push({
+      concept: 'Alquiler del contador',
+      calc: `${dias} días × ${(alq / dias).toFixed(4)} €/día`,
+      val: `${f2(alq)} €`
+    });
+    if (svaLuzAmt > 0) {
+      rows.push({
+        concept: `Servicio Mantenimiento (${r.name})`,
+        calc: `Prorrateado ${dias} días`,
+        val: `${f2(svaLuzAmt)} €`
+      });
+    }
+  } else {
+    rows.push({
+      concept: 'Término Variable Gas',
+      calc: `${gas.toFixed(2)} kWh × ${bandObj.tv.toFixed(4)} €/kWh`,
+      val: `${f2(gasVar)} €`
+    });
+    rows.push({
+      concept: 'Término Fijo Gas',
+      calc: `${dias} días × ${bandObj.tf.toFixed(4)} €/día`,
+      val: `${f2(gasFij)} €`
+    });
+    if (svaGasAmt > 0) {
+      rows.push({
+        concept: `Servicio Mantenimiento Gas (${r.name})`,
+        calc: `Prorrateado ${dias} días`,
+        val: `${f2(svaGasAmt)} €`
+      });
+    }
+  }
+
+  let tbodyHtml = rows.map(r => `
+    <tr>
+      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; ${r.isGreen ? 'color:#166534;font-weight:700;' : ''}">${r.concept}</td>
+      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; color: #475569; font-size: 11.5px;">${r.calc}</td>
+      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 700; ${r.isGreen ? 'color:#166534;' : ''}">${r.val}</td>
+    </tr>
+  `).join('');
+
+  tbodyHtml += `
+    <tr style="font-weight: 700; background: #f8fafc;">
+      <td style="padding: 8px 10px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: left;">Subtotal</td>
+      <td style="padding: 8px 10px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: center;">—</td>
+      <td style="padding: 8px 10px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: right;">${f2(useSva ? subtotalNoExc : subtotal)} €</td>
+    </tr>
+  `;
+
+  tbodyHtml += `
+    <tr style="font-weight: 600; color: #475569;">
+      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left;">I.V.A. (${Math.round(iva * 100)}%)</td>
+      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: center;">${Math.round(iva * 100)}% s/ ${f2(useSva ? subtotalNoExc : subtotal)} €</td>
+      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: right;">${f2(useSva ? (subtotalNoExc * iva) : ivaAmt)} €</td>
+    </tr>
+  `;
+
+  if (useSva && excedente > 0 && compMode === 'luz') {
+    const batteryDiscount = Math.min(excAmt * (1 + iva), subtotalNoExc * (1 + iva));
+    tbodyHtml += `
+      <tr style="font-weight: 600; color: #166534; background: #f0fdf4;">
+        <td style="padding: 8px 10px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Virtual</td>
+        <td style="padding: 8px 10px; border-bottom: 1px solid #bbf7d0; text-align: center;">Offset excedentes (con IVA)</td>
+        <td style="padding: 8px 10px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(batteryDiscount)} €</td>
+      </tr>
+    `;
+  }
+
   let html = `
-    <div class="print-header">
+    <div class="print-header" style="margin-bottom: 25px;">
       <div class="print-logo-area">
         <div class="print-logo-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#fff"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
@@ -5547,283 +5654,126 @@ function printCompanyOffer(cia) {
         <div class="print-logo-text">RENOSUR</div>
       </div>
       <div class="print-title-area">
-        <div class="print-report-title">Estudio Comparativo de Suministro de ${compMode === 'luz' ? 'Luz' : 'Gas'}</div>
-        <div class="print-report-date">
-          Fecha: ${dateStr} &nbsp;|&nbsp; Asesor: ${agentName}
-          ${clientNameVal ? `&nbsp;|&nbsp; Cliente: ${clientNameVal}` : ''}
-        </div>
+        <div style="font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 2px;">¿Cómo realizamos su estudio?</div>
       </div>
     </div>
     
-    <div class="print-section-title">1. Datos de Facturación del Cliente (Factura Antigua)</div>
-    <div class="print-grid">
-      ${clientNameVal ? `
-      <div class="print-card">
-        <div class="print-card-title">Nombre del Cliente</div>
-        <div class="print-card-value">${clientNameVal}</div>
+    <div class="print-section-title" style="font-size: 13.5px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 6px; margin-bottom: 15px; text-transform: uppercase;">
+      1. Analizamos las características del suministro
+    </div>
+    <div class="print-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 25px; border: 1.5px solid var(--border); border-radius: 8px; padding: 16px; background: #fff;">
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Razón social</span>
+        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${clientNameVal || '—'}</span>
       </div>
-      ` : ''}
-      <div class="print-card">
-        <div class="print-card-title">Período de Facturación</div>
-        <div class="print-card-value">${dias} días</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Consumo anual estimado</span>
+        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${annualCons.toLocaleString('es-ES')} kWh</span>
       </div>
-  `;
-  
-  if (compMode === 'luz') {
-    html += `
-      <div class="print-card">
-        <div class="print-card-title">Potencia Contratada</div>
-        <div class="print-card-value">P1: ${pot1.toFixed(2)} kW ${pot2 > 0 ? `| P2: ${pot2.toFixed(2)} kW` : ''}</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa</span>
+        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${compMode === 'luz' ? '2.0TD' : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
       </div>
-      <div class="print-card">
-        <div class="print-card-title">Consumo de Energía</div>
-        <div class="print-card-value">P1: ${kwh1} kWh ${kwh2 > 0 ? `| P2: ${kwh2} kWh` : ''}</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Período facturado</span>
+        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${dias} días</span>
       </div>
-      ${excedente > 0 ? `
-      <div class="print-card">
-        <div class="print-card-title">Autoconsumo / Excedentes</div>
-        <div class="print-card-value">${excedente} kWh</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Asesor</span>
+        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${agentName}</span>
       </div>
-      ` : ''}
-    `;
-  } else {
-    html += `
-      <div class="print-card">
-        <div class="print-card-title">Consumo Estimado de Gas</div>
-        <div class="print-card-value">${gas} kWh (Banda RL${targetRes.band === 'rl1' ? '1' : targetRes.band === 'rl2' ? '2' : '3'})</div>
-      </div>
-    `;
-  }
-  
-  html += `
-      <div class="print-card">
-        <div class="print-card-title">Impuestos y Servicios</div>
-        <div class="print-card-value">IVA: ${Math.round(iva * 100)}% | Mantenimiento: ${useSva ? 'SÍ' : 'NO'}</div>
-      </div>
-      <div class="print-card" style="border-color:#cbd5e1;background:#f1f5f9">
-        <div class="print-card-title" style="color:#475569">Gasto Actual de Factura</div>
-        <div class="print-card-value" style="color:#0f172a">${actual > 0 ? `${f2(actual)} €` : 'No facilitado'}</div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Fecha de emisión</span>
+        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${dateStr}</span>
       </div>
     </div>
-  `;
-  
-  const ahorro = targetRes.ahorro;
-  const aPos = ahorro > 0;
-  
-  if (actual > 0 && ahorro > 0) {
-    html += `
-      <div class="print-hero-box">
-        <div class="print-hero-left">
-          <div class="print-hero-title">¡Propuesta de ahorro disponible!</div>
-          <div class="print-hero-desc">Recomendamos realizar la contratación con <strong>${targetRes.r.name}</strong>. Esta opción reduce su facturación actual optimizando los costes de potencia y energía.</div>
-        </div>
-        <div class="print-hero-right">
-          <div class="print-hero-savings-lbl">Ahorro Estimado Anual</div>
-          <div class="print-hero-savings-val">−${f2(ahorro * 12)} €</div>
-        </div>
-      </div>
-    `;
-  } else if (actual > 0 && ahorro <= 0) {
-    html += `
-      <div class="print-hero-box" style="background:#fee2e2;border-color:#fca5a5">
-        <div class="print-hero-left">
-          <div class="print-hero-title" style="color:#991b1b">Estudio comparativo</div>
-          <div class="print-hero-desc" style="color:#7f1d1d">La oferta económica con la compañía <strong>${targetRes.r.name}</strong> tiene un coste superior de <strong>+${f2(Math.abs(ahorro))} €/mes</strong> en comparación con su factura actual.</div>
-        </div>
-        <div class="print-hero-right" style="text-align:right">
-          <div class="print-hero-savings-lbl" style="color:#991b1b">Diferencia Estimada Anual</div>
-          <div class="print-hero-savings-val" style="color:#b91c1c">+${f2(Math.abs(ahorro * 12))} €</div>
-        </div>
-      </div>
-    `;
-  } else {
-    html += `
-      <div class="print-hero-box" style="background:#ecf4fa;border-color:#bce0fd">
-        <div class="print-hero-left">
-          <div class="print-hero-title" style="color:#1d4ed8">Estudio optimizado</div>
-          <div class="print-hero-desc" style="color:#1e293b">Tarifa analizada con la compañía <strong>${targetRes.r.name}</strong>, ofreciendo tarifas fijas estables sin permanencia.</div>
-        </div>
-        <div class="print-hero-right" style="text-align:right">
-          <div class="print-hero-savings-lbl" style="color:#1d4ed8">Coste Estimado/Mes</div>
-          <div class="print-hero-savings-val" style="color:#1e3a8a">${f2(targetRes.total)} €</div>
-        </div>
-      </div>
-    `;
-  }
-  
-  html += `
-    <div class="print-section-title">2. Tabla Comparativa de Ofertas (Factura Nueva)</div>
-    <table class="print-table">
+    
+    <div class="print-section-title" style="font-size: 13.5px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 6px; margin-bottom: 15px; text-transform: uppercase;">
+      2. Propuesta de ahorro con el producto seleccionado
+    </div>
+    
+    <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
       <thead>
-        <tr>
-          <th>Compañía Comercializadora</th>
-          <th style="text-align:right">Subtotal sin IVA</th>
-          <th style="text-align:right">IVA (${Math.round(iva * 100)}%)</th>
-          <th style="text-align:right">Total Mensual</th>
-          <th style="text-align:right">Ahorro Mensual</th>
-          <th style="text-align:right">Ahorro Anual</th>
+        <tr style="background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <th style="padding: 8px 10px; text-align: left; font-weight: 700; color: #ffffff !important;">Concepto</th>
+          <th style="padding: 8px 10px; text-align: center; font-weight: 700; color: #ffffff !important;">Cálculo</th>
+          <th style="padding: 8px 10px; text-align: right; font-weight: 700; color: #ffffff !important;">Importe</th>
         </tr>
       </thead>
       <tbody>
-  `;
-  
-  results.forEach((res) => {
-    if (res.cia !== cia) return;
-    const isTarget = res.cia === cia;
-    const ah = res.ahorro;
-    const pos = ah > 0;
-    
-    html += `
-      <tr class="${isTarget ? 'print-best-row' : ''}">
-        <td>
-          <span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:${res.r.color};margin-right:8px"></span>
-          <strong>${res.r.name}</strong> ${isTarget ? '<span style="font-size:10px;padding:2px 6px;border-radius:10px;background:#d1fae5;color:#065f46;margin-left:6px">✓ Seleccionada</span>' : ''}
-        </td>
-        <td style="text-align:right">${f2(res.useSva ? res.subtotalNoExc : res.subtotal)} €</td>
-        <td style="text-align:right">${f2(res.useSva ? (res.subtotalNoExc * res.iva) : res.ivaAmt)} €</td>
-        <td style="text-align:right;font-weight:bold">${f2(res.total)} €</td>
-        <td style="text-align:right;font-weight:bold;color:${ah !== null ? (pos ? '#15803d' : '#b91c1c') : 'inherit'}">${ah !== null ? (pos ? '−' : '+') + f2(Math.abs(ah)) + ' €' : '—'}</td>
-        <td style="text-align:right;font-weight:bold;color:${ah !== null ? (pos ? '#15803d' : '#b91c1c') : 'inherit'}">${ah !== null ? (pos ? '−' : '+') + f2(Math.abs(ah * 12)) + ' €' : '—'}</td>
-      </tr>
-    `;
-  });
-  
-  html += `
+        ${tbodyHtml}
       </tbody>
     </table>
     
-    <div class="print-section-title">3. Detalle de Conceptos de la Opción Seleccionada: ${targetRes.r.name}</div>
-    <div class="print-details-container">
-      <div class="print-detail-block">
-        <div class="print-detail-block-title">Detalle de Facturación</div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 10px; margin-bottom: 25px;">
+      <div style="display: flex; width: 240px; border-radius: 6px; overflow: hidden; font-weight: 800; font-size: 14.5px; border: 1.5px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
+        <div style="flex: 1; background: var(--blue); color: #fff; padding: 10px; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Total</div>
+        <div style="width: 120px; background: #f8fafc; color: var(--text); padding: 10px; text-align: right; border-left: 1.5px solid var(--border); -webkit-print-color-adjust: exact; print-color-adjust: exact;">${f2(total)} €</div>
+      </div>
+    </div>
   `;
   
-  if (compMode === 'luz') {
+  if (ahorro > 0) {
     html += `
-      <div class="print-detail-row">
-        <span>Término Potencia P1:</span>
-        <span>${pot1} kW × ${dias} días × ${targetRes.r.tp1.toFixed(4)} €/kW·día</span>
-        <span>${f2(pot1 * targetRes.r.tp1 * dias)} €</span>
+      <div style="border: 2px solid #10b981; border-radius: 8px; overflow: hidden; margin-bottom: 25px; page-break-inside: avoid; font-family: inherit;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #10b981; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <div style="border-right: 1px solid rgba(255,255,255,0.3);">Resultado ahorro</div>
+          <div>Ahorro anual (estimado)</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 15px 0;">
+          <div style="border-right: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #202854;">
+            ${f2(ahorro)} €
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #202854; line-height: 1.3;">
+            <span>${f2(ahorro * 12)} € al año</span>
+            ${pct !== null ? `<span style="font-size: 13px; font-weight: 700; color: #059669; margin-top: 2px;">${Math.round(pct)}% al año</span>` : ''}
+          </div>
+        </div>
       </div>
-      ${pot2 > 0 ? `
-      <div class="print-detail-row">
-        <span>Término Potencia P2:</span>
-        <span>${pot2} kW × ${dias} días × ${targetRes.r.tp2.toFixed(4)} €/kW·día</span>
-        <span>${f2(pot2 * targetRes.r.tp2 * dias)} €</span>
-      </div>
-      ` : ''}
-      <div class="print-detail-row" style="color:#64748b;font-size:11px;padding-left:10px">
-        <span>Subtotal Potencia:</span>
-        <span>${f2(targetRes.luzPot)} €</span>
-      </div>
-      
-      <div class="print-detail-row" style="margin-top:8px">
-        <span>Término Energía P1:</span>
-        <span>${kwh1} kWh × ${te.toFixed(4)} €/kWh</span>
-        <span>${f2(targetRes.luzP1)} €</span>
-      </div>
-      ${kwh2 > 0 ? `
-      <div class="print-detail-row">
-        <span>Término Energía P2:</span>
-        <span>${kwh2} kWh × ${(te * 0.6).toFixed(4)} €/kWh</span>
-        <span>${f2(targetRes.luzP2)} €</span>
-      </div>
-      ` : ''}
-      
-      ${excedente > 0 ? `
-      <div class="print-detail-row" style="margin-top:8px;color:#166534">
-        <span>Compensación Excedentes:</span>
-        <span>${excedente} kWh × ${targetRes.excPrice.toFixed(4)} €/kWh</span>
-        <span>−${f2(targetRes.excOffset)} €</span>
-      </div>
-      ` : ''}
     `;
   } else {
     html += `
-      <div class="print-detail-row">
-        <span>Término Variable Gas:</span>
-        <span>${gas} kWh × ${bandObj.tv.toFixed(4)} €/kWh</span>
-        <span>${f2(targetRes.gasVar)} €</span>
-      </div>
-      <div class="print-detail-row">
-        <span>Término Fijo Gas:</span>
-        <span>${dias} días × ${bandObj.tf.toFixed(4)} €/día</span>
-        <span>${f2(targetRes.gasFij)} €</span>
+      <div style="border: 2px solid #64748b; border-radius: 8px; overflow: hidden; margin-bottom: 25px; page-break-inside: avoid; font-family: inherit;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #64748b; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <div style="border-right: 1px solid rgba(255,255,255,0.3);">Coste estimado mensual</div>
+          <div>Diferencia con actual</div>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 15px 0;">
+          <div style="border-right: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #202854;">
+            ${f2(total)} €
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #dc2626; line-height: 1.3;">
+            <span>+${f2(Math.abs(ahorro * 12))} € al año</span>
+            ${pct !== null ? `<span style="font-size: 13px; font-weight: 700; color: #dc2626; margin-top: 2px;">+${Math.round(Math.abs(pct))}% al año</span>` : ''}
+          </div>
+        </div>
       </div>
     `;
   }
-  
+
   html += `
-      </div>
-      <div class="print-detail-block">
-        <div class="print-detail-block-title">Resumen de Importes</div>
-        ${compMode === 'luz' ? `
-        <div class="print-detail-row">
-          <span>Suma de Términos de Energía/Potencia:</span>
-          <span>${f2(targetRes.baseElec)} €</span>
-        </div>
-        <div class="print-detail-row">
-          <span>Impuesto Eléctrico (${(targetRes.r.imp_electrico * 100).toFixed(2)}%):</span>
-          <span>${f2(targetRes.impElec)} €</span>
-        </div>
-        <div class="print-detail-row">
-          <span>Alquiler de equipos de medida:</span>
-          <span>${f2(alq)} €</span>
-        </div>
-        ` : `
-        <div class="print-detail-row">
-          <span>Suma de Términos de Gas (Fijo + Variable):</span>
-          <span>${f2(targetRes.gasVar + targetRes.gasFij)} €</span>
-        </div>
-        `}
-        
-        ${targetRes.svaLuzAmt > 0 ? `
-        <div class="print-detail-row">
-          <span>Servicio Mantenimiento Luz (${targetRes.r.name}):</span>
-          <span>${f2(targetRes.svaLuzAmt)} €</span>
-        </div>
-        ` : ''}
-        ${targetRes.svaGasAmt > 0 ? `
-        <div class="print-detail-row">
-          <span>Servicio Mantenimiento Gas (${targetRes.r.name}):</span>
-          <span>${f2(targetRes.svaGasAmt)} €</span>
-        </div>
-        ` : ''}
-        
-        <div class="print-detail-row total" style="margin-top:12px">
-          <span>Subtotal base facturable:</span>
-          <span>${f2(targetRes.useSva ? targetRes.subtotalNoExc : targetRes.subtotal)} €</span>
-        </div>
-        <div class="print-detail-row">
-          <span>Impuestos (IVA ${Math.round(targetRes.iva * 100)}%):</span>
-          <span>${f2(targetRes.useSva ? (targetRes.subtotalNoExc * targetRes.iva) : targetRes.ivaAmt)} €</span>
-        </div>
-        ${useSva && excedente > 0 && compMode === 'luz' ? `
-        <div class="print-detail-row" style="color:#166534">
-          <span>Descuento Batería Virtual:</span>
-          <span>−${f2(Math.min(targetRes.excAmt * (1 + targetRes.iva), targetRes.subtotalNoExc * (1 + targetRes.iva)))} €</span>
-        </div>
-        ` : ''}
-        <div class="print-detail-row total" style="border-top:2px solid #202854;font-size:13px;color:#202854">
-          <span>TOTAL ESTIMADO MENSUAL:</span>
-          <span>${f2(targetRes.total)} €</span>
-        </div>
+    <div class="print-section-title" style="font-size: 13.5px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 6px; margin-bottom: 15px; text-transform: uppercase;">
+      3. Compañía seleccionada
+    </div>
+    <div style="margin-top: 15px; margin-bottom: 30px;">
+      <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 12px 24px; border-radius: 8px; background: #f8fafc; border: 1.5px solid var(--border); -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <span class="cdot" style="background:${r.color}; width: 20px; height: 20px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${r.color}33;"></span>
+        <span style="font-size: 18px; font-weight: 900; color: ${r.color}; letter-spacing: -0.5px;">${r.name.toUpperCase()}</span>
       </div>
     </div>
     
-    <div class="print-footer">
+    <div class="print-footer" style="border-top: 1.5px solid var(--border); padding-top: 12px; font-size: 9.5px; color: #64748b; text-align: center; line-height: 1.5; margin-top: 15px;">
       Este estudio energético es de carácter informativo. Los cálculos se estiman según el consumo facilitado por el cliente,<br>
       las tarifas contractuales de las comercializadoras y la legislación vigente. RENOSUR no se hace responsable de posibles<br>
       variaciones en las condiciones comerciales reales en el momento de la contratación definitiva.
     </div>
   `;
-  
+
   document.getElementById('print-report-container').innerHTML = html;
   
   if (typeof html2pdf !== 'undefined') {
-    const clientNameVal = (document.getElementById('f-cliente-nombre') ? document.getElementById('f-cliente-nombre').value.trim() : '');
     const cleanClientName = clientNameVal.replace(/[\\\/:\*\?"<>\|]/g, '');
-    const cleanCompanyName = targetRes.r.name.replace(/[\\\/:\*\?"<>\|]/g, '');
+    const cleanCompanyName = r.name.replace(/[\\\/:\*\?"<>\|]/g, '');
     const pdfFilename = cleanClientName ? `Comparativa ${cleanClientName} de ${cleanCompanyName}.pdf` : `Comparativa de ${cleanCompanyName}.pdf`;
 
     const opt = {
