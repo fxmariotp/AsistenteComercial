@@ -3097,6 +3097,10 @@ hr {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
       Calendario
     </button>
+    <button class="nav-btn" id="btn-nav-sips" onclick="showPanel('sips',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line></svg>
+      Consulta SIPS
+    </button>
   </div>
   <div id="gerente-section" style="display: none; padding: 0 14px; margin-bottom: 8px;">
     <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 8px;">
@@ -4227,6 +4231,123 @@ hr {
         <img id="promo-lightbox-img" src="" alt="" style="max-width: 100%; max-height: 90vh; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 8px;">
       </div>
       <h3 id="promo-lightbox-title" style="color: white; margin-top: 20px; font-size: 20px; font-weight: 800;" onclick="event.stopPropagation()">Supermercado</h3>
+    </div>
+
+    <!-- ══════ CONSULTA SIPS ══════ -->
+    <div class="panel" id="panel-sips">
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 30px;">
+        
+        <!-- Tarjeta de Búsqueda y Enlaces -->
+        <div class="db-tool-card" style="cursor: default; padding: 24px; display: flex; flex-direction: column; gap: 20px; border: 1.5px solid var(--border); border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow);">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div class="db-tool-icon-wrap" style="background: rgba(79, 70, 229, 0.15); color: var(--blue); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+              <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+            </div>
+            <div>
+              <h3 style="margin: 0; font-size: 17px; font-weight: 800; color: var(--text);">Consulta Rápida SIPS</h3>
+              <p style="margin: 2px 0 0 0; font-size: 12px; color: var(--t3);">Busca potencia en Fortuluz y dirección en Naturgy</p>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <label for="sips-cups-input" style="font-size: 12px; font-weight: 700; color: var(--t2);">Código CUPS (20 o 22 caracteres):</label>
+            <div style="display: flex; gap: 8px; position: relative;">
+              <input type="text" id="sips-cups-input" placeholder="ES0000XXXXXXXXXXXXXXAB" oninput="validateSipsCups()" style="flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">
+              <button type="button" class="btn btn-primary" onclick="copySipsCups(false)" style="display: flex; align-items: center; gap: 6px; padding: 0 16px; font-weight: 700; height: auto;">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+                <span id="btn-copy-sips-text">Copiar</span>
+              </button>
+            </div>
+            <div id="sips-cups-validation-msg" style="font-size: 11px; font-weight: 600; margin-top: 2px;"></div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 10px;">
+            <div style="font-size: 12px; font-weight: 700; color: var(--t2);">Acciones de Consulta Externa:</div>
+            
+            <button type="button" class="btn" onclick="openFortuluz()" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(63, 181, 73, 0.08); border: 1.5px solid rgba(63, 181, 73, 0.25); color: #3fb549; border-radius: var(--rs); font-weight: 700; text-align: left; transition: all 0.2s;">
+              <span style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 18px;">⚡</span>
+                <span>Consultar Potencia en Fortuluz</span>
+              </span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </button>
+
+            <button type="button" class="btn" onclick="openNaturgy()" style="display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; background: rgba(250, 92, 12, 0.08); border: 1.5px solid rgba(250, 92, 12, 0.25); color: #ea580c; border-radius: var(--rs); font-weight: 700; text-align: left; transition: all 0.2s;">
+              <span style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 18px;">🏠</span>
+                <span>Consultar Dirección en Naturgy</span>
+              </span>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Tarjeta de Guardado de Datos -->
+        <div class="db-tool-card" style="cursor: default; padding: 24px; display: flex; flex-direction: column; gap: 16px; border: 1.5px solid var(--border); border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow);">
+          <div>
+            <h3 style="margin: 0; font-size: 17px; font-weight: 800; color: var(--text);">Registrar Datos Consultados</h3>
+            <p style="margin: 2px 0 0 0; font-size: 12px; color: var(--t3);">Guarda la información técnica obtenida para este CUPS</p>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="sips-potencia-p1" style="font-size: 12px; font-weight: 700; color: var(--t2);">Potencia P1 (kW):</label>
+              <input type="number" step="0.001" id="sips-potencia-p1" placeholder="ej. 4.6" style="padding: 10px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; font-weight: 600;">
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 6px;">
+              <label for="sips-potencia-p2" style="font-size: 12px; font-weight: 700; color: var(--t2);">Potencia P2 (kW):</label>
+              <input type="number" step="0.001" id="sips-potencia-p2" placeholder="ej. 4.6" style="padding: 10px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; font-weight: 600;">
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="sips-direccion" style="font-size: 12px; font-weight: 700; color: var(--t2);">Dirección del Suministro:</label>
+            <input type="text" id="sips-direccion" placeholder="Calle, Número, Piso, Municipio" style="padding: 10px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; font-weight: 600;">
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label for="sips-notas" style="font-size: 12px; font-weight: 700; color: var(--t2);">Notas adicionales:</label>
+            <textarea id="sips-notas" placeholder="ej. Tarifa de acceso 2.0TD, Distribuidora Endesa, etc." rows="2" style="padding: 10px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; font-weight: 600; font-family: inherit; resize: none;"></textarea>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 6px;">
+            <button type="button" class="btn btn-secondary" onclick="clearSipsForm()" style="flex: 1; padding: 10px; font-weight: 700;">Limpiar</button>
+            <button type="button" class="btn btn-primary" onclick="saveSipsQuery()" style="flex: 2; padding: 10px; font-weight: 700; background: var(--blue); color: white;">Guardar en Historial</button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Tabla de Historial de Consultas -->
+      <div class="db-tool-card" style="cursor: default; padding: 24px; border: 1.5px solid var(--border); border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow);">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
+          <div>
+            <h3 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text);">Historial de Consultas Guardadas</h3>
+            <p style="margin: 2px 0 0 0; font-size: 12px; color: var(--t3);">Listado de CUPS consultados y sus características guardadas localmente.</p>
+          </div>
+          <button type="button" class="btn btn-secondary" onclick="clearSipsHistory()" style="padding: 6px 12px; font-size: 12px; font-weight: 700; border-color: #ef4444; color: #ef4444; transition: all 0.2s;">Vaciar Historial</button>
+        </div>
+
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
+            <thead>
+              <tr style="border-bottom: 2px solid var(--border); color: var(--t2); font-weight: 700;">
+                <th style="padding: 10px 8px;">Código CUPS</th>
+                <th style="padding: 10px 8px;">Potencias (P1 / P2)</th>
+                <th style="padding: 10px 8px;">Dirección Obtenida</th>
+                <th style="padding: 10px 8px;">Notas</th>
+                <th style="padding: 10px 8px; text-align: right; width: 120px;">Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="sips-history-table-body">
+              <!-- Creado dinámicamente por JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
     <!-- ══════ RANKING ══════ -->
@@ -6787,6 +6908,231 @@ function updateEndesa(){
   document.getElementById('endesa-loc-ppnn').textContent = centro ? '— ' + centro : '';
 }
 
+// ── CONSULTA SIPS LOGIC ──
+function validateSipsCups() {
+  const input = document.getElementById('sips-cups-input');
+  const msgEl = document.getElementById('sips-cups-validation-msg');
+  if (!input || !msgEl) return false;
+  
+  const val = input.value.trim().toUpperCase();
+  input.value = val; // Normalize input to uppercase
+  
+  if (val.length === 0) {
+    msgEl.textContent = '';
+    msgEl.style.color = '';
+    return false;
+  }
+  
+  // CUPS validation regex: ES followed by 16 digits, then 2 letters
+  // (and optionally 2 more digits or letters for distributor extensions)
+  const cupsRegex = /^ES\d{16}[A-Z]{2}[A-Z0-9]{0,2}$/;
+  
+  if (!val.startsWith('ES')) {
+    msgEl.textContent = '❌ El CUPS debe empezar por "ES"';
+    msgEl.style.color = '#ef4444';
+    return false;
+  }
+  
+  if (val.length < 20) {
+    msgEl.textContent = `⚠️ Formato incompleto (${val.length}/20 o 22 caracteres)`;
+    msgEl.style.color = '#eab308';
+    return false;
+  }
+  
+  if (val.length > 22) {
+    msgEl.textContent = `❌ El CUPS es demasiado largo (${val.length} caracteres, máx 22)`;
+    msgEl.style.color = '#ef4444';
+    return false;
+  }
+  
+  if (!cupsRegex.test(val)) {
+    msgEl.textContent = '❌ Formato inválido (debe tener 16 números y 2 letras tras el "ES")';
+    msgEl.style.color = '#ef4444';
+    return false;
+  }
+  
+  msgEl.textContent = '✅ Formato de CUPS correcto';
+  msgEl.style.color = '#10b981';
+  return true;
+}
+
+function copySipsCups(auto = false) {
+  const input = document.getElementById('sips-cups-input');
+  if (!input) return;
+  const val = input.value.trim().toUpperCase();
+  if (!val) {
+    if (!auto) alert('Por favor, introduce un CUPS antes de copiar.');
+    return;
+  }
+  
+  navigator.clipboard.writeText(val).then(() => {
+    const btnText = document.getElementById('btn-copy-sips-text');
+    if (btnText) {
+      const orig = btnText.textContent;
+      btnText.textContent = '¡Copiado!';
+      setTimeout(() => {
+        btnText.textContent = orig;
+      }, 1500);
+    }
+  }).catch(err => {
+    console.error('Error al copiar al portapapeles: ', err);
+    // Fallback: select and let user copy manually
+    input.select();
+    if (!auto) alert('Copiado fallido, por favor copia el texto seleccionado manualmente.');
+  });
+}
+
+function openFortuluz() {
+  const input = document.getElementById('sips-cups-input');
+  if (!input) return;
+  const val = input.value.trim().toUpperCase();
+  
+  copySipsCups(true);
+  
+  const url = 'https://fortuluz.es/calculadora';
+  window.open(url, '_blank');
+}
+
+function openNaturgy() {
+  const input = document.getElementById('sips-cups-input');
+  if (!input) return;
+  const val = input.value.trim().toUpperCase();
+  
+  copySipsCups(true);
+  
+  const url = 'https://www.naturgy.es/hogar/luz/tarifa_plana_zen_luz';
+  window.open(url, '_blank');
+}
+
+function clearSipsForm() {
+  document.getElementById('sips-cups-input').value = '';
+  document.getElementById('sips-potencia-p1').value = '';
+  document.getElementById('sips-potencia-p2').value = '';
+  document.getElementById('sips-direccion').value = '';
+  document.getElementById('sips-notas').value = '';
+  const msgEl = document.getElementById('sips-cups-validation-msg');
+  if (msgEl) {
+    msgEl.textContent = '';
+    msgEl.style.color = '';
+  }
+}
+
+function saveSipsQuery() {
+  const cups = document.getElementById('sips-cups-input').value.trim().toUpperCase();
+  const p1 = document.getElementById('sips-potencia-p1').value.trim();
+  const p2 = document.getElementById('sips-potencia-p2').value.trim();
+  const direccion = document.getElementById('sips-direccion').value.trim();
+  const notas = document.getElementById('sips-notas').value.trim();
+  
+  if (!cups) {
+    alert('El CUPS es obligatorio para poder guardar el registro.');
+    return;
+  }
+  
+  let history = {};
+  try {
+    history = JSON.parse(localStorage.getItem('sips_consultas') || '{}');
+  } catch (e) {
+    history = {};
+  }
+  
+  history[cups] = {
+    cups: cups,
+    p1: p1,
+    p2: p2,
+    direccion: direccion,
+    notas: notas,
+    timestamp: Date.now()
+  };
+  
+  localStorage.setItem('sips_consultas', JSON.stringify(history));
+  renderSipsHistory();
+  alert('Consulta guardada en el historial con éxito.');
+}
+
+function deleteSipsQuery(cups) {
+  if (!confirm('¿Estás seguro de que quieres eliminar este registro del historial?')) return;
+  
+  let history = {};
+  try {
+    history = JSON.parse(localStorage.getItem('sips_consultas') || '{}');
+  } catch (e) {
+    history = {};
+  }
+  
+  if (history[cups]) {
+    delete history[cups];
+    localStorage.setItem('sips_consultas', JSON.stringify(history));
+    renderSipsHistory();
+  }
+}
+
+function clearSipsHistory() {
+  if (!confirm('¿Estás seguro de que deseas vaciar por completo el historial de consultas SIPS?')) return;
+  localStorage.removeItem('sips_consultas');
+  renderSipsHistory();
+}
+
+function loadSipsQuery(cups) {
+  let history = {};
+  try {
+    history = JSON.parse(localStorage.getItem('sips_consultas') || '{}');
+  } catch (e) {
+    history = {};
+  }
+  
+  const query = history[cups];
+  if (query) {
+    document.getElementById('sips-cups-input').value = query.cups || '';
+    document.getElementById('sips-potencia-p1').value = query.p1 || '';
+    document.getElementById('sips-potencia-p2').value = query.p2 || '';
+    document.getElementById('sips-direccion').value = query.direccion || '';
+    document.getElementById('sips-notas').value = query.notas || '';
+    validateSipsCups();
+  }
+}
+
+function renderSipsHistory() {
+  const tbody = document.getElementById('sips-history-table-body');
+  if (!tbody) return;
+  
+  let history = {};
+  try {
+    history = JSON.parse(localStorage.getItem('sips_consultas') || '{}');
+  } catch (e) {
+    history = {};
+  }
+  
+  const sortedQueries = Object.values(history).sort((a, b) => b.timestamp - a.timestamp);
+  
+  if (sortedQueries.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--t3);">No hay consultas registradas en el historial.</td></tr>`;
+    return;
+  }
+  
+  tbody.innerHTML = sortedQueries.map(q => {
+    const p1 = q.p1 ? q.p1 + ' kW' : '—';
+    const p2 = q.p2 ? q.p2 + ' kW' : '—';
+    const powers = (q.p1 || q.p2) ? `${p1} / ${p2}` : '—';
+    const dir = q.direccion || '—';
+    const notes = q.notas || '—';
+    return `
+      <tr style="border-bottom: 1px solid var(--border); transition: background 0.15s;" onmouseover="this.style.background='rgba(79, 70, 229, 0.02)'" onmouseout="this.style.background='transparent'">
+        <td style="padding: 12px 8px; font-weight: 700; color: var(--text); font-family: monospace; letter-spacing: 0.2px;">${q.cups}</td>
+        <td style="padding: 12px 8px; font-weight: 600; color: var(--t2);">${powers}</td>
+        <td style="padding: 12px 8px; color: var(--t2); max-width: 250px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${dir}">${dir}</td>
+        <td style="padding: 12px 8px; color: var(--t3); font-size: 12.5px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;" title="${notes}">${notes}</td>
+        <td style="padding: 12px 8px; text-align: right;">
+          <div style="display: flex; justify-content: flex-end; gap: 8px;">
+            <button type="button" class="btn btn-secondary" onclick="loadSipsQuery('${q.cups}')" style="padding: 4px 8px; font-size: 11.5px; font-weight: 700;">Cargar</button>
+            <button type="button" class="btn" onclick="deleteSipsQuery('${q.cups}')" style="padding: 4px 8px; font-size: 11.5px; font-weight: 700; color: #ef4444; background: rgba(239, 68, 68, 0.08); border: 1.5px solid rgba(239, 68, 68, 0.15); border-radius: var(--rs); transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.15)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.08)'">Eliminar</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
 // ── BASE DE DATOS DE COMERCIALES (DNI -> NOMBRE) ──
 const COMERCIALES = {
   "20102738W": "ADRIAN ROJAS ROMERO",
@@ -6982,6 +7328,11 @@ function onLoginSuccess() {
   
   // 7. Cargar datos de ranking para dashboard
   fetchRankingForDashboard();
+  
+  // SIPS history render
+  if (typeof renderSipsHistory === 'function') {
+    renderSipsHistory();
+  }
   
   // 8. Mostrar/ocultar sección de Gerencia
   const gerenteSec = document.getElementById('gerente-section');
