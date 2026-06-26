@@ -4235,21 +4235,76 @@ hr {
 
     <!-- ══════ CONSULTA SIPS ══════ -->
     <div class="panel" id="panel-sips">
-      <div style="display: flex; flex-direction: column; gap: 16px; width: 100%; max-width: 800px; margin: 20px 0;">
-        <button type="button" class="btn" onclick="openFortuluz()" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; background: rgba(63, 181, 73, 0.08); border: 1.5px solid rgba(63, 181, 73, 0.25); color: #3fb549; border-radius: var(--rs); font-size: 15.5px; font-weight: 800; text-align: left; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(63, 181, 73, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(63, 181, 73, 0.08)'; this.style.transform='none';">
-          <span style="display: flex; align-items: center; gap: 14px;">
-            <span style="font-size: 24px;">⚡</span>
-            <span>Consultar Potencia en Fortuluz</span>
+      <style>
+        .sips-btn-container {
+          display: flex;
+          flex-direction: column;
+          gap: 16px;
+          width: 100%;
+          max-width: 800px;
+          margin: 20px 0;
+        }
+        .sips-btn {
+          width: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 20px 28px;
+          border-radius: var(--rs);
+          font-size: 15.5px;
+          font-weight: 800;
+          text-align: left;
+          transition: all 0.2s;
+          cursor: pointer;
+        }
+        .sips-btn-content {
+          display: flex;
+          align-items: center;
+          gap: 14px;
+        }
+        .sips-btn-icon {
+          font-size: 24px;
+          flex-shrink: 0;
+        }
+        .sips-btn-text {
+          white-space: normal;
+          line-height: 1.3;
+        }
+        .sips-btn-arrow {
+          flex-shrink: 0;
+          margin-left: 12px;
+        }
+        
+        /* Ajustes específicos para móviles */
+        @media (max-width: 576px) {
+          .sips-btn {
+            padding: 16px 18px;
+            font-size: 14px;
+          }
+          .sips-btn-content {
+            gap: 10px;
+          }
+          .sips-btn-icon {
+            font-size: 20px;
+          }
+        }
+      </style>
+
+      <div class="sips-btn-container">
+        <button type="button" class="btn sips-btn" onclick="openFortuluz()" style="background: rgba(63, 181, 73, 0.08); border: 1.5px solid rgba(63, 181, 73, 0.25); color: #3fb549;" onmouseover="this.style.background='rgba(63, 181, 73, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(63, 181, 73, 0.08)'; this.style.transform='none';">
+          <span class="sips-btn-content">
+            <span class="sips-btn-icon">⚡</span>
+            <span class="sips-btn-text">Consultar Potencia en Fortuluz</span>
           </span>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
         </button>
 
-        <button type="button" class="btn" onclick="openNaturgy()" style="width: 100%; display: flex; align-items: center; justify-content: space-between; padding: 20px 28px; background: rgba(250, 92, 12, 0.08); border: 1.5px solid rgba(250, 92, 12, 0.25); color: #ea580c; border-radius: var(--rs); font-size: 15.5px; font-weight: 800; text-align: left; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(250, 92, 12, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(250, 92, 12, 0.08)'; this.style.transform='none';">
-          <span style="display: flex; align-items: center; gap: 14px;">
-            <span style="font-size: 24px;">🏠</span>
-            <span>Consultar Dirección en Naturgy</span>
+        <button type="button" class="btn sips-btn" onclick="openNaturgy()" style="background: rgba(250, 92, 12, 0.08); border: 1.5px solid rgba(250, 92, 12, 0.25); color: #ea580c;" onmouseover="this.style.background='rgba(250, 92, 12, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(250, 92, 12, 0.08)'; this.style.transform='none';">
+          <span class="sips-btn-content">
+            <span class="sips-btn-icon">🏠</span>
+            <span class="sips-btn-text">Consultar Dirección en Naturgy</span>
           </span>
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
         </button>
       </div>
     </div>
