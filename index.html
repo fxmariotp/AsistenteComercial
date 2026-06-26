@@ -4235,57 +4235,22 @@ hr {
 
     <!-- ══════ CONSULTA SIPS ══════ -->
     <div class="panel" id="panel-sips">
-      <!-- Tarjeta de Búsqueda y Enlaces a lo largo (horizontal) -->
-      <div class="db-tool-card" style="cursor: default; padding: 28px; display: flex; flex-direction: column; gap: 24px; border: 1.5px solid var(--border); border-radius: var(--r); background: var(--surface); box-shadow: var(--shadow); margin-bottom: 30px;">
-        
-        <!-- Cabecera -->
-        <div style="display: flex; align-items: center; gap: 14px;">
-          <div class="db-tool-icon-wrap" style="background: rgba(79, 70, 229, 0.15); color: var(--blue); width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
-            <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-            </svg>
-          </div>
-          <div>
-            <h3 style="margin: 0; font-size: 19px; font-weight: 800; color: var(--text);">Consulta Rápida SIPS</h3>
-            <p style="margin: 3px 0 0 0; font-size: 13px; color: var(--t3);">Busca potencia en Fortuluz y dirección en Naturgy de forma ágil</p>
-          </div>
-        </div>
+      <div style="display: flex; flex-wrap: wrap; gap: 16px; width: 100%; max-width: 650px; margin: 20px 0;">
+        <button type="button" class="btn" onclick="openFortuluz()" style="flex: 1; min-width: 280px; display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; background: rgba(63, 181, 73, 0.08); border: 1.5px solid rgba(63, 181, 73, 0.25); color: #3fb549; border-radius: var(--rs); font-size: 15px; font-weight: 800; text-align: left; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(63, 181, 73, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(63, 181, 73, 0.08)'; this.style.transform='none';">
+          <span style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 22px;">⚡</span>
+            <span>Consultar Potencia en Fortuluz</span>
+          </span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </button>
 
-        <!-- Fila de Entrada del CUPS y Copiado (Horizontal) -->
-        <div style="display: flex; flex-wrap: wrap; gap: 16px; align-items: flex-start; width: 100%;">
-          <div style="flex: 1; min-width: 280px; display: flex; flex-direction: column; gap: 8px;">
-            <label for="sips-cups-input" style="font-size: 13px; font-weight: 700; color: var(--t2);">Código CUPS (20 o 22 caracteres):</label>
-            <div style="display: flex; gap: 8px; position: relative; width: 100%;">
-              <input type="text" id="sips-cups-input" placeholder="ES0000XXXXXXXXXXXXXXAB" oninput="validateSipsCups()" style="flex: 1; padding: 12px 16px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;">
-              <button type="button" class="btn btn-primary" onclick="copySipsCups(false)" style="display: flex; align-items: center; gap: 8px; padding: 0 20px; font-weight: 700; height: auto;">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
-                <span id="btn-copy-sips-text" style="font-size: 14px;">Copiar CUPS</span>
-              </button>
-            </div>
-            <div id="sips-cups-validation-msg" style="font-size: 12px; font-weight: 600; margin-top: 2px;"></div>
-          </div>
-        </div>
-
-        <!-- Fila de Botones de Enlace Externo (Horizontal) -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; width: 100%; margin-top: 6px;">
-          <button type="button" class="btn" onclick="openFortuluz()" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(63, 181, 73, 0.08); border: 1.5px solid rgba(63, 181, 73, 0.25); color: #3fb549; border-radius: var(--rs); font-weight: 750; text-align: left; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(63, 181, 73, 0.15)'" onmouseout="this.style.background='rgba(63, 181, 73, 0.08)'">
-            <span style="display: flex; align-items: center; gap: 12px;">
-              <span style="font-size: 20px;">⚡</span>
-              <span style="font-size: 14.5px;">Consultar Potencia en Fortuluz</span>
-            </span>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          </button>
-
-          <button type="button" class="btn" onclick="openNaturgy()" style="display: flex; align-items: center; justify-content: space-between; padding: 16px 20px; background: rgba(250, 92, 12, 0.08); border: 1.5px solid rgba(250, 92, 12, 0.25); color: #ea580c; border-radius: var(--rs); font-weight: 750; text-align: left; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(250, 92, 12, 0.15)'" onmouseout="this.style.background='rgba(250, 92, 12, 0.08)'">
-            <span style="display: flex; align-items: center; gap: 12px;">
-              <span style="font-size: 20px;">🏠</span>
-              <span style="font-size: 14.5px;">Consultar Dirección en Naturgy</span>
-            </span>
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-          </button>
-        </div>
-
+        <button type="button" class="btn" onclick="openNaturgy()" style="flex: 1; min-width: 280px; display: flex; align-items: center; justify-content: space-between; padding: 18px 24px; background: rgba(250, 92, 12, 0.08); border: 1.5px solid rgba(250, 92, 12, 0.25); color: #ea580c; border-radius: var(--rs); font-size: 15px; font-weight: 800; text-align: left; transition: all 0.2s; cursor: pointer;" onmouseover="this.style.background='rgba(250, 92, 12, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(250, 92, 12, 0.08)'; this.style.transform='none';">
+          <span style="display: flex; align-items: center; gap: 12px;">
+            <span style="font-size: 22px;">🏠</span>
+            <span>Consultar Dirección en Naturgy</span>
+          </span>
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </button>
       </div>
     </div>
 
@@ -6848,97 +6813,13 @@ function updateEndesa(){
 }
 
 // ── CONSULTA SIPS LOGIC ──
-function validateSipsCups() {
-  const input = document.getElementById('sips-cups-input');
-  const msgEl = document.getElementById('sips-cups-validation-msg');
-  if (!input || !msgEl) return false;
-  
-  const val = input.value.trim().toUpperCase();
-  input.value = val; // Normalize input to uppercase
-  
-  if (val.length === 0) {
-    msgEl.textContent = '';
-    msgEl.style.color = '';
-    return false;
-  }
-  
-  // CUPS validation regex: ES followed by 16 digits, then 2 letters
-  // (and optionally 2 more digits or letters for distributor extensions)
-  const cupsRegex = /^ES\d{16}[A-Z]{2}[A-Z0-9]{0,2}$/;
-  
-  if (!val.startsWith('ES')) {
-    msgEl.textContent = '❌ El CUPS debe empezar por "ES"';
-    msgEl.style.color = '#ef4444';
-    return false;
-  }
-  
-  if (val.length < 20) {
-    msgEl.textContent = `⚠️ Formato incompleto (${val.length}/20 o 22 caracteres)`;
-    msgEl.style.color = '#eab308';
-    return false;
-  }
-  
-  if (val.length > 22) {
-    msgEl.textContent = `❌ El CUPS es demasiado largo (${val.length} caracteres, máx 22)`;
-    msgEl.style.color = '#ef4444';
-    return false;
-  }
-  
-  if (!cupsRegex.test(val)) {
-    msgEl.textContent = '❌ Formato inválido (debe tener 16 números y 2 letras tras el "ES")';
-    msgEl.style.color = '#ef4444';
-    return false;
-  }
-  
-  msgEl.textContent = '✅ Formato de CUPS correcto';
-  msgEl.style.color = '#10b981';
-  return true;
-}
-
-function copySipsCups(auto = false) {
-  const input = document.getElementById('sips-cups-input');
-  if (!input) return;
-  const val = input.value.trim().toUpperCase();
-  if (!val) {
-    if (!auto) alert('Por favor, introduce un CUPS antes de copiar.');
-    return;
-  }
-  
-  navigator.clipboard.writeText(val).then(() => {
-    const btnText = document.getElementById('btn-copy-sips-text');
-    if (btnText) {
-      const orig = btnText.textContent;
-      btnText.textContent = '¡Copiado!';
-      setTimeout(() => {
-        btnText.textContent = orig;
-      }, 1500);
-    }
-  }).catch(err => {
-    console.error('Error al copiar al portapapeles: ', err);
-    // Fallback: select and let user copy manually
-    input.select();
-    if (!auto) alert('Copiado fallido, por favor copia el texto seleccionado manualmente.');
-  });
-}
 
 function openFortuluz() {
-  const input = document.getElementById('sips-cups-input');
-  if (!input) return;
-  const val = input.value.trim().toUpperCase();
-  
-  copySipsCups(true);
-  
   const url = 'https://fortuluz.es/calculadora';
   window.open(url, '_blank');
 }
 
 function openNaturgy() {
-  const input = document.getElementById('sips-cups-input');
-  if (!input) return;
-  const val = input.value.trim().toUpperCase();
-  
-  copySipsCups(true);
-  
   const url = 'https://www.naturgy.es/hogar/luz/tarifa_plana_zen_luz';
   window.open(url, '_blank');
 }
