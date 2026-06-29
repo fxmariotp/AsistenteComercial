@@ -4615,6 +4615,144 @@ function isoToDate(iso){ const [y,m,d]=iso.split('-').map(Number); return new Da
 
 function calIsWeekend(date){ const w=date.getDay(); return w===0||w===6; }
 function calIsToday(date){ const t=new Date(); return date.getFullYear()===t.getFullYear() && date.getMonth()===t.getMonth() && date.getDate()===t.getDate(); }
+
+function getAgentColor(dni) {
+  const dnis = Object.keys(COMERCIALES);
+  const idx = dnis.indexOf(dni);
+  if (idx === -1) return { bg: '#eff6ff', text: '#1e40af', border: '#bfdbfe' };
+  
+  // Distribute hue between 190 (cyan-blue) and 240 (indigo-blue)
+  const hue = 190 + (idx * (50 / Math.max(1, dnis.length - 1)));
+  return {
+    bg: `hsl(${hue}, 100%, 97%)`,
+    text: `hsl(${hue}, 90%, 35%)`,
+    border: `hsl(${hue}, 80%, 85%)`
+  };
+}
+
+function getDayClass(date, agentDni) {
+  const iso = toIso(date);
+  let classes = ['cal-day'];
+  
+  if (FESTIVOS.includes(iso) || VOB25.includes(iso)) {
+    classes.push('cal-festivo');
+  } else if (calIsWeekend(date)) {
+    classes.push('cal-weekend');
+  } else {
+    classes.push('cal-labor');
+  }
+  
+  if (COMIENZOS.includes(iso)) classes.push('cal-comienzo');
+  if (CIERRES.includes(iso)) classes.push('cal-cierre');
+  
+  let isVac = false;
+  if (agentDni) {
+    if (agentDni === currentAgentDni) {
+      isVac = agentVacations.includes(iso);
+    } else {
+      const stored = localStorage.getItem('vacaciones_' + agentDni);
+      if (stored) {
+        isVac = JSON.parse(stored).includes(iso);
+      }
+    }
+  }
+  
+  if (isVac) {
+    classes.push('cal-vacation');
+    const motive = (agentDni === currentAgentDni ? agentVacationMotives[iso] : null) || 'Vacaciones';
+    const low = motive.toLowerCase();
+    if (low.includes('baja')) {
+      classes.push('cal-motive-baja');
+    } else if (low.includes('asuntos')) {
+      classes.push('cal-motive-asuntos');
+    } else if (low.includes('hospital')) {
+      classes.push('cal-motive-hospital');
+    } else if (low.includes('reposo')) {
+      classes.push('cal-motive-reposo');
+    } else if (low !== 'vacaciones') {
+      classes.push('cal-motive-otros');
+    }
+  }
+  
+  if (calIsToday(date)) {
+    classes.push('cal-today');
+  }
+  
+  return classes.join(' ');
+}
+
+function getDayStyles(date, agentDni) {
+  const iso = toIso(date);
+  let isVac = false;
+  if (agentDni) {
+    if (agentDni === currentAgentDni) {
+      isVac = agentVacations.includes(iso);
+    } else {
+      const stored = localStorage.getItem('vacaciones_' + agentDni);
+      if (stored) {
+        isVac = JSON.parse(stored).includes(iso);
+      }
+    }
+  }
+  
+  if (isVac) {
+    const motive = (agentDni === currentAgentDni ? agentVacationMotives[iso] : null) || 'Vacaciones';
+    if (motive.toLowerCase() === 'vacaciones') {
+      const colors = getAgentColor(agentDni);
+      return `background: ${colors.bg} !important; color: ${colors.text} !important; border-color: ${colors.border} !important;`;
+    }
+  }
+  return '';
+}
+
+function addVacation(dni, dateStr) {
+  let vacs = [];
+  if (dni === currentAgentDni) {
+    vacs = agentVacations;
+  } else {
+    vacs = JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
+  }
+  
+  if (!vacs.includes(dateStr)) {
+    if (vacs.length >= 25) {
+      alert("No se pueden superar los 25 días de vacaciones.");
+      return false;
+    }
+    vacs.push(dateStr);
+    localStorage.setItem('vacaciones_' + dni, JSON.stringify(vacs));
+    if (dni === currentAgentDni) {
+      agentVacations = vacs;
+    }
+    if (typeof addVacationDayToCloud === 'function') {
+      addVacationDayToCloud(dni, dateStr);
+    }
+    return true;
+  }
+  return false;
+}
+
+function removeVacation(dni, dateStr) {
+  let vacs = [];
+  if (dni === currentAgentDni) {
+    vacs = agentVacations;
+  } else {
+    vacs = JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
+  }
+  
+  const idx = vacs.indexOf(dateStr);
+  if (idx !== -1) {
+    vacs.splice(idx, 1);
+    localStorage.setItem('vacaciones_' + dni, JSON.stringify(vacs));
+    if (dni === currentAgentDni) {
+      agentVacations = vacs;
+    }
+    if (typeof deleteVacationDayFromCloud === 'function') {
+      deleteVacationDayFromCloud(dni, dateStr);
+    }
+    return true;
+  }
+  return false;
+}
 // Festivos/VOB25 y fines de semana no cuentan como laborables; comienzo/cierre de mes sí.
 function calIsLabor(date){ const iso=toIso(date); return !FESTIVOS.includes(iso) && !VOB25.includes(iso) && !calIsWeekend(date); }
 
@@ -4799,33 +4937,36 @@ function renderCalendar(){
     const iso=toIso(date);
     const dayNum=date.getDate();
     
-    let cls='cal-day ', label='', extraHtml='';
-    if(FESTIVOS.includes(iso)){ cls+='cal-festivo'; label='Festivo'; extraHtml='FESTIVO'; }
-    else if(VOB25.includes(iso)){ cls+='cal-festivo'; label='VOB25'; extraHtml='FESTIVO'; }
-    else if(COMIENZOS.includes(iso)){ cls+='cal-comienzo'; label='Comienzo de mes'; extraHtml='INICIO'; }
-    else if(CIERRES.includes(iso)){ cls+='cal-cierre'; label='Cierre de mes'; extraHtml='CIERRE'; }
-    else if(calIsWeekend(date)){ cls+='cal-weekend'; label='Fin de semana'; }
-    else{ cls+='cal-labor'; label='Laborable'; }
+    const cls = getDayClass(date, currentAgentDni);
+    const customStyle = getDayStyles(date, currentAgentDni);
     
-    if(agentVacations.includes(iso)){ 
-      const motive = agentVacationMotives[iso] || 'Vacaciones';
-      cls+=' cal-vacation'; 
-      const low = motive.toLowerCase();
-      if (low.includes('baja')) {
-        cls += ' cal-motive-baja';
-      } else if (low.includes('asuntos')) {
-        cls += ' cal-motive-asuntos';
-      } else if (low.includes('hospital')) {
-        cls += ' cal-motive-hospital';
-      } else if (low.includes('reposo')) {
-        cls += ' cal-motive-reposo';
-      } else if (low !== 'vacaciones') {
-        cls += ' cal-motive-otros';
-      }
-      label+=' (' + motive + ')'; 
-      extraHtml=motive.toUpperCase();
+    let label = '';
+    let extraHtml = '';
+    
+    if (FESTIVOS.includes(iso) || VOB25.includes(iso)) {
+      label = 'Festivo';
+      extraHtml = 'FESTIVO';
+    } else if (COMIENZOS.includes(iso)) {
+      label = 'Comienzo de mes';
+      extraHtml = 'INICIO';
+    } else if (CIERRES.includes(iso)) {
+      label = 'Cierre de mes';
+      extraHtml = 'CIERRE';
+    } else if (calIsWeekend(date)) {
+      label = 'Fin de semana';
+    } else {
+      label = 'Laborable';
     }
-    if(calIsToday(date)){ cls+=' cal-today'; label+=' · Hoy'; }
+    
+    if (agentVacations.includes(iso)) {
+      const motive = agentVacationMotives[iso] || 'Vacaciones';
+      label += ' (' + motive + ')';
+      extraHtml = motive.toUpperCase();
+    }
+    
+    if (calIsToday(date)) {
+      label += ' · Hoy';
+    }
     
     let cellContent = `<span>${dayNum}</span>`;
     if (extraHtml) {
@@ -4864,7 +5005,8 @@ function renderCalendar(){
       }
     }
     
-    html+=`<div class="${cls}" title="${label}">${cellContent}</div>`;
+    const styleAttr = customStyle ? ` style="${customStyle}"` : '';
+    html+=`<div class="${cls}"${styleAttr} title="${label}">${cellContent}</div>`;
   }
 
   // Render trailing days
@@ -4925,15 +5067,10 @@ function toggleVacation(iso) {
   if (!calIsLabor(date)) return;
   const idx = agentVacations.indexOf(iso);
   if (idx === -1) {
-    if (agentVacations.length >= 25) {
-      alert("No puedes superar los 25 días de vacaciones totales.");
-      return;
-    }
-    agentVacations.push(iso);
+    addVacation(currentAgentDni, iso);
   } else {
-    agentVacations.splice(idx, 1);
+    removeVacation(currentAgentDni, iso);
   }
-  localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
   renderCalendar();
   
   const modal = document.getElementById('vacation-modal');
@@ -5028,14 +5165,17 @@ function saveVacationDays(event) {
     return;
   }
   
-  agentVacations.push(...newDays);
-  localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
-  if (typeof addVacationDayToCloud === 'function') {
-    newDays.forEach(dateStr => {
-      addVacationDayToCloud(currentAgentDni, dateStr);
-    });
+  let addedDays = [];
+  newDays.forEach(dateStr => {
+    if (addVacation(currentAgentDni, dateStr)) {
+      addedDays.push(dateStr);
+      agentVacationMotives[dateStr] = motive;
+    }
+  });
+  
+  if (addedDays.length > 0) {
+    localStorage.setItem('vacaciones_motivos_' + currentAgentDni, JSON.stringify(agentVacationMotives));
   }
-  localStorage.setItem('vacaciones_motivos_' + currentAgentDni, JSON.stringify(agentVacationMotives));
   renderCalendar();
   renderVacationList();
   document.getElementById('vac-start').value = '';
@@ -5043,14 +5183,8 @@ function saveVacationDays(event) {
 }
 
 function deleteVacationDay(iso) {
-  const idx = agentVacations.indexOf(iso);
-  if (idx !== -1) {
-    agentVacations.splice(idx, 1);
+  if (removeVacation(currentAgentDni, iso)) {
     delete agentVacationMotives[iso];
-    localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
-    if (typeof deleteVacationDayFromCloud === 'function') {
-      deleteVacationDayFromCloud(currentAgentDni, iso);
-    }
     localStorage.setItem('vacaciones_motivos_' + currentAgentDni, JSON.stringify(agentVacationMotives));
     renderCalendar();
     renderVacationList();
@@ -5127,12 +5261,16 @@ function renderControlVacationsTimeline() {
       const dateStr = `${year}-${String(controlCalMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
       const isActive = vacations.includes(dateStr);
       
+      const colors = getAgentColor(dni);
+      const borderCol = isActive ? colors.text : 'var(--border)';
+      const bgCol = isActive ? colors.text : (isWeekend ? 'rgba(0,0,0,0.04)' : 'var(--bg)');
+      
       bodyHtml += `
         <td style="padding: 8px 4px; border-bottom: 1px solid var(--border); text-align: center; min-width: 32px; background: ${isWeekend ? 'rgba(0,0,0,0.01)' : 'transparent'};">
           <div class="timeline-day-square ${isActive ? 'active' : ''} ${isWeekend ? 'weekend' : ''}" 
                onclick="toggleAgentVacationDay('${dni}', '${dateStr}')" 
                title="${name} - ${day} de ${MES_NOMBRES[controlCalMonth]} (DNI: ${dni})" 
-               style="width: 22px; height: 22px; margin: 0 auto; border-radius: 4px; border: 1px solid ${isActive ? 'var(--blue)' : 'var(--border)'}; background: ${isActive ? 'var(--blue)' : (isWeekend ? 'rgba(0,0,0,0.04)' : 'var(--bg)')}; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
+               style="width: 22px; height: 22px; margin: 0 auto; border-radius: 4px; border: 1px solid ${borderCol}; background: ${bgCol}; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
           </div>
         </td>
       `;
