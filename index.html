@@ -7143,27 +7143,35 @@ async function fetchVacationsFromCloud(dni) {
       .select('fecha')
       .eq('dni', dni);
     if (!error && data) {
+      const migrationKey = 'vacaciones_migradas_a_supabase_' + dni;
+      const alreadyMigrated = localStorage.getItem(migrationKey) === 'true';
+      
       if (data.length > 0) {
         const dates = data.map(r => r.fecha);
         localStorage.setItem('vacaciones_' + dni, JSON.stringify(dates));
-        localStorage.setItem('vacaciones_inicializadas_' + dni, 'true');
+        localStorage.setItem(migrationKey, 'true');
         if (dni === currentAgentDni) {
           agentVacations = dates;
           if (typeof renderCalendar === 'function') renderCalendar();
           if (typeof renderVacationList === 'function') renderVacationList();
         }
       } else {
-        const initializedKey = 'vacaciones_inicializadas_' + dni;
-        if (localStorage.getItem(initializedKey) === null) {
-          const defVac = DEFAULT_VACATIONS[dni] || [];
-          if (defVac.length > 0) {
-            const rows = defVac.map(dateStr => ({ dni, fecha: dateStr }));
+        if (!alreadyMigrated) {
+          let localVacs = [];
+          const stored = localStorage.getItem('vacaciones_' + dni);
+          if (stored !== null) {
+            localVacs = JSON.parse(stored);
+          } else {
+            localVacs = DEFAULT_VACATIONS[dni] || [];
+          }
+          if (localVacs.length > 0) {
+            const rows = localVacs.map(dateStr => ({ dni, fecha: dateStr }));
             await supabaseClient.from('vacaciones').insert(rows);
           }
-          localStorage.setItem('vacaciones_' + dni, JSON.stringify(defVac));
-          localStorage.setItem(initializedKey, 'true');
+          localStorage.setItem('vacaciones_' + dni, JSON.stringify(localVacs));
+          localStorage.setItem(migrationKey, 'true');
           if (dni === currentAgentDni) {
-            agentVacations = defVac;
+            agentVacations = localVacs;
             if (typeof renderCalendar === 'function') renderCalendar();
             if (typeof renderVacationList === 'function') renderVacationList();
           }
@@ -7202,10 +7210,36 @@ async function fetchAllVacationsFromCloud() {
           grouped[row.dni].push(row.fecha);
         }
       });
-      Object.keys(grouped).forEach(dni => {
-        localStorage.setItem('vacaciones_' + dni, JSON.stringify(grouped[dni]));
-        localStorage.setItem('vacaciones_inicializadas_' + dni, 'true');
-      });
+      
+      for (const dni of Object.keys(grouped)) {
+        const migrationKey = 'vacaciones_migradas_a_supabase_' + dni;
+        const alreadyMigrated = localStorage.getItem(migrationKey) === 'true';
+        
+        if (grouped[dni].length > 0) {
+          localStorage.setItem('vacaciones_' + dni, JSON.stringify(grouped[dni]));
+          localStorage.setItem(migrationKey, 'true');
+        } else {
+          if (!alreadyMigrated) {
+            let localVacs = [];
+            const stored = localStorage.getItem('vacaciones_' + dni);
+            if (stored !== null) {
+              localVacs = JSON.parse(stored);
+            } else {
+              localVacs = DEFAULT_VACATIONS[dni] || [];
+            }
+            if (localVacs.length > 0) {
+              const rows = localVacs.map(dateStr => ({ dni, fecha: dateStr }));
+              await supabaseClient.from('vacaciones').insert(rows);
+              grouped[dni] = localVacs;
+            }
+            localStorage.setItem('vacaciones_' + dni, JSON.stringify(localVacs));
+            localStorage.setItem(migrationKey, 'true');
+          } else {
+            localStorage.setItem('vacaciones_' + dni, '[]');
+          }
+        }
+      }
+      
       if (typeof renderControlVacationsTimeline === 'function') {
         renderControlVacationsTimeline();
       }
