@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- saved from url=(0030)https://teambreva.netlify.app/ -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -4074,93 +4074,67 @@ hr {
 
     <!-- ══════ CONTROL VACACIONES (GERENTE) ══════ -->
     <div class="panel" id="panel-controlVacaciones">
-      <div style="display: grid; grid-template-columns: 1fr; gap: 24px;">
-        <!-- Top selector card -->
-        <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px;">
-          <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 12px;">
-            <div>
-              <h4 style="margin: 0 0 4px 0; font-size: 17px; font-weight: 800; color: var(--text);">Control de Vacaciones de Comerciales</h4>
-              <p style="margin: 0; font-size: 13px; color: var(--t3);">Consulta y gestiona las vacaciones asignadas a cada agente comercial</p>
-            </div>
-            <select id="ctrl-vac-agent-select" onchange="onControlVacAgentChange()" style="padding: 10px 14px; font-size: 14px; font-weight: 600; color: var(--text); background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); outline: none; cursor: pointer; min-width: 250px; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'">
-              <!-- Populated dynamically -->
-            </select>
+      <style>
+        .timeline-day-square:hover {
+          transform: scale(1.18);
+          box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+          border-color: var(--blue) !important;
+        }
+        .timeline-day-square.active:hover {
+          background: #2563eb !important; /* Slightly darker blue hover */
+          border-color: #2563eb !important;
+        }
+        .timeline-day-square.weekend {
+          border-style: dashed;
+        }
+      </style>
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
+        
+        <!-- Header & Month Navigation -->
+        <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px;">
+          <div>
+            <h4 style="margin: 0 0 4px 0; font-size: 18px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+              Control de Vacaciones de Comerciales
+            </h4>
+            <p style="margin: 0; font-size: 13.0px; color: var(--t3);">Consulta y gestiona las vacaciones haciendo clic en los cuadraditos de cada día.</p>
           </div>
+          
+          <!-- Month Selector -->
+          <div style="display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 4px 8px;">
+            <button type="button" class="btn-clear" onclick="navigateControlTimelineMonth(-1)" style="padding: 6px 10px; border-radius: 4px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: var(--text); display: inline-flex; align-items: center; justify-content: center;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            </button>
+            <span id="ctrl-timeline-month-title" style="font-size: 14px; font-weight: 700; color: var(--text); min-width: 130px; text-align: center; user-select: none;">Junio 2026</span>
+            <button type="button" class="btn-clear" onclick="navigateControlTimelineMonth(1)" style="padding: 6px 10px; border-radius: 4px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: var(--text); display: inline-flex; align-items: center; justify-content: center;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- Legend -->
+        <div style="display: flex; flex-wrap: wrap; gap: 16px; font-size: 12px; font-weight: 700; color: var(--t2); margin-bottom: 20px; padding-bottom: 12px; border-bottom: 1.5px solid var(--border);">
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <div style="width: 14px; height: 14px; border-radius: 3px; border: 1px solid var(--border); background: var(--bg);"></div>
+            <span>Día laborable</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <div style="width: 14px; height: 14px; border-radius: 3px; border: 1px dashed var(--border); background: rgba(0,0,0,0.04);"></div>
+            <span>Fin de semana</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 6px;">
+            <div style="width: 14px; height: 14px; border-radius: 3px; background: var(--blue); border: 1px solid var(--blue);"></div>
+            <span>Vacaciones (Clic para poner/quitar)</span>
+          </div>
+        </div>
+
+        <!-- Table Timeline Wrapper -->
+        <div style="width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; border: 1.5px solid var(--border); border-radius: var(--rs);">
+          <table id="ctrl-timeline-table" style="width: 100%; border-collapse: collapse; min-width: 900px; background: var(--surface);">
+            <!-- Rendered dynamically -->
+          </table>
         </div>
         
-        <!-- Content grid -->
-        <div id="ctrl-vac-agent-content" style="display: none; grid-template-columns: 1fr; gap: 24px;">
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
-            
-            <!-- Left side: Stats & Add Vacations Form -->
-            <div style="display: flex; flex-direction: column; gap: 24px;">
-              <!-- Stats Row -->
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-                <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 16px; box-shadow: var(--shadow); text-align: center;">
-                  <div style="font-size: 24px; font-weight: 900; color: var(--blue);" id="ctrl-vac-stats-consumed">0</div>
-                  <div style="font-size: 12px; font-weight: 700; color: var(--t3); text-transform: uppercase; margin-top: 4px;">Días Consumidos</div>
-                </div>
-                <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 16px; box-shadow: var(--shadow); text-align: center;">
-                  <div style="font-size: 24px; font-weight: 900; color: var(--orange);" id="ctrl-vac-stats-left">25</div>
-                  <div style="font-size: 12px; font-weight: 700; color: var(--t3); text-transform: uppercase; margin-top: 4px;">Días Disponibles</div>
-                </div>
-              </div>
-              
-              <!-- Add Vacation Date Picker Form -->
-              <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow);">
-                <h4 style="margin: 0 0 16px 0; font-size: 15px; font-weight: 800; color: var(--text);">Registrar Vacaciones</h4>
-                 <form onsubmit="saveControlAgentVacationDays(event)" style="display: flex; flex-direction: column; gap: 16px;">
-                  <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                    <div>
-                      <label style="font-weight: 700; font-size: 12.5px; color: var(--t2); margin-bottom: 6px; display: block;">Fecha de Inicio</label>
-                      <input type="date" id="ctrl-vac-start" required style="width: 100%; padding: 8px 12px; font-size: 13.5px; color: var(--text); background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); outline: none; border-color: var(--border);" />
-                    </div>
-                    <div>
-                      <label style="font-weight: 700; font-size: 12.5px; color: var(--t2); margin-bottom: 6px; display: block;">Fecha de Fin (Opcional)</label>
-                      <input type="date" id="ctrl-vac-end" style="width: 100%; padding: 8px 12px; font-size: 13.5px; color: var(--text); background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); outline: none; border-color: var(--border);" />
-                    </div>
-                  </div>
-
-
-                  <button type="submit" class="btn-clear" style="width: 100%; background: var(--blue) !important; color: white !important; border: none !important; font-weight: 700; padding: 10px 16px; border-radius: var(--rs); cursor: pointer; transition: background 0.2s; font-size: 13.5px;">
-                    Añadir Vacaciones
-                  </button>
-                </form>
-              </div>
-              
-              <!-- List of Vacation Days Taken -->
-              <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 14px; max-height: 380px;">
-                <h4 style="margin: 0; font-size: 15px; font-weight: 800; color: var(--text);">Días Registrados</h4>
-                <div id="ctrl-vac-list" style="display: flex; flex-direction: column; gap: 8px; overflow-y: auto; padding-right: 4px; max-height: 220px;">
-                  <!-- Populated dynamically -->
-                </div>
-              </div>
-            </div>
-            
-            <!-- Right side: Mini-Calendar Preview -->
-            <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 16px;">
-              <div style="display: flex; justify-content: space-between; align-items: center; gap: 8px;">
-                <button type="button" class="btn-clear" onclick="changeControlCalMonth(-1)" id="ctrl-cal-prev" style="padding: 6px 10px; border-radius: var(--rs); font-size: 12.5px; font-weight: 700; border: 1px solid var(--border);">Anterior</button>
-                <h4 style="margin: 0; font-size: 15px; font-weight: 800; color: var(--text); text-align: center; flex: 1;" id="ctrl-cal-month-title">Mes Año</h4>
-                <button type="button" class="btn-clear" onclick="changeControlCalMonth(1)" id="ctrl-cal-next" style="padding: 6px 10px; border-radius: var(--rs); font-size: 12.5px; font-weight: 700; border: 1px solid var(--border);">Siguiente</button>
-              </div>
-              
-              <!-- Calendar Legend -->
-              <div style="display: flex; flex-wrap: wrap; gap: 12px; font-size: 11px; font-weight: 700; color: var(--t2); padding-bottom: 8px; border-bottom: 1px solid var(--border);">
-                <div class="legend-item"><div class="legend-dot" style="background:#f1f5f9;border:1px solid #cbd5e1"></div>Vacaciones</div>
-                <div class="legend-item"><div class="legend-dot" style="background:rgba(224, 128, 52, 0.15);border:1px solid #ea580c"></div>Festivo</div>
-                <div class="legend-item"><div class="legend-dot" style="background:rgba(234, 179, 8, 0.15);border:1px solid #a16207"></div>Inicio</div>
-                <div class="legend-item"><div class="legend-dot" style="background:rgba(124, 58, 237, 0.15);border:1px solid #6d28d9"></div>Cierre</div>
-              </div>
-              
-              <!-- Calendar Grid -->
-              <div id="ctrl-cal-grid" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px;">
-                <!-- Populated dynamically -->
-              </div>
-            </div>
-            
-          </div>
-        </div>
       </div>
     </div>
 
@@ -5065,355 +5039,136 @@ function deleteVacationDay(iso) {
   }
 }
 
-// ── GESTIÓN DE VACACIONES (MANAGER) ──
+// ── GESTIÓN DE VACACIONES (MANAGER - TIMELINE) ──
 let controlCalMonth = new Date().getMonth();
-let controlAgentVacations = [];
-let controlAgentVacationMotives = {};
 
 function initControlVacaciones() {
-  const select = document.getElementById('ctrl-vac-agent-select');
-  if (!select) return;
-  
-  let html = '<option value="">-- Selecciona Comercial --</option>';
-  Object.keys(COMERCIALES).forEach(dni => {
-    const name = COMERCIALES[dni];
-    html += `<option value="${dni}">${name} (${dni})</option>`;
-  });
-  select.innerHTML = html;
-  
-  document.getElementById('ctrl-vac-agent-content').style.display = 'none';
+  controlCalMonth = new Date().getMonth();
+  renderControlVacationsTimeline();
 }
 
-function onControlVacAgentChange() {
-  const select = document.getElementById('ctrl-vac-agent-select');
-  const dni = select.value;
+function renderControlVacationsTimeline() {
+  const table = document.getElementById('ctrl-timeline-table');
+  if (!table) return;
   
-  const content = document.getElementById('ctrl-vac-agent-content');
-  if (!dni) {
-    content.style.display = 'none';
-    return;
+  const year = 2026;
+  document.getElementById('ctrl-timeline-month-title').textContent = MES_NOMBRES[controlCalMonth] + ' ' + year;
+  
+  const daysInMonth = new Date(year, controlCalMonth + 1, 0).getDate();
+  
+  // ── HEADER ROW ──
+  let headerHtml = '<thead><tr style="background: var(--surface); border-bottom: 2px solid var(--border);">';
+  headerHtml += `
+    <th style="padding: 12px; text-align: left; font-weight: 800; color: var(--text); border-right: 1.5px solid var(--border); position: sticky; left: 0; background: var(--surface); z-index: 3; box-shadow: 4px 0 8px rgba(0,0,0,0.02); min-width: 200px;">
+      Comercial
+    </th>
+  `;
+  
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dateObj = new Date(year, controlCalMonth, day);
+    const dayOfWeek = (dateObj.getDay() + 6) % 7; // 0=Lu, 6=Do
+    const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6);
+    const dowAbbr = DOW_NOMBRES[dayOfWeek].substring(0, 2);
+    
+    headerHtml += `
+      <th style="padding: 8px 4px; text-align: center; font-size: 12px; color: ${isWeekend ? 'var(--orange)' : 'var(--text)'}; border-bottom: 1.5px solid var(--border); min-width: 32px; background: ${isWeekend ? 'rgba(0,0,0,0.02)' : 'transparent'};">
+        <div style="font-weight: 800;">${day}</div>
+        <div style="font-size: 9px; opacity: 0.6; font-weight: 700; margin-top: 2px;">${dowAbbr}</div>
+      </th>
+    `;
   }
+  headerHtml += '</tr></thead>';
   
-  content.style.display = 'grid';
+  // ── BODY ROWS ──
+  let bodyHtml = '<tbody>';
+  Object.keys(COMERCIALES).forEach(dni => {
+    const name = COMERCIALES[dni];
+    const vacations = getAgentVacations(dni);
+    const consumed = vacations.length;
+    
+    bodyHtml += `<tr style="border-bottom: 1px solid var(--border);" onmouseover="this.style.background='rgba(0,0,0,0.01)'" onmouseout="this.style.background='transparent'">`;
+    
+    bodyHtml += `
+      <td style="padding: 12px; border-bottom: 1px solid var(--border); font-weight: 700; color: var(--text); position: sticky; left: 0; background: var(--surface); z-index: 2; border-right: 1.5px solid var(--border); box-shadow: 4px 0 8px rgba(0,0,0,0.02); min-width: 200px; text-align: left;">
+        <div style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">${name}</div>
+        <div style="font-size: 10.5px; color: var(--t3); display: flex; justify-content: space-between; margin-top: 4px; font-weight: 600;">
+          <span style="font-family: monospace;">${dni}</span>
+          <span style="color: ${consumed >= 25 ? '#ef4444' : 'var(--blue)'};">${consumed}/25 días</span>
+        </div>
+      </td>
+    `;
+    
+    for (let day = 1; day <= daysInMonth; day++) {
+      const dateObj = new Date(year, controlCalMonth, day);
+      const isWeekend = (dateObj.getDay() === 0 || dateObj.getDay() === 6);
+      
+      const dateStr = `${year}-${String(controlCalMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const isActive = vacations.includes(dateStr);
+      
+      bodyHtml += `
+        <td style="padding: 8px 4px; border-bottom: 1px solid var(--border); text-align: center; min-width: 32px; background: ${isWeekend ? 'rgba(0,0,0,0.01)' : 'transparent'};">
+          <div class="timeline-day-square ${isActive ? 'active' : ''} ${isWeekend ? 'weekend' : ''}" 
+               onclick="toggleAgentVacationDay('${dni}', '${dateStr}')" 
+               title="${name} - ${day} de ${MES_NOMBRES[controlCalMonth]} (DNI: ${dni})" 
+               style="width: 22px; height: 22px; margin: 0 auto; border-radius: 4px; border: 1px solid ${isActive ? 'var(--blue)' : 'var(--border)'}; background: ${isActive ? 'var(--blue)' : (isWeekend ? 'rgba(0,0,0,0.04)' : 'var(--bg)')}; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
+          </div>
+        </td>
+      `;
+    }
+    
+    bodyHtml += '</tr>';
+  });
+  bodyHtml += '</tbody>';
   
-  // Seed default vacations only once for selected commercial
+  table.innerHTML = headerHtml + bodyHtml;
+}
+
+function getAgentVacations(dni) {
   const initializedKey = 'vacaciones_inicializadas_' + dni;
   if (localStorage.getItem(initializedKey) === null) {
     if (localStorage.getItem('vacaciones_' + dni) !== null) {
       localStorage.setItem(initializedKey, 'true');
-      controlAgentVacations = JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
+      return JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
     } else {
-      controlAgentVacations = DEFAULT_VACATIONS[dni] || [];
-      localStorage.setItem('vacaciones_' + dni, JSON.stringify(controlAgentVacations));
+      const defVac = DEFAULT_VACATIONS[dni] || [];
+      localStorage.setItem('vacaciones_' + dni, JSON.stringify(defVac));
       localStorage.setItem(initializedKey, 'true');
+      return defVac;
     }
-  } else {
-    controlAgentVacations = JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
   }
-  
-  // Load control agent motives
-  const motivesKey = 'vacaciones_motivos_' + dni;
-  if (localStorage.getItem(motivesKey) === null) {
-    controlAgentVacationMotives = DEFAULT_VACATION_MOTIVES[dni] || {};
-    localStorage.setItem(motivesKey, JSON.stringify(controlAgentVacationMotives));
-  } else {
-    controlAgentVacationMotives = JSON.parse(localStorage.getItem(motivesKey) || '{}');
-  }
-  
-  // Sync if this is the logged-in agent
-  if (dni === currentAgentDni) {
-    agentVacationMotives = controlAgentVacationMotives;
-  }
-  
-  document.getElementById('ctrl-vac-start').value = '';
-  document.getElementById('ctrl-vac-end').value = '';
-  
-  renderControlVacStats();
-  renderControlVacList();
-  renderControlCalendar();
+  return JSON.parse(localStorage.getItem('vacaciones_' + dni) || '[]');
 }
 
-function renderControlVacStats() {
-  const consumed = controlAgentVacations.length;
-  const left = 25 - consumed;
+function toggleAgentVacationDay(dni, dateStr) {
+  const currentVacations = getAgentVacations(dni);
+  const idx = currentVacations.indexOf(dateStr);
   
-  document.getElementById('ctrl-vac-stats-consumed').textContent = consumed;
-  document.getElementById('ctrl-vac-stats-left').textContent = left;
-}
-
-function renderControlVacList() {
-  const container = document.getElementById('ctrl-vac-list');
-  if (!container) return;
-  
-  if (controlAgentVacations.length === 0) {
-    container.innerHTML = `<div style="text-align: center; color: var(--t3); font-size: 13px; padding: 10px 0;">No hay días de vacaciones registrados.</div>`;
-    return;
-  }
-  
-  const sorted = [...controlAgentVacations].sort((a, b) => new Date(a) - new Date(b));
-  
-  container.innerHTML = sorted.map(iso => {
-    const d = isoToDate(iso);
-    const formatted = d.toLocaleDateString('es-ES', { day: '2-digit', month: 'long', year: 'numeric' });
-    const motive = controlAgentVacationMotives[iso] || 'Vacaciones';
-    return `
-      <div style="display: flex; justify-content: space-between; align-items: center; background: var(--bg); padding: 8px 12px; border: 1px solid var(--border); border-radius: var(--rs);">
-        <div style="display: flex; flex-direction: column; gap: 2px;">
-          <span style="font-size: 13.5px; color: var(--text); font-weight: 600;">${formatted}</span>
-          <span style="font-size: 11px; color: var(--t3); font-weight: 500;">${motive}</span>
-        </div>
-        <button type="button" onclick="deleteControlAgentVacationDay('${iso}')" style="background: transparent; border: none; color: #ef4444; cursor: pointer; padding: 4px; display: inline-flex; transition: opacity 0.2s;" onmouseover="this.style.opacity=0.8" onmouseout="this.style.opacity=1" title="Eliminar">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
-        </button>
-      </div>
-    `;
-  }).join('');
-}
-
-function changeControlCalMonth(delta) {
-  controlCalMonth = Math.min(11, Math.max(0, controlCalMonth + delta));
-  renderControlCalendar();
-}
-
-function renderControlCalendar() {
-  const select = document.getElementById('ctrl-vac-agent-select');
-  const dni = select.value;
-  if (!dni) return;
-  
-  const year = 2026;
-  document.getElementById('ctrl-cal-month-title').textContent = MES_NOMBRES[controlCalMonth] + ' ' + year;
-  document.getElementById('ctrl-cal-prev').disabled = controlCalMonth === 0;
-  document.getElementById('ctrl-cal-next').disabled = controlCalMonth === 11;
-  
-  const period = PERIODS[controlCalMonth];
-  const start = isoToDate(period.start);
-  const end = isoToDate(period.end);
-  
-  const totalDays = Math.round((end - start) / (1000 * 60 * 60 * 24)) + 1;
-  const firstDow = (start.getDay() + 6) % 7;
-  
-  let html = DOW_NOMBRES.map(d => `<div class="cal-dow" style="font-size: 11px; font-weight: 700; color: var(--t3); text-align: center; padding: 4px 0;">${d.substring(0,2)}</div>`).join('');
-  
-  if (firstDow > 0) {
-    for (let i = firstDow - 1; i >= 0; i--) {
-      const date = new Date(start);
-      date.setDate(start.getDate() - (i + 1));
-      const dayNum = date.getDate();
-      html += `<div class="cal-day cal-outside" style="opacity: 0.3; text-align: center; padding: 8px 0; font-size: 12px; font-weight: 500;">${dayNum}</div>`;
-    }
-  }
-  
-  for (let i = 0; i < totalDays; i++) {
-    const date = new Date(start);
-    date.setDate(start.getDate() + i);
-    const iso = toIso(date);
-    const dayNum = date.getDate();
-    
-    let style = "text-align: center; padding: 8px 0; font-size: 13.5px; font-weight: 700; border-radius: var(--rs); position: relative; border: 1px solid transparent; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 48px;";
-    let label = '';
-    let extraText = '';
-    let bg = '';
-    let color = 'var(--text)';
-    let border = '1px solid var(--border)';
-    
-    if (FESTIVOS.includes(iso)) { 
-      label = 'Festivo'; 
-      bg = 'rgba(224, 128, 52, 0.1)'; 
-      color = '#ea580c'; 
-      border = '1px solid rgba(224, 128, 52, 0.3)';
-      extraText = 'FES';
-    }
-    else if (VOB25.includes(iso)) { 
-      label = 'VOB25'; 
-      bg = 'rgba(224, 128, 52, 0.1)'; 
-      color = '#ea580c'; 
-      border = '1px solid rgba(224, 128, 52, 0.3)';
-      extraText = 'FES';
-    }
-    else if (COMIENZOS.includes(iso)) { 
-      label = 'Comienzo de mes'; 
-      bg = 'rgba(234, 179, 8, 0.1)'; 
-      color = '#a16207'; 
-      border = '1px solid rgba(234, 179, 8, 0.3)';
-      extraText = 'INI';
-    }
-    else if (CIERRES.includes(iso)) { 
-      label = 'Cierre de mes'; 
-      bg = 'rgba(124, 58, 237, 0.1)'; 
-      color = '#6d28d9'; 
-      border = '1px solid rgba(124, 58, 237, 0.3)';
-      extraText = 'CIE';
-    }
-    else if (calIsWeekend(date)) { 
-      label = 'Fin de semana'; 
-      color = 'var(--t3)';
-      bg = 'rgba(73, 84, 96, 0.03)';
-    }
-    else { 
-      label = 'Laborable'; 
-      bg = 'var(--surface)';
-    }
-    
-    if (controlAgentVacations.includes(iso)) { 
-      const motive = controlAgentVacationMotives[iso] || 'Vacaciones';
-      label += ' (' + motive + ')'; 
-      extraText = getMotiveAbbreviation(motive);
-      
-      const low = extraText;
-      if (low === 'BAJ') {
-        bg = 'rgba(239, 68, 68, 0.1)';
-        color = '#dc2626';
-        border = '1px solid rgba(239, 68, 68, 0.3)';
-      } else if (low === 'AP') {
-        bg = 'rgba(14, 165, 233, 0.1)';
-        color = '#0284c7';
-        border = '1px solid rgba(14, 165, 233, 0.3)';
-      } else if (low === 'HOS') {
-        bg = 'rgba(236, 72, 153, 0.1)';
-        color = '#db2777';
-        border = '1px solid rgba(236, 72, 153, 0.3)';
-      } else if (low === 'REP') {
-        bg = 'rgba(16, 185, 129, 0.1)';
-        color = '#059669';
-        border = '1px solid rgba(16, 185, 129, 0.3)';
-      } else if (low === 'VAC') {
-        bg = '#f1f5f9';
-        color = '#475569';
-        border = '1px solid #cbd5e1';
-      } else {
-        bg = 'rgba(107, 114, 128, 0.1)';
-        color = '#4b5563';
-        border = '1px solid rgba(107, 114, 128, 0.3)';
-      }
-    }
-    if (calIsToday(date)) { 
-      border = '1.5px solid var(--blue)'; 
-      label += ' · Hoy'; 
-    }
-    
-    let innerHtml = `<span style="font-size: 13.5px; font-weight: 700; color: ${color};">${dayNum}</span>`;
-    if (extraText) {
-      let badgeColor = color;
-      let badgeBg = bg;
-      if (['VAC', 'BAJ', 'AP', 'HOS', 'REP', 'JUI', 'CIT', 'URG'].includes(extraText)) {
-        const low = extraText;
-        if (low === 'BAJ') {
-          badgeBg = 'rgba(239, 68, 68, 0.15)';
-          badgeColor = '#dc2626';
-        } else if (low === 'AP') {
-          badgeBg = 'rgba(14, 165, 233, 0.15)';
-          badgeColor = '#0284c7';
-        } else if (low === 'HOS') {
-          badgeBg = 'rgba(236, 72, 153, 0.15)';
-          badgeColor = '#db2777';
-        } else if (low === 'REP') {
-          badgeBg = 'rgba(16, 185, 129, 0.15)';
-          badgeColor = '#059669';
-        } else if (low === 'VAC') {
-          badgeBg = 'rgba(71, 85, 105, 0.1)';
-          badgeColor = '#475569';
-        } else {
-          badgeBg = 'rgba(107, 114, 128, 0.15)';
-          badgeColor = '#4b5563';
-        }
-      }
-      innerHtml += `<span style="font-size: 8px; font-weight: 800; color: ${badgeColor}; background: ${badgeBg}; padding: 1px 3px; border-radius: 3px; margin-top: 2px;">${extraText}</span>`;
-    }
-    
-    html += `<div class="ctrl-cal-day" style="${style} background: ${bg}; border: ${border};" title="${label}">${innerHtml}</div>`;
-  }
-  
-  const trailingDays = (7 - ((firstDow + totalDays) % 7)) % 7;
-  for (let i = 0; i < trailingDays; i++) {
-    const date = new Date(end);
-    date.setDate(end.getDate() + (i + 1));
-    const dayNum = date.getDate();
-    html += `<div class="ctrl-cal-day cal-outside" style="opacity: 0.3; text-align: center; padding: 8px 0; font-size: 12px; font-weight: 500;">${dayNum}</div>`;
-  }
-  
-  document.getElementById('ctrl-cal-grid').innerHTML = html;
-}
-
-function saveControlAgentVacationDays(event) {
-  if (event) event.preventDefault();
-  const select = document.getElementById('ctrl-vac-agent-select');
-  const dni = select.value;
-  if (!dni) return;
-  
-  const startInput = document.getElementById('ctrl-vac-start').value;
-  const endInput = document.getElementById('ctrl-vac-end').value;
-  const motive = 'Vacaciones';
-  if (!startInput) return;
-  
-  let start = new Date(startInput);
-  let end = endInput ? new Date(endInput) : new Date(startInput);
-  
-  if (end < start) {
-    const temp = end;
-    end = start;
-    start = temp;
-  }
-  
-  let iter = new Date(start);
-  let newDays = [];
-  while (iter <= end) {
-    const iso = toIso(iter);
-    if (calIsLabor(iter)) {
-      if (!controlAgentVacations.includes(iso)) {
-        newDays.push(iso);
-        controlAgentVacationMotives[iso] = motive;
-      }
-    }
-    iter.setDate(iter.getDate() + 1);
-  }
-  
-  if (newDays.length === 0) return;
-  
-  if (controlAgentVacations.length + newDays.length > 25) {
-    alert(`No se pueden registrar las vacaciones. Superaría los 25 días totales para este comercial (quedan ${25 - controlAgentVacations.length} días).`);
-    return;
-  }
-  
-  controlAgentVacations.push(...newDays);
-  localStorage.setItem('vacaciones_' + dni, JSON.stringify(controlAgentVacations));
-  localStorage.setItem('vacaciones_motivos_' + dni, JSON.stringify(controlAgentVacationMotives));
-  
-  if (dni === currentAgentDni) {
-    agentVacations = controlAgentVacations;
-    agentVacationMotives = controlAgentVacationMotives;
-    renderCalendar();
-  }
-  
-  document.getElementById('ctrl-vac-start').value = '';
-  document.getElementById('ctrl-vac-end').value = '';
-  
-  renderControlVacStats();
-  renderControlVacList();
-  renderControlCalendar();
-}
-
-function deleteControlAgentVacationDay(iso) {
-  const select = document.getElementById('ctrl-vac-agent-select');
-  const dni = select.value;
-  if (!dni) return;
-  
-  const idx = controlAgentVacations.indexOf(iso);
   if (idx !== -1) {
-    controlAgentVacations.splice(idx, 1);
-    delete controlAgentVacationMotives[iso];
-    localStorage.setItem('vacaciones_' + dni, JSON.stringify(controlAgentVacations));
-    localStorage.setItem('vacaciones_motivos_' + dni, JSON.stringify(controlAgentVacationMotives));
-    
-    if (dni === currentAgentDni) {
-      agentVacations = controlAgentVacations;
-      agentVacationMotives = controlAgentVacationMotives;
-      renderCalendar();
+    currentVacations.splice(idx, 1);
+  } else {
+    if (currentVacations.length >= 25) {
+      alert(`El comercial ${COMERCIALES[dni]} ya ha consumido el límite de 25 días de vacaciones.`);
+      return;
     }
-    
-    renderControlVacStats();
-    renderControlVacList();
-    renderControlCalendar();
+    currentVacations.push(dateStr);
   }
+  
+  localStorage.setItem('vacaciones_' + dni, JSON.stringify(currentVacations));
+  
+  if (dni === currentAgentDni) {
+    agentVacations = currentVacations;
+    if (typeof renderCalendar === 'function') renderCalendar();
+    if (typeof renderVacationList === 'function') renderVacationList();
+  }
+  
+  renderControlVacationsTimeline();
+}
+
+function navigateControlTimelineMonth(direction) {
+  controlCalMonth += direction;
+  if (controlCalMonth < 0) controlCalMonth = 0;
+  if (controlCalMonth > 11) controlCalMonth = 11;
+  renderControlVacationsTimeline();
 }
 
 // ── PROMOCIONES LIGHTBOX ──
