@@ -3076,7 +3076,7 @@ hr {
     </button>
     <button class="nav-btn" id="btn-nav-agenda" onclick="showPanel('agenda',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-      Tareas de Hoy
+      Agenda Personal
     </button>
     <button class="nav-btn" id="btn-nav-scripts" onclick="showPanel('scripts',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
@@ -3186,7 +3186,7 @@ hr {
           <div class="db-widget-header">
             <h4 class="db-widget-title">
               <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
-              Tareas de Hoy
+              Agenda Personal
             </h4>
             <div style="display: flex; align-items: center; gap: 8px;">
               <a href="#" class="db-widget-link" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda')); return false;">
@@ -3256,15 +3256,15 @@ hr {
             </div>
           </div>
 
-          <!-- Card 2: Tareas para Hoy -->
+          <!-- Card 2: Agenda Personal -->
           <div class="db-tool-card" style="--card-color: #10b981; --card-color-bg: rgba(16, 185, 129, 0.08); --card-color-alpha: rgba(16, 185, 129, 0.05);" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
               </div>
               <div class="db-tool-info">
-                <h4 class="db-tool-title">Tareas para Hoy</h4>
-                <p class="db-tool-desc">Anota tus gestiones, llamadas de seguimiento y recordatorios para organizarte en el turno de hoy.</p>
+                <h4 class="db-tool-title">Agenda Personal</h4>
+                <p class="db-tool-desc">Anota tus gestiones, llamadas de seguimiento y recordatorios para organizarte en tu agenda personal.</p>
               </div>
             </div>
             <div class="db-tool-action">
@@ -3813,7 +3813,7 @@ hr {
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3 class="cond-sub-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-          Mis Tareas de Hoy
+          Mi Agenda Personal
         </h3>
         <button class="btn" onclick="openAgendaModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; font-size: 13.5px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -5030,6 +5030,11 @@ function saveVacationDays(event) {
   
   agentVacations.push(...newDays);
   localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
+  if (typeof addVacationDayToCloud === 'function') {
+    newDays.forEach(dateStr => {
+      addVacationDayToCloud(currentAgentDni, dateStr);
+    });
+  }
   localStorage.setItem('vacaciones_motivos_' + currentAgentDni, JSON.stringify(agentVacationMotives));
   renderCalendar();
   renderVacationList();
@@ -5043,6 +5048,9 @@ function deleteVacationDay(iso) {
     agentVacations.splice(idx, 1);
     delete agentVacationMotives[iso];
     localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
+    if (typeof deleteVacationDayFromCloud === 'function') {
+      deleteVacationDayFromCloud(currentAgentDni, iso);
+    }
     localStorage.setItem('vacaciones_motivos_' + currentAgentDni, JSON.stringify(agentVacationMotives));
     renderCalendar();
     renderVacationList();
@@ -5054,7 +5062,11 @@ let controlCalMonth = new Date().getMonth();
 
 function initControlVacaciones() {
   controlCalMonth = new Date().getMonth();
-  renderControlVacationsTimeline();
+  if (typeof fetchAllVacationsFromCloud === 'function') {
+    fetchAllVacationsFromCloud();
+  } else {
+    renderControlVacationsTimeline();
+  }
 }
 
 function renderControlVacationsTimeline() {
@@ -5155,12 +5167,18 @@ function toggleAgentVacationDay(dni, dateStr) {
   
   if (idx !== -1) {
     currentVacations.splice(idx, 1);
+    if (typeof deleteVacationDayFromCloud === 'function') {
+      deleteVacationDayFromCloud(dni, dateStr);
+    }
   } else {
     if (currentVacations.length >= 25) {
       alert(`El comercial ${COMERCIALES[dni]} ya ha consumido el límite de 25 días de vacaciones.`);
       return;
     }
     currentVacations.push(dateStr);
+    if (typeof addVacationDayToCloud === 'function') {
+      addVacationDayToCloud(dni, dateStr);
+    }
   }
   
   localStorage.setItem('vacaciones_' + dni, JSON.stringify(currentVacations));
@@ -6857,6 +6875,9 @@ function loadSession() {
       agentVacationMotives = JSON.parse(localStorage.getItem(motivesKey) || '{}');
     }
     
+    if (typeof fetchVacationsFromCloud === 'function') {
+      fetchVacationsFromCloud(currentAgentDni);
+    }
     onLoginSuccess();
   } else {
     logout();
@@ -6975,6 +6996,104 @@ setInterval(updateClock, 1000);
 // ── AGENDA PERSONAL JS ──
 let currentModalTab = 'call';
 let agendaNotifyInterval = null;
+
+async function fetchVacationsFromCloud(dni) {
+  if (!supabaseClient || !dni) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('vacaciones')
+      .select('fecha')
+      .eq('dni', dni);
+    if (!error && data) {
+      if (data.length > 0) {
+        const dates = data.map(r => r.fecha);
+        localStorage.setItem('vacaciones_' + dni, JSON.stringify(dates));
+        localStorage.setItem('vacaciones_inicializadas_' + dni, 'true');
+        if (dni === currentAgentDni) {
+          agentVacations = dates;
+          if (typeof renderCalendar === 'function') renderCalendar();
+          if (typeof renderVacationList === 'function') renderVacationList();
+        }
+      } else {
+        const initializedKey = 'vacaciones_inicializadas_' + dni;
+        if (localStorage.getItem(initializedKey) === null) {
+          const defVac = DEFAULT_VACATIONS[dni] || [];
+          if (defVac.length > 0) {
+            const rows = defVac.map(dateStr => ({ dni, fecha: dateStr }));
+            await supabaseClient.from('vacaciones').insert(rows);
+          }
+          localStorage.setItem('vacaciones_' + dni, JSON.stringify(defVac));
+          localStorage.setItem(initializedKey, 'true');
+          if (dni === currentAgentDni) {
+            agentVacations = defVac;
+            if (typeof renderCalendar === 'function') renderCalendar();
+            if (typeof renderVacationList === 'function') renderVacationList();
+          }
+        } else {
+          localStorage.setItem('vacaciones_' + dni, '[]');
+          if (dni === currentAgentDni) {
+            agentVacations = [];
+            if (typeof renderCalendar === 'function') renderCalendar();
+            if (typeof renderVacationList === 'function') renderVacationList();
+          }
+        }
+      }
+      const timelineTable = document.getElementById('ctrl-timeline-table');
+      if (timelineTable && typeof renderControlVacationsTimeline === 'function') {
+        renderControlVacationsTimeline();
+      }
+    }
+  } catch (e) {
+    console.error("Error fetching vacations from cloud", e);
+  }
+}
+
+async function fetchAllVacationsFromCloud() {
+  if (!supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('vacaciones')
+      .select('*');
+    if (!error && data) {
+      const grouped = {};
+      Object.keys(COMERCIALES).forEach(dni => {
+        grouped[dni] = [];
+      });
+      data.forEach(row => {
+        if (grouped[row.dni]) {
+          grouped[row.dni].push(row.fecha);
+        }
+      });
+      Object.keys(grouped).forEach(dni => {
+        localStorage.setItem('vacaciones_' + dni, JSON.stringify(grouped[dni]));
+        localStorage.setItem('vacaciones_inicializadas_' + dni, 'true');
+      });
+      if (typeof renderControlVacationsTimeline === 'function') {
+        renderControlVacationsTimeline();
+      }
+    }
+  } catch (e) {
+    console.error("Error fetching all vacations from cloud", e);
+  }
+}
+
+async function addVacationDayToCloud(dni, dateStr) {
+  if (!supabaseClient) return;
+  try {
+    await supabaseClient.from('vacaciones').insert({ dni, fecha: dateStr });
+  } catch (e) {
+    console.error("Error adding vacation day to cloud", e);
+  }
+}
+
+async function deleteVacationDayFromCloud(dni, dateStr) {
+  if (!supabaseClient) return;
+  try {
+    await supabaseClient.from('vacaciones').delete().eq('dni', dni).eq('fecha', dateStr);
+  } catch (e) {
+    console.error("Error deleting vacation day from cloud", e);
+  }
+}
 
 async function fetchAgendaFromCloud() {
   if (!supabaseClient || !currentAgentDni) return;
