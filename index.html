@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   (function() {
     const COMERCIALES = {
@@ -6753,6 +6754,10 @@ const DEFAULT_VACATIONS = {
 const DEFAULT_VACATION_MOTIVES = {};
 
 
+const SUPABASE_URL = "https://bxgdtdzlijeaetlekbub.supabase.co";
+const SUPABASE_KEY = "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
+const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
 let currentAgentDni = null;
 let currentAgentName = "";
 let agentVacations = [];
@@ -6898,6 +6903,7 @@ function onLoginSuccess() {
   
   // 6. Iniciar alertas de agenda
   initAgendaNotifications();
+  if (typeof fetchAgendaFromCloud === 'function') fetchAgendaFromCloud();
   if (typeof updateDashboardAgendaWidget === 'function') {
     updateDashboardAgendaWidget();
   }
@@ -6969,6 +6975,65 @@ setInterval(updateClock, 1000);
 // ── AGENDA PERSONAL JS ──
 let currentModalTab = 'call';
 let agendaNotifyInterval = null;
+
+async function fetchAgendaFromCloud() {
+  if (!supabase || !currentAgentDni) return;
+  try {
+    const { data, error } = await supabase
+      .from('tareas')
+      .select('*')
+      .eq('dni', currentAgentDni);
+    if (!error && data) {
+      const formattedList = data.map(item => ({
+        id: item.id,
+        type: item.type,
+        title: item.title,
+        phone: item.phone || '',
+        date: item.date || '',
+        time: item.time || '',
+        notes: item.notes || '',
+        completed: item.completed,
+        notified: item.notified || false,
+        createdAt: Number(item.created_at)
+      }));
+      localStorage.setItem('agenda_' + currentAgentDni, JSON.stringify(formattedList));
+      renderAgenda();
+      checkAgendaNotifications();
+    }
+  } catch (e) {
+    console.error("Error fetching agenda from cloud", e);
+  }
+}
+
+async function saveAgendaItemToCloud(item) {
+  if (!supabase || !currentAgentDni) return;
+  try {
+    await supabase.from('tareas').upsert({
+      id: item.id.toString(),
+      dni: currentAgentDni,
+      title: item.title,
+      type: item.type,
+      phone: item.phone || null,
+      date: item.date || null,
+      time: item.time || null,
+      notes: item.notes || null,
+      completed: item.completed,
+      notified: item.notified,
+      created_at: item.createdAt
+    });
+  } catch (e) {
+    console.error("Error saving agenda item to cloud", e);
+  }
+}
+
+async function deleteAgendaItemFromCloud(id) {
+  if (!supabase || !currentAgentDni) return;
+  try {
+    await supabase.from('tareas').delete().eq('id', id.toString());
+  } catch (e) {
+    console.error("Error deleting agenda item from cloud", e);
+  }
+}
 
 function loadAgenda() {
   if (!currentAgentDni) return [];
@@ -7259,6 +7324,7 @@ function saveAgendaItem(event) {
   }
   
   saveAgenda(list);
+  saveAgendaItemToCloud(itemData);
   closeAgendaModal();
   renderAgenda();
   checkAgendaNotifications();
@@ -7273,6 +7339,7 @@ function toggleTaskCompletion(id) {
       list[idx].notified = false;
     }
     saveAgenda(list);
+    saveAgendaItemToCloud(list[idx]);
     renderAgenda();
     checkAgendaNotifications();
   }
@@ -7283,6 +7350,7 @@ function deleteAgendaItem(id) {
     const list = loadAgenda();
     const newList = list.filter(i => i.id !== id);
     saveAgenda(newList);
+    deleteAgendaItemFromCloud(id);
     renderAgenda();
   }
 }
@@ -7367,6 +7435,7 @@ function checkAgendaNotifications() {
   });
   if (updated) {
     saveAgenda(list);
+    saveAgendaItemToCloud(list[idx]);
     renderAgenda();
   }
 }
