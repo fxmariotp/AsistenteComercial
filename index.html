@@ -3821,14 +3821,6 @@ hr {
         </button>
       </div>
 
-      <!-- Advertencia de almacenamiento local diario -->
-      <div style="background: rgba(245, 158, 11, 0.08); border: 1px solid rgba(245, 158, 11, 0.2); border-radius: var(--rs); padding: 10px 14px; margin-bottom: 18px; display: flex; align-items: flex-start; gap: 10px; max-width: 800px;">
-        <span style="font-size: 16px; line-height: 1; flex-shrink: 0; color: #f59e0b;">⚠️</span>
-        <p style="margin: 0; font-size: 12.5px; color: var(--t2); line-height: 1.5; font-weight: 500;">
-          <strong style="color: #f59e0b;">Aviso importante:</strong> Estas tareas solo se guardan temporalmente en la memoria de este navegador. <strong>No anotes nada que no sea para el día actual</strong>, ya que los recordatorios de días pasados se borran y no se sincronizan con otros ordenadores.
-        </p>
-      </div>
-
       <!-- Agenda List Wrapper -->
       <div id="agenda-list-wrapper">
         <div class="db-quick-add" style="position: relative; margin-bottom: 16px; max-width: 480px;">
@@ -6054,6 +6046,14 @@ function filterDistribuidoras() {
 
 // ── NAV ──
 function showPanel(id, btn){
+  const activePanel = document.querySelector('.panel.active');
+  if (activePanel && activePanel.id === 'panel-comparativa' && id !== 'comparativa') {
+    if (typeof clearComparisonInputs === 'function') {
+      clearComparisonInputs();
+      localStorage.removeItem('comp_inputs_' + currentAgentDni);
+    }
+  }
+  
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
