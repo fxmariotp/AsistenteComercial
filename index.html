@@ -6756,7 +6756,7 @@ const DEFAULT_VACATION_MOTIVES = {};
 
 const SUPABASE_URL = "https://bxgdtdzlijeaetlekbub.supabase.co";
 const SUPABASE_KEY = "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
-const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 let currentAgentDni = null;
 let currentAgentName = "";
@@ -6977,9 +6977,9 @@ let currentModalTab = 'call';
 let agendaNotifyInterval = null;
 
 async function fetchAgendaFromCloud() {
-  if (!supabase || !currentAgentDni) return;
+  if (!supabaseClient || !currentAgentDni) return;
   try {
-    const { data, error } = await supabase
+    const { data, error } = await supabaseClient
       .from('tareas')
       .select('*')
       .eq('dni', currentAgentDni);
@@ -7006,9 +7006,9 @@ async function fetchAgendaFromCloud() {
 }
 
 async function saveAgendaItemToCloud(item) {
-  if (!supabase || !currentAgentDni) return;
+  if (!supabaseClient || !currentAgentDni) return;
   try {
-    await supabase.from('tareas').upsert({
+    await supabaseClient.from('tareas').upsert({
       id: item.id.toString(),
       dni: currentAgentDni,
       title: item.title,
@@ -7027,9 +7027,9 @@ async function saveAgendaItemToCloud(item) {
 }
 
 async function deleteAgendaItemFromCloud(id) {
-  if (!supabase || !currentAgentDni) return;
+  if (!supabaseClient || !currentAgentDni) return;
   try {
-    await supabase.from('tareas').delete().eq('id', id.toString());
+    await supabaseClient.from('tareas').delete().eq('id', id.toString());
   } catch (e) {
     console.error("Error deleting agenda item from cloud", e);
   }
