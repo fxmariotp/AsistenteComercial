@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!-- saved from url=(0030)https://teambreva.netlify.app/ -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -7164,16 +7164,23 @@ async function fetchVacationsFromCloud(dni) {
           } else {
             localVacs = DEFAULT_VACATIONS[dni] || [];
           }
+          let insertSuccess = true;
           if (localVacs.length > 0) {
             const rows = localVacs.map(dateStr => ({ dni, fecha: dateStr }));
-            await supabaseClient.from('vacaciones').insert(rows);
+            const { error: insertError } = await supabaseClient.from('vacaciones').insert(rows);
+            if (insertError) {
+              console.error("Error migrating vacations to Supabase:", insertError);
+              insertSuccess = false;
+            }
           }
-          localStorage.setItem('vacaciones_' + dni, JSON.stringify(localVacs));
-          localStorage.setItem(migrationKey, 'true');
-          if (dni === currentAgentDni) {
-            agentVacations = localVacs;
-            if (typeof renderCalendar === 'function') renderCalendar();
-            if (typeof renderVacationList === 'function') renderVacationList();
+          if (insertSuccess) {
+            localStorage.setItem('vacaciones_' + dni, JSON.stringify(localVacs));
+            localStorage.setItem(migrationKey, 'true');
+            if (dni === currentAgentDni) {
+              agentVacations = localVacs;
+              if (typeof renderCalendar === 'function') renderCalendar();
+              if (typeof renderVacationList === 'function') renderVacationList();
+            }
           }
         } else {
           localStorage.setItem('vacaciones_' + dni, '[]');
@@ -7227,13 +7234,21 @@ async function fetchAllVacationsFromCloud() {
             } else {
               localVacs = DEFAULT_VACATIONS[dni] || [];
             }
+            let insertSuccess = true;
             if (localVacs.length > 0) {
               const rows = localVacs.map(dateStr => ({ dni, fecha: dateStr }));
-              await supabaseClient.from('vacaciones').insert(rows);
-              grouped[dni] = localVacs;
+              const { error: insertError } = await supabaseClient.from('vacaciones').insert(rows);
+              if (insertError) {
+                console.error("Error migrating vacations to Supabase in bulk:", insertError);
+                insertSuccess = false;
+              } else {
+                grouped[dni] = localVacs;
+              }
             }
-            localStorage.setItem('vacaciones_' + dni, JSON.stringify(localVacs));
-            localStorage.setItem(migrationKey, 'true');
+            if (insertSuccess) {
+              localStorage.setItem('vacaciones_' + dni, JSON.stringify(localVacs));
+              localStorage.setItem(migrationKey, 'true');
+            }
           } else {
             localStorage.setItem('vacaciones_' + dni, '[]');
           }
