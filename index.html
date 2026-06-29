@@ -3074,8 +3074,8 @@ hr {
       Ranking Ventas
     </button>
     <button class="nav-btn" id="btn-nav-agenda" onclick="showPanel('agenda',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
-      Agenda Personal
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+      Tareas de Hoy
     </button>
     <button class="nav-btn" id="btn-nav-scripts" onclick="showPanel('scripts',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
@@ -3188,8 +3188,8 @@ hr {
               Tareas de Hoy
             </h4>
             <div style="display: flex; align-items: center; gap: 8px;">
-              <a href="#" class="db-widget-link" onclick="openAgendaModal(); return false;" style="color: var(--blue); margin-right: 4px;">
-                + Añadir
+              <a href="#" class="db-widget-link" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda')); return false;">
+                Ver todas
               </a>
               <span style="color: var(--border); font-size: 11px;">|</span>
               <a href="#" class="db-widget-link" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda')); return false;">
@@ -3255,19 +3255,19 @@ hr {
             </div>
           </div>
 
-          <!-- Card 2: Agenda Personal -->
+          <!-- Card 2: Tareas para Hoy -->
           <div class="db-tool-card" style="--card-color: #10b981; --card-color-bg: rgba(16, 185, 129, 0.08); --card-color-alpha: rgba(16, 185, 129, 0.05);" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
               </div>
               <div class="db-tool-info">
-                <h4 class="db-tool-title">Agenda Personal</h4>
-                <p class="db-tool-desc">Planifica llamadas de clientes y gestiona tus tareas y recordatorios diarios sin esfuerzo.</p>
+                <h4 class="db-tool-title">Tareas para Hoy</h4>
+                <p class="db-tool-desc">Anota tus gestiones, llamadas de seguimiento y recordatorios para organizarte en el turno de hoy.</p>
               </div>
             </div>
             <div class="db-tool-action">
-              Abrir agenda <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Abrir tareas <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
           </div>
 
@@ -3807,12 +3807,12 @@ hr {
       <!-- Will be rendered dynamically via renderTelefonos() -->
     </div>
 
-    <!-- ══════ AGENDA PERSONAL ══════ -->
+    <!-- ══════ TAREAS PARA HOY ══════ -->
     <div class="panel" id="panel-agenda">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
         <h3 class="cond-sub-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line><path d="M9 16l2 2 4-4"></path></svg>
-          Mi Agenda Diaria
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+          Mis Tareas de Hoy
         </h3>
         <button class="btn" onclick="openAgendaModal()" style="display: inline-flex; align-items: center; gap: 6px; padding: 10px 16px; font-size: 13.5px;">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
@@ -3940,7 +3940,7 @@ hr {
     <div id="agenda-modal" class="modal-overlay" style="display: none;">
       <div class="modal-content" style="max-width: 480px; width: 92%; padding: 24px;">
         <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h4 id="agenda-modal-title" style="margin: 0; font-size: 16.5px; font-weight: 800; color: var(--text);">Nueva Entrada</h4>
+          <h4 id="agenda-modal-title" style="margin: 0; font-size: 16.5px; font-weight: 800; color: var(--text);">Nueva Tarea</h4>
           <button class="close-btn" onclick="closeAgendaModal()" style="background: transparent; border: none; cursor: pointer; color: var(--t3); display: inline-flex;">
             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
           </button>
