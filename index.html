@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!-- saved from url=(0030)https://teambreva.netlify.app/ -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -3222,6 +3222,41 @@ hr {
           </div>
         </div>
 
+        <!-- Widget: Resumen Periodo -->
+        <div class="db-widget-card" id="db-widget-laborables" style="display: flex; flex-direction: column;">
+          <div class="db-widget-header">
+            <h4 class="db-widget-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+              Resumen Período
+            </h4>
+            <a href="#" class="db-widget-link" onclick="showPanel('calendario', document.getElementById('btn-nav-calendario')); return false;">
+              Ver Calendario →
+            </a>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:16px; justify-content:center; flex-grow:1; padding-top:10px;">
+            <div style="display:flex; justify-content:space-around; align-items:center; text-align:center;">
+              <div>
+                <div id="db-labor-total" style="font-size:26px; font-weight:800; color:var(--text);">-</div>
+                <div style="font-size:11px; font-weight:600; color:var(--t3); margin-top:2px;">Laborables</div>
+              </div>
+              <div style="height:32px; border-left:1.5px dashed var(--border);"></div>
+              <div>
+                <div id="db-labor-transc" style="font-size:26px; font-weight:800; color:var(--green);">-</div>
+                <div style="font-size:11px; font-weight:600; color:var(--t3); margin-top:2px;">Trabajados</div>
+              </div>
+              <div style="height:32px; border-left:1.5px dashed var(--border);"></div>
+              <div>
+                <div id="db-labor-rest" style="font-size:26px; font-weight:800; color:var(--blue);">-</div>
+                <div style="font-size:11px; font-weight:600; color:var(--t3); margin-top:2px;">Restantes</div>
+              </div>
+            </div>
+            
+            <div style="background:var(--bg); border:1px solid var(--border); border-radius:var(--rs); padding:10px 14px;">
+              <div id="db-labor-cierre" style="font-size:12px; font-weight:600; color:var(--t2);">Cargando cierre de mes...</div>
+            </div>
+          </div>
+        </div>
+
         <!-- Widget: Objetivo Diario -->
         <div class="db-widget-card" id="db-widget-ranking">
           <div class="db-widget-header">
@@ -5065,6 +5100,7 @@ function renderCalCounters(year){
   document.getElementById('cal-mes-transc').textContent=monthElapsed;
   document.getElementById('cal-mes-rest').textContent=monthRemaining;
   document.getElementById('cal-mes-bar').style.width=(monthTotal?monthElapsed/monthTotal*100:0)+'%';
+  if (typeof updateDashboardLaborablesWidget === 'function') updateDashboardLaborablesWidget();
   
   const cierreDate = isoToDate(CIERRES[calMonth]);
   const cierreDiaSemana = cierreDate.toLocaleDateString('es-ES', {weekday: 'short'});
@@ -6132,6 +6168,7 @@ function showPanel(id, btn){
   
   if (id === 'dashboard') {
     if (typeof updateDashboardAgendaWidget === 'function') updateDashboardAgendaWidget();
+    if (typeof updateDashboardLaborablesWidget === 'function') updateDashboardLaborablesWidget();
     if (typeof updateDashboardRankingWidget === 'function') updateDashboardRankingWidget();
   }
 }
@@ -7074,6 +7111,34 @@ function logout() {
   window.location.href = 'login.html';
 }
 
+function updateDashboardLaborablesWidget() {
+  if (!currentAgentDni) return;
+  const now = new Date();
+  const currentPeriodIdx = getPeriodIndexForDate(now);
+  if (currentPeriodIdx === -1) return;
+  
+  const monthTotal = LABORABLES[currentPeriodIdx];
+  const monthElapsed = getPeriodElapsedDaysExcludingVacations(currentPeriodIdx, now);
+  const monthVacations = getPeriodVacationCount(currentPeriodIdx);
+  const monthRemaining = monthTotal - monthElapsed - monthVacations;
+  
+  const totalEl = document.getElementById('db-labor-total');
+  const transcEl = document.getElementById('db-labor-transc');
+  const restEl = document.getElementById('db-labor-rest');
+  const cierreEl = document.getElementById('db-labor-cierre');
+  
+  if (totalEl) totalEl.textContent = monthTotal;
+  if (transcEl) transcEl.textContent = monthElapsed;
+  if (restEl) restEl.textContent = monthRemaining;
+  
+  if (cierreEl) {
+    const cierreDate = isoToDate(CIERRES[currentPeriodIdx]);
+    const cierreDiaSemana = cierreDate.toLocaleDateString('es-ES', {weekday: 'short'});
+    const cierreDiaNum = cierreDate.getDate();
+    const cierreMesNom = MES_NOMBRES[cierreDate.getMonth()].toLowerCase();
+    cierreEl.innerHTML = `<strong>Cierre de mes:</strong> ${cierreDiaSemana} ${cierreDiaNum} de ${cierreMesNom}`;
+  }
+}
 function onLoginSuccess() {
   const shortName = getShortName(currentAgentName);
   
@@ -7104,6 +7169,9 @@ function onLoginSuccess() {
   if (typeof fetchAgendaFromCloud === 'function') fetchAgendaFromCloud();
   if (typeof updateDashboardAgendaWidget === 'function') {
     updateDashboardAgendaWidget();
+  }
+  if (typeof updateDashboardLaborablesWidget === 'function') {
+    updateDashboardLaborablesWidget();
   }
   
   // 7. Cargar datos de ranking para dashboard
