@@ -3336,6 +3336,38 @@ hr {
             </div>
           </div>
 
+          <!-- Card 7: Consulta SIPS -->
+          <div class="db-tool-card" style="--card-color: #3fb549; --card-color-bg: rgba(63, 181, 73, 0.08); --card-color-alpha: rgba(63, 181, 73, 0.05);" onclick="showPanel('sips', document.getElementById('btn-nav-sips'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Consulta SIPS</h4>
+                <p class="db-tool-desc">Consulta potencia contratada en Fortuluz o dirección de punto de suministro en Naturgy.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Realizar consulta <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
+          <!-- Card 8: Promociones -->
+          <div class="db-tool-card" style="--card-color: #e08034; --card-color-bg: rgba(224, 128, 52, 0.08); --card-color-alpha: rgba(224, 128, 52, 0.05);" onclick="showPanel('promociones', document.getElementById('btn-nav-promociones'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Promociones</h4>
+                <p class="db-tool-desc">Consulta las promociones vigentes y campañas activas de supermercados y grandes superficies.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Ver promociones <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
         </div>
       </div>
     </div>
@@ -4559,7 +4591,8 @@ const PANELS = {
   normas:      {title:'Normas de sala',          sub:'Normativa interna para la sala de contratación', color:'#64748b', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>'},
   controlVacaciones: {title:'Control Vacaciones', sub:'Gestión y control de vacaciones de todos los comerciales', color:'#e08034', icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'},
   promociones: {title:'Promociones', sub:'Promociones vigentes de supermercados y grandes superficies', color:'#e08034', icon:'<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>'},
-};
+
+  sips:        {title:'Consulta SIPS', sub:'Consulta de potencias y direcciones en distribuidoras', color:'#3fb549', icon:'<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line>'},};
 
 // ── CALENDARIO LABORAL 2026 (RENOSUR-TM) — datos exactos, sin cálculo ──
 const FESTIVOS = [
@@ -7075,7 +7108,7 @@ function onLoginSuccess() {
   // 8. Mostrar/ocultar sección de Gerencia
   const gerenteSec = document.getElementById('gerente-section');
   if (gerenteSec) {
-    if (currentAgentDni === '77860623B') {
+    if (currentAgentDni === '77860623B' || currentAgentDni === 'PAPAEVARIA') {
       gerenteSec.style.display = 'block';
     } else {
       gerenteSec.style.display = 'none';
