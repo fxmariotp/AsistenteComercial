@@ -7225,6 +7225,11 @@ try {
 AGENT_ROLES['77860623B'] = 'gerente';
 AGENT_ROLES['PAPAEVARIA'] = 'gerente';
 
+// Preasignar rol a Ana Rocio Galera Morillo a Trabajadores Evaria
+if (AGENT_ROLES['47539234M'] === undefined) {
+  AGENT_ROLES['47539234M'] = 'evaria';
+}
+
 async function fetchAgentRolesFromCloud() {
   if (!supabaseClient) return;
   try {
