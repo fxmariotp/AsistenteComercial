@@ -3116,6 +3116,10 @@ hr {
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
         Control Vacaciones
       </button>
+      <button class="nav-btn" id="btn-nav-gruposAgentes" onclick="showPanel('gruposAgentes',this)" style="margin-top: 4px;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="17" cy="7" r="3"></circle></svg>
+        Grupos de Agente
+      </button>
     </div>
   </div>
   <div style="padding: 0 14px; margin-bottom: 8px;">
@@ -4214,7 +4218,31 @@ hr {
     </div>
 
     <!-- ══════ PROMOCIONES SUPERMERCADO ══════ -->
-    <div class="panel" id="panel-promociones">
+        <!-- â”€â”€ GRUPOS DE AGENTE (GERENTE) â”€â”€ -->
+    <div class="panel" id="panel-gruposAgentes">
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; margin-bottom: 24px;">
+        <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px;">Configuración de Roles y Grupos</h3>
+        <p style="font-size: 13px; color: var(--t3); margin-bottom: 20px;">
+          Define los grupos de cada agente comercial. Los miembros del grupo <strong>Trabajadores Evaria</strong> tienen bloqueado el acceso al <em>Ranking de Ventas</em> y al <em>Calendario</em>.
+        </p>
+        
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+            <thead>
+              <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 12px; color: var(--t3); text-transform: uppercase;">
+                <th style="padding: 10px 14px; font-weight: 700;">Agente Comercial</th>
+                <th style="padding: 10px 14px; font-weight: 700;">DNI</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Grupo / Rol Asignado</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-grupos-agentes-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+<div class="panel" id="panel-promociones">
       <div class="promociones-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; margin-bottom: 30px;">
         
         <!-- Caprabo -->
@@ -4631,6 +4659,7 @@ const PANELS = {
   telefonos:   {title:'Teléfonos',               sub:'Atención al cliente y averías de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
   normas:      {title:'Normas de sala',          sub:'Normativa interna para la sala de contratación', color:'#64748b', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>'},
   controlVacaciones: {title:'Control Vacaciones', sub:'Gestión y control de vacaciones de todos los comerciales', color:'#e08034', icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'},
+  gruposAgentes: {title:'Grupos de Agente', sub:'Asignación de roles y permisos especiales para comerciales', color:'#e08034', icon:'<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"></path><circle cx=\"17\" cy=\"7\" r=\"3\"></circle>'},
   promociones: {title:'Promociones', sub:'Promociones vigentes de supermercados y grandes superficies', color:'#0d5c9e', icon:'<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>'},
 
   sips:        {title:'Consulta SIPS', sub:'Consulta de potencias y direcciones en distribuidoras', color:'#1a7a3c', icon:'<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line>'},};
@@ -6121,6 +6150,13 @@ function filterDistribuidoras() {
 
 // ── NAV ──
 function showPanel(id, btn){
+  // Permisos de rol para Trabajadores Evaria
+  const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+  if (userRole === 'evaria' && (id === 'ranking' || id === 'calendario')) {
+    alert('Acceso denegado: Tu usuario pertenece al grupo "Trabajadores Evaria" y tiene bloqueado el acceso a esta sección.');
+    return;
+  }
+
   const activePanel = document.querySelector('.panel.active');
   if (activePanel && activePanel.id === 'panel-comparativa' && id !== 'comparativa') {
     if (typeof clearComparisonInputs === 'function') {
@@ -6159,6 +6195,7 @@ function showPanel(id, btn){
   if(id==='telefonos') renderTelefonos();
   if(id==='agenda') renderAgenda();
   if(id==='controlVacaciones') initControlVacaciones();
+  if(id==='gruposAgentes') initGruposAgentes();
   
   // Close mobile sidebar drawer if open
   const sidebar = document.getElementById('sidebar');
@@ -6989,6 +7026,10 @@ const DEFAULT_VACATION_MOTIVES = {};
 const SUPABASE_URL = "https://bxgdtdzlijeaetlekbub.supabase.co";
 const SUPABASE_KEY = "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+// Cargar roles desde la nube al cargar la página
+if (typeof fetchAgentRolesFromCloud === 'function') {
+  fetchAgentRolesFromCloud();
+}
 
 let currentAgentDni = null;
 let currentAgentName = "";
@@ -7109,6 +7150,113 @@ function logout() {
   agentVacations = [];
   agentVacationMotives = {};
   window.location.href = 'login.html';
+}
+
+let AGENT_ROLES = {};
+try {
+  const cachedRoles = localStorage.getItem('renosur_agent_roles');
+  if (cachedRoles) {
+    AGENT_ROLES = JSON.parse(cachedRoles);
+  }
+} catch (e) {
+  console.error("Error loading cached agent roles", e);
+}
+// Force hardcoded manager roles
+AGENT_ROLES['77860623B'] = 'gerente';
+AGENT_ROLES['PAPAEVARIA'] = 'gerente';
+
+async function fetchAgentRolesFromCloud() {
+  if (!supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('agentes_roles')
+      .select('*');
+    if (!error && data) {
+      data.forEach(row => {
+        AGENT_ROLES[row.dni] = row.rol;
+      });
+      localStorage.setItem('renosur_agent_roles', JSON.stringify(AGENT_ROLES));
+    }
+  } catch (e) {
+    console.error("Error fetching agent roles from cloud", e);
+  }
+}
+
+async function saveAgentRoleToCloud(dni, rol) {
+  AGENT_ROLES[dni] = rol;
+  localStorage.setItem('renosur_agent_roles', JSON.stringify(AGENT_ROLES));
+  if (!supabaseClient) return;
+  try {
+    await supabaseClient.from('agentes_roles').upsert({ dni, rol });
+  } catch (e) {
+    console.error("Error saving agent role to cloud", e);
+  }
+}
+
+function applyAgentPermissions() {
+  const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+  const btnRanking = document.getElementById('btn-nav-ranking');
+  const btnCalendario = document.getElementById('btn-nav-calendario');
+  const cardRanking = document.querySelector('.db-tool-card[onclick*="\'ranking\'"]');
+  const cardCalendario = document.querySelector('.db-tool-card[onclick*="\'calendario\'"]');
+  
+  if (userRole === 'evaria') {
+    if (btnRanking) { btnRanking.style.opacity = '0.5'; btnRanking.title = 'Bloqueado para Trabajadores Evaria'; }
+    if (btnCalendario) { btnCalendario.style.opacity = '0.5'; btnCalendario.title = 'Bloqueado para Trabajadores Evaria'; }
+    if (cardRanking) { cardRanking.style.opacity = '0.5'; }
+    if (cardCalendario) { cardCalendario.style.opacity = '0.5'; }
+  } else {
+    if (btnRanking) { btnRanking.style.opacity = '1'; btnRanking.title = ''; }
+    if (btnCalendario) { btnCalendario.style.opacity = '1'; btnCalendario.title = ''; }
+    if (cardRanking) { cardRanking.style.opacity = '1'; }
+    if (cardCalendario) { cardCalendario.style.opacity = '1'; }
+  }
+}
+
+function initGruposAgentes() {
+  const tbody = document.getElementById('tbl-grupos-agentes-body');
+  if (!tbody) return;
+  
+  let html = '';
+  const sortedComerciales = Object.keys(COMERCIALES).map(dni => ({
+    dni,
+    name: COMERCIALES[dni]
+  })).sort((a, b) => a.name.localeCompare(b.name));
+  
+  sortedComerciales.forEach(agent => {
+    const isHardcodedGerente = (agent.dni === '77860623B' || agent.dni === 'PAPAEVARIA');
+    const currentRol = isHardcodedGerente ? 'gerente' : (AGENT_ROLES[agent.dni] || 'comercial');
+    
+    let optionsHtml = '';
+    if (isHardcodedGerente) {
+      optionsHtml = `<span style="font-weight:700; color:var(--text); font-size:12.5px;">Gerencia (Bloqueado)</span>`;
+    } else {
+      optionsHtml = `
+        <select onchange="updateAgentRole('${agent.dni}', this.value)" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; outline: none; cursor: pointer;">
+          <option value="comercial" ${currentRol === 'comercial' ? 'selected' : ''}>Comerciales Renosur</option>
+          <option value="evaria" ${currentRol === 'evaria' ? 'selected' : ''}>Trabajadores Evaria</option>
+          <option value="gerente" ${currentRol === 'gerente' ? 'selected' : ''}>Gerencia</option>
+        </select>
+      `;
+    }
+    
+    html += `
+      <tr style="border-bottom: 1px solid var(--border); font-size: 13px;">
+        <td style="padding: 12px 14px; font-weight: 600; color: var(--text);">${agent.name}</td>
+        <td style="padding: 12px 14px; color: var(--t2); font-family: monospace;">${agent.dni}</td>
+        <td style="padding: 12px 14px;">${optionsHtml}</td>
+      </tr>
+    `;
+  });
+  
+  tbody.innerHTML = html;
+}
+
+async function updateAgentRole(dni, val) {
+  await saveAgentRoleToCloud(dni, val);
+  if (dni === currentAgentDni) {
+    applyAgentPermissions();
+  }
 }
 
 function updateDashboardLaborablesWidget() {
