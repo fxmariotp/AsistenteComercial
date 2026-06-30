@@ -7095,8 +7095,8 @@ function onLoginSuccess() {
   showPanel('dashboard', document.getElementById('btn-nav-dashboard'));
   
   // Restore saved comparison inputs
-  if (typeof loadComparisonInputs === 'function') {
-    loadComparisonInputs();
+  if (typeof clearComparisonInputs === 'function') {
+    clearComparisonInputs();
   }
   
   // 6. Iniciar alertas de agenda
