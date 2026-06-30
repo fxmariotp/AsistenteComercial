@@ -7355,10 +7355,12 @@ async function saveAllAgentRoles() {
         .upsert(upsertRows);
       if (error) {
         console.error("Error saving roles to Supabase:", error);
+        window.lastSupabaseError = error.message || JSON.stringify(error);
         success = false;
       }
     } catch (e) {
       console.error("Exception saving roles to cloud:", e);
+      window.lastSupabaseError = e.message || String(e);
       success = false;
     }
   }
@@ -7375,7 +7377,8 @@ async function saveAllAgentRoles() {
   if (success) {
     alert('¡Cambios guardados con éxito en la nube y aplicados!');
   } else {
-    alert('Error al guardar en la nube. Los cambios se guardaron localmente en el navegador, pero asegúrate de haber ejecutado la consulta SQL en Supabase para crear la tabla "agentes_roles".');
+    const errorDetails = window.lastSupabaseError ? '\\n\\nDetalle t\\xE9cnico: ' + window.lastSupabaseError : '';
+    alert('Error al guardar en la nube. Los cambios se guardaron localmente en el navegador, pero asegúrate de haber ejecutado la consulta SQL en Supabase para crear la tabla "agentes_roles".' + errorDetails);
   }
 }
 
