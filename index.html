@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- saved from url=(0030)https://teambreva.netlify.app/ -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -1592,7 +1592,7 @@ hr {
   width: 760px;
   margin: 0 auto;
   background: #ffffff;
-  padding: 15px;
+  padding: 10px;
   box-sizing: border-box;
 }
 @media print {
@@ -6727,25 +6727,25 @@ function printCompanyOffer(cia) {
 
   let tbodyHtml = rows.map(r => `
     <tr>
-      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left; ${r.isGreen ? 'color:#166534;font-weight:700;' : ''}">${r.concept}</td>
-      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: center; color: #475569; font-size: 11.5px;">${r.calc}</td>
-      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 700; ${r.isGreen ? 'color:#166534;' : ''}">${r.val}</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: left; ${r.isGreen ? 'color:#166534;font-weight:700;' : ''}">${r.concept}</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: center; color: #475569; font-size: 11.5px;">${r.calc}</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 700; ${r.isGreen ? 'color:#166534;' : ''}">${r.val}</td>
     </tr>
   `).join('');
 
   tbodyHtml += `
     <tr style="font-weight: 700; background: #f8fafc;">
-      <td style="padding: 8px 10px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: left;">Subtotal</td>
-      <td style="padding: 8px 10px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: center;">—</td>
-      <td style="padding: 8px 10px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: right;">${f2(useSva ? subtotalNoExc : subtotal)} €</td>
+      <td style="padding: 5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: left;">Subtotal</td>
+      <td style="padding: 5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: center;">—</td>
+      <td style="padding: 5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: right;">${f2(useSva ? subtotalNoExc : subtotal)} €</td>
     </tr>
   `;
 
   tbodyHtml += `
     <tr style="font-weight: 600; color: #475569;">
-      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: left;">I.V.A. (${Math.round(iva * 100)}%)</td>
-      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: center;">${Math.round(iva * 100)}% s/ ${f2(useSva ? subtotalNoExc : subtotal)} €</td>
-      <td style="padding: 8px 10px; border-bottom: 1px solid #e2e8f0; text-align: right;">${f2(useSva ? (subtotalNoExc * iva) : ivaAmt)} €</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: left;">I.V.A. (${Math.round(iva * 100)}%)</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">${Math.round(iva * 100)}% s/ ${f2(useSva ? subtotalNoExc : subtotal)} €</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">${f2(useSva ? (subtotalNoExc * iva) : ivaAmt)} €</td>
     </tr>
   `;
 
@@ -6753,15 +6753,15 @@ function printCompanyOffer(cia) {
     const batteryDiscount = Math.min(excAmt * (1 + iva), subtotalNoExc * (1 + iva));
     tbodyHtml += `
       <tr style="font-weight: 600; color: #166534; background: #f0fdf4;">
-        <td style="padding: 8px 10px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Virtual</td>
-        <td style="padding: 8px 10px; border-bottom: 1px solid #bbf7d0; text-align: center;">Offset excedentes (con IVA)</td>
-        <td style="padding: 8px 10px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(batteryDiscount)} €</td>
+        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Virtual</td>
+        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">Offset excedentes (con IVA)</td>
+        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(batteryDiscount)} €</td>
       </tr>
     `;
   }
 
   let html = `
-    <div class="print-header" style="margin-bottom: 25px;">
+    <div class="print-header" style="margin-bottom: 12px; padding-bottom: 8px;">
       <div class="print-logo-area">
         <div class="print-logo-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color:#fff"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
@@ -6773,42 +6773,42 @@ function printCompanyOffer(cia) {
       </div>
     </div>
     
-    <div class="print-section-title" style="font-size: 13.5px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 6px; margin-bottom: 15px; text-transform: uppercase;">
+    <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
       1. Analizamos las características del suministro
     </div>
-    <div class="print-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 25px; border: 1.5px solid var(--border); border-radius: 8px; padding: 16px; background: #fff;">
+    <div class="print-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px; background: #fff;">
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nombre del cliente</span>
-        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${clientNameVal || '—'}</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${clientNameVal || '—'}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa</span>
-        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${compMode === 'luz' ? (pot1 > 10 && pot1 <= 15 ? '2.1TD' : (pot1 > 15 ? '3.0TD' : '2.0TD')) : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${compMode === 'luz' ? (pot1 > 10 && pot1 <= 15 ? '2.1TD' : (pot1 > 15 ? '3.0TD' : '2.0TD')) : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Período facturado</span>
-        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${dias} días</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${dias} días</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Asesor</span>
-        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${agentName}</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${agentName}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
         <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Fecha de comparativa</span>
-        <span style="font-size: 13px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 4px; margin-top: 2px;">${dateStr}</span>
+        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${dateStr}</span>
       </div>
     </div>
     
-    <div class="print-section-title" style="font-size: 13.5px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 6px; margin-bottom: 15px; text-transform: uppercase;">
+    <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
       2. Propuesta de ahorro con el producto seleccionado
     </div>
     
-    <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 10px; font-size: 12px;">
+    <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 11.5px;">
       <thead>
         <tr style="background: var(--blue) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-          <th style="padding: 8px 10px; text-align: left; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Concepto</th>
-          <th style="padding: 8px 10px; text-align: center; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Cálculo</th>
-          <th style="padding: 8px 10px; text-align: right; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Importe</th>
+          <th style="padding: 5px 8px; text-align: left; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Concepto</th>
+          <th style="padding: 5px 8px; text-align: center; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Cálculo</th>
+          <th style="padding: 5px 8px; text-align: right; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Importe</th>
         </tr>
       </thead>
       <tbody>
@@ -6816,9 +6816,9 @@ function printCompanyOffer(cia) {
       </tbody>
     </table>
     
-    <div style="display: flex; justify-content: flex-end; margin-top: 10px; margin-bottom: 25px;">
+    <div style="display: flex; justify-content: flex-end; margin-top: 5px; margin-bottom: 12px;">
       <div style="display: flex; width: 240px; border-radius: 6px; overflow: hidden; font-weight: 800; font-size: 14.5px; border: 1.5px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-        <div style="flex: 1; background: var(--blue); color: #fff; padding: 10px; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Total</div>
+        <div style="flex: 1; background: var(--blue); color: #fff; padding: 6px 10px; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Total</div>
         <div style="width: 120px; background: #f8fafc; color: var(--text); padding: 10px; text-align: right; border-left: 1.5px solid var(--border); -webkit-print-color-adjust: exact; print-color-adjust: exact;">${f2(total)} €</div>
       </div>
     </div>
@@ -6826,12 +6826,12 @@ function printCompanyOffer(cia) {
   
   if (ahorro > 0) {
     html += `
-      <div style="border: 2px solid #047857; border-radius: 8px; overflow: hidden; margin-bottom: 25px; page-break-inside: avoid; font-family: inherit;">
+      <div style="border: 2px solid #047857; border-radius: 8px; overflow: hidden; margin-bottom: 12px; page-break-inside: avoid; font-family: inherit;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; background: #047857; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div style="border-right: 1px solid rgba(255,255,255,0.3);">Resultado ahorro</div>
           <div>Ahorro anual (estimado)</div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 15px 0;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 8px 0;">
           <div style="border-right: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #202854;">
             ${f2(ahorro)} €
           </div>
@@ -6844,12 +6844,12 @@ function printCompanyOffer(cia) {
     `;
   } else {
     html += `
-      <div style="border: 2px solid #202854; border-radius: 8px; overflow: hidden; margin-bottom: 25px; page-break-inside: avoid; font-family: inherit;">
+      <div style="border: 2px solid #202854; border-radius: 8px; overflow: hidden; margin-bottom: 12px; page-break-inside: avoid; font-family: inherit;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; background: #202854; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div style="border-right: 1px solid rgba(255,255,255,0.3);">Coste estimado mensual</div>
           <div>Diferencia con actual</div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 15px 0;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 8px 0;">
           <div style="border-right: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #202854;">
             ${f2(total)} €
           </div>
@@ -6863,17 +6863,17 @@ function printCompanyOffer(cia) {
   }
 
   html += `
-    <div class="print-section-title" style="font-size: 13.5px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 6px; margin-bottom: 15px; text-transform: uppercase;">
+    <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
       3. Compañía seleccionada
     </div>
-    <div style="margin-top: 15px; margin-bottom: 30px;">
+    <div style="margin-top: 5px; margin-bottom: 12px;">
       <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 6px 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
         <span class="cdot" style="background: ${printColor} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${printColor}33;"></span>
         <span style="font-size: 20px; font-weight: 900; color: ${printColor} !important; letter-spacing: -0.5px; text-transform: uppercase;">${r.name}</span>
       </div>
     </div>
     
-    <div class="print-footer" style="border-top: 1.5px solid var(--border); padding-top: 12px; font-size: 9.5px; color: #64748b; text-align: center; line-height: 1.5; margin-top: 15px;">
+    <div class="print-footer" style="border-top: 1.5px solid var(--border); padding-top: 8px; font-size: 8.5px; color: #64748b; text-align: center; line-height: 1.4; margin-top: 8px;">
       Este estudio energético es de carácter informativo. Los cálculos se estiman según el consumo facilitado por el cliente,<br>
       las tarifas contractuales de las comercializadoras y la legislación vigente. RENOSUR no se hace responsable de posibles<br>
       variaciones en las condiciones comerciales reales en el momento de la contratación definitiva.
@@ -6890,7 +6890,7 @@ function printCompanyOffer(cia) {
       : `COMPARATIVA ${cleanCompanyName}.pdf`;
 
     const opt = {
-      margin:       [10, 10, 10, 10],
+      margin:       [8, 8, 8, 8],
       filename:     pdfFilename,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true, width: 760 },
