@@ -29,7 +29,8 @@
       "30369873Y": "MERCEDES TERRON DIEZ",
       "77843286Q": "MIGUEL HERNANDEZ JIMÉNEZ",
       "53283415M": "MÓNICA CEJUDO HIDALGO",
-      "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES"
+      "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES",
+      "MAMAEVARIA": "MARIA CABRERA"
     };
     const dni = localStorage.getItem('comercial_dni');
     const name = localStorage.getItem('comercial_nombre');
@@ -7455,7 +7456,8 @@ const COMERCIALES = {
   "30369873Y": "MERCEDES TERRON DIEZ",
   "77843286Q": "MIGUEL HERNANDEZ JIMÉNEZ",
   "53283415M": "MÓNICA CEJUDO HIDALGO",
-  "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES"
+  "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES",
+  "MAMAEVARIA": "MARIA CABRERA"
 };
 
 const DEFAULT_VACATIONS = {
@@ -7476,6 +7478,7 @@ const DEFAULT_VACATIONS = {
   "77843286Q": ["2026-02-27", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-07", "2026-04-08", "2026-04-21", "2026-04-23", "2026-04-24", "2026-06-05", "2026-06-22", "2026-07-10"],
   "53283415M": ["2026-02-13", "2026-03-27", "2026-04-01", "2026-05-05", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-06-05", "2026-06-08", "2026-07-24", "2026-07-27"],
   "PAPAEVARIA": [],
+  "MAMAEVARIA": [],
 };
 
 const DEFAULT_VACATION_MOTIVES = {};
@@ -7622,6 +7625,7 @@ try {
 // Force hardcoded manager roles
 AGENT_ROLES['77860623B'] = 'gerente';
 AGENT_ROLES['PAPAEVARIA'] = 'gerente';
+AGENT_ROLES['MAMAEVARIA'] = 'gerente';
 
 // Preasignar rol a Ana Rocio Galera Morillo a Trabajadores Evaria
 if (AGENT_ROLES['47539234M'] === undefined) {
@@ -7687,7 +7691,7 @@ function initGruposAgentes() {
   })).sort((a, b) => a.name.localeCompare(b.name));
   
   sortedComerciales.forEach(agent => {
-    const isHardcodedGerente = (agent.dni === '77860623B' || agent.dni === 'PAPAEVARIA');
+    const isHardcodedGerente = (agent.dni === '77860623B' || agent.dni === 'PAPAEVARIA' || agent.dni === 'MAMAEVARIA');
     const currentRol = isHardcodedGerente ? 'gerente' : (AGENT_ROLES[agent.dni] || 'comercial');
     
     let optionsHtml = '';
@@ -7851,7 +7855,7 @@ function onLoginSuccess() {
   // 8. Mostrar/ocultar sección de Gerencia
   const gerenteSec = document.getElementById('gerente-section');
   if (gerenteSec) {
-    if (currentAgentDni === '77860623B' || currentAgentDni === 'PAPAEVARIA') {
+    if (currentAgentDni === '77860623B' || currentAgentDni === 'PAPAEVARIA' || currentAgentDni === 'MAMAEVARIA') {
       gerenteSec.style.display = 'block';
     } else {
       gerenteSec.style.display = 'none';
