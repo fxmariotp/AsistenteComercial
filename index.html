@@ -4298,17 +4298,52 @@ hr {
     </div>
 
     <!-- Lightbox Modal for Promociones -->
-    <div id="promo-lightbox" onclick="closePromoLightbox()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center; flex-direction: column;">
-      <div style="position: absolute; top: 20px; right: 20px; display: flex; gap: 14px;" onclick="event.stopPropagation()">
-        <button type="button" onclick="closePromoLightbox()" style="background: rgba(255,255,255,0.1); border: none; color: white; padding: 10px; border-radius: 50%; width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='rgba(255,255,255,0.2)'" onmouseout="this.style.background='rgba(255,255,255,0.1)'">
-          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
-        </button>
+    <div id="promo-lightbox" onclick="closePromoLightbox()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center;">
+      <div class="promo-modal-content" onclick="event.stopPropagation()" style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); max-width: 550px; width: 90%; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; position: relative;">
+        
+        <!-- Header -->
+        <div style="display: flex; align-items: center; justify-content: space-between; padding: 20px; border-bottom: 1.5px solid var(--border);">
+          <div style="display: flex; align-items: center; gap: 12px;">
+            <div id="promo-modal-icon-wrap" style="width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 50%;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            </div>
+            <h3 id="promo-modal-title" style="margin: 0; font-size: 18px; font-weight: 800; color: var(--text);">Supermercado - Provincia</h3>
+          </div>
+          <button type="button" onclick="closePromoLightbox()" style="background: none; border: none; color: var(--t3); width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; border-radius: 50%; transition: background 0.2s, color 0.2s;" onmouseover="this.style.background='var(--border-hover)'; this.style.color='var(--text)'" onmouseout="this.style.background='none'; this.style.color='var(--t3)'">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+
+        <!-- Body -->
+        <div style="padding: 24px; display: flex; flex-direction: column; gap: 20px;">
+          <!-- Image banner -->
+          <div style="display: flex; justify-content: center; background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 16px; min-height: 120px; align-items: center;">
+            <img id="promo-modal-img" src="" alt="" style="max-height: 90px; object-fit: contain;">
+          </div>
+          
+          <!-- Stores -->
+          <div style="display: flex; flex-direction: column; gap: 8px;">
+            <span style="font-size: 12px; font-weight: 700; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Tiendas en esta provincia:</span>
+            <div id="promo-modal-stores" style="display: flex; flex-wrap: wrap; gap: 8px;">
+              <!-- Generado dinámicamente -->
+            </div>
+          </div>
+          
+          <!-- Conditions / Method -->
+          <div id="promo-modal-delivery-box" style="padding: 16px; border-radius: var(--rs); display: flex; gap: 12px; align-items: flex-start;">
+            <div style="margin-top: 2px;">
+              <svg id="promo-modal-delivery-icon" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="display: block;"></svg>
+            </div>
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px;" id="promo-modal-delivery-title">Método de entrega</span>
+              <span id="promo-modal-delivery-desc" style="font-size: 14px; font-weight: 600;">Instrucciones...</span>
+            </div>
+          </div>
+        </div>
+
       </div>
-      <div style="max-width: 90%; max-height: 80%; display: flex; align-items: center; justify-content: center;" onclick="event.stopPropagation()">
-        <img id="promo-lightbox-img" src="" alt="" style="max-width: 100%; max-height: 90vh; object-fit: contain; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-radius: 8px;">
-      </div>
-      <h3 id="promo-lightbox-title" style="color: white; margin-top: 20px; font-size: 20px; font-weight: 800;" onclick="event.stopPropagation()">Supermercado</h3>
     </div>
+
 
     <!-- ══════ CONSULTA SIPS ══════ -->
     <div class="panel" id="panel-sips">
@@ -5507,7 +5542,38 @@ const DEFAULT_PROMOCIONES = [
     iconColor: '#e07b00',
     iconBg: 'rgba(224, 123, 0, 0.15)',
     active: true,
-    provinces: ['A Coruña', 'Barcelona', 'Ciudad Real', 'Cuenca', 'Málaga', 'Sevilla']
+    provinces: [
+      {
+        name: 'A Coruña',
+        stores: ['Alfonso Molina', 'Los Rosales'],
+        delivery: 'Envío a casa por correo postal'
+      },
+      {
+        name: 'Barcelona',
+        stores: ['San Cugat', 'Martorell'],
+        delivery: 'Envío a casa por correo postal'
+      },
+      {
+        name: 'Ciudad Real',
+        stores: ['Ciudad Real', 'Manzanares'],
+        delivery: 'Envío a casa por correo postal'
+      },
+      {
+        name: 'Cuenca',
+        stores: ['Cuenca'],
+        delivery: 'Envío a casa por correo postal'
+      },
+      {
+        name: 'Málaga',
+        stores: ['Fuengirola'],
+        delivery: 'Envío a casa por correo postal'
+      },
+      {
+        name: 'Sevilla',
+        stores: ['San Pablo', 'Macarena', 'Camas', 'San Juan', 'Montequinto', 'Dos Hermanas'],
+        delivery: 'Envío a casa por correo postal'
+      }
+    ]
   },
   {
     id: 'leroy-merlin',
@@ -5519,7 +5585,28 @@ const DEFAULT_PROMOCIONES = [
     iconColor: '#1a7a3c',
     iconBg: 'rgba(26, 122, 60, 0.15)',
     active: true,
-    provinces: ['Barcelona', 'Huelva', 'Málaga', 'Sevilla']
+    provinces: [
+      {
+        name: 'Barcelona',
+        stores: ['Cabrera de mar'],
+        delivery: 'Tarjeta electrónica al correo'
+      },
+      {
+        name: 'Huelva',
+        stores: ['Huelva', 'Lepe'],
+        delivery: 'Tarjeta electrónica al correo'
+      },
+      {
+        name: 'Málaga',
+        stores: ['Marbella'],
+        delivery: 'Tarjeta electrónica al correo'
+      },
+      {
+        name: 'Sevilla',
+        stores: ['Dos Hermanas'],
+        delivery: 'Recogida presencial en tienda'
+      }
+    ]
   },
   {
     id: 'caprabo',
@@ -5531,7 +5618,13 @@ const DEFAULT_PROMOCIONES = [
     iconColor: '#0d5c9e',
     iconBg: 'rgba(13, 92, 158, 0.15)',
     active: true,
-    provinces: ['Barcelona']
+    provinces: [
+      {
+        name: 'Barcelona',
+        stores: ['Rubi', 'Masnou', 'Abrera', 'Max Center La Farga'],
+        delivery: 'Ingreso en tarjeta de cliente (hay que pasar la tarjeta)'
+      }
+    ]
   }
 ];
 
@@ -5543,14 +5636,26 @@ function getPromocionesConfig() {
     return promocionesConfig;
   }
   const stored = localStorage.getItem('promociones_config');
+  let loadedConfig = null;
   if (stored) {
     try {
-      promocionesConfig = JSON.parse(stored);
-      return promocionesConfig;
+      loadedConfig = JSON.parse(stored);
     } catch (e) {
       console.error("Error parsing promociones_config:", e);
     }
   }
+
+  // Verificar si la configuración guardada usa el formato antiguo (lista de strings en lugar de objetos)
+  const isOldFormat = loadedConfig && loadedConfig.some(promo => 
+    promo.provinces && promo.provinces.some(p => typeof p === 'string')
+  );
+
+  if (loadedConfig && !isOldFormat) {
+    promocionesConfig = loadedConfig;
+    return promocionesConfig;
+  }
+
+  // Si es el formato antiguo o no hay datos, inicializar con DEFAULT_PROMOCIONES
   promocionesConfig = JSON.parse(JSON.stringify(DEFAULT_PROMOCIONES));
   localStorage.setItem('promociones_config', JSON.stringify(promocionesConfig));
   return promocionesConfig;
@@ -5581,8 +5686,17 @@ async function fetchPromocionesFromSupabase() {
         const promo = config.find(p => p.id === row.id);
         if (promo) {
           promo.active = row.active;
-          promo.provinces = Array.isArray(row.provinces) ? row.provinces : JSON.parse(row.provinces || '[]');
-          updated = true;
+          const parsedProvinces = Array.isArray(row.provinces) ? row.provinces : JSON.parse(row.provinces || '[]');
+          
+          // Verificar si las provincias cargadas usan el formato antiguo (strings)
+          const isOld = parsedProvinces.some(p => typeof p === 'string');
+          if (!isOld) {
+            promo.provinces = parsedProvinces;
+            updated = true;
+          } else {
+            // Si es el formato antiguo en Supabase, subimos proactivamente el nuevo formato
+            savePromoToSupabase(promo);
+          }
         }
       });
       
@@ -5623,7 +5737,7 @@ function renderPromociones() {
     fetchPromocionesFromSupabase();
   }
   
-  const isManager = currentAgentDni === '77860623B';
+  const isPromoEditable = false; // Deshabilitado según solicitud del usuario (el gerente ya no modifica promociones)
   const config = getPromocionesConfig();
   
   let html = '';
@@ -5635,97 +5749,39 @@ function renderPromociones() {
     const cardBg = isPromoActive ? 'var(--surface)' : 'var(--border)';
     const cardCursor = isPromoActive ? 'default' : 'not-allowed';
     
-    // Status badge representation
+    // Status badge representation (lectura únicamente)
     let badgeHtml = '';
-    if (isManager) {
-      if (isPromoActive) {
-        badgeHtml = `
-          <button onclick="togglePromoActive('${promo.id}')" title="Haz clic para desactivar" style="cursor: pointer; border: none; font-size: 11px; font-weight: 800; color: ${promo.iconColor}; background: ${promo.iconBg}; padding: 4px 8px; border-radius: 4px; transition: all 0.2s;">
-            ACTIVA
-          </button>
-        `;
-      } else {
-        badgeHtml = `
-          <button onclick="togglePromoActive('${promo.id}')" title="Haz clic para activar" style="cursor: pointer; border: none; font-size: 11px; font-weight: 800; color: var(--red); background: var(--red-bg); padding: 4px 8px; border-radius: 4px; transition: all 0.2s;">
-            INACTIVA
-          </button>
-        `;
-      }
+    if (isPromoActive) {
+      badgeHtml = `<span style="font-size: 11px; font-weight: 800; color: ${promo.iconColor}; background: ${promo.iconBg}; padding: 2px 6px; border-radius: 4px;">ACTIVA</span>`;
     } else {
-      if (isPromoActive) {
-        badgeHtml = `<span style="font-size: 11px; font-weight: 800; color: ${promo.iconColor}; background: ${promo.iconBg}; padding: 2px 6px; border-radius: 4px;">ACTIVA</span>`;
-      } else {
-        badgeHtml = `<span style="font-size: 11px; font-weight: 800; color: var(--text); background: var(--border-hover); padding: 2px 6px; border-radius: 4px; opacity: 0.7;">INACTIVA</span>`;
-      }
+      badgeHtml = `<span style="font-size: 11px; font-weight: 800; color: var(--text); background: var(--border-hover); padding: 2px 6px; border-radius: 4px; opacity: 0.7;">INACTIVA</span>`;
     }
     
     // Provinces pills
     let pillsHtml = '';
     promo.provinces.forEach(prov => {
       if (isPromoActive) {
-        if (isManager) {
-          pillsHtml += `
-            <div class="province-pill-edit" style="display: inline-flex; align-items: center; gap: 4px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 6px 10px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--text); transition: all 0.2s;">
-              <span onclick="openPromoLightbox('${promo.img}', '${promo.name} - ${prov}')" style="cursor: pointer; display: inline-flex; align-items: center; gap: 6px; transition: color 0.2s;" onmouseover="this.style.color='${promo.color}'" onmouseout="this.style.color='var(--text)'">
-                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="color: ${promo.color}"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                ${prov}
-              </span>
-              <button onclick="removeProvince('${promo.id}', '${prov}')" title="Eliminar provincia" style="background: none; border: none; color: var(--t3); cursor: pointer; font-size: 14px; font-weight: bold; padding: 0 0 0 4px; display: inline-flex; align-items: center; justify-content: center; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--t3)'">×</button>
-            </div>
-          `;
-        } else {
-          pillsHtml += `
-            <button onclick="openPromoLightbox('${promo.img}', '${promo.name} - ${prov}')" 
-                    style="display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 8px 12px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.2s;" 
-                    onmouseover="this.style.background='var(--orange-bg)'; this.style.borderColor='var(--orange)'; this.style.transform='translateY(-1px)'" 
-                    onmouseout="this.style.background='var(--surface)'; this.style.borderColor='var(--border)'; this.style.transform='none'">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="color: ${promo.color}"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              ${prov}
-            </button>
-          `;
-        }
+        pillsHtml += `
+          <button onclick="openPromoLightbox('${promo.id}', '${prov.name}')" 
+                  style="display: flex; align-items: center; gap: 6px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 8px 12px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--text); cursor: pointer; transition: all 0.2s;" 
+                  onmouseover="this.style.background='var(--orange-bg)'; this.style.borderColor='var(--orange)'; this.style.transform='translateY(-1px)'" 
+                  onmouseout="this.style.background='var(--surface)'; this.style.borderColor='var(--border)'; this.style.transform='none'">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="color: ${promo.color}"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            ${prov.name}
+          </button>
+        `;
       } else {
-        if (isManager) {
-          pillsHtml += `
-            <div style="display: inline-flex; align-items: center; gap: 4px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 6px 10px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--text); opacity: 0.7;">
-              <span style="display: inline-flex; align-items: center; gap: 6px;">
-                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--t3)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-                ${prov}
-              </span>
-              <button onclick="removeProvince('${promo.id}', '${prov}')" title="Eliminar provincia" style="background: none; border: none; color: var(--t3); cursor: pointer; font-size: 14px; font-weight: bold; padding: 0 0 0 4px; display: inline-flex; align-items: center; justify-content: center; line-height: 1; transition: color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--t3)'">×</button>
-            </div>
-          `;
-        } else {
-          pillsHtml += `
-            <button disabled style="display: flex; align-items: center; gap: 6px; background: var(--border); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 8px 12px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--t3); cursor: not-allowed; opacity: 0.5;">
-              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--t3)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              ${prov}
-            </button>
-          `;
-        }
+        pillsHtml += `
+          <button disabled style="display: flex; align-items: center; gap: 6px; background: var(--border); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 8px 12px; font-family: inherit; font-size: 13.5px; font-weight: 600; color: var(--t3); cursor: not-allowed; opacity: 0.5;">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--t3)"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            ${prov.name}
+          </button>
+        `;
       }
     });
     
     if (promo.provinces.length === 0) {
       pillsHtml += `<span style="font-size: 13.5px; color: var(--t3); font-style: italic; padding: 6px 0;">No hay provincias disponibles</span>`;
-    }
-    
-    // Add province input for manager
-    let managerControlsHtml = '';
-    if (isManager) {
-      managerControlsHtml = `
-        <div style="display: flex; align-items: center; gap: 8px; margin-top: 10px; border-top: 1px dashed var(--border); padding-top: 12px;">
-          <input type="text" placeholder="Añadir provincia..." id="new-province-${promo.id}" 
-                 style="flex: 1; border: 1.5px solid var(--border); background: var(--surface); padding: 6px 12px; border-radius: var(--rs); font-family: inherit; font-size: 13px; color: var(--text); outline: none; transition: border-color 0.2s;" 
-                 onfocus="this.style.borderColor='${promo.color}'" onblur="this.style.borderColor='var(--border)'"
-                 onkeydown="if(event.key==='Enter') addProvince('${promo.id}')">
-          <button onclick="addProvince('${promo.id}')" 
-                  style="background: ${promo.color}; border: none; color: white; padding: 6px 12px; border-radius: var(--rs); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; transition: opacity 0.2s;" 
-                  onmouseover="this.style.opacity='0.9'" onmouseout="this.style.opacity='1'">
-            Añadir
-          </button>
-        </div>
-      `;
     }
     
     html += `
@@ -5749,8 +5805,6 @@ function renderPromociones() {
             ${pillsHtml}
           </div>
         </div>
-        
-        ${managerControlsHtml}
       </div>
     `;
   });
@@ -5802,15 +5856,81 @@ function removeProvince(id, provinceName) {
 }
 
 // ── PROMOCIONES LIGHTBOX ──
-function openPromoLightbox(src, title) {
+function openPromoLightbox(promoId, provinceName) {
   const lightbox = document.getElementById('promo-lightbox');
-  const img = document.getElementById('promo-lightbox-img');
-  const titleEl = document.getElementById('promo-lightbox-title');
-  if (lightbox && img && titleEl) {
-    img.src = src;
-    titleEl.textContent = title;
-    lightbox.style.display = 'flex';
+  if (!lightbox) return;
+  
+  const config = getPromocionesConfig();
+  const promo = config.find(p => p.id === promoId);
+  if (!promo) return;
+  
+  const prov = promo.provinces.find(p => p.name === provinceName);
+  if (!prov) return;
+  
+  const titleEl = document.getElementById('promo-modal-title');
+  const imgEl = document.getElementById('promo-modal-img');
+  const storesEl = document.getElementById('promo-modal-stores');
+  const deliveryBox = document.getElementById('promo-modal-delivery-box');
+  const deliveryIcon = document.getElementById('promo-modal-delivery-icon');
+  const deliveryTitle = document.getElementById('promo-modal-delivery-title');
+  const deliveryDesc = document.getElementById('promo-modal-delivery-desc');
+  const iconWrap = document.getElementById('promo-modal-icon-wrap');
+  
+  if (titleEl) titleEl.textContent = `${promo.name} - ${prov.name}`;
+  if (imgEl) imgEl.src = promo.img;
+  if (iconWrap) {
+    iconWrap.style.background = promo.iconBg;
+    iconWrap.style.color = promo.iconColor;
   }
+  
+  // Renderizar listado de tiendas
+  if (storesEl) {
+    if (prov.stores && prov.stores.length > 0) {
+      storesEl.innerHTML = prov.stores.map(store => `
+        <span style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 6px; padding: 6px 12px; font-size: 13px; font-weight: 700; color: var(--text);">
+          ${store}
+        </span>
+      `).join('');
+    } else {
+      storesEl.innerHTML = `<span style="font-size: 13.5px; color: var(--t3); font-style: italic;">No hay tiendas registradas</span>`;
+    }
+  }
+  
+  // Renderizar método de entrega y condiciones
+  if (deliveryBox && deliveryDesc && deliveryIcon && deliveryTitle) {
+    const deliveryType = prov.delivery || '';
+    deliveryDesc.textContent = deliveryType;
+    
+    // Determinar estilo e icono basado en el texto del tipo de entrega
+    let iconSvg = '';
+    let boxBg = 'rgba(13, 92, 158, 0.08)';
+    let textColor = '#0d5c9e';
+    
+    if (deliveryType.toLowerCase().includes('postal') || deliveryType.toLowerCase().includes('correo postal')) {
+      iconSvg = '<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline>';
+      boxBg = 'rgba(224, 123, 0, 0.08)';
+      textColor = '#e07b00';
+    } else if (deliveryType.toLowerCase().includes('correo') || deliveryType.toLowerCase().includes('electrónica') || deliveryType.toLowerCase().includes('email')) {
+      iconSvg = '<circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path>';
+      boxBg = 'rgba(26, 122, 60, 0.08)';
+      textColor = '#1a7a3c';
+    } else if (deliveryType.toLowerCase().includes('tarjeta')) {
+      iconSvg = '<rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line>';
+      boxBg = 'rgba(13, 92, 158, 0.08)';
+      textColor = '#0d5c9e';
+    } else {
+      iconSvg = '<path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle>';
+      boxBg = 'rgba(239, 68, 68, 0.08)';
+      textColor = '#ef4444';
+    }
+    
+    deliveryIcon.innerHTML = iconSvg;
+    deliveryIcon.style.color = textColor;
+    deliveryBox.style.background = boxBg;
+    deliveryTitle.style.color = textColor;
+  }
+  
+  lightbox.style.display = 'flex';
 }
 
 function closePromoLightbox() {
