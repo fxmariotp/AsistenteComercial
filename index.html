@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
   (function() {
@@ -6071,6 +6072,17 @@ function renderNativeRanking(data) {
   const podiumContainer = document.getElementById('ranking-podium-container');
   
   if (!listContainer || !podiumContainer) return;
+
+  // Mostrar panel de recuentos solo a Gerente
+  const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+  const gerenteRankingActions = document.getElementById('gerente-ranking-actions');
+  if (gerenteRankingActions) {
+    if (userRole === 'gerente') {
+      gerenteRankingActions.style.display = 'flex';
+    } else {
+      gerenteRankingActions.style.display = 'none';
+    }
+  }
   
   if (!data || data.length === 0) {
     podiumContainer.innerHTML = '';
@@ -6178,7 +6190,7 @@ function renderNativeRanking(data) {
   let podiumHtml = '';
   
   top3.forEach((row, index) => {
-    const [nombre, puntos, objetivo] = row;
+    const [nombre, puntos, objetivo, pendientes] = row;
     const pts = parseFloat(puntos) || 0;
     const obj = parseFloat(objetivo) || 0;
     const pct = obj > 0 ? Math.min(100, Math.round((pts / obj) * 100)) : 0;
@@ -6193,11 +6205,13 @@ function renderNativeRanking(data) {
       positionClass = 'second';
     }
     
+    const pendText = (pendientes !== undefined && pendientes !== '') ? ` (${pendientes})` : '';
+    
     podiumHtml += `
       <div class="podium-card ${positionClass}">
         <div class="podium-rank">${index + 1}</div>
         <div class="podium-avatar">${initials}</div>
-        <div class="podium-name" title="${nombre}">${shortName}</div>
+        <div class="podium-name" title="${nombre}">${shortName}${pendText}</div>
         <div class="podium-points">${pts.toFixed(1)} <span style="font-size:12px;color:var(--t3);font-weight:400;">pts</span></div>
         <div class="podium-target">Objetivo diario: ${obj.toFixed(1)}</div>
         <div style="font-size: 11px; font-weight:700; color:${cumple ? 'var(--green)' : 'var(--blue)'}; text-align:right; margin-bottom:2px;">
@@ -6225,7 +6239,7 @@ function renderNativeRanking(data) {
   listContainer.innerHTML = remaining.map((row, idx) => {
     const originalIndex = sorted.findIndex(r => r[0] === row[0]);
     const rank = originalIndex + 1;
-    const [nombre, puntos, objetivo] = row;
+    const [nombre, puntos, objetivo, pendientes] = row;
     const pts = parseFloat(puntos) || 0;
     const obj = parseFloat(objetivo) || 0;
     const diff = (pts - obj).toFixed(1);
@@ -6234,12 +6248,14 @@ function renderNativeRanking(data) {
     const pct = obj > 0 ? Math.min(100, Math.round((pts / obj) * 100)) : 0;
     const shortName = formatName(nombre);
     
+    const pendText = (pendientes !== undefined && pendientes !== '') ? ` <span style="font-size:11.5px;color:var(--t3);font-weight:600;">(${pendientes})</span>` : '';
+    
     return `
       <div class="ranking-list-row ${cumple ? 'target-met' : ''}">
         <div class="row-rank">${rank}</div>
         <div class="row-name" title="${nombre}">
-          ${shortName}
-          ${cumple ? '<span style="color:var(--green); font-size:10px; font-weight:800; background:var(--green-bg); padding:2px 6px; border-radius:4px;">Objetivo</span>' : ''}
+          ${shortName}${pendText}
+          ${cumple ? '<span style="color:var(--green); font-size:10px; font-weight:800; background:var(--green-bg); padding:2px 6px; border-radius:4px; margin-left:4px;">Objetivo</span>' : ''}
         </div>
         <div class="row-progress-container">
           <div class="row-pct">${pct}% del objetivo diario completado</div>
@@ -6259,6 +6275,148 @@ function renderNativeRanking(data) {
       </div>
     `;
   }).join('');
+}
+
+function copyShiftReport(shift) {
+  if (!rawRankingData || rawRankingData.length === 0) {
+    alert("No hay datos de ranking disponibles para generar el recuento.");
+    return;
+  }
+  
+  // Nombres del turno de tarde para clasificacion
+  const tardeNames = [
+    "FRANCISCO JOSE VAZQUEZ",
+    "MARIO TIBURCIO",
+    "MERCEDES TERRON",
+    "MIGUEL HERNANDEZ",
+    "MARINA MARTINEZ"
+  ];
+  
+  // Ordenar comerciales por puntos descendentemente
+  const sorted = [...rawRankingData].sort((a, b) => (parseFloat(b[1]) || 0) - (parseFloat(a[1]) || 0));
+  
+  let filtered = [];
+  if (shift === 'tarde') {
+    filtered = sorted.filter(row => {
+      const nameUpper = row[0].toUpperCase().trim();
+      return tardeNames.some(tName => nameUpper.includes(tName));
+    });
+  } else {
+    // maÃ±ana: todos menos tarde y gerentes
+    filtered = sorted.filter(row => {
+      const nameUpper = row[0].toUpperCase().trim();
+      const isTarde = tardeNames.some(tName => nameUpper.includes(tName));
+      const isGerencia = nameUpper.includes("FRANCISCO MORENTE") || nameUpper.includes("MIGUEL RODRIGUEZ");
+      return !isTarde && !isGerencia;
+    });
+  }
+  
+  const now = new Date();
+  const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const shiftTitle = shift === 'manana' ? 'MA&Ntilde;ANA' : 'TARDE';
+  
+  // Crear contenedor temporal de la tarjeta (diseÃ±o premium para foto WhatsApp)
+  const reportDiv = document.createElement('div');
+  reportDiv.style.width = '460px';
+  reportDiv.style.padding = '28px';
+  reportDiv.style.borderRadius = '16px';
+  reportDiv.style.background = 'linear-gradient(135deg, #0f1d40 0%, #081026 100%)';
+  reportDiv.style.color = '#ffffff';
+  reportDiv.style.fontFamily = "'Outfit', 'Inter', sans-serif";
+  reportDiv.style.position = 'absolute';
+  reportDiv.style.left = '-9999px';
+  reportDiv.style.top = '0';
+  reportDiv.style.boxSizing = 'border-box';
+  
+  let rowsHtml = '';
+  filtered.forEach((row, index) => {
+    const [nombre, puntos, objetivo, pendientes] = row;
+    const pts = parseFloat(puntos) || 0;
+    const obj = parseFloat(objetivo) || 0;
+    const pend = (pendientes !== undefined && pendientes !== '') ? pendientes : 0;
+    const cumple = pts >= obj;
+    const shortName = formatName(nombre);
+    
+    rowsHtml += `
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1.5px solid rgba(255, 255, 255, 0.05); gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
+          <span style="font-size: 14px; font-weight: 800; color: #357fbf; width: 22px; text-align: left;">#${index + 1}</span>
+          <div style="display: flex; flex-direction: column; min-width: 0;">
+            <span style="font-size: 14px; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${shortName}</span>
+            <span style="font-size: 11px; color: #64748b;">Objetivo: ${obj.toFixed(1)}</span>
+          </div>
+        </div>
+        <div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;">
+          <div style="text-align: right;">
+            <div style="font-size: 15px; font-weight: 800; color: ${cumple ? '#10b981' : '#ffffff'};">${pts.toFixed(1)} <span style="font-size: 11px; font-weight: 400; color: #64748b;">pts</span></div>
+            <div style="font-size: 11px; font-weight: 700; color: ${pend > 0 ? '#f97316' : '#64748b'};">${pend > 0 ? `(${pend} pend)` : 'sin pendientes'}</div>
+          </div>
+          <div style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: ${cumple ? 'rgba(16, 185, 129, 0.16)' : 'rgba(255, 255, 255, 0.06)'}; color: ${cumple ? '#10b981' : '#64748b'}; font-size: 12px; font-weight: 800;">
+            ${cumple ? '\u2713' : '\u2022'}
+          </div>
+        </div>
+      </div>
+    `;
+  });
+  
+  reportDiv.innerHTML = `
+    <div style="text-align: center; margin-bottom: 24px; border-bottom: 2.5px solid #357fbf; padding-bottom: 16px;">
+      <div style="font-size: 11px; font-weight: 800; color: #357fbf; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 6px;">Taller de Ventas Renosur</div>
+      <div style="font-size: 20px; font-weight: 900; letter-spacing: -0.5px; color: #ffffff;">RECUENTO TURNO ${shiftTitle}</div>
+      <div style="font-size: 12px; color: #64748b; margin-top: 6px; font-weight: 500;">${dateStr}</div>
+    </div>
+    <div style="display: flex; flex-direction: column;">
+      ${rowsHtml || '<div style="text-align:center; color:#64748b; padding: 20px;">No hay comerciales activos en este turno hoy.</div>'}
+    </div>
+    <div style="text-align: center; margin-top: 24px; font-size: 10px; color: #64748b; font-weight: 600; text-transform: uppercase; letter-spacing: 1px;">
+      Generado por Asistente Comercial
+    </div>
+  `;
+  
+  document.body.appendChild(reportDiv);
+  
+  // Renderizar a Canvas con alta resolucion y copiar
+  setTimeout(() => {
+    if (typeof html2canvas === 'undefined') {
+      alert("La libreria de captura de pantalla todavia se esta cargando. Por favor, reintenta en un segundo.");
+      document.body.removeChild(reportDiv);
+      return;
+    }
+    
+    html2canvas(reportDiv, {
+      scale: 2,
+      backgroundColor: null,
+      useCORS: true
+    }).then(canvas => {
+      canvas.toBlob(async blob => {
+        try {
+          if (navigator.clipboard && window.ClipboardItem) {
+            await navigator.clipboard.write([
+              new ClipboardItem({ [blob.type]: blob })
+            ]);
+            alert(`\u{1F4F8} \xA1Imagen de recuento del turno de ` + (shift === 'manana' ? 'ma\xF1ana' : 'tarde') + ` copiada al portapapeles! Listo para pegar en WhatsApp.`);
+          } else {
+            throw new Error("API ClipboardItem no soportada");
+          }
+        } catch (err) {
+          console.error("No se pudo copiar la imagen usando Clipboard API:", err);
+          // Fallback a descarga directa de la imagen para que no se pierdan el reporte
+          const link = document.createElement('a');
+          const cleanDate = dateStr.replace(/\//g, '-');
+          link.download = `Recuento_Turno_${shiftTitle}_${cleanDate}.png`;
+          link.href = canvas.toDataURL('image/png');
+          link.click();
+          alert(`El navegador bloque\xF3 el copiado autom\xE1tico de im\xE1genes. Se ha descargado la imagen "${link.download}" en tu dispositivo.`);
+        } finally {
+          document.body.removeChild(reportDiv);
+        }
+      }, 'image/png');
+    }).catch(err => {
+      console.error("Error al renderizar canvas:", err);
+      alert("Error interno al renderizar el reporte.");
+      document.body.removeChild(reportDiv);
+    });
+  }, 100);
 }
 
 function filterRankingList() {
