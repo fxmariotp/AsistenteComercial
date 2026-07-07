@@ -4490,7 +4490,24 @@ hr {
           </div>
         </div>
 
-        <!-- Search and filters -->
+                <!-- Manager Shift Report Actions -->
+        <div id="gerente-ranking-actions" style="display: none; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 14px; margin-top: 15px; margin-bottom: 20px; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
+          <div style="display: flex; flex-direction: column; gap: 2px;">
+            <div style="font-size: 13.5px; font-weight: 800; color: var(--text);">Recuentos de Turnos (Gerencia)</div>
+            <div style="font-size: 11.5px; color: var(--t3);">Genera y copia una imagen formateada del recuento del turno seleccionado en tu portapapeles.</div>
+          </div>
+          <div style="display: flex; gap: 10px;">
+            <button class="btn btn-secondary" onclick="copyShiftReport('manana')" style="font-size: 12.5px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              Copiar Turno Ma&ntilde;ana
+            </button>
+            <button class="btn btn-secondary" onclick="copyShiftReport('tarde')" style="font-size: 12.5px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+              Copiar Turno Tarde
+            </button>
+          </div>
+        </div>
+<!-- Search and filters -->
         <div class="ranking-search-wrapper" style="margin-top: 15px; margin-bottom: 24px;">
           <div class="ranking-search-box">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
