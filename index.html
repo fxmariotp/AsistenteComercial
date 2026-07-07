@@ -6294,7 +6294,7 @@ function renderNativeRanking(data) {
   }).join('');
 }
 
-function copyShiftReport(shift) {
+async function copyShiftReport(shift) {
   if (!rawRankingData || rawRankingData.length === 0) {
     alert("No hay datos de ranking disponibles para generar el recuento.");
     return;
@@ -6392,48 +6392,56 @@ function copyShiftReport(shift) {
   
   document.body.appendChild(reportDiv);
   
-  // Renderizar a Canvas con alta resolucion y copiar
-  setTimeout(() => {
-    if (typeof html2canvas === 'undefined') {
-      alert("La libreria de captura de pantalla todavia se esta cargando. Por favor, reintenta en un segundo.");
-      document.body.removeChild(reportDiv);
-      return;
-    }
-    
+  if (typeof html2canvas === 'undefined') {
+    alert("La libreria de captura de pantalla todavia se esta cargando. Por favor, reintenta en un segundo.");
+    document.body.removeChild(reportDiv);
+    return;
+  }
+  
+  // Utilizar Promise dentro del constructor ClipboardItem para mantener el contexto del usuario (gesture preservation)
+  const blobPromise = new Promise((resolve, reject) => {
     html2canvas(reportDiv, {
       scale: 2,
       backgroundColor: null,
       useCORS: true
     }).then(canvas => {
-      canvas.toBlob(async blob => {
-        try {
-          if (navigator.clipboard && window.ClipboardItem) {
-            await navigator.clipboard.write([
-              new ClipboardItem({ [blob.type]: blob })
-            ]);
-            alert(`\u{1F4F8} \xA1Imagen de recuento del turno de ` + (shift === 'manana' ? 'ma\xF1ana' : 'tarde') + ` copiada al portapapeles! Listo para pegar en WhatsApp.`);
-          } else {
-            throw new Error("API ClipboardItem no soportada");
-          }
-        } catch (err) {
-          console.error("No se pudo copiar la imagen usando Clipboard API:", err);
-          // Fallback a descarga directa de la imagen para que no se pierdan el reporte
-          const link = document.createElement('a');
-          const cleanDate = dateStr.replace(/\//g, '-');
-          link.download = `Recuento_Turno_${shiftTitle}_${cleanDate}.png`;
-          link.href = canvas.toDataURL('image/png');
-          link.click();
-          alert(`El navegador bloque\xF3 el copiado autom\xE1tico de im\xE1genes. Se ha descargado la imagen "${link.download}" en tu dispositivo.`);
-        } finally {
-          document.body.removeChild(reportDiv);
+      canvas.toBlob(blob => {
+        if (blob) {
+          resolve(blob);
+        } else {
+          reject(new Error("Fallo la generacion del Blob"));
         }
       }, 'image/png');
     }).catch(err => {
-      console.error("Error al renderizar canvas:", err);
-      alert("Error interno al renderizar el reporte.");
-      document.body.removeChild(reportDiv);
+      reject(err);
     });
-  }, 100);
+  });
+  
+  try {
+    if (navigator.clipboard && window.ClipboardItem) {
+      const item = new ClipboardItem({ 'image/png': blobPromise });
+      await navigator.clipboard.write([item]);
+      alert(`\u{1F4F8} \xA1Imagen de recuento del turno de ` + (shift === 'manana' ? 'ma\xF1ana' : 'tarde') + ` copiada al portapapeles! Listo para pegar en WhatsApp.`);
+    } else {
+      throw new Error("ClipboardItem API no soportada");
+    }
+  } catch (err) {
+    console.error("Clipboard copy failed, downloading instead:", err);
+    // Solo si falla por completo el copiado, descargamos el archivo como plan B
+    const canvas = await html2canvas(reportDiv, {
+      scale: 2,
+      backgroundColor: null,
+      useCORS: true
+    });
+    const link = document.createElement('a');
+    const cleanDate = dateStr.replace(/\//g, '-');
+    link.download = `Recuento_Turno_${shiftTitle}_${cleanDate}.png`;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    alert(`El navegador bloque\xF3 el copiado autom\xE1tico de im\xE1genes. Se ha descargado la imagen "${link.download}" en tu dispositivo.`);
+  } finally {
+    document.body.removeChild(reportDiv);
+  }
 }
 
 function filterRankingList() {
