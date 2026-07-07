@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- saved from url=(0030)https://teambreva.netlify.app/ -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -7800,7 +7800,28 @@ async function fetchAgentRolesFromCloud() {
       data.forEach(row => {
         AGENT_ROLES[row.dni] = row.rol;
       });
+      // Force hardcoded manager roles
+      AGENT_ROLES['77860623B'] = 'gerente';
+      AGENT_ROLES['PAPAEVARIA'] = 'gerente';
+      
       localStorage.setItem('renosur_agent_roles', JSON.stringify(AGENT_ROLES));
+      
+      // Update UI roles in real-time
+      if (typeof applyAgentPermissions === 'function') {
+        applyAgentPermissions();
+      }
+      
+      const gerenteSec = document.getElementById('gerente-section');
+      if (gerenteSec) {
+        const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+        gerenteSec.style.display = userRole === 'gerente' ? 'block' : 'none';
+      }
+      
+      const gerenteRankingActions = document.getElementById('gerente-ranking-actions');
+      if (gerenteRankingActions) {
+        const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+        gerenteRankingActions.style.display = userRole === 'gerente' ? 'flex' : 'none';
+      }
     }
   } catch (e) {
     console.error("Error fetching agent roles from cloud", e);
