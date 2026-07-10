@@ -1830,103 +1830,92 @@ hr {
 /* ── DASHBOARD VIEW ── */
 /* ── DASHBOARD VIEW ── */
 .db-header {
-  background: linear-gradient(135deg, #0b1329 0%, #1e293b 50%, #0369a1 100%);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: var(--r);
-  padding: 28px 32px;
-  margin-bottom: 24px;
-  box-shadow: 0 10px 30px -8px rgba(3, 105, 161, 0.25);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 20px;
-  position: relative;
-  overflow: hidden;
+  background: #ffffff !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: var(--r) !important;
+  padding: 24px 32px !important;
+  margin-bottom: 24px !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  flex-wrap: wrap !important;
+  gap: 20px !important;
 }
 .db-header::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.03) 0%, transparent 60%);
-  pointer-events: none;
+  display: none !important;
 }
 .db-welcome {
   flex: 1;
   min-width: 280px;
 }
 .db-welcome h1 {
-  font-size: 26px;
-  font-weight: 800;
-  color: #ffffff;
-  letter-spacing: -0.5px;
-  margin-bottom: 6px;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+  font-size: 24px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  letter-spacing: -0.03em !important;
+  margin-bottom: 6px !important;
+  text-shadow: none !important;
 }
 .db-kpis {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  border-radius: 12px;
-  padding: 8px 16px;
-  margin-top: 10px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  width: max-content;
-  max-width: 100%;
+  display: flex !important;
+  align-items: center !important;
+  gap: 16px !important;
+  background: #f9fafb !important;
+  border: 1px solid #e5e7eb !important;
+  border-radius: 8px !important;
+  padding: 6px 16px !important;
+  margin-top: 10px !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+  width: max-content !important;
+  max-width: 100% !important;
 }
 .db-kpi-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 2px !important;
 }
 .db-kpi-val {
-  font-size: 15px;
-  font-weight: 800;
-  color: #38bdf8;
+  font-size: 15px !important;
+  font-weight: 700 !important;
+  color: #2563eb !important; /* Cobalt Blue of Dub.co */
 }
 .db-kpi-lbl {
-  font-size: 10px;
-  color: #94a3b8;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 10px !important;
+  color: #6b7280 !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
 }
 .db-kpi-divider {
-  width: 1px;
-  height: 20px;
-  background: rgba(255, 255, 255, 0.15);
+  width: 1px !important;
+  height: 20px !important;
+  background: #e5e7eb !important;
 }
 .db-clock {
-  text-align: right;
-  background: rgba(15, 23, 42, 0.6);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 16px;
-  padding: 12px 20px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.15);
-  min-width: 220px;
+  text-align: right !important;
+  background: #f9fafb !important;
+  border-radius: 8px !important;
+  padding: 10px 16px !important;
+  border: 1px solid #e5e7eb !important;
+  box-shadow: none !important;
+  min-width: 220px !important;
 }
 .db-clock-time {
-  font-size: 24px;
-  font-weight: 800;
-  color: #38bdf8;
-  font-family: monospace;
-  letter-spacing: 1px;
-  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+  font-size: 22px !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  font-family: inherit !important;
+  letter-spacing: normal !important;
+  text-shadow: none !important;
 }
 .db-clock-date {
-  font-size: 11px;
-  font-weight: 600;
-  color: #94a3b8;
-  text-transform: capitalize;
-  margin-top: 2px;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: #6b7280 !important;
+  text-transform: capitalize !important;
+  margin-top: 2px !important;
 }
 .db-logout-btn {
   background: none;
@@ -3642,6 +3631,35 @@ input:focus, select:focus, textarea:focus {
   background: #f3f4f6 !important;
   border: 1px solid #e5e7eb !important;
 }
+
+/* Renosur logo dark filter */
+#main-logo-img {
+  height: 28px !important;
+  width: auto !important;
+  filter: brightness(0) contrast(1.5) !important; /* Inverts white logo to high-contrast black for white sidebar */
+  opacity: 0.9 !important;
+  transition: opacity 0.15s ease !important;
+}
+#main-logo-img:hover {
+  opacity: 1 !important;
+}
+
+/* Company logos in tables and cards */
+.comp-logo-img {
+  height: 20px !important;
+  width: auto !important;
+  max-width: 90px !important;
+  object-fit: contain !important;
+  filter: grayscale(0.1) contrast(1.05) !important;
+}
+
+.comp-logo-img-small {
+  height: 14px !important;
+  width: auto !important;
+  max-width: 60px !important;
+  object-fit: contain !important;
+  vertical-align: middle !important;
+}
 </style></head>
 <body>
 
@@ -3652,14 +3670,8 @@ input:focus, select:focus, textarea:focus {
 
 <!-- ══════════ SIDEBAR ══════════ -->
 <nav id="sidebar">
-  <div class="logo-area">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
-    </div>
-    <div class="logo-text-wrapper">
-      <div class="logo-title">Panel Comercial</div>
-      <div class="logo-sub">Gestión de ventas</div>
-    </div>
+  <div class="logo-area" onclick="showPanel('dashboard')" style="justify-content: center; height: 56px; padding: 8px !important;">
+    <img src="logo-renosur.png" alt="Renosur Grupo" id="main-logo-img" />
   </div>
   <div class="nav-area">
     <div class="nav-section-label">Herramientas</div>
@@ -5303,6 +5315,13 @@ const BASE = {
       {n:'Gana Gas RL3', tv:0.0555, tf:0.5830}
     ]
   }
+};
+
+const COMPANY_LOGOS = {
+  iberdrola: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Iberdrola_logo.svg/320px-Iberdrola_logo.svg.png',
+  endesa: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Endesa_Logo.svg/320px-Endesa_Logo.svg.png',
+  naturgy: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Naturgy_Logo.svg/320px-Naturgy_Logo.svg.png',
+  gana: 'https://ganaenergia.com/wp-content/themes/ganaenergia/img/logo-gana-energia.svg'
 };
 
 const RATES = BASE;
@@ -7506,11 +7525,14 @@ function renderCondiciones(){
   
   cias.forEach(id=>{
     const r=RATES[id];
+    const logoSrc = COMPANY_LOGOS[id];
+    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:20px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
+
     html+=`<div class="cond-cia-block">
-      <div class="cond-cia-hdr">
-        <span class="cdot" style="background:${r.color};width:14px;height:14px"></span>
-        <div class="cond-cia-name" style="color:${r.color}">${r.name}</div>
-        ${r.desc_sin>0?`<span style="font-size:14px;color:var(--t2)">Dto. sin/con mant.: <strong>${(r.desc_sin*100).toFixed(0)}%</strong>/<strong>${(r.desc_con*100).toFixed(0)}%</strong></span>`:''}
+      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        ${logoHtml}
+        <div class="cond-cia-name" style="font-size:15px;font-weight:700;color:var(--text);">${r.name}</div>
+        ${r.desc_sin>0?`<span style="font-size:13px;color:var(--t2);margin-left:auto;">Dto. sin/con mant.: <strong>${(r.desc_sin*100).toFixed(0)}%</strong>/<strong>${(r.desc_con*100).toFixed(0)}%</strong></span>`:''}
       </div>`;
 
     // LUZ
@@ -7579,10 +7601,13 @@ function renderCondiciones(){
 
   cias.forEach(id=>{
     const r=RATES[id];
+    const logoSrc = COMPANY_LOGOS[id];
+    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:20px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
+
     html+=`<div class="cond-cia-block">
-      <div class="cond-cia-hdr">
-        <span class="cdot" style="background:${r.color};width:14px;height:14px"></span>
-        <div class="cond-cia-name" style="color:${r.color}">${r.name}</div>
+      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+        ${logoHtml}
+        <div class="cond-cia-name" style="font-size:15px;font-weight:700;color:var(--text);">${r.name}</div>
       </div>`;
 
     // GAS
@@ -7945,12 +7970,15 @@ function renderInvCards(results, useSva){
       retrocomision = '12 meses';
     }
     
+    const logoSrc = COMPANY_LOGOS[cia];
+    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:22px;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
+
     return `<div class="inv-card${best?' best':''}">
       <!-- Header -->
       <div class="inv-hdr-minimal">
-        <div class="inv-hdr-left">
-          <span class="cdot" style="background:${r.color};width:14px;height:14px"></span>
-          <div class="inv-cia-name" style="color:${r.color}">${r.name}</div>
+        <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;">
+          ${logoHtml}
+          <div class="inv-cia-name" style="font-size:14px;font-weight:600;color:var(--text);">${r.name}</div>
           ${best?'<span class="best-badge">✓ Mejor opción</span>':''}
         </div>
         <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
@@ -8013,8 +8041,10 @@ function renderSummary(results, actual){
     </tr></thead><tbody>
     ${results.map((r,i)=>{
       const ah=r.ahorro, pos=ah>0;
+      const logoSrc = COMPANY_LOGOS[r.cia];
+      const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.r.name}" style="height:14px;width:auto;object-fit:contain;margin-right:8px;vertical-align:middle;" />` : `<span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>`;
       return`<tr class="${i===0?'brow':''}">
-        <td><span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>${r.r.name}${i===0?'<span class="badge-best">✓ mejor</span>':''}</td>
+        <td><div style="display:inline-flex;align-items:center;">${logoHtml}<span>${r.r.name}</span></div>${i===0?'<span class="badge-best">✓ mejor</span>':''}</td>
         ${isLuz ? `<td style="text-align:right;color:var(--t2)">${r.excPrice.toFixed(2)} €</td>` : ''}
         <td style="text-align:right;font-weight:700">${f2(r.total)} €</td>
         <td style="text-align:right;font-weight:700;color:${ah!==null?(pos?'var(--green)':'var(--red)'):'inherit'}">${ah!==null?(pos?'−':'+')+f2(Math.abs(ah))+' €':'—'}</td>
