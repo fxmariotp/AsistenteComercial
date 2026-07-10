@@ -7488,7 +7488,7 @@ function printCompanyOffer(key) {
   }
 
   const {
-    r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
+    cia, type, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
     excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
     dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
     costeGestion
@@ -7528,7 +7528,7 @@ function printCompanyOffer(key) {
   // Build rows for Point 2: Propuesta de ahorro
   const rows = [];
   if (compMode === 'luz') {
-    if (cia === 'gana' && (kwh2 > 0 || kwh3 > 0)) {
+    if (type === 'gana_mercado') {
       // Indexada Gana Energía
       rows.push({
         concept: 'Consumo P1 (Punta)',
@@ -7573,14 +7573,14 @@ function printCompanyOffer(key) {
     }
     rows.push({
       concept: 'Potencia Punta',
-      calc: `${pot1.toFixed(2)} kW × ${dias} días × ${(cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0760 : r.tp1).toFixed(6)} €/kW/día`,
-      val: `${f2(pot1 * (cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0760 : r.tp1) * dias)} €`
+      calc: `${pot1.toFixed(2)} kW × ${dias} días × ${(type === 'gana_mercado' ? 0.0760 : r.tp1).toFixed(6)} €/kW/día`,
+      val: `${f2(pot1 * (type === 'gana_mercado' ? 0.0760 : r.tp1) * dias)} €`
     });
     if (pot2 > 0) {
       rows.push({
         concept: 'Potencia Valle',
-        calc: `${pot2.toFixed(2)} kW × ${dias} días × ${(cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0020 : r.tp2).toFixed(6)} €/kW/día`,
-        val: `${f2(pot2 * (cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0020 : r.tp2) * dias)} €`
+        calc: `${pot2.toFixed(2)} kW × ${dias} días × ${(type === 'gana_mercado' ? 0.0020 : r.tp2).toFixed(6)} €/kW/día`,
+        val: `${f2(pot2 * (type === 'gana_mercado' ? 0.0020 : r.tp2) * dias)} €`
       });
     }
     if (costeGestion > 0) {
