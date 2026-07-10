@@ -7550,26 +7550,14 @@ function printCompanyOffer(key) {
         });
       }
     } else {
-      // Estándar de la compañía
+      // Estándar de la compañía (tarifa plana 24h)
+      const totalCons = kwh1 + kwh2 + kwh3;
+      const totalVal = luzP1 + luzP2 + luzP3;
       rows.push({
-        concept: 'Consumo Punta (P1)',
-        calc: `${kwh1.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
-        val: `${f2(luzP1)} €`
+        concept: 'Consumo Energía Activa',
+        calc: `${totalCons.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
+        val: `${f2(totalVal)} €`
       });
-      if (kwh2 > 0) {
-        rows.push({
-          concept: 'Consumo Llano (P2)',
-          calc: `${kwh2.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
-          val: `${f2(luzP2)} €`
-        });
-      }
-      if (kwh3 > 0) {
-        rows.push({
-          concept: 'Consumo Valle (P3)',
-          calc: `${kwh3.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
-          val: `${f2(luzP3)} €`
-        });
-      }
     }
     rows.push({
       concept: 'Potencia Punta',
