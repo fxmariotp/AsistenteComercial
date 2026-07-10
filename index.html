@@ -7496,7 +7496,6 @@ function printCompanyOffer(cia) {
         });
       }
     }
-    }
     rows.push({
       concept: 'Potencia Punta',
       calc: `${pot1.toFixed(2)} kW × ${dias} días × ${(cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0760 : r.tp1).toFixed(6)} €/kW/día`,
