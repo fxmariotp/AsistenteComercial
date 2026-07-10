@@ -7183,8 +7183,8 @@ function calcComp(){
       // Tarifa plana / estándar de la compañía
       luzPot = (pot1 * r.tp1 + pot2 * r.tp2) * dias;
       luzP1 = kwh1 * currentTe;
-      luzP2 = kwh2 * (currentTe * 0.60);
-      luzP3 = kwh3 * (currentTe * 0.60);
+      luzP2 = kwh2 * currentTe;
+      luzP3 = kwh3 * currentTe;
       if (cia === 'gana') {
         r.name = isCif ? 'Gana Energía 24h (Precio CIF)' : 'Gana Energía 24h';
       }
@@ -7552,21 +7552,21 @@ function printCompanyOffer(key) {
     } else {
       // Estándar de la compañía
       rows.push({
-        concept: 'Consumo Punta',
+        concept: 'Consumo Punta (P1)',
         calc: `${kwh1.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
         val: `${f2(luzP1)} €`
       });
       if (kwh2 > 0) {
         rows.push({
-          concept: 'Consumo Llano/Valle',
-          calc: `${kwh2.toFixed(2)} kWh × ${(te * 0.6).toFixed(4)} €/kWh`,
+          concept: 'Consumo Llano (P2)',
+          calc: `${kwh2.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
           val: `${f2(luzP2)} €`
         });
       }
       if (kwh3 > 0) {
         rows.push({
-          concept: 'Consumo Supervalle (P3)',
-          calc: `${kwh3.toFixed(2)} kWh × ${(te * 0.6).toFixed(4)} €/kWh`,
+          concept: 'Consumo Valle (P3)',
+          calc: `${kwh3.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
           val: `${f2(luzP3)} €`
         });
       }
