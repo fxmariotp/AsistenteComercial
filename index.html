@@ -3091,6 +3091,290 @@ hr {
 .spinner {
   animation: rotate 2s linear infinite;
 }
+
+/* ── APPLE / NOTION / GLASS PREMIUM REDESIGN ── */
+:root {
+  --bg: #f5f5f7; /* Apple Light Gray */
+  --surface: rgba(255, 255, 255, 0.7);
+  --border: rgba(0, 0, 0, 0.06);
+  --border-hover: rgba(0, 0, 0, 0.12);
+  --text: #1d1d1f; /* Apple Charcoal */
+  --t2: #515154; /* Apple Muted Gray */
+  --t3: #86868b; /* Apple Muted Light */
+  --r: 20px; /* Modern radius */
+  --rs: 12px;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", "SF Pro", "Inter", "Segoe UI", sans-serif;
+  background: radial-gradient(circle at 10% 20%, rgba(243, 244, 246, 0.4) 0%, rgba(255, 255, 255, 0.6) 90.1%),
+              radial-gradient(circle at 90% 10%, rgba(219, 234, 254, 0.3) 0%, rgba(255, 255, 255, 0.6) 90%),
+              radial-gradient(circle at 50% 80%, rgba(245, 243, 255, 0.3) 0%, rgba(255, 255, 255, 0.6) 100%);
+  background-attachment: fixed;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  letter-spacing: -0.015em;
+}
+
+/* Glassmorphic Cards & Containers */
+.card, .script-big-card, .cond-cia-block, .inv-card, .sum-card, .podium-card, .ranking-stat-card {
+  background: rgba(255, 255, 255, 0.65) !important;
+  backdrop-filter: blur(20px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(20px) saturate(190%) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  border-radius: var(--r) !important;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.04), 0 4px 12px rgba(0, 0, 0, 0.01) !important;
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.card:hover, .script-big-card:hover, .cond-cia-block:hover, .inv-card:hover, .podium-card:hover, .ranking-stat-card:hover {
+  background: rgba(255, 255, 255, 0.75) !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.04), 0 8px 24px rgba(0, 0, 0, 0.02) !important;
+  border-color: rgba(255, 255, 255, 0.6) !important;
+}
+
+/* Sidebar macOS Style */
+#sidebar {
+  background: rgba(25, 25, 27, 0.82) !important; /* Graphite Dark */
+  backdrop-filter: blur(30px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(30px) saturate(180%) !important;
+  border-right: 1px solid rgba(255, 255, 255, 0.07) !important;
+  box-shadow: 10px 0 30px rgba(0, 0, 0, 0.05) !important;
+}
+
+.logo-area {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+.logo-icon {
+  background: linear-gradient(135deg, #2563eb, #3b82f6) !important;
+  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.3) !important;
+}
+
+.nav-area {
+  padding: 24px 16px !important;
+}
+
+.nav-btn {
+  font-size: 13.5px !important;
+  font-weight: 500 !important;
+  color: rgba(255, 255, 255, 0.65) !important;
+  padding: 10px 14px !important;
+  border-radius: 10px !important;
+  transition: all 0.25s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #fff !important;
+  transform: translateX(2px);
+}
+
+.nav-btn.active {
+  background: rgba(255, 255, 255, 0.14) !important;
+  color: #fff !important;
+  font-weight: 600 !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.1) !important;
+}
+
+.nav-btn.active::before {
+  display: none !important; /* Remove line indicator for cleaner look */
+}
+
+.sidebar-footer {
+  border-top: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+/* Header macOS Style */
+.topbar {
+  background: rgba(255, 255, 255, 0.6) !important;
+  backdrop-filter: blur(25px) saturate(190%) !important;
+  -webkit-backdrop-filter: blur(25px) saturate(190%) !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.01) !important;
+}
+
+.topbar-t {
+  letter-spacing: -0.4px !important;
+  font-weight: 800 !important;
+}
+
+/* Tabs & Segmentation Control */
+.cia-tabs, .tab-group, .tabs {
+  background: rgba(0, 0, 0, 0.04) !important;
+  border: 1px solid rgba(0, 0, 0, 0.02) !important;
+  border-radius: 12px !important;
+  padding: 3px !important;
+  backdrop-filter: blur(10px) !important;
+  -webkit-backdrop-filter: blur(10px) !important;
+  width: fit-content;
+}
+
+.ctab, .tab, .tab-btn {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  padding: 8px 18px !important;
+  border-radius: 9px !important;
+  color: #515154 !important;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  border: none !important;
+  background: transparent !important;
+}
+
+.ctab:hover, .tab:hover, .tab-btn:hover {
+  color: #1d1d1f !important;
+}
+
+.ctab.active, .tab.active, .tab-btn.active, .tab.active-tab {
+  background: #fff !important;
+  color: #1d1d1f !important;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02) !important;
+}
+
+/* Inputs & Form Elements (Notion Style) */
+input[type="text"], input[type="number"], input[type="date"], select, textarea {
+  background: rgba(255, 255, 255, 0.5) !important;
+  border: 1px solid rgba(0, 0, 0, 0.08) !important;
+  border-radius: 10px !important;
+  padding: 10px 14px !important;
+  font-size: 14px !important;
+  color: #1d1d1f !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  outline: none !important;
+}
+
+input:focus, select:focus, textarea:focus {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border-color: #3b82f6 !important;
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15) !important;
+}
+
+/* Buttons Apple Style */
+.btn {
+  font-family: inherit !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  padding: 10px 20px !important;
+  border-radius: 10px !important;
+  transition: all 0.2s cubic-bezier(0.25, 0.8, 0.25, 1) !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 8px !important;
+  border: 1px solid rgba(0, 0, 0, 0.05) !important;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.02) !important;
+}
+
+.btn:hover {
+  transform: translateY(-0.5px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03) !important;
+}
+
+.btn-primary, button[type="submit"], .btn-blue {
+  background: #0071e3 !important; /* Apple Blue */
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 4px 12px rgba(0, 113, 227, 0.2) !important;
+}
+
+.btn-primary:hover, button[type="submit"]:hover, .btn-blue:hover {
+  background: #0077ed !important;
+  box-shadow: 0 6px 16px rgba(0, 113, 227, 0.3) !important;
+}
+
+.btn-secondary {
+  background: rgba(0, 0, 0, 0.04) !important;
+  color: #1d1d1f !important;
+  border: none !important;
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.07) !important;
+}
+
+/* Comparative Results & Tables */
+.inv-card {
+  padding: 24px !important;
+}
+
+.inv-card.best {
+  border-color: #10b981 !important;
+  border-width: 1.5px !important;
+}
+
+.inv-hdr-minimal {
+  padding: 0 0 16px 0 !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05) !important;
+  margin-bottom: 18px !important;
+}
+
+.sum-table th, .tariff-table th, .cups-table th {
+  background: rgba(0, 0, 0, 0.02) !important;
+  font-weight: 700 !important;
+  color: #515154 !important;
+  font-size: 11px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
+  border-bottom: 1.5px solid rgba(0, 0, 0, 0.06) !important;
+  padding: 10px 14px !important;
+}
+
+.sum-table td, .tariff-table td, .cups-table td {
+  padding: 12px 14px !important;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04) !important;
+  color: #1d1d1f !important;
+}
+
+/* Ranking Specific Premium */
+.ranking-stat-card::before {
+  display: none !important;
+}
+
+.ranking-stat-card.stat-green {
+  background: rgba(16, 185, 129, 0.06) !important;
+  border-color: rgba(16, 185, 129, 0.25) !important;
+}
+
+.ranking-stat-card.stat-orange {
+  background: rgba(245, 158, 11, 0.06) !important;
+  border-color: rgba(245, 158, 11, 0.25) !important;
+}
+
+.podium-card.first {
+  border-color: #fbbf24 !important;
+  box-shadow: 0 20px 50px rgba(245, 158, 11, 0.12) !important;
+}
+
+.ranking-list-row {
+  background: rgba(255, 255, 255, 0.4) !important;
+  border: 1px solid rgba(0, 0, 0, 0.04) !important;
+  border-radius: 12px !important;
+  transition: all 0.2s ease !important;
+  margin-bottom: 8px !important;
+}
+
+.ranking-list-row:hover {
+  background: rgba(255, 255, 255, 0.7) !important;
+  transform: scale(1.005) !important;
+}
+
+/* Custom Scrollbar for Notion Look */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
 </style></head>
 <body>
 
