@@ -7,7 +7,7 @@
 <link rel="icon" type="image/png" href="favicon.png?v=1">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -3458,7 +3458,189 @@ input:focus, select:focus, textarea:focus {
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
   background: #94a3b8;
+}
+
+/* ── DUB.CO ADDITIONS & OVERRIDES ── */
+:root {
+  --bg: #fafafa;
+  --text: #111827;
+  --t2: #4b5563;
+  --t3: #9ca3af;
+  --blue: #2563eb; /* Cobalt Blue */
+  --r: 12px;
+  --rs: 6px;
+}
+
+body {
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg);
+  background-image: radial-gradient(#e5e7eb 1px, transparent 1px);
+  background-size: 24px 24px; /* Grid dots */
+}
+
+/* Sidebar Dropdown Simulation */
+.logo-area {
+  padding: 12px 14px !important;
+  margin: 16px 12px 12px 12px !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 8px !important;
+  background: #ffffff !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: center !important;
+  gap: 10px !important;
+  cursor: pointer !important;
+  transition: background 0.15s ease !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02) !important;
+}
+.logo-area:hover {
+  background: #f9fafb !important;
+}
+.logo-area::after {
+  content: '▾' !important;
+  font-size: 12px !important;
+  color: #9ca3af !important;
+  margin-left: auto !important;
+  font-weight: 500 !important;
+}
+.logo-icon {
+  background: #0f172a !important;
+  border-radius: 6px !important;
+  width: 28px !important;
+  height: 28px !important;
+  margin-bottom: 0 !important;
+  box-shadow: none !important;
+}
+.logo-text-wrapper {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: flex-start !important;
+}
+.logo-title {
+  color: #111827 !important;
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.03em !important;
+  line-height: 1.25 !important;
+}
+.logo-sub {
+  color: #6b7280 !important;
+  font-size: 11px !important;
+  margin-top: 0 !important;
+}
+
+/* Nav links styling */
+.nav-btn {
+  border-radius: 8px !important;
+  font-weight: 500 !important;
+  color: #4b5563 !important;
+  transition: all 0.15s ease !important;
+}
+.nav-btn:hover {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+}
+.nav-btn.active {
+  background: #f3f4f6 !important;
+  color: #111827 !important;
+  font-weight: 600 !important;
+}
+.nav-btn.active svg {
+  color: #2563eb !important;
+}
+
+/* Cards layout & shadow */
+.card, .script-big-card, .cond-cia-block, .inv-card, .sum-card, .podium-card, .ranking-stat-card {
+  border-radius: var(--r) !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05) !important;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease !important;
+}
+.card:hover, .script-big-card:hover, .cond-cia-block:hover, .inv-card:hover, .podium-card:hover, .ranking-stat-card:hover {
+  border-color: #d1d5db !important;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08) !important;
+  transform: none !important;
+}
+
+/* Value text typography */
+.saving-val, .inv-savings-val, .ranking-stat-value {
+  font-size: 30px !important;
+  font-weight: 800 !important;
+  color: #0f172a !important;
+  letter-spacing: -0.04em !important;
+  line-height: 1.1 !important;
+}
+
+/* Color palettes & badges */
+.saving-box.pos {
+  background: #ecfdf5 !important;
+  border-color: #a7f3d0 !important;
+}
+.saving-box.pos .saving-val {
+  color: #065f46 !important;
+}
+.saving-box.neg {
+  background: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+}
+.saving-box.neg .saving-val {
+  color: #991b1b !important;
+}
+
+/* Segmentation controls (Pill) */
+.cia-tabs, .tab-group, .tabs {
+  background: #f3f4f6 !important;
+  border-radius: 8px !important;
+  padding: 3px !important;
+}
+.ctab, .tab, .tab-btn {
+  border-radius: 6px !important;
+  padding: 6px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+}
+.ctab.active, .tab.active, .tab-btn.active, .tab.active-tab {
+  background: #ffffff !important;
+  color: #111827 !important;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Inputs & Form controls */
+input[type="text"], input[type="number"], input[type="date"], select, textarea {
+  border-radius: 6px !important;
+  border: 1px solid #d1d5db !important;
+  padding: 8px 12px !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+input:focus, select:focus, textarea:focus {
+  border-color: #2563eb !important;
+  box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
+}
+
+/* Buttons */
+.btn {
+  border-radius: 6px !important;
+  padding: 8px 14px !important;
+  font-size: 13px !important;
+  font-weight: 500 !important;
+  border: 1px solid #d1d5db !important;
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
+}
+.btn-primary, button[type="submit"], .btn-blue {
+  background: #2563eb !important;
+  border: 1px solid #1d4ed8 !important;
+  color: #ffffff !important;
+}
+.btn-primary:hover, button[type="submit"]:hover, .btn-blue:hover {
+  background: #1d4ed8 !important;
+}
+.btn-secondary {
+  background: #f3f4f6 !important;
+  border: 1px solid #e5e7eb !important;
 }
 </style></head>
 <body>
@@ -3474,8 +3656,10 @@ input:focus, select:focus, textarea:focus {
     <div class="logo-icon">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
     </div>
-    <div class="logo-title">Panel Comercial</div>
-    <div class="logo-sub">Gestión de ventas</div>
+    <div class="logo-text-wrapper">
+      <div class="logo-title">Panel Comercial</div>
+      <div class="logo-sub">Gestión de ventas</div>
+    </div>
   </div>
   <div class="nav-area">
     <div class="nav-section-label">Herramientas</div>
