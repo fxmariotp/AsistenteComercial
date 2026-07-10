@@ -7111,8 +7111,27 @@ function calcComp(){
     else if(annualGas > 15000) band = 'rl3';
   }
 
-  const cias=['iberdrola','naturgy','endesa','gana'];
-  const results=cias.map(cia=>{
+  let offers = [];
+  if (compMode === 'luz') {
+    offers = [
+      { id: 'iberdrola', type: 'standard' },
+      { id: 'naturgy', type: 'standard' },
+      { id: 'endesa', type: 'standard' },
+      { id: 'gana', type: 'gana_24h' },
+      { id: 'gana', type: 'gana_mercado' }
+    ];
+  } else {
+    offers = [
+      { id: 'iberdrola', type: 'standard' },
+      { id: 'naturgy', type: 'standard' },
+      { id: 'endesa', type: 'standard' },
+      { id: 'gana', type: 'standard' }
+    ];
+  }
+
+  const results=offers.map(off=>{
+    const cia = off.id;
+    const key = cia + '_' + off.type;
     let r={...RATES[cia]};
     if (isCif) {
       r.name = r.name + ' (Precio CIF)';
@@ -7136,7 +7155,7 @@ function calcComp(){
     
     const currentTe = useSva ? r.te_con : r.te_sin;
     
-    if (cia === 'gana' && (kwh2 > 0 || kwh3 > 0)) {
+    if (cia === 'gana' && off.type === 'gana_mercado') {
       // Cambiar el nombre de la compañía para reflejar la tarifa en uso
       r.name = isCif ? 'Gana Energía Precio de Mercado (Precio CIF)' : 'Gana Energía Precio de Mercado';
       // Usar tarifa indexada "Precio de Mercado" para Gana Energía
@@ -7145,6 +7164,13 @@ function calcComp(){
       luzP2 = kwh2 * 0.1250;
       luzP3 = kwh3 * 0.2050;
       costeGestion = (5.00 / 30) * dias;
+    } else if (cia === 'gana' && off.type === 'gana_24h') {
+      // Usar tarifa plana estándar "Plan Online 24h" para Gana Energía
+      r.name = isCif ? 'Gana Energía 24h (Precio CIF)' : 'Gana Energía 24h';
+      luzPot = (pot1 * r.tp1 + pot2 * r.tp2) * dias;
+      luzP1 = kwh1 * currentTe;
+      luzP2 = kwh2 * currentTe;
+      luzP3 = kwh3 * currentTe;
     } else {
       // Tarifa plana / estándar de la compañía
       luzPot = (pot1 * r.tp1 + pot2 * r.tp2) * dias;
@@ -7170,7 +7196,7 @@ function calcComp(){
     // SVA
     let svaLuzAmt = 0, svaGasAmt = 0;
     if(useSva){
-      if (cia === 'gana' && (kwh2 > 0 || kwh3 > 0)) {
+      if (cia === 'gana' && off.type === 'gana_mercado') {
         svaLuzAmt = (4.13 / 30) * dias;
       } else {
         svaLuzAmt = (r.sva_luz / 30) * dias;
@@ -7221,7 +7247,7 @@ function calcComp(){
 
     const ahorro = actual > 0 ? actual - total : null;
     return {
-      cia, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
+      key, cia, type: off.type, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
       dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
       costeGestion
@@ -7403,7 +7429,7 @@ function renderInvCards(results, useSva){
       
       <!-- Actions Area -->
       <div class="inv-actions">
-        <button class="btn btn-pdf" onclick="printCompanyOffer('${cia}')">
+        <button class="btn btn-pdf" onclick="printCompanyOffer('${res.key}')">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;display:inline-block;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
           Descargar PDF Comparativa
         </button>
