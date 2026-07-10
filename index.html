@@ -3829,6 +3829,10 @@ hr {
               <input type="checkbox" id="f-sva" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
               <label for="f-sva" style="margin-bottom:0;cursor:pointer;font-weight:600">Activar SVA (Mantenimientos)</label>
             </div>
+            <div class="fgrp fgrp-checkbox">
+              <input type="checkbox" id="f-cif" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
+              <label for="f-cif" style="margin-bottom:0;cursor:pointer;font-weight:600">¿Es un CIF?</label>
+            </div>
             <div class="fgrp" style="grid-column: span 2; margin-top: 4px;">
               <label>Nombre del asesor <span style="font-weight:400;color:var(--t3)">opcional</span></label>
               <input type="text" id="f-asesor-nombre" placeholder="Si se deja en blanco se usará tu nombre" autocomplete="off" oninput="calcComp()" style="width: 100%;">
@@ -4645,7 +4649,8 @@ const BASE = {
     gas_rl3:{tf:0.6496, tv:0.0740},
     imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Por Uso Luz', te:0.1120, tp1:0.1230, tp2:0.0616, nota:'Precio único 24h sin permanencia'}
+      {n:'Por Uso Luz', te:0.1120, tp1:0.1230, tp2:0.0616, nota:'Precio único 24h sin permanencia'},
+      {n:'Por Uso Luz (CIF)', te:0.132396, tp1:0.127295, tp2:0.045522, nota:'Tarifa especial para CIF'}
     ],
     tarifas_gas:[
       {n:'Gas Por Uso RL1', tv:0.0795, tf:0.1693},
@@ -6904,10 +6909,20 @@ function renderCondiciones(){
           </tr>`;
       }
     });
+    let potHtml = '';
+    if (r.tarifas_luz.length > 1 && id === 'naturgy') {
+      potHtml = `<span>Potencia DNI: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</span>
+                 <br><span style="margin-top:2px;display:inline-block">Potencia CIF: TP1 ${r.tarifas_luz[1].tp1.toFixed(6)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(6)} €/kW·día</span>`;
+    } else {
+      potHtml = `<span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</span>`;
+    }
+
     html+=`</tbody></table></div>
-    <div style="font-size:12px;color:var(--t3);margin-top:6px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;">
-      <span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</span>
-      <span>Excedentes: <strong>${r.precio_excedente.toFixed(2)} €/kWh</strong></span>
+    <div style="font-size:12px;color:var(--t3);margin-top:6px;display:flex;flex-direction:column;gap:4px;">
+      <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;align-items:flex-start;">
+        <div>${potHtml}</div>
+        <span>Excedentes: <strong>${r.precio_excedente.toFixed(2)} €/kWh</strong></span>
+      </div>
     </div>
     </div>`;
   });
@@ -6970,6 +6985,7 @@ function setCompMode(mode) {
 function calcComp(){
   const dias=gv('f-dias')||30;
   const useSva=document.getElementById('f-sva').checked;
+  const isCif=document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false;
   const iva=gv('f-iva')||0.21, actual=gv('f-actual');
   
   let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, excedente = 0, gas = 0, alq = 0;
@@ -7014,7 +7030,16 @@ function calcComp(){
 
   const cias=['iberdrola','naturgy','endesa','gana'];
   const results=cias.map(cia=>{
-    const r=RATES[cia];
+    let r={...RATES[cia]};
+    if (cia === 'naturgy' && isCif) {
+      r.tp1 = 0.127295;
+      r.tp2 = 0.045522;
+      r.te_sin = 0.132396;
+      r.te_con = 0.132396;
+      r.tarifas_luz = [
+        {n:'Por Uso Luz (CIF)', te:0.132396, tp1:0.127295, tp2:0.045522, nota:'Tarifa especial para CIF'}
+      ];
+    }
     
     // Potencia
     const luzPot=(pot1*r.tp1+pot2*r.tp2)*dias;
@@ -7123,6 +7148,7 @@ function saveComparisonInputs() {
     gas: document.getElementById('f-gas') ? document.getElementById('f-gas').value : '',
     actual: document.getElementById('f-actual') ? document.getElementById('f-actual').value : '',
     sva: document.getElementById('f-sva') ? document.getElementById('f-sva').checked : false,
+    cif: document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false,
     asesorNombre: document.getElementById('f-asesor-nombre') ? document.getElementById('f-asesor-nombre').value : '',
     mode: compMode
   };
@@ -7151,6 +7177,7 @@ function loadComparisonInputs() {
     if (document.getElementById('f-gas')) document.getElementById('f-gas').value = inputs.gas || '';
     if (document.getElementById('f-actual')) document.getElementById('f-actual').value = inputs.actual || '';
     if (document.getElementById('f-sva')) document.getElementById('f-sva').checked = !!inputs.sva;
+    if (document.getElementById('f-cif')) document.getElementById('f-cif').checked = !!inputs.cif;
     if (document.getElementById('f-asesor-nombre')) document.getElementById('f-asesor-nombre').value = inputs.asesorNombre || '';
     
     compMode = inputs.mode || 'luz';
@@ -7186,6 +7213,7 @@ function clearComparisonInputs() {
   if (document.getElementById('f-gas')) document.getElementById('f-gas').value = '';
   if (document.getElementById('f-actual')) document.getElementById('f-actual').value = '';
   if (document.getElementById('f-sva')) document.getElementById('f-sva').checked = false;
+  if (document.getElementById('f-cif')) document.getElementById('f-cif').checked = false;
   if (document.getElementById('f-asesor-nombre')) document.getElementById('f-asesor-nombre').value = '';
   compMode = 'luz';
   document.querySelectorAll('.comp-toggle-btn').forEach(btn => btn.classList.remove('active'));
