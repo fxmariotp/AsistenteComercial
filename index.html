@@ -4734,7 +4734,7 @@ const BASE = {
     imp_electrico:0.0511,
     tarifas_luz:[
       {n:'Plan Online 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Sin permanencia, Tu Asistente 24 Horas (+5.18 €/mes)'},
-      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.1000}, {p:'P2 (Llano)', te:0.1250}, {p:'P3 (Valle)', te:0.2050}], tp1:0.0760, tp2:0.0020, nota:'Tarifa indexada a mercado regulado'}
+      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.1000}, {p:'P2 (Llano)', te:0.1250}, {p:'P3 (Valle)', te:0.2050}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestión (+5.00 €/mes) · Mantenimiento opcional (+4.13 €/mes)'}
     ],
     tarifas_gas:[
       {n:'Gana Gas RL1', tv:0.0610, tf:0.1260},
@@ -7120,6 +7120,7 @@ function calcComp(){
     let luzP1 = 0;
     let luzP2 = 0;
     let luzP3 = 0;
+    let costeGestion = 0;
     
     const currentTe = useSva ? r.te_con : r.te_sin;
     
@@ -7129,6 +7130,7 @@ function calcComp(){
       luzP1 = kwh1 * 0.1000;
       luzP2 = kwh2 * 0.1250;
       luzP3 = kwh3 * 0.2050;
+      costeGestion = (5.00 / 30) * dias;
     } else {
       // Tarifa plana / estándar de la compañía
       luzPot = (pot1 * r.tp1 + pot2 * r.tp2) * dias;
@@ -7138,7 +7140,7 @@ function calcComp(){
     }
     
     const totalKwh = kwh1 + kwh2 + kwh3;
-    const baseElec = luzPot + luzP1 + luzP2 + luzP3;
+    const baseElec = luzPot + luzP1 + luzP2 + luzP3 + costeGestion;
 
     // Gas
     let gasVar = 0, gasFij = 0;
@@ -7151,7 +7153,11 @@ function calcComp(){
     // SVA
     let svaLuzAmt = 0, svaGasAmt = 0;
     if(useSva){
-      svaLuzAmt = (r.sva_luz / 30) * dias;
+      if (cia === 'gana' && (kwh2 > 0 || kwh3 > 0)) {
+        svaLuzAmt = (4.13 / 30) * dias;
+      } else {
+        svaLuzAmt = (r.sva_luz / 30) * dias;
+      }
       if(gas > 0){
         svaGasAmt = (r.sva_gas / 30) * dias;
       }
@@ -7200,7 +7206,8 @@ function calcComp(){
     return {
       cia, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
-      dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva
+      dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
+      costeGestion
     };
   });
 
@@ -7416,7 +7423,8 @@ function printCompanyOffer(cia) {
   const {
     r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
     excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
-    dias, iva, kwh1, kwh2, gas, pot1, pot2, actual, band, excedente, useSva
+    dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
+    costeGestion
   } = targetRes;
 
   const te = useSva ? r.te_con : r.te_sin;
@@ -7506,6 +7514,13 @@ function printCompanyOffer(cia) {
         concept: 'Potencia Valle',
         calc: `${pot2.toFixed(2)} kW × ${dias} días × ${(cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0020 : r.tp2).toFixed(6)} €/kW/día`,
         val: `${f2(pot2 * (cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0020 : r.tp2) * dias)} €`
+      });
+    }
+    if (costeGestion > 0) {
+      rows.push({
+        concept: 'Coste Gestión Mercado Regulado',
+        calc: `Fijo de 5.00 €/mes prorrateado`,
+        val: `${f2(costeGestion)} €`
       });
     }
     if (excedente > 0) {
