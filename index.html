@@ -4559,6 +4559,11 @@ hr {
         <!-- Stats Grid -->
         <div class="ranking-stats-grid">
           <div class="ranking-stat-card">
+            <span class="ranking-stat-label">Días Restantes</span>
+            <span class="ranking-stat-value" id="stat-dias-restantes">0</span>
+            <span class="ranking-stat-desc">Días naturales del mes actual</span>
+          </div>
+          <div class="ranking-stat-card">
             <span class="ranking-stat-label">Comerciales Activos</span>
             <span class="ranking-stat-value" id="stat-total-headcount">0</span>
             <span class="ranking-stat-desc">Agentes participando este mes</span>
@@ -6153,15 +6158,25 @@ function renderNativeRanking(data) {
   const successCount = rawRankingData.filter(r => (parseFloat(r[1]) || 0) >= (parseFloat(r[2]) || 0)).length;
   const successRate = totalHeadcount > 0 ? Math.round((successCount / totalHeadcount) * 100) : 0;
   
+  // Calculate remaining days in month
+  const now = new Date();
+  const year = now.getFullYear();
+  const month = now.getMonth();
+  const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
+  const currentDay = now.getDate();
+  const diasRestantes = lastDayOfMonth - currentDay;
+  
   const elTotal = document.getElementById('stat-total-headcount');
   const elRate = document.getElementById('stat-success-rate');
   const elCount = document.getElementById('stat-success-count');
   const elLeaderName = document.getElementById('stat-leader-name');
   const elLeaderPts = document.getElementById('stat-leader-points');
+  const elDiasRestantes = document.getElementById('stat-dias-restantes');
   
   if (elTotal) elTotal.textContent = totalHeadcount;
   if (elRate) elRate.textContent = successRate + '%';
   if (elCount) elCount.textContent = `${successCount} comerciales de ${totalHeadcount}`;
+  if (elDiasRestantes) elDiasRestantes.textContent = diasRestantes;
   
   if (sorted.length > 0) {
     const leaderName = formatName(sorted[0][0]);
