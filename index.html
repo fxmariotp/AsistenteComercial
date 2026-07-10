@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <!-- saved from url=(0030)https://teambreva.netlify.app/ -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -3898,7 +3898,7 @@ hr {
             <div class="counter-stat"><div class="counter-stat-val" id="cal-ano-rest" style="color:var(--blue)">—</div><div class="counter-stat-lbl">Restantes</div></div>
           </div>
           <div class="progress-track"><div class="progress-fill" id="cal-ano-bar" style="background:var(--blue2);width:0%"></div></div>
-          <div class="counter-extra" id="cal-ano-vacaciones" style="margin-top:14px">Vacaciones consumidas: — de 25 días</div>
+          <div class="counter-extra" id="cal-ano-vacaciones" style="margin-top:14px">Vacaciones consumidas: — de 26 días</div>
         </div>
       </div>
 
@@ -4867,8 +4867,8 @@ function addVacation(dni, dateStr) {
   }
   
   if (!vacs.includes(dateStr)) {
-    if (vacs.length >= 25) {
-      alert("No se pueden superar los 25 días de vacaciones.");
+    if (vacs.length >= 26) {
+      alert("No se pueden superar los 26 días de vacaciones.");
       return false;
     }
     vacs.push(dateStr);
@@ -5211,7 +5211,7 @@ function renderCalCounters(year){
   
   const elAnoVac = document.getElementById('cal-ano-vacaciones');
   if (elAnoVac) {
-    elAnoVac.textContent = `Vacaciones consumidas: ${yearVacations} de 25 días`;
+    elAnoVac.textContent = `Vacaciones consumidas: ${yearVacations} de 26 días`;
   }
 }
 
@@ -5248,7 +5248,7 @@ function closeVacationModal() {
 
 function renderVacationList() {
   const consumed = agentVacations ? agentVacations.length : 0;
-  const left = 25 - consumed;
+  const left = 26 - consumed;
   
   const elConsumed = document.getElementById('vac-consumed');
   const elLeft = document.getElementById('vac-left');
@@ -5314,8 +5314,8 @@ function saveVacationDays(event) {
   
   if (newDays.length === 0) return;
   
-  if (agentVacations.length + newDays.length > 25) {
-    alert(`No puedes superar los 25 días de vacaciones totales. Te quedan ${25 - agentVacations.length} días disponibles.`);
+  if (agentVacations.length + newDays.length > 26) {
+    alert(`No puedes superar los 26 días de vacaciones totales. Te quedan ${26 - agentVacations.length} días disponibles.`);
     return;
   }
   
@@ -5403,7 +5403,7 @@ function renderControlVacationsTimeline() {
         <div style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">${name}</div>
         <div style="font-size: 10.5px; color: var(--t3); display: flex; justify-content: space-between; margin-top: 4px; font-weight: 600;">
           <span style="font-family: monospace;">${dni}</span>
-          <span style="color: ${consumed >= 25 ? '#ef4444' : 'var(--blue)'};">${consumed}/25 días</span>
+          <span style="color: ${consumed >= 26 ? '#ef4444' : 'var(--blue)'};">${consumed}/26 días</span>
         </div>
       </td>
     `;
@@ -5463,8 +5463,8 @@ function toggleAgentVacationDay(dni, dateStr) {
       deleteVacationDayFromCloud(dni, dateStr);
     }
   } else {
-    if (currentVacations.length >= 25) {
-      alert(`El comercial ${COMERCIALES[dni]} ya ha consumido el límite de 25 días de vacaciones.`);
+    if (currentVacations.length >= 26) {
+      alert(`El comercial ${COMERCIALES[dni]} ya ha consumido el límite de 26 días de vacaciones.`);
       return;
     }
     currentVacations.push(dateStr);
