@@ -3450,16 +3450,16 @@ hr {
     <!-- ══════ SCRIPTS ══════ -->
     <div class="panel" id="panel-scripts">
       <div class="cia-tabs">
-        <button class="ctab active" id="ctab-iberdrola" onclick="switchCia(&#39;iberdrola&#39;)" style="border-color:#008B3C;color:#008B3C"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
+        <button class="ctab active" id="ctab-naturgy" onclick="switchCia(&#39;naturgy&#39;)" style="border-color:#E85D3A;color:#E85D3A"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
+        <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia(&#39;naturgy-cif&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy (CIF)</button>
+        <button class="ctab" id="ctab-iberdrola" onclick="switchCia(&#39;iberdrola&#39;)"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
         <button class="ctab" id="ctab-iberdrola-cif" onclick="switchCia(&#39;iberdrola-cif&#39;)"><span class="cdot" style="background:#008B3C"></span>Iberdrola (CIF)</button>
-        <button class="ctab" id="ctab-naturgy" onclick="switchCia(&#39;naturgy&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
         <button class="ctab" id="ctab-endesa" onclick="switchCia(&#39;endesa&#39;)"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
         <button class="ctab" id="ctab-gana" onclick="switchCia(&#39;gana&#39;)"><span class="cdot" style="background:#E30613"></span>Gana Energía</button>
-        <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia(&#39;naturgy-cif&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy (CIF)</button>
       </div>
 
       <!-- IBERDROLA -->
-      <div class="sv active" id="sv-iberdrola">
+      <div class="sv" id="sv-iberdrola">
         <div class="script-big-card">
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#008B3C"></span>Apertura</div>
@@ -3503,7 +3503,7 @@ hr {
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#e07b00"></span>Datos personales del cliente</div>
             <div class="step-list">
-              <div class="step-row"><span class="stn">1</span><div>¿Nos podría facilitar la <strong>razón social</strong> y <strong>CIF</strong> de la empresa por favor? <span class="blank blg"></span> y CIF <span class="blank bsm"></span></div></div>
+              <div class="step-row"><span class="stn">1</span><div>¿Nos podría facilitar la <strong>razón social de la empresa por favor?  y CIF</strong> <span class="blank blg"></span> y CIF <span class="blank bsm"></span></div></div>
               <div class="step-row"><span class="stn">2</span><div>¿Nos podría facilitar su <strong>nombre y apellidos</strong>? <span class="blank blg"></span> y su <strong>DNI</strong> <span class="blank bsm"></span></div></div>
               <div class="step-row"><span class="stn">3</span><div>¿Sería tan amable de indicarnos la <strong>fecha de nacimiento</strong>? <span class="blank"></span></div></div>
               <div class="step-row"><span class="stn">4</span><div>¿Me podría confirmar que el <strong>domicilio</strong> sobre el que realizamos la contratación es <span class="blank blg"></span> <em>(indicado por comercial)</em>? <span class="ry">✓ CLIENTE: SÍ</span></div></div>
@@ -3530,7 +3530,7 @@ hr {
       </div>
 
       <!-- NATURGY -->
-      <div class="sv" id="sv-naturgy">
+      <div class="sv active" id="sv-naturgy">
         <div class="script-big-card">
 
           <div class="script-section">
