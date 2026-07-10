@@ -4682,7 +4682,7 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.20, desc_con:0.25,
     tarifas_luz:[
-      {n:'Impulsa 24h', te:0.156125, tp1:0.1240, tp2:0.0620, te_sin:0.1240, te_con:0.1170}
+      {n:'Impulsa 24h', te:0.156125, tp1:0.1240, tp2:0.0620, te_sin:0.1240, te_con:0.1170, nota:'Precio único 24h sin permanencia'}
     ],
     tarifas_gas:[
       {n:'Iberdrola Gas RL1', tv:0.1024, tf:0.2112},
@@ -4722,7 +4722,7 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.10, desc_con:0.13,
     tarifas_luz:[
-      {n:'Fija 24h', te:0.141875, tp1:0.0913, tp2:0.0913, te_sin:0.1270, te_con:0.1230}
+      {n:'Fija 24h', te:0.141875, tp1:0.0913, tp2:0.0913, te_sin:0.1270, te_con:0.1230, nota:'Precio único 24h sin permanencia'}
     ],
     tarifas_gas:[
       {n:'Gas Endesa RL1', tv:0.0736, tf:0.2316},
@@ -4735,13 +4735,13 @@ const BASE = {
     tp1:0.0894, tp2:0.0894,
     te_sin:0.1190, te_con:0.1190,
     precio_excedente:0.06,
-    sva_luz:5.18, sva_gas:0.00,
+    sva_luz:4.13, sva_gas:0.00,
     gas_rl1:{tf:0.1260, tv:0.0610},
     gas_rl2:{tf:0.2616, tv:0.0589},
     gas_rl3:{tf:0.5830, tv:0.0555},
     imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Plan Online 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Sin permanencia, Tu Asistente 24 Horas (+5.18 €/mes)'},
+      {n:'Plan 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Precio único 24h sin permanencia'},
       {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.1000}, {p:'P2 (Llano)', te:0.1250}, {p:'P3 (Valle)', te:0.2050}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestión (+5.00 €/mes) · Mantenimiento opcional (+4.13 €/mes)'}
     ],
     tarifas_gas:[
@@ -6979,8 +6979,8 @@ function renderCondiciones(){
         const teCon = t.te_con !== undefined ? t.te_con : (dCon>0 ? t.te*(1-dCon) : (r.te_con !== r.te_sin ? r.te_con : null));
         html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}<br><span style="font-size:12px;color:var(--t3)">Dto: ${(dSin*100).toFixed(0)}% / ${teCon?(dCon*100).toFixed(0)+'%':'—'}</span></td>
           <td class="price-base">${t.te.toFixed(4)}</td>
-          <td><span class="price-sin">${teSin.toFixed(4)}</span></td>
-          <td>${teCon?`<span class="price-con">${teCon.toFixed(4)}</span>`:'<span style="color:var(--t3)">igual</span>'}</td>
+          <td>${teSin !== t.te ? `<span class="price-sin">${teSin.toFixed(4)}</span>` : '<span style="color:var(--t3)">igual</span>'}</td>
+          <td>${teCon && teCon !== t.te ? `<span class="price-con">${teCon.toFixed(4)}</span>` : '<span style="color:var(--t3)">igual</span>'}</td>
           </tr>`;
       }
     });
@@ -6997,7 +6997,7 @@ function renderCondiciones(){
 
     let svaHtml = '';
     if (id === 'gana') {
-      svaHtml = `<span>Mantenimiento: Plan Online <strong>5.18 €/mes</strong> · Mercado <strong>4.13 €/mes</strong></span>`;
+      svaHtml = `<span>Mantenimiento: <strong>4.13 €/mes</strong></span>`;
     } else if (r.sva_luz > 0) {
       svaHtml = `<span>Mantenimiento: <strong>${r.sva_luz.toFixed(2)} €/mes</strong></span>`;
     } else {
@@ -7204,7 +7204,7 @@ function calcComp(){
     // SVA
     let svaLuzAmt = 0, svaGasAmt = 0;
     if(useSva){
-      if (cia === 'gana' && off.type === 'gana_mercado') {
+      if (cia === 'gana') {
         svaLuzAmt = (4.13 / 30) * dias;
       } else {
         svaLuzAmt = (r.sva_luz / 30) * dias;
