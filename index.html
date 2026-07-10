@@ -4723,7 +4723,7 @@ const BASE = {
     ]
   },
   gana:{
-    name:'Gana Energía 24h', color:'#E30613',
+    name:'Gana Energía', color:'#E30613',
     tp1:0.0894, tp2:0.0894,
     te_sin:0.1190, te_con:0.1190,
     precio_excedente:0.06,
@@ -6963,7 +6963,7 @@ function renderCondiciones(){
         // Tarifa con discriminación horaria
         html+=`<tr><td><strong>${t.n}</strong><br><span class="badge-dh">⏱ DH</span>${t.nota?`<br><span style="font-size:13px;color:var(--t3)">${t.nota}</span>`:''}</td>
           <td class="price-base"><div style="font-size:13px;color:var(--t3);margin-bottom:4px">Varía:</div>${t.periodos.map(p=>`<div>${p.p}: <strong>${p.te.toFixed(4)}</strong></div>`).join('')}</td>
-          <td>—</td><td>—</td></tr>`;
+          <td><span style="color:var(--t3)">igual</span></td><td><span style="color:var(--t3)">igual</span></td></tr>`;
       } else if(t.te!==null){
         const dSin = t.desc_sin !== undefined ? t.desc_sin : (r.desc_sin || 0);
         const dCon = t.desc_con !== undefined ? t.desc_con : (r.desc_con || 0);
@@ -6987,11 +6987,23 @@ function renderCondiciones(){
       potHtml = `<span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</span>`;
     }
 
+    let svaHtml = '';
+    if (id === 'gana') {
+      svaHtml = `<span>Mantenimiento: Plan Online <strong>5.18 €/mes</strong> · Mercado <strong>4.13 €/mes</strong></span>`;
+    } else if (r.sva_luz > 0) {
+      svaHtml = `<span>Mantenimiento: <strong>${r.sva_luz.toFixed(2)} €/mes</strong></span>`;
+    } else {
+      svaHtml = `<span>Mantenimiento: <strong>No disponible</strong></span>`;
+    }
+
     html+=`</tbody></table></div>
     <div style="font-size:12px;color:var(--t3);margin-top:6px;display:flex;flex-direction:column;gap:4px;">
       <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;align-items:flex-start;">
         <div>${potHtml}</div>
-        <span>Excedentes: <strong>${r.precio_excedente.toFixed(2)} €/kWh</strong></span>
+        <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+          <span>Excedentes: <strong>${r.precio_excedente.toFixed(2)} €/kWh</strong></span>
+          ${svaHtml}
+        </div>
       </div>
     </div>
     </div>`;
@@ -7139,6 +7151,9 @@ function calcComp(){
       luzP1 = kwh1 * currentTe;
       luzP2 = kwh2 * (currentTe * 0.60);
       luzP3 = kwh3 * (currentTe * 0.60);
+      if (cia === 'gana') {
+        r.name = isCif ? 'Gana Energía 24h (Precio CIF)' : 'Gana Energía 24h';
+      }
     }
     
     const totalKwh = kwh1 + kwh2 + kwh3;
