@@ -3451,10 +3451,11 @@ hr {
     <div class="panel" id="panel-scripts">
       <div class="cia-tabs">
         <button class="ctab active" id="ctab-iberdrola" onclick="switchCia(&#39;iberdrola&#39;)" style="border-color:#008B3C;color:#008B3C"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
+        <button class="ctab" id="ctab-iberdrola-cif" onclick="switchCia(&#39;iberdrola-cif&#39;)"><span class="cdot" style="background:#008B3C"></span>Iberdrola (CIF)</button>
         <button class="ctab" id="ctab-naturgy" onclick="switchCia(&#39;naturgy&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
         <button class="ctab" id="ctab-endesa" onclick="switchCia(&#39;endesa&#39;)"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
         <button class="ctab" id="ctab-gana" onclick="switchCia(&#39;gana&#39;)"><span class="cdot" style="background:#E30613"></span>Gana Energía</button>
-        <button class="ctab" id="ctab-naturgy-pymes" onclick="switchCia(&#39;naturgy-pymes&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy (PYMES)</button>
+        <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia(&#39;naturgy-cif&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy (CIF)</button>
       </div>
 
       <!-- IBERDROLA -->
@@ -3473,6 +3474,42 @@ hr {
               <div class="step-row"><span class="stn">4</span><div>¿Nos podría facilitar su <strong>teléfono</strong>? <span class="blank"></span></div></div>
               <div class="step-row"><span class="stn">5</span><div>¿Nos podría facilitar el <strong>correo electrónico</strong>? <span class="blank blg"></span></div></div>
               <div class="step-row"><span class="stn">6</span><div>¿Nos podría facilitar el <strong>número de cuenta completo</strong> donde domicilia los contratos? <span class="blank blg"></span></div></div>
+            </div>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#0d5c9e"></span>Verificación de productos contratados</div>
+            <p class="nota">Lee únicamente los apartados que apliquen según lo contratado</p>
+            <div class="prod-block"><strong>3.1 · Luz sin servicio — descuento 20% TE</strong>Le informamos que vamos a realizar la contratación de su suministro de luz con CUPS <span class="blank bsm"></span> con el plan <span class="blank"></span> en el que disfrutará de un <strong>descuento del 20%</strong> en el término de energía durante 12 meses.</div>
+            <div class="prod-block"><strong>3.2 · Gas sin servicio — descuento 10% + 10%</strong>Le informamos que vamos a realizar la contratación de su suministro de gas con CUPS <span class="blank bsm"></span> en el que disfrutará de un <strong>descuento del 10%</strong> en el término de energía y 10% en el Término Fijo durante 12 meses.</div>
+            <div class="prod-block"><strong>3.3 · Luz con servicio — descuento 25% (Pack Iberdrola)</strong>Le informamos que vamos a realizar la contratación de su contrato de luz con CUPS <span class="blank bsm"></span> con el plan <span class="blank"></span> en el que disfrutará de un <strong>descuento del 25%</strong> en el término de energía durante 12 meses al contratar el Pack Iberdrola.</div>
+            <div class="prod-block"><strong>3.4 · Gas con servicio — descuento 15% + 15% (Mantenimiento gas)</strong>Le informamos que vamos a realizar la contratación de su suministro de Gas con CUPS <span class="blank bsm"></span> que disfrutará de un <strong>descuento del 15%</strong> en el término de energía y 15% en el Término Fijo durante 12 meses al contratar el servicio de mantenimiento gas.</div>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#008B3C"></span>Cierre y despedida</div>
+            <p class="stxt">Indicarle igualmente que dispone de <strong>14 días para poder desistir</strong> su contrato. En breve le llamarán para facilitarle el código de su contratación y posterior verificación.</p>
+            <p class="stxt">Por último, informarle que dispone del teléfono gratuito <strong>900 225 235</strong> de Iberdrola, disponible las 24 horas del día y los 365 días del año.</p>
+            <p class="stxt">Para finalizar, agradecerle la confianza depositada y darle la bienvenida a <strong>Iberdrola Clientes</strong>. Gracias y que pase un buen día.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- IBERDROLA CIF -->
+      <div class="sv" id="sv-iberdrola-cif">
+        <div class="script-big-card">
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#008B3C"></span>Apertura</div>
+            <p class="stxt">Buenas tardes, le llamamos de <strong>Evaria colaborador oficial de Iberdrola</strong>. ¿Podría hablar con <span class="blank blg"></span>? El motivo de nuestra llamada es confirmar que los datos facilitados por usted son correctos, le informo que la conversación está siendo grabada hoy <span id="ib-cif-fecha" style="display:inline-block;border-bottom:2px solid var(--green2);padding:0 6px;font-weight:700;color:var(--green);min-width:90px;text-align:center">25/05/2026</span> a las <span id="ib-cif-hora" style="display:inline-block;border-bottom:2px solid var(--green2);padding:0 6px;font-weight:700;color:var(--green);min-width:55px;text-align:center">15:23</span> horas.</p>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#e07b00"></span>Datos personales del cliente</div>
+            <div class="step-list">
+              <div class="step-row"><span class="stn">1</span><div>¿Nos podría facilitar la <strong>razón social</strong> y <strong>CIF</strong> de la empresa por favor? <span class="blank blg"></span> y CIF <span class="blank bsm"></span></div></div>
+              <div class="step-row"><span class="stn">2</span><div>¿Nos podría facilitar su <strong>nombre y apellidos</strong>? <span class="blank blg"></span> y su <strong>DNI</strong> <span class="blank bsm"></span></div></div>
+              <div class="step-row"><span class="stn">3</span><div>¿Sería tan amable de indicarnos la <strong>fecha de nacimiento</strong>? <span class="blank"></span></div></div>
+              <div class="step-row"><span class="stn">4</span><div>¿Me podría confirmar que el <strong>domicilio</strong> sobre el que realizamos la contratación es <span class="blank blg"></span> <em>(indicado por comercial)</em>? <span class="ry">✓ CLIENTE: SÍ</span></div></div>
+              <div class="step-row"><span class="stn">5</span><div>¿Nos podría facilitar su <strong>teléfono</strong>? <span class="blank"></span></div></div>
+              <div class="step-row"><span class="stn">6</span><div>¿Nos podría facilitar el <strong>correo electrónico</strong>? <span class="blank blg"></span></div></div>
+              <div class="step-row"><span class="stn">7</span><div>¿Nos podría facilitar el <strong>número de cuenta completo</strong> donde domicilia los contratos? <span class="blank blg"></span></div></div>
             </div>
           </div>
           <div class="script-section">
@@ -3620,15 +3657,15 @@ hr {
         </div>
       </div>
 
-            <!-- NATURGY PYMES -->
-      <div class="sv" id="sv-naturgy-pymes">
+            <!-- NATURGY CIF -->
+      <div class="sv" id="sv-naturgy-cif">
         <div class="script-big-card">
 
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#E85D3A"></span>Apertura</div>
             <p class="stxt">Buenos días/tardes, mi nombre es <span class="agent-name-placeholder"></span> y le llamo de <strong>EVARIA SOLAR empresa colaboradora de Naturgy Clientes S.A.U.</strong> ¿Es usted el Sr./Sra. <span class="blank"></span>? <span class="ry">✓ CLIENTE: SÍ</span></p>
             <p class="stxt">Encantado/a de saludarle. Le informo que, en cumplimiento de la normativa de la RGPD, esta conversación va a ser grabada para garantizar su seguridad, así como la calidad del servicio.</p>
-            <p class="stxt">El motivo de la llamada es porque nos consta que ha solicitado recientemente un cambio de comercializadora con fecha <span id="pymes-fecha" style="display:inline-block;border-bottom:2px solid #E85D3A;padding:0 6px;font-weight:700;color:#E85D3A;min-width:100px;text-align:center">25/05/2026</span> a <strong>Naturgy Iberia</strong>. ¿Es correcto? <span class="ry">✓ CLIENTE: SÍ</span></p>
+            <p class="stxt">El motivo de la llamada es porque nos consta que ha solicitado recientemente un cambio de comercializadora con fecha <span id="naturgy-cif-fecha" style="display:inline-block;border-bottom:2px solid #E85D3A;padding:0 6px;font-weight:700;color:#E85D3A;min-width:100px;text-align:center">25/05/2026</span> a <strong>Naturgy Iberia</strong>. ¿Es correcto? <span class="ry">✓ CLIENTE: SÍ</span></p>
             <p class="stxt">Nos consta que usted ha recibido un mensaje <strong>SMS</strong> con un enlace al contrato y las condiciones de la oferta y las ha aceptado. ¿Es correcto? <span class="ry">✓ CLIENTE: SÍ</span></p>
           </div>
 
@@ -6858,7 +6895,14 @@ function showPanel(id, btn){
 }
 
 function switchCia(id){
-  const colors={iberdrola:'#008B3C',naturgy:'#E85D3A',endesa:'#00A8E0','naturgy-pymes':'#E85D3A',gana:'#E30613'};
+  const colors={
+    iberdrola:'#008B3C',
+    'iberdrola-cif':'#008B3C',
+    naturgy:'#E85D3A',
+    'naturgy-cif':'#E85D3A',
+    endesa:'#00A8E0',
+    gana:'#E30613'
+  };
   document.querySelectorAll('#panel-scripts .ctab').forEach(t=>{t.classList.remove('active');t.style.background='';t.style.borderColor='';t.style.color='';});
   document.querySelectorAll('.sv').forEach(v=>v.classList.remove('active'));
   const t=document.getElementById('ctab-'+id);
@@ -8127,13 +8171,17 @@ function updateClock(){
   const hora  = now.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit'});
   const elIbFecha = document.getElementById('ib-fecha');
   const elIbHora  = document.getElementById('ib-hora');
-  const elPyFecha = document.getElementById('pymes-fecha');
+  const elIbCifFecha = document.getElementById('ib-cif-fecha');
+  const elIbCifHora  = document.getElementById('ib-cif-hora');
+  const elNatCifFecha = document.getElementById('naturgy-cif-fecha');
   const elGaFecha = document.getElementById('gana-fecha');
   const elGaHora  = document.getElementById('gana-hora');
   
   if(elIbFecha) elIbFecha.textContent = fecha;
   if(elIbHora)  elIbHora.textContent  = hora;
-  if(elPyFecha) elPyFecha.textContent = fecha;
+  if(elIbCifFecha) elIbCifFecha.textContent = fecha;
+  if(elIbCifHora)  elIbCifHora.textContent  = hora;
+  if(elNatCifFecha) elNatCifFecha.textContent = fecha;
   if(elGaFecha) elGaFecha.textContent = fecha;
   if(elGaHora)  elGaHora.textContent  = hora;
   
