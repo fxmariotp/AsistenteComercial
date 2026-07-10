@@ -3860,6 +3860,7 @@ hr {
             <div class="fsec luz-grp">Consumo energía</div>
             <div class="fgrp luz-grp"><label>Luz P1 (kWh)</label><input type="number" id="f-kwh1" placeholder="414" autocomplete="off" value="" oninput="calcComp()"></div>
             <div class="fgrp luz-grp"><label>Luz P2 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh2" placeholder="0" autocomplete="off" value="" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Luz P3 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh3" placeholder="0" autocomplete="off" value="" oninput="calcComp()"></div>
             
             <div class="fgrp luz-grp"><label>Excedentes (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-excedente" placeholder="0" autocomplete="off" value="" min="0" oninput="calcComp()"></div>
             <div class="fgrp luz-grp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" placeholder="0.85" autocomplete="off" value="0.85" step="0.01" oninput="calcComp()"></div>
@@ -4732,7 +4733,8 @@ const BASE = {
     gas_rl3:{tf:0.5830, tv:0.0555},
     imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Plan Online 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Sin permanencia, Tu Asistente 24 Horas (+5.18 €/mes)'}
+      {n:'Plan Online 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Sin permanencia, Tu Asistente 24 Horas (+5.18 €/mes)'},
+      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.1000}, {p:'P2 (Llano)', te:0.1250}, {p:'P3 (Valle)', te:0.2050}], tp1:0.0760, tp2:0.0020, nota:'Tarifa indexada a mercado regulado'}
     ],
     tarifas_gas:[
       {n:'Gana Gas RL1', tv:0.0610, tf:0.1260},
@@ -6978,6 +6980,9 @@ function renderCondiciones(){
     if (r.tarifas_luz.length > 1 && id === 'naturgy') {
       potHtml = `<span>Potencia DNI: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia CIF: TP1 ${r.tarifas_luz[1].tp1.toFixed(6)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(6)} €/kW·día</span>`;
+    } else if (r.tarifas_luz.length > 1 && id === 'gana') {
+      potHtml = `<span>Potencia Plan Online: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</span>
+                 <br><span style="margin-top:2px;display:inline-block">Potencia Mercado: TP1 ${r.tarifas_luz[1].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(4)} €/kW·día</span>`;
     } else {
       potHtml = `<span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·día</span>`;
     }
@@ -7053,13 +7058,14 @@ function calcComp(){
   const isCif=document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false;
   const iva=gv('f-iva')||0.21, actual=gv('f-actual');
   
-  let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, excedente = 0, gas = 0, alq = 0;
+  let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, kwh3 = 0, excedente = 0, gas = 0, alq = 0;
   
   if (compMode === 'luz') {
     pot1 = gv('f-pot1') || 0;
     pot2 = gv('f-pot2') || pot1;
     kwh1 = gv('f-kwh1') || 0;
     kwh2 = gv('f-kwh2') || 0;
+    kwh3 = gv('f-kwh3') || 0;
     excedente = gv('f-excedente') || 0;
     alq = gv('f-alquiler') || 0;
   }
@@ -7109,16 +7115,29 @@ function calcComp(){
       ];
     }
     
-    // Potencia
-    const luzPot=(pot1*r.tp1+pot2*r.tp2)*dias;
+    // Potencia y energía
+    let luzPot = 0;
+    let luzP1 = 0;
+    let luzP2 = 0;
+    let luzP3 = 0;
     
-    // Energía
     const currentTe = useSva ? r.te_con : r.te_sin;
-    const luzP1 = kwh1 * currentTe;
-    const luzP2 = kwh2 * (currentTe * 0.60);
-    const luzP3 = 0;
     
-    const totalKwh = kwh1 + kwh2;
+    if (cia === 'gana' && (kwh2 > 0 || kwh3 > 0)) {
+      // Usar tarifa indexada "Precio de Mercado" para Gana Energía
+      luzPot = (pot1 * 0.0760 + pot2 * 0.0020) * dias;
+      luzP1 = kwh1 * 0.1000;
+      luzP2 = kwh2 * 0.1250;
+      luzP3 = kwh3 * 0.2050;
+    } else {
+      // Tarifa plana / estándar de la compañía
+      luzPot = (pot1 * r.tp1 + pot2 * r.tp2) * dias;
+      luzP1 = kwh1 * currentTe;
+      luzP2 = kwh2 * (currentTe * 0.60);
+      luzP3 = kwh3 * (currentTe * 0.60);
+    }
+    
+    const totalKwh = kwh1 + kwh2 + kwh3;
     const baseElec = luzPot + luzP1 + luzP2 + luzP3;
 
     // Gas
@@ -7181,7 +7200,7 @@ function calcComp(){
     return {
       cia, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
-      dias, iva, kwh1, kwh2, gas, pot1, pot2, actual, band, excedente, useSva
+      dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva
     };
   });
 
@@ -7211,6 +7230,7 @@ function saveComparisonInputs() {
     pot2: document.getElementById('f-pot2') ? document.getElementById('f-pot2').value : '',
     kwh1: document.getElementById('f-kwh1') ? document.getElementById('f-kwh1').value : '',
     kwh2: document.getElementById('f-kwh2') ? document.getElementById('f-kwh2').value : '',
+    kwh3: document.getElementById('f-kwh3') ? document.getElementById('f-kwh3').value : '',
     excedente: document.getElementById('f-excedente') ? document.getElementById('f-excedente').value : '',
     alquiler: document.getElementById('f-alquiler') ? document.getElementById('f-alquiler').value : '0.85',
     gas: document.getElementById('f-gas') ? document.getElementById('f-gas').value : '',
@@ -7240,6 +7260,7 @@ function loadComparisonInputs() {
     if (document.getElementById('f-pot2')) document.getElementById('f-pot2').value = inputs.pot2 || '';
     if (document.getElementById('f-kwh1')) document.getElementById('f-kwh1').value = inputs.kwh1 || '';
     if (document.getElementById('f-kwh2')) document.getElementById('f-kwh2').value = inputs.kwh2 || '';
+    if (document.getElementById('f-kwh3')) document.getElementById('f-kwh3').value = inputs.kwh3 || '';
     if (document.getElementById('f-excedente')) document.getElementById('f-excedente').value = inputs.excedente || '';
     if (document.getElementById('f-alquiler')) document.getElementById('f-alquiler').value = inputs.alquiler !== undefined ? inputs.alquiler : '0.85';
     if (document.getElementById('f-gas')) document.getElementById('f-gas').value = inputs.gas || '';
@@ -7276,6 +7297,7 @@ function clearComparisonInputs() {
   if (document.getElementById('f-pot2')) document.getElementById('f-pot2').value = '';
   if (document.getElementById('f-kwh1')) document.getElementById('f-kwh1').value = '';
   if (document.getElementById('f-kwh2')) document.getElementById('f-kwh2').value = '';
+  if (document.getElementById('f-kwh3')) document.getElementById('f-kwh3').value = '';
   if (document.getElementById('f-excedente')) document.getElementById('f-excedente').value = '';
   if (document.getElementById('f-alquiler')) document.getElementById('f-alquiler').value = '0.85';
   if (document.getElementById('f-gas')) document.getElementById('f-gas').value = '';
@@ -7401,7 +7423,7 @@ function printCompanyOffer(cia) {
   const bandObj = band === 'rl1' ? r.gas_rl1 : (band === 'rl2' ? r.gas_rl2 : r.gas_rl3);
 
   const annualCons = compMode === 'luz' 
-    ? Math.round((kwh1 + kwh2) * (365 / dias)) 
+    ? Math.round((kwh1 + kwh2 + kwh3) * (365 / dias)) 
     : Math.round(gas * (365 / dias));
     
   const pct = (actual > 0 && ahorro !== null) ? (ahorro / actual) * 100 : null;
@@ -7431,28 +7453,60 @@ function printCompanyOffer(cia) {
   // Build rows for Point 2: Propuesta de ahorro
   const rows = [];
   if (compMode === 'luz') {
-    rows.push({
-      concept: 'Consumo Punta',
-      calc: `${kwh1.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
-      val: `${f2(luzP1)} €`
-    });
-    if (kwh2 > 0) {
+    if (cia === 'gana' && (kwh2 > 0 || kwh3 > 0)) {
+      // Indexada Gana Energía
       rows.push({
-        concept: 'Consumo Llano/Valle',
-        calc: `${kwh2.toFixed(2)} kWh × ${(te * 0.6).toFixed(4)} €/kWh`,
-        val: `${f2(luzP2)} €`
+        concept: 'Consumo P1 (Punta)',
+        calc: `${kwh1.toFixed(2)} kWh × 0.1000 €/kWh`,
+        val: `${f2(luzP1)} €`
       });
+      if (kwh2 > 0) {
+        rows.push({
+          concept: 'Consumo P2 (Llano)',
+          calc: `${kwh2.toFixed(2)} kWh × 0.1250 €/kWh`,
+          val: `${f2(luzP2)} €`
+        });
+      }
+      if (kwh3 > 0) {
+        rows.push({
+          concept: 'Consumo P3 (Valle)',
+          calc: `${kwh3.toFixed(2)} kWh × 0.2050 €/kWh`,
+          val: `${f2(luzP3)} €`
+        });
+      }
+    } else {
+      // Estándar de la compañía
+      rows.push({
+        concept: 'Consumo Punta',
+        calc: `${kwh1.toFixed(2)} kWh × ${te.toFixed(4)} €/kWh`,
+        val: `${f2(luzP1)} €`
+      });
+      if (kwh2 > 0) {
+        rows.push({
+          concept: 'Consumo Llano/Valle',
+          calc: `${kwh2.toFixed(2)} kWh × ${(te * 0.6).toFixed(4)} €/kWh`,
+          val: `${f2(luzP2)} €`
+        });
+      }
+      if (kwh3 > 0) {
+        rows.push({
+          concept: 'Consumo Supervalle (P3)',
+          calc: `${kwh3.toFixed(2)} kWh × ${(te * 0.6).toFixed(4)} €/kWh`,
+          val: `${f2(luzP3)} €`
+        });
+      }
+    }
     }
     rows.push({
       concept: 'Potencia Punta',
-      calc: `${pot1.toFixed(2)} kW × ${dias} días × ${r.tp1.toFixed(6)} €/kW/día`,
-      val: `${f2(pot1 * r.tp1 * dias)} €`
+      calc: `${pot1.toFixed(2)} kW × ${dias} días × ${(cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0760 : r.tp1).toFixed(6)} €/kW/día`,
+      val: `${f2(pot1 * (cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0760 : r.tp1) * dias)} €`
     });
     if (pot2 > 0) {
       rows.push({
         concept: 'Potencia Valle',
-        calc: `${pot2.toFixed(2)} kW × ${dias} días × ${r.tp2.toFixed(6)} €/kW/día`,
-        val: `${f2(pot2 * r.tp2 * dias)} €`
+        calc: `${pot2.toFixed(2)} kW × ${dias} días × ${(cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0020 : r.tp2).toFixed(6)} €/kW/día`,
+        val: `${f2(pot2 * (cia === 'gana' && (kwh2 > 0 || kwh3 > 0) ? 0.0020 : r.tp2) * dias)} €`
       });
     }
     if (excedente > 0) {
