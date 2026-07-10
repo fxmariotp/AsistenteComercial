@@ -7125,6 +7125,8 @@ function calcComp(){
     const currentTe = useSva ? r.te_con : r.te_sin;
     
     if (cia === 'gana' && (kwh2 > 0 || kwh3 > 0)) {
+      // Cambiar el nombre de la compañía para reflejar la tarifa en uso
+      r.name = isCif ? 'Gana Energía Precio de Mercado (Precio CIF)' : 'Gana Energía Precio de Mercado';
       // Usar tarifa indexada "Precio de Mercado" para Gana Energía
       luzPot = (pot1 * 0.0760 + pot2 * 0.0020) * dias;
       luzP1 = kwh1 * 0.1000;
