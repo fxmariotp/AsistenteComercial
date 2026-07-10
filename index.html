@@ -4550,10 +4550,6 @@ hr {
         </div>
 <!-- Search and filters -->
         <div class="ranking-search-wrapper" style="margin-top: 15px; margin-bottom: 24px;">
-          <div class="ranking-search-box">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-            <input type="text" class="ranking-search-input" id="ranking-search-input" placeholder="Buscar comercial por nombre..." oninput="filterRankingList()">
-          </div>
           <button class="ranking-filter-btn" id="ranking-filter-target" onclick="toggleTargetFilter()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
             Solo Objetivo Cumplido
@@ -6264,14 +6260,14 @@ function renderNativeRanking(data) {
       positionClass = 'second';
     }
     
-    const pendText = (pendientes !== undefined && pendientes !== '') ? ` (${pendientes})` : '';
+    const pendTextPoints = (pendientes !== undefined && pendientes !== '') ? ` <span style="font-size:12.5px;color:var(--orange);font-weight:700;">(${pendientes})</span>` : '';
     
     podiumHtml += `
       <div class="podium-card ${positionClass}">
         <div class="podium-rank">${index + 1}</div>
         <div class="podium-avatar">${initials}</div>
-        <div class="podium-name" title="${nombre}">${shortName}${pendText}</div>
-        <div class="podium-points">${pts.toFixed(1)} <span style="font-size:12px;color:var(--t3);font-weight:400;">pts</span></div>
+        <div class="podium-name" title="${nombre}">${shortName}</div>
+        <div class="podium-points">${pts.toFixed(1)} <span style="font-size:12px;color:var(--t3);font-weight:400;">pts</span>${pendTextPoints}</div>
         <div class="podium-target">Objetivo diario: ${obj.toFixed(1)}</div>
         <div style="font-size: 11px; font-weight:700; color:${cumple ? 'var(--green)' : 'var(--blue)'}; text-align:right; margin-bottom:2px;">
           ${pct}%
@@ -6307,13 +6303,13 @@ function renderNativeRanking(data) {
     const pct = obj > 0 ? Math.min(100, Math.round((pts / obj) * 100)) : 0;
     const shortName = formatName(nombre);
     
-    const pendText = (pendientes !== undefined && pendientes !== '') ? ` <span style="font-size:11.5px;color:var(--t3);font-weight:600;">(${pendientes})</span>` : '';
+    const pendText = (pendientes !== undefined && pendientes !== '') ? ` <span style="font-size:12.5px;color:var(--orange);font-weight:700;">(${pendientes})</span>` : '';
     
     return `
       <div class="ranking-list-row ${cumple ? 'target-met' : ''}">
         <div class="row-rank">${rank}</div>
         <div class="row-name" title="${nombre}">
-          ${shortName}${pendText}
+          ${shortName}
           ${cumple ? '<span style="color:var(--green); font-size:10px; font-weight:800; background:var(--green-bg); padding:2px 6px; border-radius:4px; margin-left:4px;">Objetivo</span>' : ''}
         </div>
         <div class="row-progress-container">
@@ -6323,7 +6319,10 @@ function renderNativeRanking(data) {
           </div>
         </div>
         <div class="row-values">
-          <div>${pts.toFixed(1)}</div>
+          <div style="display:flex;align-items:center;gap:4px;justify-content:flex-end;">
+            <span>${pts.toFixed(1)}</span>
+            ${pendText}
+          </div>
           <div class="row-values-sub">Objetivo diario: ${obj.toFixed(1)}</div>
         </div>
         <div class="row-badge-container">
@@ -6407,8 +6406,9 @@ async function copyShiftReport(shift) {
         </div>
         <div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;">
           <div style="text-align: right;">
-            <div style="font-size: 15px; font-weight: 800; color: ${cumple ? '#10b981' : '#ffffff'};">${pts.toFixed(1)} <span style="font-size: 11px; font-weight: 400; color: #64748b;">pts</span></div>
-            <div style="font-size: 11px; font-weight: 700; color: ${pend > 0 ? '#f97316' : '#64748b'};">${pend > 0 ? `(${pend} pend)` : 'sin pendientes'}</div>
+            <div style="font-size: 15px; font-weight: 800; color: ${cumple ? '#10b981' : '#ffffff'};">
+              ${pts.toFixed(1)} <span style="font-size: 11px; font-weight: 400; color: #64748b;">pts</span>${pend > 0 ? ` <span style="font-size: 13px; font-weight: 700; color: #f97316;">(${pend})</span>` : ''}
+            </div>
           </div>
           <div style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: ${cumple ? 'rgba(16, 185, 129, 0.16)' : 'rgba(255, 255, 255, 0.06)'}; color: ${cumple ? '#10b981' : '#64748b'}; font-size: 12px; font-weight: 800;">
             ${cumple ? '\u2713' : '\u2022'}
@@ -6487,7 +6487,8 @@ async function copyShiftReport(shift) {
 }
 
 function filterRankingList() {
-  const query = document.getElementById('ranking-search-input').value.toLowerCase().trim();
+  const input = document.getElementById('ranking-search-input');
+  const query = input ? input.value.toLowerCase().trim() : '';
   
   let filtered = [...rawRankingData];
   
