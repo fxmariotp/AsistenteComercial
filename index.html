@@ -4559,9 +4559,9 @@ hr {
         <!-- Stats Grid -->
         <div class="ranking-stats-grid">
           <div class="ranking-stat-card">
-            <span class="ranking-stat-label">Días Restantes</span>
+            <span class="ranking-stat-label">Días Laborables Restantes</span>
             <span class="ranking-stat-value" id="stat-dias-restantes">0</span>
-            <span class="ranking-stat-desc">Días naturales del mes actual</span>
+            <span class="ranking-stat-desc">Según tu calendario de agente</span>
           </div>
           <div class="ranking-stat-card">
             <span class="ranking-stat-label">Comerciales Activos</span>
@@ -6158,13 +6158,13 @@ function renderNativeRanking(data) {
   const successCount = rawRankingData.filter(r => (parseFloat(r[1]) || 0) >= (parseFloat(r[2]) || 0)).length;
   const successRate = totalHeadcount > 0 ? Math.round((successCount / totalHeadcount) * 100) : 0;
   
-  // Calculate remaining days in month
+  // Calculate remaining labor days in current month for the logged-in commercial
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const lastDayOfMonth = new Date(year, month + 1, 0).getDate();
-  const currentDay = now.getDate();
-  const diasRestantes = lastDayOfMonth - currentDay;
+  const currentMonthIndex = getPeriodIndexForDate(now);
+  const monthTotal = LABORABLES[currentMonthIndex] || 0;
+  const monthElapsed = getPeriodElapsedDaysExcludingVacations(currentMonthIndex, now);
+  const monthVacations = getPeriodVacationCount(currentMonthIndex);
+  const diasRestantes = monthTotal - monthElapsed - monthVacations;
   
   const elTotal = document.getElementById('stat-total-headcount');
   const elRate = document.getElementById('stat-success-rate');
