@@ -7031,6 +7031,9 @@ function calcComp(){
   const cias=['iberdrola','naturgy','endesa','gana'];
   const results=cias.map(cia=>{
     let r={...RATES[cia]};
+    if (isCif) {
+      r.name = r.name + ' (Precio CIF)';
+    }
     if (cia === 'naturgy' && isCif) {
       r.tp1 = 0.127295;
       r.tp2 = 0.045522;
