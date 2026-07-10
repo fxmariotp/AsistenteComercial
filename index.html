@@ -4742,7 +4742,7 @@ const BASE = {
     imp_electrico:0.0511,
     tarifas_luz:[
       {n:'Plan 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Precio único 24h sin permanencia'},
-      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.1000}, {p:'P2 (Llano)', te:0.1250}, {p:'P3 (Valle)', te:0.2050}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestión (+5.00 €/mes) · Mantenimiento opcional (+4.13 €/mes)'}
+      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.1000}, {p:'P2 (Llano)', te:0.1250}, {p:'P3 (Valle)', te:0.2050}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestión (+5.00 €/mes)'}
     ],
     tarifas_gas:[
       {n:'Gana Gas RL1', tv:0.0610, tf:0.1260},
@@ -6969,7 +6969,7 @@ function renderCondiciones(){
     r.tarifas_luz.forEach(t=>{
       if(t.dh===true && t.periodos){
         // Tarifa con discriminación horaria
-        html+=`<tr><td><strong>${t.n}</strong><br><span class="badge-dh">⏱ DH</span>${t.nota?`<br><span style="font-size:13px;color:var(--t3)">${t.nota}</span>`:''}</td>
+        html+=`<tr><td><strong>${t.n}</strong><br><span class="badge-dh">Discriminación Horaria</span> <span class="badge-dh" style="background:rgba(16,185,129,0.08);color:#10b981;border-color:rgba(16,185,129,0.2);">Precio variable indexado</span>${t.nota?`<br><span style="font-size:13px;color:var(--t3)">${t.nota}</span>`:''}</td>
           <td class="price-base"><div style="font-size:13px;color:var(--t3);margin-bottom:4px">Varía:</div>${t.periodos.map(p=>`<div>${p.p}: <strong>${p.te.toFixed(4)}</strong></div>`).join('')}</td>
           <td><span style="color:var(--t3)">igual</span></td><td><span style="color:var(--t3)">igual</span></td></tr>`;
       } else if(t.te!==null){
