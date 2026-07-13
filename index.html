@@ -4822,6 +4822,10 @@ input:focus, select:focus, textarea:focus {
         .timeline-day-square.weekend {
           border-style: dashed;
         }
+        .timeline-day-square.weekend:hover {
+          background: #fca5a5 !important;
+          border-color: #ef4444 !important;
+        }
       </style>
       <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
         
@@ -4863,7 +4867,7 @@ input:focus, select:focus, textarea:focus {
             <span>Día laborable</span>
           </div>
           <div style="display: flex; align-items: center; gap: 6px;">
-            <div style="width: 14px; height: 14px; border-radius: 3px; border: 1px dashed var(--border); background: rgba(0,0,0,0.04);"></div>
+            <div style="width: 14px; height: 14px; border-radius: 3px; border: 1px dashed #fca5a5; background: #fef2f2;"></div>
             <span>Fin de semana</span>
           </div>
           <div style="display: flex; align-items: center; gap: 6px;">
@@ -6044,11 +6048,11 @@ function renderControlVacationsTimeline() {
       const isActive = vacations.includes(dateStr);
       
       const colors = getAgentColor(dni);
-      const borderCol = isActive ? colors.text : 'var(--border)';
-      const bgCol = isActive ? colors.text : (isWeekend ? 'rgba(0,0,0,0.04)' : 'var(--bg)');
+      const borderCol = isActive ? colors.text : (isWeekend ? '#fca5a5' : 'var(--border)');
+      const bgCol = isActive ? colors.text : (isWeekend ? '#fef2f2' : 'var(--bg)');
       
       bodyHtml += `
-        <td style="padding: 8px 4px; border-bottom: 1px solid var(--border); text-align: center; min-width: 32px; background: ${isWeekend ? 'rgba(0,0,0,0.01)' : 'transparent'};">
+        <td style="padding: 8px 4px; border-bottom: 1px solid var(--border); text-align: center; min-width: 32px; background: ${isWeekend ? 'rgba(239, 68, 68, 0.02)' : 'transparent'};">
           <div class="timeline-day-square ${isActive ? 'active' : ''} ${isWeekend ? 'weekend' : ''}" 
                onclick="toggleAgentVacationDay('${dni}', '${dateStr}')" 
                title="${name} - ${day} de ${MES_NOMBRES[controlCalMonth]} (DNI: ${dni})" 
