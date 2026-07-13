@@ -3645,23 +3645,20 @@ input:focus, select:focus, textarea:focus {
 }
 
 /* Company logos in tables and cards */
-.comp-logo-svg {
+.comp-logo-img {
   height: 22px !important;
   width: auto !important;
   max-width: 90px !important;
-  display: inline-block !important;
+  object-fit: contain !important;
   vertical-align: middle !important;
 }
 
-.sum-table .comp-logo-svg, .comp-logo-img-small .comp-logo-svg {
+.comp-logo-img-small {
   height: 14px !important;
   width: auto !important;
-  margin-right: 8px !important;
-}
-
-.print-brand-badge .comp-logo-svg {
-  height: 24px !important;
-  width: auto !important;
+  max-width: 60px !important;
+  object-fit: contain !important;
+  vertical-align: middle !important;
 }
 </style></head>
 <body>
@@ -5321,10 +5318,10 @@ const BASE = {
 };
 
 const COMPANY_LOGOS = {
-  iberdrola: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" class="comp-logo-svg" style="height:22px;width:auto;vertical-align:middle;"><g transform="translate(2, 2)"><path d="M12 4 C4 13 5 23 15 28 C13 21 11 15 12 4 Z" fill="#84cc16"/><path d="M15 4 C8 13 9 23 19 28 C17 21 14 15 15 4 Z" fill="#16a34a"/><path d="M23 13 C18 18 19 25 24 28 C27 25 27 18 23 13 Z" fill="#2563eb"/></g></svg>`,
-  endesa: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="comp-logo-svg" style="height:22px;width:auto;vertical-align:middle;"><text x="2" y="22" font-family="'Inter', sans-serif" font-weight="900" font-size="24" fill="#0072ce" letter-spacing="-1">e</text><circle cx="22" cy="10" r="4" fill="#00dfa2"/></svg>`,
-  naturgy: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" class="comp-logo-svg" style="height:22px;width:auto;vertical-align:middle;"><path d="M6 8 C10 4, 14 8, 16 14 C18 8, 22 4, 26 8 C29 12, 24 20, 16 24 C8 20, 3 12, 6 8 Z" fill="#f97316"/></svg>`,
-  gana: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 30 30" class="comp-logo-svg" style="height:22px;width:auto;vertical-align:middle;"><path d="M15 2 L5 15 L13 15 L9 28 L21 13 L13 13 Z" fill="#ef4444"/></svg>`
+  iberdrola: 'logo-iberdrola.png',
+  endesa: 'logo-endesa.png',
+  naturgy: 'logo-naturgy.png',
+  gana: 'logo-gana.png'
 };
 
 const RATES = BASE;
@@ -7529,7 +7526,8 @@ function renderCondiciones(){
   
   cias.forEach(id=>{
     const r=RATES[id];
-    const logoHtml = COMPANY_LOGOS[id] || `<span class="cdot" style="background:${r.color}"></span>`;
+    const logoSrc = COMPANY_LOGOS[id];
+    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:20px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
 
     html+=`<div class="cond-cia-block">
       <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -7604,7 +7602,8 @@ function renderCondiciones(){
 
   cias.forEach(id=>{
     const r=RATES[id];
-    const logoHtml = COMPANY_LOGOS[id] || `<span class="cdot" style="background:${r.color}"></span>`;
+    const logoSrc = COMPANY_LOGOS[id];
+    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:20px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
 
     html+=`<div class="cond-cia-block">
       <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -7972,7 +7971,8 @@ function renderInvCards(results, useSva){
       retrocomision = '12 meses';
     }
     
-    const logoHtml = COMPANY_LOGOS[cia] || `<span class="cdot" style="background:${r.color}"></span>`;
+    const logoSrc = COMPANY_LOGOS[cia];
+    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:22px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
 
     return `<div class="inv-card${best?' best':''}">
       <!-- Header -->
@@ -8042,7 +8042,8 @@ function renderSummary(results, actual){
     </tr></thead><tbody>
     ${results.map((r,i)=>{
       const ah=r.ahorro, pos=ah>0;
-      const logoHtml = COMPANY_LOGOS[r.cia] || `<span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>`;
+      const logoSrc = COMPANY_LOGOS[r.cia];
+      const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.r.name}" class="comp-logo-img-small" style="height:14px;width:auto;object-fit:contain;margin-right:8px;vertical-align:middle;" />` : `<span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>`;
       return`<tr class="${i===0?'brow':''}">
         <td><div style="display:inline-flex;align-items:center;">${logoHtml}<span>${r.r.name}</span></div>${i===0?'<span class="badge-best">✓ mejor</span>':''}</td>
         ${isLuz ? `<td style="text-align:right;color:var(--t2)">${r.excPrice.toFixed(2)} €</td>` : ''}
@@ -8343,7 +8344,8 @@ function printCompanyOffer(key) {
     `;
   }
 
-  const printLogoHtml = COMPANY_LOGOS[cia] || `<span class="cdot" style="background: ${printColor} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${printColor}33;"></span>`;
+  const logoSrc = COMPANY_LOGOS[cia];
+  const printLogoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:24px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background: ${printColor} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${printColor}33;"></span>`;
 
   html += `
     <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
