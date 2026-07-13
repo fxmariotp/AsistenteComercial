@@ -4519,7 +4519,7 @@ input:focus, select:focus, textarea:focus {
             <div class="counter-stat"><div class="counter-stat-val" id="cal-ano-rest" style="color:var(--blue)">—</div><div class="counter-stat-lbl">Restantes</div></div>
           </div>
           <div class="progress-track"><div class="progress-fill" id="cal-ano-bar" style="background:var(--blue2);width:0%"></div></div>
-          <div class="counter-extra" id="cal-ano-vacaciones" style="margin-top:14px">Vacaciones consumidas: — de 26 días</div>
+          <div class="counter-extra" id="cal-ano-vacaciones" style="margin-top:14px">Te quedan <strong>26</strong> días de vacaciones restantes de un total de 26</div>
         </div>
       </div>
 
@@ -5318,10 +5318,10 @@ const BASE = {
 };
 
 const COMPANY_LOGOS = {
-  iberdrola: 'https://upload.wikimedia.org/wikipedia/commons/thumb/4/40/Iberdrola_logo.svg/320px-Iberdrola_logo.svg.png',
-  endesa: 'https://upload.wikimedia.org/wikipedia/commons/thumb/d/de/Endesa_Logo.svg/320px-Endesa_Logo.svg.png',
-  naturgy: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5a/Naturgy_Logo.svg/320px-Naturgy_Logo.svg.png',
-  gana: 'https://ganaenergia.com/wp-content/themes/ganaenergia/img/logo-gana-energia.svg'
+  iberdrola: 'logo-iberdrola.svg',
+  endesa: 'logo-endesa.svg',
+  naturgy: 'logo-naturgy.svg',
+  gana: 'logo-gana.svg'
 };
 
 const RATES = BASE;
@@ -5841,7 +5841,8 @@ function renderCalCounters(year){
   
   const elAnoVac = document.getElementById('cal-ano-vacaciones');
   if (elAnoVac) {
-    elAnoVac.textContent = `Vacaciones consumidas: ${yearVacations} de 26 días`;
+    const remainingVacations = 26 - yearVacations;
+    elAnoVac.innerHTML = `Te quedan <strong>${remainingVacations}</strong> días de vacaciones restantes de un total de 26`;
   }
 }
 

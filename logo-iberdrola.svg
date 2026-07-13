@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 35" width="100" height="24">
+  <g transform="translate(2, 2)">
+    <!-- Hoja verde lima -->
+    <path d="M12 4 C4 13 5 23 15 28 C13 21 11 15 12 4 Z" fill="#84cc16"/>
+    <!-- Hoja verde bosque -->
+    <path d="M15 4 C8 13 9 23 19 28 C17 21 14 15 15 4 Z" fill="#16a34a"/>
+    <!-- Gota de agua azul -->
+    <path d="M23 13 C18 18 19 25 24 28 C27 25 27 18 23 13 Z" fill="#2563eb"/>
+  </g>
+  <text x="32" y="22" font-family="'Inter', sans-serif" font-weight="800" font-size="15" fill="#16a34a" letter-spacing="-0.3">Iberdrola</text>
+</svg>
