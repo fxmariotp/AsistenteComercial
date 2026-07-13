@@ -5319,12 +5319,7 @@ const BASE = {
   }
 };
 
-const COMPANY_LOGOS = {
-  iberdrola: 'logo-iberdrola.png',
-  endesa: 'logo-endesa.png',
-  naturgy: 'logo-naturgy.png',
-  gana: 'logo-gana.png'
-};
+// Map of company logos (disabled)
 
 const RATES = BASE;
 
@@ -7528,8 +7523,7 @@ function renderCondiciones(){
   
   cias.forEach(id=>{
     const r=RATES[id];
-    const logoSrc = COMPANY_LOGOS[id];
-    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:20px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
+    const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
 
     html+=`<div class="cond-cia-block">
       <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -7604,8 +7598,7 @@ function renderCondiciones(){
 
   cias.forEach(id=>{
     const r=RATES[id];
-    const logoSrc = COMPANY_LOGOS[id];
-    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:20px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
+    const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
 
     html+=`<div class="cond-cia-block">
       <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -7973,8 +7966,7 @@ function renderInvCards(results, useSva){
       retrocomision = '12 meses';
     }
     
-    const logoSrc = COMPANY_LOGOS[cia];
-    const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:22px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background:${r.color}"></span>`;
+    const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
 
     return `<div class="inv-card${best?' best':''}">
       <!-- Header -->
@@ -8044,8 +8036,7 @@ function renderSummary(results, actual){
     </tr></thead><tbody>
     ${results.map((r,i)=>{
       const ah=r.ahorro, pos=ah>0;
-      const logoSrc = COMPANY_LOGOS[r.cia];
-      const logoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.r.name}" class="comp-logo-img-small" style="height:14px;width:auto;object-fit:contain;margin-right:8px;vertical-align:middle;" />` : `<span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>`;
+      const logoHtml = `<span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>`;
       return`<tr class="${i===0?'brow':''}">
         <td><div style="display:inline-flex;align-items:center;">${logoHtml}<span>${r.r.name}</span></div>${i===0?'<span class="badge-best">✓ mejor</span>':''}</td>
         ${isLuz ? `<td style="text-align:right;color:var(--t2)">${r.excPrice.toFixed(2)} €</td>` : ''}
@@ -8346,8 +8337,7 @@ function printCompanyOffer(key) {
     `;
   }
 
-  const logoSrc = COMPANY_LOGOS[cia];
-  const printLogoHtml = logoSrc ? `<img src="${logoSrc}" alt="${r.name}" class="comp-logo-img" style="height:24px;width:auto;object-fit:contain;" />` : `<span class="cdot" style="background: ${printColor} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${printColor}33;"></span>`;
+  const printLogoHtml = `<span class="cdot" style="background: ${printColor} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${printColor}33;"></span>`;
 
   html += `
     <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
@@ -8356,7 +8346,7 @@ function printCompanyOffer(key) {
     <div style="margin-top: 5px; margin-bottom: 12px;">
       <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 6px 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
         ${printLogoHtml}
-        <span style="font-size: 20px; font-weight: 900; color: ${printColor} !important; letter-spacing: -0.5px; text-transform: uppercase; margin-left: 4px;">${r.name}</span>
+        <span style="font-size: 20px; font-weight: 900; color: ${printColor} !important; letter-spacing: -0.5px; text-transform: uppercase;">${r.name}</span>
       </div>
     </div>
     
