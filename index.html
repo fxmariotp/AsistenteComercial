@@ -3693,9 +3693,9 @@ input:focus, select:focus, textarea:focus {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
       Textos Legales
     </button>
-    <button class="nav-btn" id="btn-nav-sips" onclick="showPanel('sips',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line></svg>
-      Consulta SIPS
+        <button class="nav-btn" id="btn-nav-sips" onclick="showPanel('sips',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+      Enlaces Trabajo
     </button>
     <button class="nav-btn" id="btn-nav-comparativa" onclick="showPanel('comparativa',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
@@ -3986,22 +3986,22 @@ input:focus, select:focus, textarea:focus {
             </div>
           </div>
 
-          <!-- Card 7: Consulta SIPS -->
+                    <!-- Card 7: Enlaces Trabajo -->
           <div class="db-tool-card" style="--card-color: #1a7a3c; --card-color-bg: rgba(26, 122, 60, 0.08); --card-color-alpha: rgba(26, 122, 60, 0.05);" onclick="showPanel('sips', document.getElementById('btn-nav-sips'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line></svg>
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
               </div>
               <div class="db-tool-info">
-                <h4 class="db-tool-title">Consulta SIPS</h4>
-                <p class="db-tool-desc">Consulta potencia contratada en Fortuluz o dirección de punto de suministro en Naturgy.</p>
+                <h4 class="db-tool-title">Enlaces Trabajo</h4>
+                <p class="db-tool-desc">Enlaces cosas trabajo: WhatsApp, Evaria, Renosur, Hostezadis, Energiza, OnTime, calculadora y mÃ¡s.</p>
               </div>
             </div>
             <div class="db-tool-action">
-              Realizar consulta <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Abrir enlaces <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
           </div>
-
+          
           <!-- Card 8: Promociones -->
           <div class="db-tool-card" style="--card-color: #0d5c9e; --card-color-bg: rgba(13, 92, 158, 0.08); --card-color-alpha: rgba(13, 92, 158, 0.05);" onclick="showPanel('promociones', document.getElementById('btn-nav-promociones'))">
             <div class="db-tool-card-content">
@@ -4974,91 +4974,152 @@ input:focus, select:focus, textarea:focus {
     </div>
 
 
-    <!-- ══════ CONSULTA SIPS ══════ -->
+        <!-- â•â•â•â•â•â• ENLACES TRABAJO â•â•â•â•â•â• -->
     <div class="panel" id="panel-sips">
       <style>
         .sips-btn-container {
-          display: flex;
-          flex-direction: column;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
           gap: 16px;
           width: 100%;
-          max-width: 800px;
+          max-width: 900px;
           margin: 20px 0;
         }
         .sips-btn {
-          width: 100%;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 20px 28px;
+          padding: 16px 20px;
           border-radius: var(--rs);
-          font-size: 15.5px;
-          font-weight: 800;
+          font-size: 14.5px;
+          font-weight: 700;
           text-align: left;
-          transition: all 0.2s;
+          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
           cursor: pointer;
+          background: var(--surface);
+          border: 1px solid var(--border);
+          color: var(--text);
+          text-decoration: none !important;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .sips-btn:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 8px 16px rgba(32, 40, 84, 0.06);
+          border-color: var(--blue) !important;
+          color: var(--blue) !important;
         }
         .sips-btn-content {
           display: flex;
           align-items: center;
-          gap: 14px;
+          gap: 12px;
+          min-width: 0;
         }
         .sips-btn-icon {
-          font-size: 24px;
+          font-size: 20px;
           flex-shrink: 0;
+          width: 36px;
+          height: 36px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          transition: all 0.2s;
+        }
+        .sips-btn:hover .sips-btn-icon {
+          transform: scale(1.05);
         }
         .sips-btn-text {
-          white-space: normal;
-          line-height: 1.3;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
         }
         .sips-btn-arrow {
           flex-shrink: 0;
-          margin-left: 12px;
+          color: #94a3b8;
+          transition: transform 0.2s;
         }
-        
-        /* Ajustes específicos para móviles */
-        @media (max-width: 576px) {
-          .sips-btn {
-            padding: 16px 18px;
-            font-size: 14px;
-          }
-          .sips-btn-content {
-            gap: 10px;
-          }
-          .sips-btn-icon {
-            font-size: 20px;
-          }
+        .sips-btn:hover .sips-btn-arrow {
+          transform: translate(2px, -2px);
+          color: var(--blue);
         }
       </style>
 
       <div class="sips-btn-container">
-        <button type="button" class="btn sips-btn" onclick="openFortuluz()" style="background: rgba(63, 181, 73, 0.08); border: 1.5px solid rgba(63, 181, 73, 0.25); color: #3fb549;" onmouseover="this.style.background='rgba(63, 181, 73, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(63, 181, 73, 0.08)'; this.style.transform='none';">
+        <a href="https://web.whatsapp.com/" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon">⚡</span>
-            <span class="sips-btn-text">Consultar Potencia en Fortuluz</span>
+            <span class="sips-btn-icon" style="background: rgba(37, 211, 102, 0.1); color: #25D366;">ðŸ’¬</span>
+            <span class="sips-btn-text">Whatsapp Web</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        </button>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
 
-        <button type="button" class="btn sips-btn" onclick="openNaturgy()" style="background: rgba(250, 92, 12, 0.08); border: 1.5px solid rgba(250, 92, 12, 0.25); color: #ea580c;" onmouseover="this.style.background='rgba(250, 92, 12, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(250, 92, 12, 0.08)'; this.style.transform='none';">
+        <a href="https://evaria.miga.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon">🏠</span>
-            <span class="sips-btn-text">Consultar Dirección en Naturgy</span>
+            <span class="sips-btn-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">ðŸ”‘</span>
+            <span class="sips-btn-text">Evaria</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        </button>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
 
-        <button type="button" class="btn sips-btn" onclick="openFacturasIberdrola()" style="background: rgba(0, 139, 60, 0.08); border: 1.5px solid rgba(0, 139, 60, 0.25); color: #008b3c;" onmouseover="this.style.background='rgba(0, 139, 60, 0.15)'; this.style.transform='translateY(-1px)';" onmouseout="this.style.background='rgba(0, 139, 60, 0.08)'; this.style.transform='none';">
+        <a href="https://renosur.miga.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon">📄</span>
-            <span class="sips-btn-text">Consultar Facturas en Iberdrola</span>
+            <span class="sips-btn-icon" style="background: rgba(53, 127, 191, 0.1); color: #357fbf;">â˜€ï¸</span>
+            <span class="sips-btn-text">Renosur</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-        </button>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+
+        <a href="https://hostezadis.omniasoluciones.es/" target="_blank" class="sips-btn">
+          <span class="sips-btn-content">
+            <span class="sips-btn-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">ðŸ¢</span>
+            <span class="sips-btn-text">Hostezadis</span>
+          </span>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+
+        <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
+          <span class="sips-btn-content">
+            <span class="sips-btn-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">ðŸ”‹</span>
+            <span class="sips-btn-text">Energiza</span>
+          </span>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+
+        <a href="https://rrhh.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
+          <span class="sips-btn-content">
+            <span class="sips-btn-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">â±ï¸</span>
+            <span class="sips-btn-text">OnTime</span>
+          </span>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+
+        <a href="https://fortuluz.es/calculadora" target="_blank" class="sips-btn">
+          <span class="sips-btn-content">
+            <span class="sips-btn-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">âš¡</span>
+            <span class="sips-btn-text">Mirar Potencia</span>
+          </span>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+
+        <a href="https://www.naturgy.es/hogar/luz/tarifa_plana_zen_luz" target="_blank" class="sips-btn">
+          <span class="sips-btn-content">
+            <span class="sips-btn-icon" style="background: rgba(249, 115, 22, 0.1); color: #f97316;">ðŸ </span>
+            <span class="sips-btn-text">Consultar Direccion</span>
+          </span>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
+
+        <a href="https://www.iberdrola.es/gestiones/facturas/ver-y-pagar/consultar-y-pagar" target="_blank" class="sips-btn">
+          <span class="sips-btn-content">
+            <span class="sips-btn-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">ðŸ“„</span>
+            <span class="sips-btn-text">Consultar Facturas Iberdrola</span>
+          </span>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+        </a>
       </div>
     </div>
-
-    <!-- ══════ RANKING ══════ -->
+    
+    <!-- â•â•â•â•â•â• RANKING â•â•â•â•â•â• -->
     <div class="panel" id="panel-ranking">
       <div class="panel-restricted-message">
         <div style="background: rgba(224, 123, 0, 0.1); color: #e07b00; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 8px;">
@@ -6978,15 +7039,17 @@ async function copyShiftReport(shift) {
   const shiftTitle = shift === 'manana' ? 'MA&Ntilde;ANA' : 'TARDE';
   
   // Crear contenedor temporal de la tarjeta (diseño premium idéntico a la web)
-  const reportDiv = document.createElement('div');
+    const reportDiv = document.createElement('div');
   reportDiv.style.width = '460px';
-  reportDiv.style.padding = '30px';
-  reportDiv.style.borderRadius = '20px';
-  reportDiv.style.background = '#FFFAF6'; // Renosur Soft Cream / Warm off-white
-  reportDiv.style.border = '2px solid #f3ede7';
-  reportDiv.style.boxShadow = '0 12px 32px rgba(32, 40, 84, 0.08)';
-  reportDiv.style.color = '#202854'; // Renosur Deep Navy Blue
-  reportDiv.style.fontFamily = "'Outfit', 'Inter', sans-serif";
+  reportDiv.style.padding = '32px';
+  reportDiv.style.borderRadius = '24px';
+  reportDiv.style.background = 'rgba(25, 32, 68, 0.72)'; // Translucent dark navy blue
+  reportDiv.style.border = '1px solid rgba(255, 255, 255, 0.15)';
+  reportDiv.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
+  reportDiv.style.backdropFilter = 'blur(20px)';
+  reportDiv.style.webkitBackdropFilter = 'blur(20px)';
+  reportDiv.style.color = '#ffffff';
+  reportDiv.style.fontFamily = "'Outfit', 'Inter', -apple-system, sans-serif";
   reportDiv.style.position = 'absolute';
   reportDiv.style.left = '-9999px';
   reportDiv.style.top = '0';
@@ -7002,21 +7065,21 @@ async function copyShiftReport(shift) {
     const shortName = formatName(nombre);
     
     rowsHtml += `
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1.5px solid #f3ede7; gap: 12px;">
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); gap: 12px;">
         <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-          <span style="font-size: 14px; font-weight: 800; color: #357fbf; width: 22px; text-align: left;">#${index + 1}</span>
+          <span style="font-size: 14px; font-weight: 800; color: #60a5fa; width: 22px; text-align: left;">#${index + 1}</span>
           <div style="display: flex; flex-direction: column; min-width: 0;">
-            <span style="font-size: 14px; font-weight: 700; color: #202854; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${shortName}</span>
-            <span style="font-size: 11px; color: #8391a0; font-weight: 600;">Objetivo: ${obj.toFixed(1)}</span>
+            <span style="font-size: 14px; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${shortName}</span>
+            <span style="font-size: 11px; color: rgba(255, 255, 255, 0.5); font-weight: 600;">Objetivo: ${obj.toFixed(1)}</span>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;">
           <div style="text-align: right;">
-            <div style="font-size: 15px; font-weight: 800; color: ${cumple ? '#059669' : '#202854'};">
-              ${pts.toFixed(1)} <span style="font-size: 11px; font-weight: 400; color: #8391a0;">pts</span>${pend > 0 ? ` <span style="font-size: 13px; font-weight: 700; color: #e08034;">(${pend})</span>` : ''}
+            <div style="font-size: 15px; font-weight: 800; color: ${cumple ? '#10b981' : '#ffffff'};">
+              ${pts.toFixed(1)} <span style="font-size: 11px; font-weight: 400; color: rgba(255, 255, 255, 0.5);">pts</span>${pend > 0 ? ` <span style="font-size: 13px; font-weight: 700; color: #f97316;">(${pend})</span>` : ''}
             </div>
           </div>
-          <div style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: ${cumple ? 'rgba(5, 150, 105, 0.1)' : 'rgba(32, 40, 84, 0.04)'}; color: ${cumple ? '#059669' : '#8391a0'}; font-size: 12px; font-weight: 800;">
+          <div style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: ${cumple ? 'rgba(16, 185, 129, 0.16)' : 'rgba(255, 255, 255, 0.06)'}; color: ${cumple ? '#10b981' : '#a0aec0'}; font-size: 12px; font-weight: 800;">
             ${cumple ? '\u2713' : '\u2022'}
           </div>
         </div>
@@ -7025,18 +7088,18 @@ async function copyShiftReport(shift) {
   });
   
   reportDiv.innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; border-bottom: 2px solid #f3ede7; padding-bottom: 18px;">
-      <img src="logo-renosur-black.png" alt="Renosur" style="height: 38px; width: auto; object-fit: contain; display: block;" />
-      <div style="height: 24px; width: 2px; background: #e6ded6;"></div>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 18px;">
+      <img src="logo-renosur.png" alt="Renosur" style="height: 38px; width: auto; object-fit: contain; display: block;" />
+      <div style="height: 24px; width: 1.5px; background: rgba(255, 255, 255, 0.15);"></div>
       <div style="text-align: left;">
-        <div style="font-size: 16px; font-weight: 900; letter-spacing: -0.3px; color: #357fbf; text-transform: uppercase;">RECUENTO TURNO ${shiftTitle}</div>
-        <div style="font-size: 11px; color: #8391a0; font-weight: 600; margin-top: 1px;">${dateStr}</div>
+        <div style="font-size: 16px; font-weight: 900; letter-spacing: -0.3px; color: #ffffff; text-transform: uppercase;">RECUENTO TURNO ${shiftTitle}</div>
+        <div style="font-size: 11px; color: rgba(255, 255, 255, 0.6); font-weight: 600; margin-top: 1px;">${dateStr}</div>
       </div>
     </div>
     <div style="display: flex; flex-direction: column;">
-      ${rowsHtml || '<div style="text-align:center; color:#8391a0; padding: 20px; font-weight: 600;">No hay comerciales activos en este turno hoy.</div>'}
+      ${rowsHtml || '<div style="text-align:center; color:rgba(255, 255, 255, 0.4); padding: 20px; font-weight: 600;">No hay comerciales activos en este turno hoy.</div>'}
     </div>
-    <div style="text-align: center; margin-top: 20px; font-size: 9.5px; color: #8391a0; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;">
+    <div style="text-align: center; margin-top: 20px; font-size: 9.5px; color: rgba(255, 255, 255, 0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;">
       Generado por Asistente Comercial
     </div>
   `;
@@ -8244,13 +8307,13 @@ function printCompanyOffer(key) {
     `;
   }
 
-  let html = `
-    <div class="print-header" style="margin-bottom: 12px; padding-bottom: 8px; display: flex; align-items: center; justify-content: flex-start; gap: 14px; border-bottom: 2px solid var(--blue);">
+    let html = `
+    <div class="print-header" style="margin-bottom: 16px; padding-bottom: 10px; display: flex; align-items: center; justify-content: flex-start; gap: 16px; border-bottom: 2px solid var(--blue);">
       <div class="print-logo-area">
-        <img src="data:image/png;base64,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" alt="Renosur Grupo" style="height: 56px; width: auto; object-fit: contain; display: block;" />
+        <img src="logo-renosur-black.png" alt="Renosur Grupo" style="height: 64px; width: auto; object-fit: contain; display: block;" />
       </div>
       <div class="print-title-area" style="text-align: left;">
-        <div style="font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 0;">¿Cómo realizamos su estudio?</div>
+        <div style="font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 0;">¿Cómo realizamos su estudio?</div>
       </div>
     </div>
     
