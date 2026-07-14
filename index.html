@@ -4978,18 +4978,18 @@ input:focus, select:focus, textarea:focus {
     <div class="panel" id="panel-sips">
       <style>
         .sips-btn-container {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
-          gap: 16px;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
           width: 100%;
-          max-width: 900px;
+          max-width: 600px;
           margin: 20px 0;
         }
         .sips-btn {
           display: flex;
           align-items: center;
           justify-content: space-between;
-          padding: 16px 20px;
+          padding: 14px 20px;
           border-radius: var(--rs);
           font-size: 14.5px;
           font-weight: 700;
@@ -5000,32 +5000,31 @@ input:focus, select:focus, textarea:focus {
           border: 1px solid var(--border);
           color: var(--text);
           text-decoration: none !important;
-          box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+          box-shadow: 0 1px 2px rgba(0,0,0,0.02);
         }
         .sips-btn:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 8px 16px rgba(32, 40, 84, 0.06);
+          transform: translateX(6px);
+          box-shadow: 0 6px 16px rgba(32, 40, 84, 0.05);
           border-color: var(--blue) !important;
           color: var(--blue) !important;
         }
         .sips-btn-content {
           display: flex;
           align-items: center;
-          gap: 12px;
+          gap: 14px;
           min-width: 0;
         }
-        .sips-btn-icon {
-          font-size: 20px;
-          flex-shrink: 0;
+        .sips-btn-icon-box {
           width: 36px;
           height: 36px;
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 8px;
+          border-radius: 10px;
+          flex-shrink: 0;
           transition: all 0.2s;
         }
-        .sips-btn:hover .sips-btn-icon {
+        .sips-btn:hover .sips-btn-icon-box {
           transform: scale(1.05);
         }
         .sips-btn-text {
@@ -5039,7 +5038,7 @@ input:focus, select:focus, textarea:focus {
           transition: transform 0.2s;
         }
         .sips-btn:hover .sips-btn-arrow {
-          transform: translate(2px, -2px);
+          transform: translateX(2px);
           color: var(--blue);
         }
       </style>
@@ -5047,79 +5046,96 @@ input:focus, select:focus, textarea:focus {
       <div class="sips-btn-container">
         <a href="https://web.whatsapp.com/" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(37, 211, 102, 0.1); color: #25D366;">ðŸ’¬</span>
+            <span class="sips-btn-icon-box" style="background: rgba(37, 211, 102, 0.1); color: #25D366;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            </span>
             <span class="sips-btn-text">Whatsapp Web</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
 
         <a href="https://evaria.miga.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">ðŸ”‘</span>
+            <span class="sips-btn-icon-box" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            </span>
             <span class="sips-btn-text">Evaria</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
 
         <a href="https://renosur.miga.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(53, 127, 191, 0.1); color: #357fbf;">â˜€ï¸</span>
+            <span class="sips-btn-icon-box" style="background: rgba(53, 127, 191, 0.1); color: #357fbf;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            </span>
             <span class="sips-btn-text">Renosur</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
 
         <a href="https://hostezadis.omniasoluciones.es/" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">ðŸ¢</span>
+            <span class="sips-btn-icon-box" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+            </span>
             <span class="sips-btn-text">Hostezadis</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
 
         <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">ðŸ”‹</span>
+            <span class="sips-btn-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2" ry="2"></rect><line x1="23" y1="11" x2="23" y2="13"></line><line x1="8" y1="6" x2="8" y2="18"></line></svg>
+            </span>
             <span class="sips-btn-text">Energiza</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
 
         <a href="https://rrhh.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">â±ï¸</span>
+            <span class="sips-btn-icon-box" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            </span>
             <span class="sips-btn-text">OnTime</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
 
         <a href="https://fortuluz.es/calculadora" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">âš¡</span>
+            <span class="sips-btn-icon-box" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="8" y1="14" x2="8" y2="18"></line></svg>
+            </span>
             <span class="sips-btn-text">Mirar Potencia</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
 
         <a href="https://www.naturgy.es/hogar/luz/tarifa_plana_zen_luz" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(249, 115, 22, 0.1); color: #f97316;">ðŸ </span>
+            <span class="sips-btn-icon-box" style="background: rgba(249, 115, 22, 0.1); color: #f97316;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            </span>
             <span class="sips-btn-text">Consultar Direccion</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
 
         <a href="https://www.iberdrola.es/gestiones/facturas/ver-y-pagar/consultar-y-pagar" target="_blank" class="sips-btn">
           <span class="sips-btn-content">
-            <span class="sips-btn-icon" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">ðŸ“„</span>
+            <span class="sips-btn-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            </span>
             <span class="sips-btn-text">Consultar Facturas Iberdrola</span>
           </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </a>
       </div>
     </div>
     
-    <!-- â•â•â•â•â•â• RANKING â•â•â•â•â•â• -->
     <div class="panel" id="panel-ranking">
       <div class="panel-restricted-message">
         <div style="background: rgba(224, 123, 0, 0.1); color: #e07b00; width: 64px; height: 64px; display: flex; align-items: center; justify-content: center; border-radius: 50%; margin-bottom: 8px;">
