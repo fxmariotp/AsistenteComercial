@@ -7052,19 +7052,16 @@ async function copyShiftReport(shift) {
   
   const now = new Date();
   const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-  const shiftTitle = shift === 'manana' ? 'MA&Ntilde;ANA' : 'TARDE';
+    const shiftTitle = shift === 'manana' ? 'MA\u00D1ANA' : 'TARDE';
   
-  // Crear contenedor temporal de la tarjeta (diseño premium idéntico a la web)
-    const reportDiv = document.createElement('div');
-  reportDiv.style.width = '460px';
-  reportDiv.style.padding = '32px';
+  const reportDiv = document.createElement('div');
+  reportDiv.style.width = '480px';
+  reportDiv.style.padding = '32px 28px';
   reportDiv.style.borderRadius = '24px';
-  reportDiv.style.background = 'rgba(25, 32, 68, 0.72)'; // Translucent dark navy blue
-  reportDiv.style.border = '1px solid rgba(255, 255, 255, 0.15)';
-  reportDiv.style.boxShadow = '0 20px 50px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.2)';
-  reportDiv.style.backdropFilter = 'blur(20px)';
-  reportDiv.style.webkitBackdropFilter = 'blur(20px)';
-  reportDiv.style.color = '#ffffff';
+  reportDiv.style.background = '#fdfbf7'; // Warm off-white/light cream background
+  reportDiv.style.border = '1px solid #efebe4'; // Soft border matching image
+  reportDiv.style.boxShadow = '0 12px 40px rgba(0, 0, 0, 0.04)';
+  reportDiv.style.color = '#202854'; // Dark navy text color
   reportDiv.style.fontFamily = "'Outfit', 'Inter', -apple-system, sans-serif";
   reportDiv.style.position = 'absolute';
   reportDiv.style.left = '-9999px';
@@ -7081,22 +7078,22 @@ async function copyShiftReport(shift) {
     const shortName = formatName(nombre);
     
     rowsHtml += `
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid rgba(255, 255, 255, 0.08); gap: 12px;">
-        <div style="display: flex; align-items: center; gap: 10px; min-width: 0; flex: 1;">
-          <span style="font-size: 14px; font-weight: 800; color: #60a5fa; width: 22px; text-align: left;">#${index + 1}</span>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 16px 0; border-bottom: 1px solid #f4f0e9; gap: 12px;">
+        <div style="display: flex; align-items: center; gap: 12px; min-width: 0; flex: 1;">
+          <span style="font-size: 15px; font-weight: 800; color: #1d70b8; width: 26px; text-align: left;">#${index + 1}</span>
           <div style="display: flex; flex-direction: column; min-width: 0;">
-            <span style="font-size: 14px; font-weight: 700; color: #ffffff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">${shortName}</span>
-            <span style="font-size: 11px; color: rgba(255, 255, 255, 0.5); font-weight: 600;">Objetivo: ${obj.toFixed(1)}</span>
+            <span style="font-size: 15.5px; font-weight: 700; color: #202854; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; letter-spacing: -0.2px;">${shortName}</span>
+            <span style="font-size: 11.5px; color: #8391a0; font-weight: 600; margin-top: 2px;">Objetivo: ${obj.toFixed(1)}</span>
           </div>
         </div>
         <div style="display: flex; align-items: center; gap: 14px; flex-shrink: 0;">
           <div style="text-align: right;">
-            <div style="font-size: 15px; font-weight: 800; color: ${cumple ? '#10b981' : '#ffffff'};">
-              ${pts.toFixed(1)} <span style="font-size: 11px; font-weight: 400; color: rgba(255, 255, 255, 0.5);">pts</span>${pend > 0 ? ` <span style="font-size: 13px; font-weight: 700; color: #f97316;">(${pend})</span>` : ''}
+            <div style="font-size: 15.5px; font-weight: 800; color: ${cumple ? '#1a7a3c' : '#202854'};">
+              ${pts.toFixed(1)} <span style="font-size: 11px; font-weight: 500; color: #8391a0;">pts</span>${pend > 0 ? ` <span style="font-size: 13.5px; font-weight: 700; color: #ea580c;">(${pend})</span>` : ''}
             </div>
           </div>
-          <div style="width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: ${cumple ? 'rgba(16, 185, 129, 0.16)' : 'rgba(255, 255, 255, 0.06)'}; color: ${cumple ? '#10b981' : '#a0aec0'}; font-size: 12px; font-weight: 800;">
-            ${cumple ? '\u2713' : '\u2022'}
+          <div style="width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: ${cumple ? '#e2f2e7' : '#f1f0ec'}; color: ${cumple ? '#15803d' : '#8391a0'}; font-size: 13px; font-weight: 800;">
+            ${cumple ? '&#10003;' : '&#8226;'}
           </div>
         </div>
       </div>
@@ -7104,18 +7101,18 @@ async function copyShiftReport(shift) {
   });
   
   reportDiv.innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 20px; border-bottom: 1px solid rgba(255, 255, 255, 0.12); padding-bottom: 18px;">
-      <img src="logo-renosur.png" alt="Renosur" style="height: 38px; width: auto; object-fit: contain; display: block;" />
-      <div style="height: 24px; width: 1.5px; background: rgba(255, 255, 255, 0.15);"></div>
+    <div style="display: flex; align-items: center; justify-content: flex-start; margin-bottom: 24px; border-bottom: 1px solid #f4f0e9; padding-bottom: 20px;">
+      <img src="logo-renosur-black.png" alt="Renosur" style="height: 34px; width: auto; object-fit: contain; display: block;" />
+      <div style="height: 28px; width: 1.5px; background: #efebe4; margin: 0 16px;"></div>
       <div style="text-align: left;">
-        <div style="font-size: 16px; font-weight: 900; letter-spacing: -0.3px; color: #ffffff; text-transform: uppercase;">RECUENTO TURNO ${shiftTitle}</div>
-        <div style="font-size: 11px; color: rgba(255, 255, 255, 0.6); font-weight: 600; margin-top: 1px;">${dateStr}</div>
+        <div style="font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; color: #1d70b8; text-transform: uppercase;">RECUENTO TURNO ${shiftTitle}</div>
+        <div style="font-size: 11.5px; color: #8391a0; font-weight: 600; margin-top: 2px;">${dateStr}</div>
       </div>
     </div>
     <div style="display: flex; flex-direction: column;">
-      ${rowsHtml || '<div style="text-align:center; color:rgba(255, 255, 255, 0.4); padding: 20px; font-weight: 600;">No hay comerciales activos en este turno hoy.</div>'}
+      ${rowsHtml || '<div style="text-align:center; color:#8391a0; padding: 20px; font-weight: 600;">No hay comerciales activos en este turno hoy.</div>'}
     </div>
-    <div style="text-align: center; margin-top: 20px; font-size: 9.5px; color: rgba(255, 255, 255, 0.4); font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;">
+    <div style="text-align: center; margin-top: 24px; font-size: 9.5px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">
       Generado por Asistente Comercial
     </div>
   `;
