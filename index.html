@@ -3955,24 +3955,8 @@ input:focus, select:focus, textarea:focus {
             </div>
           </div>
 
-          <!-- Card 5: Condiciones -->
-          <div class="db-tool-card" style="--card-color: #e07b00; --card-color-bg: rgba(224, 123, 0, 0.08); --card-color-alpha: rgba(224, 123, 0, 0.05);" onclick="showPanel('condiciones', document.getElementById('btn-nav-condiciones'))">
-            <div class="db-tool-card-content">
-              <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-              </div>
-              <div class="db-tool-info">
-                <h4 class="db-tool-title">Condiciones</h4>
-                <p class="db-tool-desc">Consulta los precios de energía actualizados, tarifas reguladas, fijas e indexadas para 2026.</p>
-              </div>
-            </div>
-            <div class="db-tool-action">
-              Ver tarifas <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </div>
-
-          <!-- Card 6: Calendario -->
-          <div class="db-tool-card" style="--card-color: #10b981; --card-color-bg: rgba(16, 185, 129, 0.08); --card-color-alpha: rgba(16, 185, 129, 0.05);" onclick="showPanel('calendario', document.getElementById('btn-nav-calendario'))">
+          <!-- Card 5: Calendario (naranja abajo de ranking de ventas) -->
+          <div class="db-tool-card" style="--card-color: #e07b00; --card-color-bg: rgba(224, 123, 0, 0.08); --card-color-alpha: rgba(224, 123, 0, 0.05);" onclick="showPanel('calendario', document.getElementById('btn-nav-calendario'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -3987,7 +3971,23 @@ input:focus, select:focus, textarea:focus {
             </div>
           </div>
 
-                    <!-- Card 7: Enlaces Trabajo -->
+          <!-- Card 6: Condiciones (verde abajo de agenda personal) -->
+          <div class="db-tool-card" style="--card-color: #10b981; --card-color-bg: rgba(16, 185, 129, 0.08); --card-color-alpha: rgba(16, 185, 129, 0.05);" onclick="showPanel('condiciones', document.getElementById('btn-nav-condiciones'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Condiciones</h4>
+                <p class="db-tool-desc">Consulta los precios de energía actualizados, tarifas reguladas, fijas e indexadas para 2026.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Ver tarifas <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
+          <!-- Card 7: Enlaces Trabajo -->
           <div class="db-tool-card" style="--card-color: #1a7a3c; --card-color-bg: rgba(26, 122, 60, 0.08); --card-color-alpha: rgba(26, 122, 60, 0.05);" onclick="showPanel('sips', document.getElementById('btn-nav-sips'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
@@ -3995,7 +3995,7 @@ input:focus, select:focus, textarea:focus {
               </div>
               <div class="db-tool-info">
                 <h4 class="db-tool-title">Enlaces Trabajo</h4>
-                <p class="db-tool-desc">Enlaces cosas trabajo: WhatsApp, Evaria, Renosur, Hostezadis, Energiza, OnTime, calculadora y mÃ¡s.</p>
+                <p class="db-tool-desc">Enlaces cosas trabajo: WhatsApp, Evaria, Renosur, Hostezadis, Energiza, OnTime, calculadora y mas.</p>
               </div>
             </div>
             <div class="db-tool-action">
@@ -4022,8 +4022,8 @@ input:focus, select:focus, textarea:focus {
         </div>
       </div>
     </div>
-
-    <!-- ══════ SCRIPTS ══════ -->
+    
+    <!-- â•â•â•â•â•â• SCRIPTS â•â•â•â•â•â• -->
     <div class="panel" id="panel-scripts">
       <div class="cia-tabs">
         <button class="ctab active" id="ctab-naturgy" onclick="switchCia(&#39;naturgy&#39;)" style="border-color:#E85D3A;color:#E85D3A"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
