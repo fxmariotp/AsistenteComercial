@@ -8656,6 +8656,45 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
+let agentStatusCheckInterval = null;
+
+function startAgentStatusCheck() {
+  if (agentStatusCheckInterval) clearInterval(agentStatusCheckInterval);
+  if (!currentAgentDni) return;
+  
+  agentStatusCheckInterval = setInterval(async () => {
+    if (!currentAgentDni) return;
+    if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+      try {
+        const { data, error } = await supabaseClient
+          .from('agentes_roles')
+          .select('rol')
+          .eq('dni', currentAgentDni)
+          .single();
+          
+        if (!error && data) {
+          let role = data.rol;
+          let status = 'active';
+          if (role && role.includes(':')) {
+            const parts = role.split(':');
+            const lastPart = parts[parts.length - 1];
+            if (lastPart === 'active' || lastPart === 'inactive') {
+              status = lastPart;
+            }
+          }
+          if (status === 'inactive') {
+            clearInterval(agentStatusCheckInterval);
+            alert('Tu cuenta de agente ha sido desactivada por la gerencia. Se cerrara la sesion.');
+            logout();
+          }
+        }
+      } catch (e) {
+        console.error("Error in real-time status check:", e);
+      }
+    }
+  }, 5000);
+}
+
 function loadSession() {
   const dni = localStorage.getItem('comercial_dni');
   const name = localStorage.getItem('comercial_nombre');
@@ -8697,6 +8736,10 @@ function loadSession() {
 }
 
 function logout() {
+  if (typeof agentStatusCheckInterval !== 'undefined' && agentStatusCheckInterval) {
+    clearInterval(agentStatusCheckInterval);
+    agentStatusCheckInterval = null;
+  }
   if (typeof clearComparisonInputs === 'function') {
     clearComparisonInputs();
   }
@@ -9312,6 +9355,9 @@ function onLoginSuccess() {
     const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
     gerenteSec.style.display = userRole === 'gerente' ? 'block' : 'none';
   }
+  
+  // 9. Iniciar verificacion de estado activo/inactivo en tiempo real
+  startAgentStatusCheck();
 }
 
 function updateGreeting() {
