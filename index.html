@@ -4951,12 +4951,12 @@ input:focus, select:focus, textarea:focus {
         </div>
       </div>
 
-      <!-- Password Management Section for Gerencia -->
+      <!-- Password and Activity Management Section for Gerencia -->
       <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; margin-top: 24px;">
         <div style="margin-bottom: 20px;">
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Gesti&oacute;n de Contrase&ntilde;as</h3>
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Gesti&oacute;n de Contrase&ntilde;as y Actividad</h3>
           <p style="font-size: 13.5px; color: var(--t3); margin: 0;">
-            Visualiza y modifica las contrase&ntilde;as de los agentes del sistema. La contrase&ntilde;a por defecto es el DNI del agente.
+            Visualiza y modifica las contrase&ntilde;as y el estado de actividad de los agentes. Si desactivas a un agente, no podr&aacute; iniciar sesi&oacute;n.
           </p>
         </div>
         
@@ -4967,7 +4967,8 @@ input:focus, select:focus, textarea:focus {
                 <th style="padding: 10px 14px; font-weight: 700;">Nombre del agente</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Usuario</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Contrase&ntilde;a</th>
-                <th style="padding: 10px 14px; font-weight: 700;">Acci&oacute;n</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Estado</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Acciones</th>
               </tr>
             </thead>
             <tbody id="tbl-gerente-passwords-body">
@@ -8740,6 +8741,7 @@ function logout() {
 
 let AGENT_ROLES = {};
 let AGENT_PASSWORDS = {};
+let AGENT_STATUSES = {};
 try {
   const cachedRoles = localStorage.getItem('renosur_agent_roles');
   if (cachedRoles) {
@@ -8747,13 +8749,21 @@ try {
     Object.keys(rawRoles).forEach(dni => {
       let role = rawRoles[dni];
       let pwd = dni;
+      let status = 'active';
       if (role && role.includes(':')) {
         const parts = role.split(':');
         role = parts[0];
-        pwd = parts.slice(1).join(':');
+        const lastPart = parts[parts.length - 1];
+        if (lastPart === 'active' || lastPart === 'inactive') {
+          status = lastPart;
+          pwd = parts.slice(1, parts.length - 1).join(':') || dni;
+        } else {
+          pwd = parts.slice(1).join(':');
+        }
       }
       AGENT_ROLES[dni] = role;
       AGENT_PASSWORDS[dni] = pwd;
+      AGENT_STATUSES[dni] = status;
     });
   }
 } catch (e) {
@@ -8786,13 +8796,21 @@ async function fetchAgentRolesFromCloud() {
         rawRolesToCache[row.dni] = row.rol;
         let role = row.rol;
         let password = row.dni;
+        let status = 'active';
         if (role && role.includes(':')) {
           const parts = role.split(':');
           role = parts[0];
-          password = parts.slice(1).join(':');
+          const lastPart = parts[parts.length - 1];
+          if (lastPart === 'active' || lastPart === 'inactive') {
+            status = lastPart;
+            password = parts.slice(1, parts.length - 1).join(':') || row.dni;
+          } else {
+            password = parts.slice(1).join(':');
+          }
         }
         AGENT_ROLES[row.dni] = role;
         AGENT_PASSWORDS[row.dni] = password;
+        AGENT_STATUSES[row.dni] = status;
       });
       // Force hardcoded manager roles
       AGENT_ROLES['77860623B'] = 'gerente';
@@ -8831,12 +8849,15 @@ async function saveAgentRoleToCloud(dni, rol) {
   const rawRoles = {};
   Object.keys(AGENT_ROLES).forEach(k => {
     const pwd = AGENT_PASSWORDS[k];
-    rawRoles[k] = AGENT_ROLES[k] + (pwd && pwd !== k ? ':' + pwd : '');
+    const status = AGENT_STATUSES[k] || 'active';
+    rawRoles[k] = AGENT_ROLES[k] + (pwd && pwd !== k ? ':' + pwd : '') + (status !== 'active' ? ':' + status : '');
   });
   localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
   if (!supabaseClient) return;
   try {
-    const dbValue = rol + (AGENT_PASSWORDS[dni] && AGENT_PASSWORDS[dni] !== dni ? ':' + AGENT_PASSWORDS[dni] : '');
+    const pwd = AGENT_PASSWORDS[dni];
+    const status = AGENT_STATUSES[dni] || 'active';
+    const dbValue = rol + ':' + (pwd || dni) + ':' + status;
     await supabaseClient.from('agentes_roles').upsert({ dni, rol: dbValue });
   } catch (e) {
     console.error("Error saving agent role to cloud", e);
@@ -8906,6 +8927,7 @@ function initGruposAgentes() {
     let pwdHtml = '';
     sortedComerciales.forEach(agent => {
       const currentPwd = AGENT_PASSWORDS[agent.dni] || agent.dni;
+      const currentStatus = AGENT_STATUSES[agent.dni] || 'active';
       pwdHtml += `
         <tr style="border-bottom: 1px solid var(--border); font-size: 13px;">
           <td style="padding: 12px 14px; font-weight: 600; color: var(--text);">${agent.name}</td>
@@ -8914,8 +8936,16 @@ function initGruposAgentes() {
             <input type="text" id="pwd-input-${agent.dni}" value="${currentPwd}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; width: 100%; max-width: 200px; outline: none;">
           </td>
           <td style="padding: 12px 14px;">
-            <button id="btn-save-pwd-${agent.dni}" onclick="saveAgentPasswordByGerente('${agent.dni}')" style="background: var(--blue); color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; transition: opacity 0.2s;">
+            <span id="status-badge-${agent.dni}" style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; ${currentStatus === 'inactive' ? 'background: rgba(239, 68, 68, 0.15); color: #ef4444;' : 'background: rgba(16, 185, 129, 0.15); color: #10b981;'}">
+              ${currentStatus === 'inactive' ? 'Inactivo' : 'Activo'}
+            </span>
+          </td>
+          <td style="padding: 12px 14px; display: flex; gap: 8px;">
+            <button id="btn-save-pwd-${agent.dni}" onclick="saveAgentPasswordByGerente('${agent.dni}')" style="background: var(--blue); color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
               Guardar
+            </button>
+            <button id="btn-toggle-status-${agent.dni}" onclick="toggleAgentStatusByGerente('${agent.dni}')" style="${currentStatus === 'inactive' ? 'background: var(--green);' : 'background: #f97316;'} color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
+              ${currentStatus === 'inactive' ? 'Activar' : 'Desactivar'}
             </button>
           </td>
         </tr>
@@ -8951,7 +8981,8 @@ async function saveAllAgentRoles() {
   const rawRoles = {};
   Object.keys(AGENT_ROLES).forEach(k => {
     const pwd = AGENT_PASSWORDS[k];
-    rawRoles[k] = AGENT_ROLES[k] + (pwd && pwd !== k ? ':' + pwd : '');
+    const status = AGENT_STATUSES[k] || 'active';
+    rawRoles[k] = AGENT_ROLES[k] + ':' + (pwd || k) + ':' + status;
   });
   localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
   
@@ -8960,8 +8991,9 @@ async function saveAllAgentRoles() {
   if (supabaseClient) {
     try {
       const upsertRows = Object.keys(tempRoles).map(dni => {
-        const pwd = AGENT_PASSWORDS[dni];
-        const dbValue = tempRoles[dni] + (pwd && pwd !== dni ? ':' + pwd : '');
+        const pwd = AGENT_PASSWORDS[dni] || dni;
+        const status = AGENT_STATUSES[dni] || 'active';
+        const dbValue = tempRoles[dni] + ':' + pwd + ':' + status;
         return {
           dni,
           rol: dbValue
@@ -9058,7 +9090,8 @@ async function saveNewPassword(event) {
   
   let success = true;
   const currentRole = AGENT_ROLES[currentAgentDni] || 'comercial';
-  const newRoleVal = currentRole + ':' + newPwd;
+  const currentStatus = AGENT_STATUSES[currentAgentDni] || 'active';
+  const newRoleVal = currentRole + ':' + newPwd + ':' + currentStatus;
   
   if (supabaseClient) {
     try {
@@ -9107,7 +9140,8 @@ async function saveAgentPasswordByGerente(dni) {
   btn.textContent = 'Guardando...';
   
   const currentRole = AGENT_ROLES[dni] || 'comercial';
-  const newRoleVal = currentRole + ':' + newPwd;
+  const currentStatus = AGENT_STATUSES[dni] || 'active';
+  const newRoleVal = currentRole + ':' + newPwd + ':' + currentStatus;
   
   let success = true;
   if (supabaseClient) {
@@ -9135,6 +9169,61 @@ async function saveAgentPasswordByGerente(dni) {
     alert('\u00A1Contrase\u00f1a del agente guardada con \u00E9xito!');
   } else {
     alert('Error al guardar la contrase\u00f1a en la base de datos.');
+  }
+}
+
+async function toggleAgentStatusByGerente(dni) {
+  const btn = document.getElementById('btn-toggle-status-' + dni);
+  if (!btn) return;
+  
+  const currentStatus = AGENT_STATUSES[dni] || 'active';
+  const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+  
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  btn.textContent = 'Guardando...';
+  
+  const currentRole = AGENT_ROLES[dni] || 'comercial';
+  const currentPwd = AGENT_PASSWORDS[dni] || dni;
+  const newRoleVal = currentRole + ':' + currentPwd + ':' + newStatus;
+  
+  let success = true;
+  if (supabaseClient) {
+    try {
+      const { error } = await supabaseClient
+        .from('agentes_roles')
+        .upsert({ dni, rol: newRoleVal });
+      
+      if (error) {
+        console.error("Error updating status in Supabase:", error);
+        success = false;
+      }
+    } catch (e) {
+      console.error("Exception updating status in Supabase:", e);
+      success = false;
+    }
+  }
+  
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  
+  if (success) {
+    AGENT_STATUSES[dni] = newStatus;
+    alert('\u00A1Estado del agente actualizado con \u00E9xito!');
+    
+    // Refresh table row elements in caliente
+    const badge = document.getElementById('status-badge-' + dni);
+    if (badge) {
+      badge.textContent = newStatus === 'inactive' ? 'Inactivo' : 'Activo';
+      badge.style.cssText = newStatus === 'inactive' 
+        ? 'padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.15); color: #ef4444;' 
+        : 'padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(16, 185, 129, 0.15); color: #10b981;';
+    }
+    
+    btn.textContent = newStatus === 'inactive' ? 'Activar' : 'Desactivar';
+    btn.style.background = newStatus === 'inactive' ? 'var(--green)' : '#f97316';
+  } else {
+    alert('Error al guardar el estado en la base de datos.');
   }
 }
 

@@ -239,6 +239,7 @@ async function attemptLogin() {
   submitBtn.textContent = "Verificando...";
   
   let validPassword = inputDni; // default is DNI
+  let userStatus = "active";
   
   if (supabaseClient) {
     try {
@@ -251,7 +252,14 @@ async function attemptLogin() {
       if (!error && data && data.rol) {
         const roleStr = data.rol;
         if (roleStr.includes(':')) {
-          validPassword = roleStr.split(':').slice(1).join(':');
+          const parts = roleStr.split(':');
+          const lastPart = parts[parts.length - 1];
+          if (lastPart === 'active' || lastPart === 'inactive') {
+            userStatus = lastPart;
+            validPassword = parts.slice(1, parts.length - 1).join(':') || inputDni;
+          } else {
+            validPassword = parts.slice(1).join(':');
+          }
         }
       }
     } catch (e) {
@@ -262,13 +270,18 @@ async function attemptLogin() {
   submitBtn.disabled = false;
   submitBtn.textContent = "Acceder";
   
+  if (userStatus === 'inactive') {
+    errorMsg.textContent = "Tu cuenta de agente est\u00e1 desactivada. Contacta con gerencia.";
+    return;
+  }
+  
   if (inputPass === validPassword) {
     localStorage.setItem('comercial_dni', inputDni);
     localStorage.setItem('comercial_nombre', matchedName);
     errorMsg.textContent = "";
     window.location.href = 'index.html';
   } else {
-    errorMsg.textContent = "La contraseña introducida es incorrecta.";
+    errorMsg.textContent = "La contrase\u00f1a introducida es incorrecta.";
   }
 }
 
