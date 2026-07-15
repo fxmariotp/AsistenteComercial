@@ -8739,10 +8739,16 @@ try {
 } catch (e) {
   console.error("Error loading cached agent roles", e);
 }
-// Force hardcoded manager roles
-AGENT_ROLES['77860623B'] = 'gerente';
-AGENT_ROLES['PAPAEVARIA'] = 'gerente';
-AGENT_ROLES['MAMAEVARIA'] = 'gerente';
+// Default manager roles if undefined
+if (AGENT_ROLES['77860623B'] === undefined) {
+  AGENT_ROLES['77860623B'] = 'gerente';
+}
+if (AGENT_ROLES['PAPAEVARIA'] === undefined) {
+  AGENT_ROLES['PAPAEVARIA'] = 'gerente';
+}
+if (AGENT_ROLES['MAMAEVARIA'] === undefined) {
+  AGENT_ROLES['MAMAEVARIA'] = 'gerente';
+}
 
 // Preasignar rol a Ana Rocio Galera Morillo a Trabajadores Evaria
 if (AGENT_ROLES['47539234M'] === undefined) {
@@ -8782,9 +8788,7 @@ async function fetchAgentRolesFromCloud() {
         AGENT_PASSWORDS[row.dni] = password;
         AGENT_STATUSES[row.dni] = status;
       });
-      // Force hardcoded manager roles
-      AGENT_ROLES['77860623B'] = 'gerente';
-      AGENT_ROLES['PAPAEVARIA'] = 'gerente';
+
       
       localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRolesToCache));
       
@@ -8871,39 +8875,47 @@ function initGruposAgentes() {
   if (!tbody) return;
   
   let html = '';
-  const sortedComerciales = Object.keys(COMERCIALES).map(dni => ({
-    dni,
-    name: COMERCIALES[dni]
-  })).sort((a, b) => a.name.localeCompare(b.name));
   
-  sortedComerciales.forEach(agent => {
-    const isHardcodedGerente = (agent.dni === '77860623B' || agent.dni === 'PAPAEVARIA' || agent.dni === 'MAMAEVARIA');
-    const currentRol = isHardcodedGerente ? 'gerente' : (AGENT_ROLES[agent.dni] || 'comercial');
-    const currentPwd = AGENT_PASSWORDS[agent.dni] || agent.dni;
-    const currentStatus = AGENT_STATUSES[agent.dni] || 'active';
+  // Mapear agentes con sus datos actuales de rol, contraseÃ±a y estado
+  const mappedComerciales = Object.keys(COMERCIALES).map(dni => {
+    const currentRol = AGENT_ROLES[dni] || 'comercial';
+    const currentPwd = AGENT_PASSWORDS[dni] || dni;
+    const currentStatus = AGENT_STATUSES[dni] || 'active';
+    return {
+      dni,
+      name: COMERCIALES[dni],
+      rol: currentRol,
+      pwd: currentPwd,
+      status: currentStatus
+    };
+  });
+  
+  // Ordenar: Gerente (1), Comercial (2), Evaria (3). Y alfabÃ©ticamente dentro de cada grupo.
+  mappedComerciales.sort((a, b) => {
+    const rolePriority = { 'gerente': 1, 'comercial': 2, 'evaria': 3 };
+    const prioA = rolePriority[a.rol] || 99;
+    const prioB = rolePriority[b.rol] || 99;
     
-    let optionsHtml = '';
-    if (isHardcodedGerente) {
-      optionsHtml = `<span style="font-weight:700; color:#d4af37; font-size:12.5px;">Gerencia (Bloqueado)</span>`;
-    } else {
-      const selectColor = currentRol === 'comercial' ? '#f97316' : (currentRol === 'evaria' ? '#10b981' : '#d4af37');
-      optionsHtml = `
-        <select id="user-role-${agent.dni}" onchange="updateSelectColor(this)" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: ${selectColor}; font-weight: 700; font-size: 13px; outline: none; cursor: pointer;">
-          <option value="comercial" style="color: #f97316; font-weight: bold;" ${currentRol === 'comercial' ? 'selected' : ''}>Comerciales Renosur</option>
-          <option value="evaria" style="color: #10b981; font-weight: bold;" ${currentRol === 'evaria' ? 'selected' : ''}>Trabajadores Evaria</option>
-          <option value="gerente" style="color: #d4af37; font-weight: bold;" ${currentRol === 'gerente' ? 'selected' : ''}>Gerencia</option>
-        </select>
-      `;
+    if (prioA !== prioB) {
+      return prioA - prioB;
     }
+    return a.name.localeCompare(b.name);
+  });
+  
+  mappedComerciales.forEach(agent => {
+    const selectColor = agent.rol === 'comercial' ? '#f97316' : (agent.rol === 'evaria' ? '#10b981' : '#d4af37');
+    const optionsHtml = `
+      <select id="user-role-${agent.dni}" onchange="updateSelectColor(this)" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: ${selectColor}; font-weight: 700; font-size: 13px; outline: none; cursor: pointer;">
+        <option value="comercial" style="color: #f97316; font-weight: bold;" ${agent.rol === 'comercial' ? 'selected' : ''}>Comerciales Renosur</option>
+        <option value="evaria" style="color: #10b981; font-weight: bold;" ${agent.rol === 'evaria' ? 'selected' : ''}>Trabajadores Evaria</option>
+        <option value="gerente" style="color: #d4af37; font-weight: bold;" ${agent.rol === 'gerente' ? 'selected' : ''}>Gerencia</option>
+      </select>
+    `;
     
-    const userFieldHtml = isHardcodedGerente ? 
-      `<span style="font-family: monospace; color: var(--t2);">${agent.dni}</span>` :
-      `<input type="text" id="user-dni-${agent.dni}" value="${agent.dni}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-family: monospace; font-size: 13px; width: 110px; outline: none;">`;
+    const userFieldHtml = `<input type="text" id="user-dni-${agent.dni}" value="${agent.dni}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-family: monospace; font-size: 13px; width: 110px; outline: none;">`;
       
-    const pwdFieldHtml = isHardcodedGerente ?
-      `<span style="color: var(--t3);">N/A</span>` :
-      `<input type="text" id="user-pwd-${agent.dni}" value="${currentPwd}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; width: 100%; max-width: 140px; outline: none;">`;
-      
+    const pwdFieldHtml = `<input type="text" id="user-pwd-${agent.dni}" value="${agent.pwd}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; width: 100%; max-width: 140px; outline: none;">`;
+    
     html += `
       <tr style="border-bottom: 1px solid var(--border); font-size: 13px;">
         <td style="padding: 12px 14px; font-weight: 600; color: var(--text);">${agent.name}</td>
@@ -8911,21 +8923,19 @@ function initGruposAgentes() {
         <td style="padding: 12px 14px;">${pwdFieldHtml}</td>
         <td style="padding: 12px 14px;">${optionsHtml}</td>
         <td style="padding: 12px 14px;">
-          <span id="status-badge-${agent.dni}" style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; ${currentStatus === 'inactive' ? 'background: rgba(239, 68, 68, 0.15); color: #ef4444;' : 'background: rgba(16, 185, 129, 0.15); color: #10b981;'}">
-            ${currentStatus === 'inactive' ? 'Inactivo' : 'Activo'}
+          <span id="status-badge-${agent.dni}" style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; ${agent.status === 'inactive' ? 'background: rgba(239, 68, 68, 0.15); color: #ef4444;' : 'background: rgba(16, 185, 129, 0.15); color: #10b981;'}">
+            ${agent.status === 'inactive' ? 'Inactivo' : 'Activo'}
           </span>
         </td>
         <td style="padding: 12px 14px;">
-          ${isHardcodedGerente ? '' : `
-            <div style="display: flex; gap: 8px;">
-              <button id="btn-save-user-${agent.dni}" onclick="saveAgentUserByGerente('${agent.dni}')" style="background: var(--blue); color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
-                Guardar
-              </button>
-              <button id="btn-toggle-status-${agent.dni}" onclick="toggleAgentStatusByGerente('${agent.dni}')" style="${currentStatus === 'inactive' ? 'background: var(--green);' : 'background: #f97316;'} color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
-                ${currentStatus === 'inactive' ? 'Activar' : 'Desactivar'}
-              </button>
-            </div>
-          `}
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-save-user-${agent.dni}" onclick="saveAgentUserByGerente('${agent.dni}')" style="background: var(--blue); color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
+              Guardar
+            </button>
+            <button id="btn-toggle-status-${agent.dni}" onclick="toggleAgentStatusByGerente('${agent.dni}')" style="${agent.status === 'inactive' ? 'background: var(--green);' : 'background: #f97316;'} color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
+              ${agent.status === 'inactive' ? 'Activar' : 'Desactivar'}
+            </button>
+          </div>
         </td>
       </tr>
     `;
@@ -9297,13 +9307,10 @@ function onLoginSuccess() {
 
   
   // 8. Mostrar/ocultar sección de Gerencia
-  const gerenteSec = document.getElementById('gerente-section');
+    const gerenteSec = document.getElementById('gerente-section');
   if (gerenteSec) {
-    if (currentAgentDni === '77860623B' || currentAgentDni === 'PAPAEVARIA' || currentAgentDni === 'MAMAEVARIA') {
-      gerenteSec.style.display = 'block';
-    } else {
-      gerenteSec.style.display = 'none';
-    }
+    const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+    gerenteSec.style.display = userRole === 'gerente' ? 'block' : 'none';
   }
 }
 
