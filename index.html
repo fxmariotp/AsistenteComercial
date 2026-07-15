@@ -4919,14 +4919,62 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
 
-        <!-- â”€â”€ GESTIÃ“N DE USUARIOS (GERENTE) â”€â”€ -->
+            <!-- â”€â”€ GESTIÃ“N DE USUARIOS (GERENTE) â”€â”€ -->
     <div class="panel" id="panel-gruposAgentes">
+      <style>
+        .switch-container {
+          display: inline-block;
+          position: relative;
+          width: 50px;
+          height: 26px;
+          cursor: pointer;
+          user-select: none;
+        }
+        .switch-input {
+          opacity: 0;
+          width: 0;
+          height: 0;
+        }
+        .switch-slider {
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          background-color: #ef4444; /* Red for inactive */
+          transition: .3s;
+          border-radius: 34px;
+        }
+        .switch-slider:before {
+          position: absolute;
+          content: "";
+          height: 20px;
+          width: 20px;
+          left: 3px;
+          bottom: 3px;
+          background-color: white;
+          transition: .3s;
+          border-radius: 50%;
+        }
+        .switch-input:checked + .switch-slider {
+          background-color: #10b981; /* Green for active */
+        }
+        .switch-input:checked + .switch-slider:before {
+          transform: translateX(24px);
+        }
+      </style>
       <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px;">
-        <div style="margin-bottom: 20px;">
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Gestion de Usuarios</h3>
-          <p style="font-size: 13.5px; color: var(--t3); margin: 0;">
-            Administra los usuarios, contrase&ntilde;as, roles y estado de actividad de los agentes. Si desactivas a un agente, no podra iniciar sesion.
-          </p>
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+          <div>
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Gestion de Usuarios</h3>
+            <p style="font-size: 13.5px; color: var(--t3); margin: 0;">
+              Administra los usuarios, contraseÃ±as, roles y estado de actividad de los agentes. Si desactivas a un agente, no podra iniciar sesion.
+            </p>
+          </div>
+          <button id="btn-save-users-gerente" onclick="saveAllAgentUsersByGerente()" style="background: var(--blue); color: #fff; border: none; padding: 10px 20px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; transition: opacity 0.2s;">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+            Guardar Cambios
+          </button>
         </div>
         
         <div style="overflow-x: auto;">
@@ -4938,7 +4986,6 @@ input:focus, select:focus, textarea:focus {
                 <th style="padding: 10px 14px; font-weight: 700;">Contrase&ntilde;a</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Rol / Grupo</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Estado</th>
-                <th style="padding: 10px 14px; font-weight: 700;">Acciones</th>
               </tr>
             </thead>
             <tbody id="tbl-gerente-usuarios-body">
@@ -4949,7 +4996,7 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â• PROMOCIONES SUPERMERCADO â•â•â•â•â•â• -->'
+    <!-- â•â•â•â•â•â• PROMOCIONES SUPERMERCADO â•â•â•â•â•â• -->''
     <div class="panel" id="panel-promociones">
       <div class="promociones-grid" id="promociones-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 30px;">
         <!-- Se cargara dinamicamente -->
@@ -8919,7 +8966,6 @@ function initGruposAgentes() {
   
   let html = '';
   
-  // Mapear agentes con sus datos actuales de rol, contraseÃ±a y estado
   const mappedComerciales = Object.keys(COMERCIALES).map(dni => {
     const currentRol = AGENT_ROLES[dni] || 'comercial';
     const currentPwd = AGENT_PASSWORDS[dni] || dni;
@@ -8933,7 +8979,6 @@ function initGruposAgentes() {
     };
   });
   
-  // Ordenar: Gerente (1), Comercial (2), Evaria (3). Y alfabÃ©ticamente dentro de cada grupo.
   mappedComerciales.sort((a, b) => {
     const rolePriority = { 'gerente': 1, 'comercial': 2, 'evaria': 3 };
     const prioA = rolePriority[a.rol] || 99;
@@ -8959,32 +9004,171 @@ function initGruposAgentes() {
       
     const pwdFieldHtml = `<input type="text" id="user-pwd-${agent.dni}" value="${agent.pwd}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; width: 100%; max-width: 140px; outline: none;">`;
     
+    const statusSwitchHtml = `
+      <label class="switch-container">
+        <input type="checkbox" id="user-status-${agent.dni}" class="switch-input" ${agent.status === 'active' ? 'checked' : ''}>
+        <span class="switch-slider"></span>
+      </label>
+    `;
+    
     html += `
       <tr style="border-bottom: 1px solid var(--border); font-size: 13px;">
         <td style="padding: 12px 14px; font-weight: 600; color: var(--text);">${agent.name}</td>
         <td style="padding: 12px 14px;">${userFieldHtml}</td>
         <td style="padding: 12px 14px;">${pwdFieldHtml}</td>
         <td style="padding: 12px 14px;">${optionsHtml}</td>
-        <td style="padding: 12px 14px;">
-          <span id="status-badge-${agent.dni}" style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; ${agent.status === 'inactive' ? 'background: rgba(239, 68, 68, 0.15); color: #ef4444;' : 'background: rgba(16, 185, 129, 0.15); color: #10b981;'}">
-            ${agent.status === 'inactive' ? 'Inactivo' : 'Activo'}
-          </span>
-        </td>
-        <td style="padding: 12px 14px;">
-          <div style="display: flex; gap: 8px;">
-            <button id="btn-save-user-${agent.dni}" onclick="saveAgentUserByGerente('${agent.dni}')" style="background: var(--blue); color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
-              Guardar
-            </button>
-            <button id="btn-toggle-status-${agent.dni}" onclick="toggleAgentStatusByGerente('${agent.dni}')" style="${agent.status === 'inactive' ? 'background: var(--green);' : 'background: #f97316;'} color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
-              ${agent.status === 'inactive' ? 'Activar' : 'Desactivar'}
-            </button>
-          </div>
-        </td>
+        <td style="padding: 12px 14px;">${statusSwitchHtml}</td>
       </tr>
     `;
   });
   
   tbody.innerHTML = html;
+}
+
+async function saveAllAgentUsersByGerente() {
+  const btn = document.getElementById('btn-save-users-gerente');
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.innerHTML = `<svg class="spinner" viewBox="0 0 50 50" width="16" height="16" style="animation: rotate 2s linear infinite; margin-right: 4px; display: inline-block; vertical-align: middle;"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="80, 200" stroke-dashoffset="0" stroke-linecap="round"></circle></svg> Guardando...`;
+  }
+  
+  const rows = document.querySelectorAll('#tbl-gerente-usuarios-body tr');
+  const updates = [];
+  let validationError = null;
+  
+  rows.forEach(row => {
+    const inputDni = row.querySelector('input[id^="user-dni-"]');
+    if (!inputDni) return;
+    
+    const originalDni = inputDni.id.replace('user-dni-', '');
+    const newDni = inputDni.value.trim().toUpperCase();
+    
+    const inputPwd = document.getElementById('user-pwd-' + originalDni);
+    const selectRole = document.getElementById('user-role-' + originalDni);
+    const inputStatus = document.getElementById('user-status-' + originalDni);
+    
+    const newPwd = inputPwd ? inputPwd.value.trim() : (AGENT_PASSWORDS[originalDni] || originalDni);
+    const newRole = selectRole ? selectRole.value : (AGENT_ROLES[originalDni] || 'comercial');
+    const newStatus = inputStatus ? (inputStatus.checked ? 'active' : 'inactive') : (AGENT_STATUSES[originalDni] || 'active');
+    
+    if (!newDni) {
+      validationError = 'El DNI/Usuario no puede estar vacio.';
+    }
+    if (!newPwd) {
+      validationError = 'La contrase\u00f1a no puede estar vacia.';
+    }
+    
+    updates.push({
+      originalDni,
+      newDni,
+      newPwd,
+      newRole,
+      newStatus
+    });
+  });
+  
+  if (validationError) {
+    alert(validationError);
+    if (btn) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Guardar Cambios`;
+    }
+    return;
+  }
+  
+  let success = true;
+  if (supabaseClient) {
+    try {
+      for (const item of updates) {
+        const origDni = item.originalDni;
+        const changedDni = item.newDni !== origDni;
+        const changedPwd = item.newPwd !== (AGENT_PASSWORDS[origDni] || origDni);
+        const changedRole = item.newRole !== (AGENT_ROLES[origDni] || 'comercial');
+        const changedStatus = item.newStatus !== (AGENT_STATUSES[origDni] || 'active');
+        
+        if (changedDni || changedPwd || changedRole || changedStatus) {
+          const dbValue = item.newRole + ':' + item.newPwd + ':' + item.newStatus;
+          
+          if (changedDni) {
+            const { error: deleteError } = await supabaseClient
+              .from('agentes_roles')
+              .delete()
+              .eq('dni', origDni);
+            if (deleteError) {
+              console.error("Error deleting old DNI:", deleteError);
+              success = false;
+            }
+          }
+          
+          if (success) {
+            const { error: upsertError } = await supabaseClient
+              .from('agentes_roles')
+              .upsert({ dni: item.newDni, rol: dbValue });
+            if (upsertError) {
+              console.error("Error upserting DNI:", upsertError);
+              success = false;
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.error("Exception saving agent users to cloud:", e);
+      success = false;
+    }
+  }
+  
+  if (success) {
+    updates.forEach(item => {
+      const origDni = item.originalDni;
+      const newDni = item.newDni;
+      
+      if (newDni !== origDni) {
+        const agentName = COMERCIALES[origDni];
+        delete COMERCIALES[origDni];
+        COMERCIALES[newDni] = agentName;
+        
+        delete AGENT_ROLES[origDni];
+        delete AGENT_PASSWORDS[origDni];
+        delete AGENT_STATUSES[origDni];
+      }
+      
+      AGENT_ROLES[newDni] = item.newRole;
+      AGENT_PASSWORDS[newDni] = item.newPwd;
+      AGENT_STATUSES[newDni] = item.newStatus;
+      
+      if (currentAgentDni === origDni && newDni !== origDni) {
+        currentAgentDni = newDni;
+        localStorage.setItem('comercial_dni', newDni);
+      }
+    });
+    
+    const rawRoles = {};
+    Object.keys(AGENT_ROLES).forEach(k => {
+      const pwd = AGENT_PASSWORDS[k];
+      const status = AGENT_STATUSES[k] || 'active';
+      rawRoles[k] = AGENT_ROLES[k] + ':' + (pwd || k) + ':' + status;
+    });
+    localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
+    
+    applyAgentPermissions();
+    initGruposAgentes();
+    
+    alert('\u00a1Cambios guardados con exito!');
+  } else {
+    alert('Error al guardar algunos cambios en la base de datos.');
+  }
+  
+  if (btn) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Guardar Cambios`;
+  }
+}
+
+async function toggleAgentStatusByGerente(dni) {
+  // Obsoleta
 }
 
 async function saveAllAgentRoles() {
