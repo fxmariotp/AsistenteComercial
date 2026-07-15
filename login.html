@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
       --bg: #141a3b; /* Renosur Navy background */
@@ -84,6 +85,18 @@
     }
     .login-field {
       margin-bottom: 16px;
+      display: flex;
+      flex-direction: column;
+      text-align: left;
+      gap: 6px;
+    }
+    .login-field label {
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #94a3b8;
+      padding-left: 4px;
     }
     .login-field input {
       width: 100%;
@@ -94,8 +107,6 @@
       background: rgba(255, 255, 255, 0.05);
       color: #fff;
       outline: none;
-      text-align: center;
-      letter-spacing: 0.5px;
       transition: all 0.2s;
     }
     .login-field input:focus {
@@ -105,7 +116,6 @@
     }
     .login-field input::placeholder {
       color: #64748b;
-      letter-spacing: 0px;
     }
     .login-error {
       color: #ef4444;
@@ -136,6 +146,12 @@
     .btn-primary:active {
       transform: translateY(0);
     }
+    .btn-primary:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
   </style>
 </head>
 <body>
@@ -146,10 +162,18 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"></path></svg>
     </div>
     <h2 class="login-title">Acceso Comercial</h2>
-    <p class="login-sub">Introduce tu DNI para iniciar sesión</p>
+    <p class="login-sub">Introduce tus credenciales para acceder</p>
+    
     <div class="login-field">
-      <input type="password" id="login-dni" placeholder="Escribe tu DNI (p. ej. 12345678A)" autocomplete="off" autofocus>
+      <label for="login-dni">Usuario (DNI)</label>
+      <input type="text" id="login-dni" placeholder="Escribe tu DNI (p. ej. 12345678A)" autocomplete="off" autofocus>
     </div>
+    
+    <div class="login-field">
+      <label for="login-password">Contrase&ntilde;a</label>
+      <input type="password" id="login-password" placeholder="Introduce tu contrase&ntilde;a" autocomplete="off">
+    </div>
+    
     <button class="btn-primary" id="login-submit" onclick="attemptLogin()">Acceder</button>
     <div class="login-error" id="login-error-msg"></div>
   </div>
@@ -177,6 +201,10 @@ const COMERCIALES = {
   "28750523V": "OLGA VILLA"
 };
 
+const SUPABASE_URL = "https://bxgdtdzlijeaetlekbub.supabase.co";
+const SUPABASE_KEY = "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
+const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
+
 // Check if user is already logged in
 const dni = localStorage.getItem('comercial_dni');
 const name = localStorage.getItem('comercial_nombre');
@@ -184,23 +212,73 @@ if (dni && name && COMERCIALES[dni] === name) {
   window.location.href = 'index.html';
 }
 
-function attemptLogin() {
-  const input = document.getElementById('login-dni').value;
-  const targetDni = input.trim().toUpperCase();
-  const matchedName = COMERCIALES[targetDni];
+async function attemptLogin() {
+  const submitBtn = document.getElementById('login-submit');
+  const errorMsg = document.getElementById('login-error-msg');
   
-  if (matchedName) {
-    localStorage.setItem('comercial_dni', targetDni);
+  const inputDni = document.getElementById('login-dni').value.trim().toUpperCase();
+  const inputPass = document.getElementById('login-password').value.trim();
+  
+  if (!inputDni) {
+    errorMsg.textContent = "Por favor, introduce tu DNI.";
+    return;
+  }
+  
+  const matchedName = COMERCIALES[inputDni];
+  if (!matchedName) {
+    errorMsg.textContent = "El DNI ingresado no está registrado.";
+    return;
+  }
+  
+  if (!inputPass) {
+    errorMsg.textContent = "Por favor, introduce tu contraseña.";
+    return;
+  }
+  
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Verificando...";
+  
+  let validPassword = inputDni; // default is DNI
+  
+  if (supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('agentes_roles')
+        .select('rol')
+        .eq('dni', inputDni)
+        .maybeSingle();
+      
+      if (!error && data && data.rol) {
+        const roleStr = data.rol;
+        if (roleStr.includes(':')) {
+          validPassword = roleStr.split(':').slice(1).join(':');
+        }
+      }
+    } catch (e) {
+      console.error("Error connecting to Supabase for auth:", e);
+    }
+  }
+  
+  submitBtn.disabled = false;
+  submitBtn.textContent = "Acceder";
+  
+  if (inputPass === validPassword) {
+    localStorage.setItem('comercial_dni', inputDni);
     localStorage.setItem('comercial_nombre', matchedName);
-    document.getElementById('login-error-msg').textContent = "";
+    errorMsg.textContent = "";
     window.location.href = 'index.html';
   } else {
-    document.getElementById('login-error-msg').textContent = "El DNI ingresado no está registrado.";
+    errorMsg.textContent = "La contraseña introducida es incorrecta.";
   }
 }
 
 // Bind enter key
 document.getElementById('login-dni').addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') {
+    attemptLogin();
+  }
+});
+document.getElementById('login-password').addEventListener('keydown', (e) => {
   if (e.key === 'Enter') {
     attemptLogin();
   }

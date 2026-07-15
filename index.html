@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <!-- saved from url=(0030)https://teambreva.netlify.app/ -->
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
@@ -3761,7 +3761,11 @@ input:focus, select:focus, textarea:focus {
         <div class="topbar-s" id="psub">Selecciona la compañía y sigue el guión</div>
       </div>
     </div>
-    <div class="topbar-right">
+    <div class="topbar-right" style="display: flex; gap: 10px; align-items: center;">
+      <button class="nav-btn" onclick="openPasswordModal()" style="width: auto; margin-bottom: 0; padding: 10px 16px; font-weight: 700; font-size: 13.5px; border: 1.5px solid var(--border); border-radius: var(--rs); display: inline-flex; align-items: center; gap: 8px; color: var(--text); background: var(--surface);">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+        <span>Cambiar contrase&ntilde;a</span>
+      </button>
       <button class="nav-btn nav-btn-logout" onclick="logout()" style="width: auto; margin-bottom: 0; padding: 10px 16px; font-weight: 700; font-size: 13.5px; border: 1.5px solid rgba(239, 68, 68, 0.15); border-radius: var(--rs); display: flex; align-items: center; gap: 8px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         <span class="topbar-logout-text">Cerrar sesión</span>
@@ -4679,6 +4683,35 @@ input:focus, select:focus, textarea:focus {
     </div>
   </div>
 
+    <!-- Change Password Modal -->
+    <div id="password-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-content" style="max-width: 400px; width: 92%; padding: 24px;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h4 style="margin: 0; font-size: 16.5px; font-weight: 800; color: var(--text);">Cambiar Contrase&ntilde;a</h4>
+          <button class="close-btn" onclick="closePasswordModal()" style="background: transparent; border: none; cursor: pointer; color: var(--t3); display: inline-flex;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        
+        <form id="password-form" onsubmit="saveNewPassword(event)" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--t2);">Contrase&ntilde;a Actual</label>
+            <input type="password" id="pwd-current" required style="padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--t2);">Nueva Contrase&ntilde;a</label>
+            <input type="password" id="pwd-new" required style="padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--t2);">Confirmar Nueva Contrase&ntilde;a</label>
+            <input type="password" id="pwd-confirm" required style="padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;">
+          </div>
+          <div id="password-modal-error" style="color: #ef4444; font-size: 12px; font-weight: 600; min-height: 18px; text-align: center;"></div>
+          <button type="submit" class="btn btn-primary" id="btn-save-pwd" style="padding: 11px; font-size: 14px; font-weight: 700; background: var(--blue); color: #fff; border: none; border-radius: var(--rs); cursor: pointer; transition: opacity 0.2s;">Guardar Cambios</button>
+        </form>
+      </div>
+    </div>
+
     <!-- Modal Popup for Adding/Editing Tasks -->
     <div id="agenda-modal" class="modal-overlay" style="display: none;">
       <div class="modal-content" style="max-width: 480px; width: 92%; padding: 24px;">
@@ -4912,6 +4945,32 @@ input:focus, select:focus, textarea:focus {
               </tr>
             </thead>
             <tbody id="tbl-grupos-agentes-body">
+              <!-- Rendered dynamically -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Password Management Section for Gerencia -->
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; margin-top: 24px;">
+        <div style="margin-bottom: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Gesti&oacute;n de Contrase&ntilde;as</h3>
+          <p style="font-size: 13.5px; color: var(--t3); margin: 0;">
+            Visualiza y modifica las contrase&ntilde;as de los agentes del sistema. La contrase&ntilde;a por defecto es el DNI del agente.
+          </p>
+        </div>
+        
+        <div style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+            <thead>
+              <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 12px; color: var(--t3); text-transform: uppercase;">
+                <th style="padding: 10px 14px; font-weight: 700;">Nombre del agente</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Usuario</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Contrase&ntilde;a</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Acci&oacute;n</th>
+              </tr>
+            </thead>
+            <tbody id="tbl-gerente-passwords-body">
               <!-- Rendered dynamically -->
             </tbody>
           </table>
@@ -8680,10 +8739,22 @@ function logout() {
 }
 
 let AGENT_ROLES = {};
+let AGENT_PASSWORDS = {};
 try {
   const cachedRoles = localStorage.getItem('renosur_agent_roles');
   if (cachedRoles) {
-    AGENT_ROLES = JSON.parse(cachedRoles);
+    const rawRoles = JSON.parse(cachedRoles);
+    Object.keys(rawRoles).forEach(dni => {
+      let role = rawRoles[dni];
+      let pwd = dni;
+      if (role && role.includes(':')) {
+        const parts = role.split(':');
+        role = parts[0];
+        pwd = parts.slice(1).join(':');
+      }
+      AGENT_ROLES[dni] = role;
+      AGENT_PASSWORDS[dni] = pwd;
+    });
   }
 } catch (e) {
   console.error("Error loading cached agent roles", e);
@@ -8710,14 +8781,24 @@ async function fetchAgentRolesFromCloud() {
       .from('agentes_roles')
       .select('*');
     if (!error && data) {
+      const rawRolesToCache = {};
       data.forEach(row => {
-        AGENT_ROLES[row.dni] = row.rol;
+        rawRolesToCache[row.dni] = row.rol;
+        let role = row.rol;
+        let password = row.dni;
+        if (role && role.includes(':')) {
+          const parts = role.split(':');
+          role = parts[0];
+          password = parts.slice(1).join(':');
+        }
+        AGENT_ROLES[row.dni] = role;
+        AGENT_PASSWORDS[row.dni] = password;
       });
       // Force hardcoded manager roles
       AGENT_ROLES['77860623B'] = 'gerente';
       AGENT_ROLES['PAPAEVARIA'] = 'gerente';
       
-      localStorage.setItem('renosur_agent_roles', JSON.stringify(AGENT_ROLES));
+      localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRolesToCache));
       
       // Update UI roles in real-time
       if (typeof applyAgentPermissions === 'function') {
@@ -8735,6 +8816,10 @@ async function fetchAgentRolesFromCloud() {
         const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
         gerenteRankingActions.style.display = userRole === 'gerente' ? 'flex' : 'none';
       }
+      
+      if (typeof initGruposAgentes === 'function') {
+        initGruposAgentes();
+      }
     }
   } catch (e) {
     console.error("Error fetching agent roles from cloud", e);
@@ -8743,10 +8828,16 @@ async function fetchAgentRolesFromCloud() {
 
 async function saveAgentRoleToCloud(dni, rol) {
   AGENT_ROLES[dni] = rol;
-  localStorage.setItem('renosur_agent_roles', JSON.stringify(AGENT_ROLES));
+  const rawRoles = {};
+  Object.keys(AGENT_ROLES).forEach(k => {
+    const pwd = AGENT_PASSWORDS[k];
+    rawRoles[k] = AGENT_ROLES[k] + (pwd && pwd !== k ? ':' + pwd : '');
+  });
+  localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
   if (!supabaseClient) return;
   try {
-    await supabaseClient.from('agentes_roles').upsert({ dni, rol });
+    const dbValue = rol + (AGENT_PASSWORDS[dni] && AGENT_PASSWORDS[dni] !== dni ? ':' + AGENT_PASSWORDS[dni] : '');
+    await supabaseClient.from('agentes_roles').upsert({ dni, rol: dbValue });
   } catch (e) {
     console.error("Error saving agent role to cloud", e);
   }
@@ -8809,6 +8900,29 @@ function initGruposAgentes() {
   });
   
   tbody.innerHTML = html;
+
+  const pwdTbody = document.getElementById('tbl-gerente-passwords-body');
+  if (pwdTbody) {
+    let pwdHtml = '';
+    sortedComerciales.forEach(agent => {
+      const currentPwd = AGENT_PASSWORDS[agent.dni] || agent.dni;
+      pwdHtml += `
+        <tr style="border-bottom: 1px solid var(--border); font-size: 13px;">
+          <td style="padding: 12px 14px; font-weight: 600; color: var(--text);">${agent.name}</td>
+          <td style="padding: 12px 14px; color: var(--t2); font-family: monospace;">${agent.dni}</td>
+          <td style="padding: 12px 14px;">
+            <input type="text" id="pwd-input-${agent.dni}" value="${currentPwd}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; width: 100%; max-width: 200px; outline: none;">
+          </td>
+          <td style="padding: 12px 14px;">
+            <button id="btn-save-pwd-${agent.dni}" onclick="saveAgentPasswordByGerente('${agent.dni}')" style="background: var(--blue); color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; display: inline-flex; align-items: center; gap: 6px; transition: opacity 0.2s;">
+              Guardar
+            </button>
+          </td>
+        </tr>
+      `;
+    });
+    pwdTbody.innerHTML = pwdHtml;
+  }
 }
 
 async function saveAllAgentRoles() {
@@ -8833,16 +8947,26 @@ async function saveAllAgentRoles() {
   for (const dni in tempRoles) {
     AGENT_ROLES[dni] = tempRoles[dni];
   }
-  localStorage.setItem('renosur_agent_roles', JSON.stringify(AGENT_ROLES));
+  
+  const rawRoles = {};
+  Object.keys(AGENT_ROLES).forEach(k => {
+    const pwd = AGENT_PASSWORDS[k];
+    rawRoles[k] = AGENT_ROLES[k] + (pwd && pwd !== k ? ':' + pwd : '');
+  });
+  localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
   
   // Guardar en la nube
   let success = true;
   if (supabaseClient) {
     try {
-      const upsertRows = Object.keys(tempRoles).map(dni => ({
-        dni,
-        rol: tempRoles[dni]
-      }));
+      const upsertRows = Object.keys(tempRoles).map(dni => {
+        const pwd = AGENT_PASSWORDS[dni];
+        const dbValue = tempRoles[dni] + (pwd && pwd !== dni ? ':' + pwd : '');
+        return {
+          dni,
+          rol: dbValue
+        };
+      });
       
       const { error } = await supabaseClient
         .from('agentes_roles')
@@ -8869,10 +8993,148 @@ async function saveAllAgentRoles() {
   }
   
   if (success) {
-    alert('¡Cambios guardados con éxito en la nube y aplicados!');
+    alert('\u00A1Cambios guardados con \u00E9xito en la nube y aplicados!');
   } else {
     const errorDetails = window.lastSupabaseError ? '\\n\\nDetalle t\\xE9cnico: ' + window.lastSupabaseError : '';
-    alert('Error al guardar en la nube. Los cambios se guardaron localmente en el navegador, pero asegúrate de haber ejecutado la consulta SQL en Supabase para crear la tabla "agentes_roles".' + errorDetails);
+    alert('Error al guardar en la nube. Los cambios se guardaron localmente en el navegador, pero aseg\u00FArate de haber ejecutado la consulta SQL en Supabase para crear la tabla "agentes_roles".' + errorDetails);
+  }
+}
+
+function openPasswordModal() {
+  const currentInput = document.getElementById('pwd-current');
+  const newInput = document.getElementById('pwd-new');
+  const confirmInput = document.getElementById('pwd-confirm');
+  const errorEl = document.getElementById('password-modal-error');
+  
+  if (currentInput) currentInput.value = '';
+  if (newInput) newInput.value = '';
+  if (confirmInput) confirmInput.value = '';
+  if (errorEl) errorEl.textContent = '';
+  
+  const modal = document.getElementById('password-modal');
+  if (modal) modal.style.display = 'flex';
+}
+
+function closePasswordModal() {
+  const modal = document.getElementById('password-modal');
+  if (modal) modal.style.display = 'none';
+}
+
+async function saveNewPassword(event) {
+  event.preventDefault();
+  const errorEl = document.getElementById('password-modal-error');
+  const btn = document.getElementById('btn-save-pwd');
+  
+  const currentPwd = document.getElementById('pwd-current').value.trim();
+  const newPwd = document.getElementById('pwd-new').value.trim();
+  const confirmPwd = document.getElementById('pwd-confirm').value.trim();
+  
+  if (!currentPwd || !newPwd || !confirmPwd) {
+    if (errorEl) errorEl.textContent = 'Por favor, rellena todos los campos.';
+    return;
+  }
+  
+  const actualCurrent = AGENT_PASSWORDS[currentAgentDni] || currentAgentDni;
+  if (currentPwd !== actualCurrent) {
+    if (errorEl) errorEl.textContent = 'La contrase\u00f1a actual es incorrecta.';
+    return;
+  }
+  
+  if (newPwd !== confirmPwd) {
+    if (errorEl) errorEl.textContent = 'La nueva contrase\u00f1a y la confirmaci\u00f3n no coinciden.';
+    return;
+  }
+  
+  if (newPwd === currentPwd) {
+    if (errorEl) errorEl.textContent = 'La nueva contrase\u00f1a debe ser diferente a la actual.';
+    return;
+  }
+  
+  if (btn) {
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    btn.textContent = 'Guardando...';
+  }
+  
+  let success = true;
+  const currentRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+  const newRoleVal = currentRole + ':' + newPwd;
+  
+  if (supabaseClient) {
+    try {
+      const { error } = await supabaseClient
+        .from('agentes_roles')
+        .upsert({ dni: currentAgentDni, rol: newRoleVal });
+      
+      if (error) {
+        console.error("Error updating password in Supabase:", error);
+        success = false;
+      }
+    } catch (e) {
+      console.error("Exception updating password in Supabase:", e);
+      success = false;
+    }
+  }
+  
+  if (btn) {
+    btn.disabled = false;
+    btn.style.opacity = '1';
+    btn.textContent = 'Guardar Cambios';
+  }
+  
+  if (success) {
+    AGENT_PASSWORDS[currentAgentDni] = newPwd;
+    alert('\u00A1Contrase\u00f1a cambiada con \u00E9xito!');
+    closePasswordModal();
+  } else {
+    if (errorEl) errorEl.textContent = 'Error al conectar con la base de datos. Int\u00e9ntalo de nuevo.';
+  }
+}
+
+async function saveAgentPasswordByGerente(dni) {
+  const input = document.getElementById('pwd-input-' + dni);
+  const btn = document.getElementById('btn-save-pwd-' + dni);
+  if (!input || !btn) return;
+  
+  const newPwd = input.value.trim();
+  if (!newPwd) {
+    alert('La contrase\u00f1a no puede estar vac\u00eda.');
+    return;
+  }
+  
+  btn.disabled = true;
+  btn.style.opacity = '0.7';
+  btn.textContent = 'Guardando...';
+  
+  const currentRole = AGENT_ROLES[dni] || 'comercial';
+  const newRoleVal = currentRole + ':' + newPwd;
+  
+  let success = true;
+  if (supabaseClient) {
+    try {
+      const { error } = await supabaseClient
+        .from('agentes_roles')
+        .upsert({ dni, rol: newRoleVal });
+      
+      if (error) {
+        console.error("Error updating password by gerente in Supabase:", error);
+        success = false;
+      }
+    } catch (e) {
+      console.error("Exception updating password by gerente in Supabase:", e);
+      success = false;
+    }
+  }
+  
+  btn.disabled = false;
+  btn.style.opacity = '1';
+  btn.textContent = 'Guardar';
+  
+  if (success) {
+    AGENT_PASSWORDS[dni] = newPwd;
+    alert('\u00A1Contrase\u00f1a del agente guardada con \u00E9xito!');
+  } else {
+    alert('Error al guardar la contrase\u00f1a en la base de datos.');
   }
 }
 
