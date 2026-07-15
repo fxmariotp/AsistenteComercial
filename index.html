@@ -3723,7 +3723,7 @@ input:focus, select:focus, textarea:focus {
       </button>
       <button class="nav-btn" id="btn-nav-gruposAgentes" onclick="showPanel('gruposAgentes',this)" style="margin-top: 4px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="17" cy="7" r="3"></circle></svg>
-        Grupos de Agente
+        GestiÃ³n de Usuarios
       </button>
     </div>
   </div>
@@ -4919,59 +4919,29 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
 
-    <!-- ── GRUPOS DE AGENTE (GERENTE) ── -->
+        <!-- â”€â”€ GESTIÃ“N DE USUARIOS (GERENTE) â”€â”€ -->
     <div class="panel" id="panel-gruposAgentes">
-      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; margin-bottom: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
-          <div>
-            <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Configuración de Roles y Grupos</h3>
-            <p style="font-size: 13.5px; color: var(--t3); margin: 0;">
-              Define los grupos de cada agente comercial. Los miembros del grupo <strong>Trabajadores Evaria</strong> tienen bloqueado el acceso al <em>Ranking de Ventas</em> y al <em>Calendario</em>.
-            </p>
-          </div>
-          <button id="btn-save-roles" onclick="saveAllAgentRoles()" style="background: var(--blue); color: #fff; border: none; padding: 10px 20px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; transition: opacity 0.2s;">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-            Guardar Cambios
-          </button>
-        </div>
-        
-        <div style="overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
-            <thead>
-              <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 12px; color: var(--t3); text-transform: uppercase;">
-                <th style="padding: 10px 14px; font-weight: 700;">Agente Comercial</th>
-                <th style="padding: 10px 14px; font-weight: 700;">DNI</th>
-                <th style="padding: 10px 14px; font-weight: 700;">Grupo / Rol Asignado</th>
-              </tr>
-            </thead>
-            <tbody id="tbl-grupos-agentes-body">
-              <!-- Rendered dynamically -->
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <!-- Password and Activity Management Section for Gerencia -->
-      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; margin-top: 24px;">
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px;">
         <div style="margin-bottom: 20px;">
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Gesti&oacute;n de Contrase&ntilde;as y Actividad</h3>
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Gesti&oacute;n de Usuarios</h3>
           <p style="font-size: 13.5px; color: var(--t3); margin: 0;">
-            Visualiza y modifica las contrase&ntilde;as y el estado de actividad de los agentes. Si desactivas a un agente, no podr&aacute; iniciar sesi&oacute;n.
+            Administra los usuarios, contrase&ntilde;as, roles y estado de actividad de los agentes. Si desactivas a un agente, no podr&aacute; iniciar sesi&oacute;n.
           </p>
         </div>
         
         <div style="overflow-x: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 500px;">
+          <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
             <thead>
               <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 12px; color: var(--t3); text-transform: uppercase;">
                 <th style="padding: 10px 14px; font-weight: 700;">Nombre del agente</th>
-                <th style="padding: 10px 14px; font-weight: 700;">Usuario</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Usuario / DNI</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Contrase&ntilde;a</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Rol / Grupo</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Estado</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Acciones</th>
               </tr>
             </thead>
-            <tbody id="tbl-gerente-passwords-body">
+            <tbody id="tbl-gerente-usuarios-body">
               <!-- Rendered dynamically -->
             </tbody>
           </table>
@@ -4979,7 +4949,7 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
 
-    <!-- ══════ PROMOCIONES SUPERMERCADO ══════ -->
+    <!-- â•â•â•â•â•â• PROMOCIONES SUPERMERCADO â•â•â•â•â•â• -->'
     <div class="panel" id="panel-promociones">
       <div class="promociones-grid" id="promociones-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 30px;">
         <!-- Se cargará dinámicamente -->
@@ -5485,7 +5455,7 @@ const PANELS = {
   telefonos:   {title:'Teléfonos',               sub:'Atención al cliente y averías de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
   normas:      {title:'Normas de sala',          sub:'Normativa interna para la sala de contratación', color:'#64748b', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>'},
   controlVacaciones: {title:'Control Vacaciones', sub:'Gestión y control de vacaciones de todos los comerciales', color:'#e08034', icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'},
-  gruposAgentes: {title:'Grupos de Agente', sub:'Asignación de roles y permisos especiales para comerciales', color:'#e08034', icon:'<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\"></path><circle cx=\"9\" cy=\"7\" r=\"4\"></circle><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\"></path><circle cx=\"17\" cy=\"7\" r=\"3\"></circle>'},
+  gruposAgentes: {title:'GestiÃ³n de Usuarios', sub:'AdministraciÃ³n de usuarios, contraseÃ±as, roles y estado de actividad', color:'#e08034', icon:'<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\\"></path><circle cx=\"9\" cy=\"7\" r=\"4\\"></circle><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\\"></path><circle cx=\"17\" cy=\"7\" r=\"3\\"></circle>'},
   promociones: {title:'Promociones', sub:'Promociones vigentes de supermercados y grandes superficies', color:'#0d5c9e', icon:'<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>'},
 
   sips:        {title:'Consulta SIPS', sub:'Consulta de potencias y direcciones en distribuidoras', color:'#1a7a3c', icon:'<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line>'},};
@@ -8885,7 +8855,7 @@ function applyAgentPermissions() {
 }
 
 function initGruposAgentes() {
-  const tbody = document.getElementById('tbl-grupos-agentes-body');
+  const tbody = document.getElementById('tbl-gerente-usuarios-body');
   if (!tbody) return;
   
   let html = '';
@@ -8897,13 +8867,15 @@ function initGruposAgentes() {
   sortedComerciales.forEach(agent => {
     const isHardcodedGerente = (agent.dni === '77860623B' || agent.dni === 'PAPAEVARIA' || agent.dni === 'MAMAEVARIA');
     const currentRol = isHardcodedGerente ? 'gerente' : (AGENT_ROLES[agent.dni] || 'comercial');
+    const currentPwd = AGENT_PASSWORDS[agent.dni] || agent.dni;
+    const currentStatus = AGENT_STATUSES[agent.dni] || 'active';
     
     let optionsHtml = '';
     if (isHardcodedGerente) {
       optionsHtml = `<span style="font-weight:700; color:var(--text); font-size:12.5px;">Gerencia (Bloqueado)</span>`;
     } else {
       optionsHtml = `
-        <select data-dni="${agent.dni}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; outline: none; cursor: pointer;">
+        <select id="user-role-${agent.dni}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; outline: none; cursor: pointer;">
           <option value="comercial" ${currentRol === 'comercial' ? 'selected' : ''}>Comerciales Renosur</option>
           <option value="evaria" ${currentRol === 'evaria' ? 'selected' : ''}>Trabajadores Evaria</option>
           <option value="gerente" ${currentRol === 'gerente' ? 'selected' : ''}>Gerencia</option>
@@ -8911,125 +8883,46 @@ function initGruposAgentes() {
       `;
     }
     
+    const userFieldHtml = isHardcodedGerente ? 
+      `<span style="font-family: monospace; color: var(--t2);">${agent.dni}</span>` :
+      `<input type="text" id="user-dni-${agent.dni}" value="${agent.dni}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-family: monospace; font-size: 13px; width: 110px; outline: none;">`;
+      
+    const pwdFieldHtml = isHardcodedGerente ?
+      `<span style="color: var(--t3);">N/A</span>` :
+      `<input type="text" id="user-pwd-${agent.dni}" value="${currentPwd}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; width: 100%; max-width: 140px; outline: none;">`;
+      
     html += `
       <tr style="border-bottom: 1px solid var(--border); font-size: 13px;">
         <td style="padding: 12px 14px; font-weight: 600; color: var(--text);">${agent.name}</td>
-        <td style="padding: 12px 14px; color: var(--t2); font-family: monospace;">${agent.dni}</td>
+        <td style="padding: 12px 14px;">${userFieldHtml}</td>
+        <td style="padding: 12px 14px;">${pwdFieldHtml}</td>
         <td style="padding: 12px 14px;">${optionsHtml}</td>
+        <td style="padding: 12px 14px;">
+          <span id="status-badge-${agent.dni}" style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; ${currentStatus === 'inactive' ? 'background: rgba(239, 68, 68, 0.15); color: #ef4444;' : 'background: rgba(16, 185, 129, 0.15); color: #10b981;'}">
+            ${currentStatus === 'inactive' ? 'Inactivo' : 'Activo'}
+          </span>
+        </td>
+        <td style="padding: 12px 14px;">
+          ${isHardcodedGerente ? '' : `
+            <div style="display: flex; gap: 8px;">
+              <button id="btn-save-user-${agent.dni}" onclick="saveAgentUserByGerente('${agent.dni}')" style="background: var(--blue); color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
+                Guardar
+              </button>
+              <button id="btn-toggle-status-${agent.dni}" onclick="toggleAgentStatusByGerente('${agent.dni}')" style="${currentStatus === 'inactive' ? 'background: var(--green);' : 'background: #f97316;'} color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
+                ${currentStatus === 'inactive' ? 'Activar' : 'Desactivar'}
+              </button>
+            </div>
+          `}
+        </td>
       </tr>
     `;
   });
   
   tbody.innerHTML = html;
-
-  const pwdTbody = document.getElementById('tbl-gerente-passwords-body');
-  if (pwdTbody) {
-    let pwdHtml = '';
-    sortedComerciales.forEach(agent => {
-      const currentPwd = AGENT_PASSWORDS[agent.dni] || agent.dni;
-      const currentStatus = AGENT_STATUSES[agent.dni] || 'active';
-      pwdHtml += `
-        <tr style="border-bottom: 1px solid var(--border); font-size: 13px;">
-          <td style="padding: 12px 14px; font-weight: 600; color: var(--text);">${agent.name}</td>
-          <td style="padding: 12px 14px; color: var(--t2); font-family: monospace;">${agent.dni}</td>
-          <td style="padding: 12px 14px;">
-            <input type="text" id="pwd-input-${agent.dni}" value="${currentPwd}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; width: 100%; max-width: 200px; outline: none;">
-          </td>
-          <td style="padding: 12px 14px;">
-            <span id="status-badge-${agent.dni}" style="padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; ${currentStatus === 'inactive' ? 'background: rgba(239, 68, 68, 0.15); color: #ef4444;' : 'background: rgba(16, 185, 129, 0.15); color: #10b981;'}">
-              ${currentStatus === 'inactive' ? 'Inactivo' : 'Activo'}
-            </span>
-          </td>
-          <td style="padding: 12px 14px; display: flex; gap: 8px;">
-            <button id="btn-save-pwd-${agent.dni}" onclick="saveAgentPasswordByGerente('${agent.dni}')" style="background: var(--blue); color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
-              Guardar
-            </button>
-            <button id="btn-toggle-status-${agent.dni}" onclick="toggleAgentStatusByGerente('${agent.dni}')" style="${currentStatus === 'inactive' ? 'background: var(--green);' : 'background: #f97316;'} color: #fff; border: none; padding: 6px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; font-size: 12px; transition: opacity 0.2s;">
-              ${currentStatus === 'inactive' ? 'Activar' : 'Desactivar'}
-            </button>
-          </td>
-        </tr>
-      `;
-    });
-    pwdTbody.innerHTML = pwdHtml;
-  }
 }
 
 async function saveAllAgentRoles() {
-  const btn = document.getElementById('btn-save-roles');
-  if (btn) {
-    btn.disabled = true;
-    btn.style.opacity = '0.7';
-    btn.innerHTML = `<svg class="spinner" viewBox="0 0 50 50" width="16" height="16" style="animation: rotate 2s linear infinite; margin-right: 4px; display: inline-block; vertical-align: middle;"><circle cx="25" cy="25" r="20" fill="none" stroke="currentColor" stroke-width="5" stroke-dasharray="80, 200" stroke-dashoffset="0" stroke-linecap="round"></circle></svg> Guardando...`;
-  }
-  
-  const selects = document.querySelectorAll('#tbl-grupos-agentes-body select');
-  const tempRoles = {};
-  selects.forEach(sel => {
-    const dni = sel.getAttribute('data-dni');
-    const rol = sel.value;
-    if (dni) {
-      tempRoles[dni] = rol;
-    }
-  });
-  
-  // Guardar localmente
-  for (const dni in tempRoles) {
-    AGENT_ROLES[dni] = tempRoles[dni];
-  }
-  
-  const rawRoles = {};
-  Object.keys(AGENT_ROLES).forEach(k => {
-    const pwd = AGENT_PASSWORDS[k];
-    const status = AGENT_STATUSES[k] || 'active';
-    rawRoles[k] = AGENT_ROLES[k] + ':' + (pwd || k) + ':' + status;
-  });
-  localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
-  
-  // Guardar en la nube
-  let success = true;
-  if (supabaseClient) {
-    try {
-      const upsertRows = Object.keys(tempRoles).map(dni => {
-        const pwd = AGENT_PASSWORDS[dni] || dni;
-        const status = AGENT_STATUSES[dni] || 'active';
-        const dbValue = tempRoles[dni] + ':' + pwd + ':' + status;
-        return {
-          dni,
-          rol: dbValue
-        };
-      });
-      
-      const { error } = await supabaseClient
-        .from('agentes_roles')
-        .upsert(upsertRows);
-      if (error) {
-        console.error("Error saving roles to Supabase:", error);
-        window.lastSupabaseError = error.message || JSON.stringify(error);
-        success = false;
-      }
-    } catch (e) {
-      console.error("Exception saving roles to cloud:", e);
-      window.lastSupabaseError = e.message || String(e);
-      success = false;
-    }
-  }
-  
-  // Re-aplicar permisos en caliente
-  applyAgentPermissions();
-  
-  if (btn) {
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Guardar Cambios`;
-  }
-  
-  if (success) {
-    alert('\u00A1Cambios guardados con \u00E9xito en la nube y aplicados!');
-  } else {
-    const errorDetails = window.lastSupabaseError ? '\\n\\nDetalle t\\xE9cnico: ' + window.lastSupabaseError : '';
-    alert('Error al guardar en la nube. Los cambios se guardaron localmente en el navegador, pero aseg\u00FArate de haber ejecutado la consulta SQL en Supabase para crear la tabla "agentes_roles".' + errorDetails);
-  }
+  // FunciÃ³n vacÃ­a para compatibilidad
 }
 
 function openPasswordModal() {
@@ -9124,12 +9017,20 @@ async function saveNewPassword(event) {
   }
 }
 
-async function saveAgentPasswordByGerente(dni) {
-  const input = document.getElementById('pwd-input-' + dni);
-  const btn = document.getElementById('btn-save-pwd-' + dni);
-  if (!input || !btn) return;
+async function saveAgentUserByGerente(originalDni) {
+  const btn = document.getElementById('btn-save-user-' + originalDni);
+  if (!btn) return;
   
-  const newPwd = input.value.trim();
+  const newDni = document.getElementById('user-dni-' + originalDni).value.trim().toUpperCase();
+  const newPwd = document.getElementById('user-pwd-' + originalDni).value.trim();
+  const roleSelect = document.getElementById('user-role-' + originalDni);
+  const newRole = roleSelect ? roleSelect.value : (AGENT_ROLES[originalDni] || 'comercial');
+  const currentStatus = AGENT_STATUSES[originalDni] || 'active';
+  
+  if (!newDni) {
+    alert('El DNI/Usuario no puede estar vac\u00edo.');
+    return;
+  }
   if (!newPwd) {
     alert('La contrase\u00f1a no puede estar vac\u00eda.');
     return;
@@ -9139,23 +9040,35 @@ async function saveAgentPasswordByGerente(dni) {
   btn.style.opacity = '0.7';
   btn.textContent = 'Guardando...';
   
-  const currentRole = AGENT_ROLES[dni] || 'comercial';
-  const currentStatus = AGENT_STATUSES[dni] || 'active';
-  const newRoleVal = currentRole + ':' + newPwd + ':' + currentStatus;
+  const newRoleVal = newRole + ':' + newPwd + ':' + currentStatus;
   
   let success = true;
   if (supabaseClient) {
     try {
-      const { error } = await supabaseClient
-        .from('agentes_roles')
-        .upsert({ dni, rol: newRoleVal });
+      if (newDni !== originalDni) {
+        const { error: deleteError } = await supabaseClient
+          .from('agentes_roles')
+          .delete()
+          .eq('dni', originalDni);
+          
+        if (deleteError) {
+          console.error("Error deleting old DNI in Supabase:", deleteError);
+          success = false;
+        }
+      }
       
-      if (error) {
-        console.error("Error updating password by gerente in Supabase:", error);
-        success = false;
+      if (success) {
+        const { error: upsertError } = await supabaseClient
+          .from('agentes_roles')
+          .upsert({ dni: newDni, rol: newRoleVal });
+          
+        if (upsertError) {
+          console.error("Error upserting new DNI in Supabase:", upsertError);
+          success = false;
+        }
       }
     } catch (e) {
-      console.error("Exception updating password by gerente in Supabase:", e);
+      console.error("Exception updating agent user in Supabase:", e);
       success = false;
     }
   }
@@ -9165,14 +9078,49 @@ async function saveAgentPasswordByGerente(dni) {
   btn.textContent = 'Guardar';
   
   if (success) {
-    AGENT_PASSWORDS[dni] = newPwd;
-    alert('\u00A1Contrase\u00f1a del agente guardada con \u00E9xito!');
+    if (newDni !== originalDni) {
+      const agentName = COMERCIALES[originalDni];
+      delete COMERCIALES[originalDni];
+      COMERCIALES[newDni] = agentName;
+      
+      delete AGENT_ROLES[originalDni];
+      delete AGENT_PASSWORDS[originalDni];
+      delete AGENT_STATUSES[originalDni];
+      
+      AGENT_ROLES[newDni] = newRole;
+      AGENT_PASSWORDS[newDni] = newPwd;
+      AGENT_STATUSES[newDni] = currentStatus;
+      
+      if (currentAgentDni === originalDni) {
+        currentAgentDni = newDni;
+        localStorage.setItem('comercial_dni', newDni);
+      }
+      
+      initGruposAgentes();
+    } else {
+      AGENT_ROLES[originalDni] = newRole;
+      AGENT_PASSWORDS[originalDni] = newPwd;
+    }
+    
+    const rawRoles = {};
+    Object.keys(AGENT_ROLES).forEach(k => {
+      const pwd = AGENT_PASSWORDS[k];
+      const status = AGENT_STATUSES[k] || 'active';
+      rawRoles[k] = AGENT_ROLES[k] + ':' + (pwd || k) + ':' + status;
+    });
+    localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
+    
+    applyAgentPermissions();
+    alert('\u00a1Usuario guardado con \u00e9xito!');
   } else {
-    alert('Error al guardar la contrase\u00f1a en la base de datos.');
+    alert('Error al guardar el usuario en la base de datos.');
   }
 }
 
 async function toggleAgentStatusByGerente(dni) {
+  const inputDniEl = document.getElementById('user-dni-' + dni);
+  const currentDni = inputDniEl ? inputDniEl.value.trim().toUpperCase() : dni;
+  
   const btn = document.getElementById('btn-toggle-status-' + dni);
   if (!btn) return;
   
@@ -9190,13 +9138,19 @@ async function toggleAgentStatusByGerente(dni) {
   let success = true;
   if (supabaseClient) {
     try {
-      const { error } = await supabaseClient
-        .from('agentes_roles')
-        .upsert({ dni, rol: newRoleVal });
+      if (currentDni !== dni) {
+        const { error: deleteError } = await supabaseClient
+          .from('agentes_roles')
+          .delete()
+          .eq('dni', dni);
+        if (deleteError) success = false;
+      }
       
-      if (error) {
-        console.error("Error updating status in Supabase:", error);
-        success = false;
+      if (success) {
+        const { error } = await supabaseClient
+          .from('agentes_roles')
+          .upsert({ dni: currentDni, rol: newRoleVal });
+        if (error) success = false;
       }
     } catch (e) {
       console.error("Exception updating status in Supabase:", e);
@@ -9208,23 +9162,57 @@ async function toggleAgentStatusByGerente(dni) {
   btn.style.opacity = '1';
   
   if (success) {
-    AGENT_STATUSES[dni] = newStatus;
-    alert('\u00A1Estado del agente actualizado con \u00E9xito!');
-    
-    // Refresh table row elements in caliente
-    const badge = document.getElementById('status-badge-' + dni);
-    if (badge) {
-      badge.textContent = newStatus === 'inactive' ? 'Inactivo' : 'Activo';
-      badge.style.cssText = newStatus === 'inactive' 
-        ? 'padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.15); color: #ef4444;' 
-        : 'padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(16, 185, 129, 0.15); color: #10b981;';
+    if (currentDni !== dni) {
+      const agentName = COMERCIALES[dni];
+      delete COMERCIALES[dni];
+      COMERCIALES[currentDni] = agentName;
+      
+      delete AGENT_ROLES[dni];
+      delete AGENT_PASSWORDS[dni];
+      delete AGENT_STATUSES[dni];
+      
+      AGENT_ROLES[currentDni] = currentRole;
+      AGENT_PASSWORDS[currentDni] = currentPwd;
+      AGENT_STATUSES[currentDni] = newStatus;
+      
+      if (currentAgentDni === dni) {
+        currentAgentDni = currentDni;
+        localStorage.setItem('comercial_dni', currentDni);
+      }
+      
+      initGruposAgentes();
+    } else {
+      AGENT_STATUSES[dni] = newStatus;
+      
+      const badge = document.getElementById('status-badge-' + dni);
+      if (badge) {
+        badge.textContent = newStatus === 'inactive' ? 'Inactivo' : 'Activo';
+        badge.style.cssText = newStatus === 'inactive' 
+          ? 'padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.15); color: #ef4444;' 
+          : 'padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(16, 185, 129, 0.15); color: #10b981;';
+      }
+      
+      btn.textContent = newStatus === 'inactive' ? 'Activar' : 'Desactivar';
+      btn.style.background = newStatus === 'inactive' ? 'var(--green)' : '#f97316';
     }
     
-    btn.textContent = newStatus === 'inactive' ? 'Activar' : 'Desactivar';
-    btn.style.background = newStatus === 'inactive' ? 'var(--green)' : '#f97316';
+    const rawRoles = {};
+    Object.keys(AGENT_ROLES).forEach(k => {
+      const pwd = AGENT_PASSWORDS[k];
+      const status = AGENT_STATUSES[k] || 'active';
+      rawRoles[k] = AGENT_ROLES[k] + ':' + (pwd || k) + ':' + status;
+    });
+    localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
+    
+    applyAgentPermissions();
+    alert('\u00A1Estado del agente actualizado con \u00E9xito!');
   } else {
     alert('Error al guardar el estado en la base de datos.');
   }
+}
+
+async function saveAgentPasswordByGerente(dni) {
+  // VacÃ­a ya que es reemplazada por saveAgentUserByGerente
 }
 
 function updateDashboardLaborablesWidget() {
