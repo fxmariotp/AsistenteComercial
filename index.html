@@ -7662,11 +7662,25 @@ function renderCondiciones(){
   cias.forEach(id=>{
     const r=RATES[id];
     const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
+    
+    let retrocomision = '';
+    if (id === 'iberdrola') {
+      retrocomision = '0-2 meses 100% / 2-4 meses 50%';
+    } else if (id === 'endesa') {
+      retrocomision = 'Hostezadis 2m / Renosur 6m';
+    } else if (id === 'naturgy') {
+      retrocomision = '4 meses';
+    } else if (id === 'gana') {
+      retrocomision = '12 meses';
+    }
 
     html+=`<div class="cond-cia-block">
-      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
         ${logoHtml}
         <div class="cond-cia-name" style="font-size:15px;font-weight:700;color:var(--text);">${r.name}</div>
+        <div style="font-size:10.5px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(217,119,6,0.15);white-space:nowrap;margin-left:4px;">
+          Retrocomisión: ${retrocomision}
+        </div>
         ${r.desc_sin>0?`<span style="font-size:13px;color:var(--t2);margin-left:auto;">Dto. sin/con mant.: <strong>${(r.desc_sin*100).toFixed(0)}%</strong>/<strong>${(r.desc_con*100).toFixed(0)}%</strong></span>`:''}
       </div>`;
 
@@ -7738,10 +7752,24 @@ function renderCondiciones(){
     const r=RATES[id];
     const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
 
+    let retrocomision = '';
+    if (id === 'iberdrola') {
+      retrocomision = '0-2 meses 100% / 2-4 meses 50%';
+    } else if (id === 'endesa') {
+      retrocomision = 'Hostezadis 2m / Renosur 6m';
+    } else if (id === 'naturgy') {
+      retrocomision = '4 meses';
+    } else if (id === 'gana') {
+      retrocomision = '12 meses';
+    }
+
     html+=`<div class="cond-cia-block">
-      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
+      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
         ${logoHtml}
         <div class="cond-cia-name" style="font-size:15px;font-weight:700;color:var(--text);">${r.name}</div>
+        <div style="font-size:10.5px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(217,119,6,0.15);white-space:nowrap;margin-left:4px;">
+          Retrocomisión: ${retrocomision}
+        </div>
       </div>`;
 
     // GAS
