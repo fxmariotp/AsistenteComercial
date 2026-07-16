@@ -3654,6 +3654,92 @@ input:focus, select:focus, textarea:focus {
   vertical-align: middle !important;
   display: inline-block !important;
 }
+
+/* ── TABLON DE ANUNCIOS ── */
+.announcements-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+@media (min-width: 768px) {
+  .announcements-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.announcement-card {
+  background: var(--surface);
+  border: 1.5px solid var(--border);
+  border-radius: var(--rs);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  position: relative;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.01), 0 2px 4px -1px rgba(0, 0, 0, 0.01);
+}
+.announcement-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 20px -8px rgba(120, 110, 100, 0.08), 0 2px 4px rgba(0, 0, 0, 0.01);
+  border-color: var(--border-hover);
+}
+.announcement-hdr-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+}
+.announcement-card-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin: 0;
+  line-height: 1.4;
+}
+.announcement-card-date {
+  font-size: 11px;
+  color: var(--t3);
+  font-weight: 600;
+  white-space: nowrap;
+}
+.announcement-card-body {
+  font-size: 13.5px;
+  color: var(--t2);
+  line-height: 1.6;
+  margin: 0;
+  white-space: pre-wrap;
+}
+.announcement-card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: auto;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+  font-size: 11.5px;
+  color: var(--t3);
+}
+.announcement-card-author {
+  font-weight: 600;
+  color: var(--t2);
+}
+.announcement-delete-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--t3);
+  padding: 4px;
+  border-radius: 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.announcement-delete-btn:hover {
+  color: #ef4444;
+  background: rgba(239, 68, 68, 0.08);
+}
 </style></head>
 <body>
 
@@ -3876,6 +3962,23 @@ input:focus, select:focus, textarea:focus {
           <div id="db-widget-ranking-content">
             <!-- Loaded dynamically with circular SVG progress wheel -->
           </div>
+        </div>
+      </div>
+
+      <!-- Widget: Tablón de Anuncios -->
+      <div class="db-announcements-section" style="margin-top: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 0; display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #f59e0b;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            Tablón de Anuncios
+          </h3>
+          <button id="btn-create-announcement" class="btn-primary" onclick="openAnnouncementModal()" style="width: auto; height: 34px; padding: 0 14px; font-size: 12.5px; display: none; align-items: center; gap: 6px; margin-top: 0; box-shadow: 0 4px 10px rgba(53, 127, 191, 0.15);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Publicar Anuncio
+          </button>
+        </div>
+        <div id="db-announcements-list" class="announcements-grid">
+          <!-- Cargado dinámicamente -->
         </div>
       </div>
 
@@ -4685,6 +4788,30 @@ input:focus, select:focus, textarea:focus {
           </div>
           <div id="password-modal-error" style="color: #ef4444; font-size: 12px; font-weight: 600; min-height: 18px; text-align: center;"></div>
           <button type="submit" class="btn btn-primary" id="btn-save-pwd" style="padding: 11px; font-size: 14px; font-weight: 700; background: var(--blue); color: #fff; border: none; border-radius: var(--rs); cursor: pointer; transition: opacity 0.2s;">Guardar Cambios</button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Announcement Modal -->
+    <div id="announcement-modal" class="modal-overlay" style="display: none;">
+      <div class="modal-content" style="max-width: 500px; width: 92%; padding: 24px;">
+        <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+          <h4 style="margin: 0; font-size: 16.5px; font-weight: 800; color: var(--text);">Publicar Nuevo Anuncio</h4>
+          <button class="close-btn" onclick="closeAnnouncementModal()" style="background: transparent; border: none; cursor: pointer; color: var(--t3); display: inline-flex;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+          </button>
+        </div>
+        <form id="announcement-form" onsubmit="saveAnnouncement(event)" style="display: flex; flex-direction: column; gap: 14px;">
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--t2);">Título del Anuncio</label>
+            <input type="text" id="announcement-title-input" required placeholder="Escribe el título..." style="padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;">
+          </div>
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--t2);">Contenido</label>
+            <textarea id="announcement-content-input" required rows="5" placeholder="Escribe el mensaje..." style="padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; outline: none; resize: vertical; font-family: inherit; transition: border-color 0.2s;"></textarea>
+          </div>
+          <div id="announcement-modal-error" style="color: #ef4444; font-size: 12px; font-weight: 600; min-height: 18px; text-align: center;"></div>
+          <button type="submit" class="btn btn-primary" id="btn-save-announcement" style="padding: 11px; font-size: 14px; font-weight: 700; background: var(--blue); color: #fff; border: none; border-radius: var(--rs); cursor: pointer; transition: opacity 0.2s;">Publicar Anuncio</button>
         </form>
       </div>
     </div>
@@ -9533,16 +9660,21 @@ function onLoginSuccess() {
     updateDashboardLaborablesWidget();
   }
   
-  // 7. Cargar datos de ranking para dashboard
+  // 7. Cargar datos de ranking y anuncios para dashboard
   fetchRankingForDashboard();
+  if (typeof fetchAnnouncements === 'function') fetchAnnouncements();
   
 
   
-  // 8. Mostrar/ocultar seccion de Gerencia
-    const gerenteSec = document.getElementById('gerente-section');
+  // 8. Mostrar/ocultar seccion de Gerencia y boton de crear anuncio
+  const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+  const gerenteSec = document.getElementById('gerente-section');
   if (gerenteSec) {
-    const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
     gerenteSec.style.display = userRole === 'gerente' ? 'block' : 'none';
+  }
+  const btnCreateAnnouncement = document.getElementById('btn-create-announcement');
+  if (btnCreateAnnouncement) {
+    btnCreateAnnouncement.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
   }
   
   // 9. Iniciar verificacion de estado activo/inactivo en tiempo real
@@ -9749,6 +9881,131 @@ async function deleteVacationDayFromCloud(dni, dateStr) {
     await supabaseClient.from('vacaciones').delete().eq('dni', dni).eq('fecha', dateStr);
   } catch (e) {
     console.error("Error deleting vacation day from cloud", e);
+  }
+}
+
+// ── TABLON DE ANUNCIOS LOGIC ──
+
+function openAnnouncementModal() {
+  document.getElementById('announcement-title-input').value = '';
+  document.getElementById('announcement-content-input').value = '';
+  document.getElementById('announcement-modal-error').textContent = '';
+  document.getElementById('announcement-modal').style.display = 'flex';
+}
+
+function closeAnnouncementModal() {
+  document.getElementById('announcement-modal').style.display = 'none';
+}
+
+async function fetchAnnouncements() {
+  if (!supabaseClient) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tareas')
+      .select('*')
+      .eq('dni', 'SYSTEM_ANUNCIO');
+    if (!error && data) {
+      data.sort((a, b) => Number(b.created_at) - Number(a.created_at));
+      renderAnnouncements(data);
+    } else if (error) {
+      console.error("Error fetching announcements:", error);
+    }
+  } catch (e) {
+    console.error("Exception fetching announcements:", e);
+  }
+}
+
+function renderAnnouncements(list) {
+  const container = document.getElementById('db-announcements-list');
+  if (!container) return;
+  
+  if (list.length === 0) {
+    container.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; padding: 30px; color: var(--t3); font-style: italic; border: 1.5px dashed var(--border); border-radius: var(--rs); background: var(--surface);">No hay anuncios publicados actualmente.</div>`;
+    return;
+  }
+  
+  const isGerente = (AGENT_ROLES[currentAgentDni] || 'comercial') === 'gerente';
+  
+  container.innerHTML = list.map(item => {
+    const dateStr = item.date ? item.date.split('-').reverse().join('/') : '';
+    const deleteBtnHtml = isGerente 
+      ? `<button class="announcement-delete-btn" onclick="deleteAnnouncement('${item.id}')" title="Eliminar anuncio">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+         </button>` 
+      : '';
+      
+    return `<div class="announcement-card">
+      <div class="announcement-hdr-row">
+        <h4 class="announcement-card-title">${item.title}</h4>
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <span class="announcement-card-date">${dateStr}</span>
+          ${deleteBtnHtml}
+        </div>
+      </div>
+      <p class="announcement-card-body">${item.notes}</p>
+      <div class="announcement-card-footer">
+        <div>Publicado por: <span class="announcement-card-author">${item.phone || 'Gerencia'}</span></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+async function saveAnnouncement(event) {
+  event.preventDefault();
+  const errorEl = document.getElementById('announcement-modal-error');
+  errorEl.textContent = '';
+  
+  const title = document.getElementById('announcement-title-input').value.trim();
+  const content = document.getElementById('announcement-content-input').value.trim();
+  
+  if (!title || !content) {
+    errorEl.textContent = 'Por favor, rellena todos los campos.';
+    return;
+  }
+  
+  const now = new Date();
+  const dateStr = now.toISOString().split('T')[0];
+  const authorName = currentAgentName ? getShortName(currentAgentName) : 'Gerencia';
+  
+  try {
+    const { error } = await supabaseClient.from('tareas').insert({
+      id: 'announcement_' + Date.now(),
+      dni: 'SYSTEM_ANUNCIO',
+      type: 'announcement',
+      title: title,
+      notes: content,
+      phone: authorName,
+      date: dateStr,
+      completed: false,
+      notified: false,
+      created_at: Date.now()
+    });
+    
+    if (error) {
+      errorEl.textContent = 'Error al publicar el anuncio en base de datos.';
+      console.error(error);
+    } else {
+      closeAnnouncementModal();
+      await fetchAnnouncements();
+    }
+  } catch (e) {
+    errorEl.textContent = 'Error de conexión.';
+    console.error(e);
+  }
+}
+
+async function deleteAnnouncement(id) {
+  if (!confirm("¿Estás seguro de que deseas eliminar este anuncio?")) return;
+  try {
+    const { error } = await supabaseClient.from('tareas').delete().eq('id', id);
+    if (error) {
+      alert('Error al eliminar el anuncio de la base de datos.');
+      console.error(error);
+    } else {
+      await fetchAnnouncements();
+    }
+  } catch (e) {
+    console.error("Exception deleting announcement:", e);
   }
 }
 
