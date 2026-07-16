@@ -6109,6 +6109,29 @@ function renderCalendar(){
       label += ' · Hoy';
     }
     
+    const isGerente = (AGENT_ROLES[currentAgentDni] || 'comercial') === 'gerente';
+    let gerenteBtnHtml = '';
+    if (isGerente) {
+      const agentsOnVacation = [];
+      Object.keys(COMERCIALES).forEach(k => {
+        try {
+          const list = JSON.parse(localStorage.getItem('vacaciones_' + k) || '[]');
+          if (list.includes(iso)) {
+            agentsOnVacation.push(COMERCIALES[k]);
+          }
+        } catch(e){}
+      });
+      if (agentsOnVacation.length > 0) {
+        const count = agentsOnVacation.length;
+        const namesListStr = agentsOnVacation.map(n => getShortName(n)).join(', ');
+        
+        gerenteBtnHtml = `<button class="cal-gerente-vac-btn" onclick="showAgentsOnVacation('${iso}', event)" title="Comerciales de vacaciones: ${namesListStr}" style="margin-top: auto; padding: 2px 5px; font-size: 8.5px; font-weight: 800; border-radius: 4px; border: 1px solid rgba(224, 123, 0, 0.25); background: rgba(224, 123, 0, 0.08); color: #e07b00; display: inline-flex; align-items: center; gap: 3px; cursor: pointer; transition: all 0.2s; width: max-content; align-self: flex-start; text-transform: uppercase; line-height: 1;">
+          <svg width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" style="color: #e07b00;"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
+          <span>Vacas: ${count}</span>
+        </button>`;
+      }
+    }
+    
     let cellContent = `<span>${dayNum}</span>`;
     if (extraHtml) {
       let badgeBg = 'rgba(73, 84, 96, 0.1)';
@@ -6146,6 +6169,13 @@ function renderCalendar(){
       }
     }
     
+    if (gerenteBtnHtml) {
+      const hasExtra = (extraHtml && extraHtml !== 'VACACIONES');
+      const btnStyle = hasExtra ? 'margin-top: 4px;' : 'margin-top: auto;';
+      const finalGerenteBtnHtml = gerenteBtnHtml.replace('margin-top: auto;', btnStyle);
+      cellContent += finalGerenteBtnHtml;
+    }
+    
     const styleAttr = customStyle ? ` style="${customStyle}"` : '';
     html+=`<div class="${cls}"${styleAttr} title="${label}">${cellContent}</div>`;
   }
@@ -6162,6 +6192,84 @@ function renderCalendar(){
   document.getElementById('cal-grid').innerHTML=html;
 
   renderCalCounters(year);
+}
+
+function showAgentsOnVacation(iso, event) {
+  if (event) event.stopPropagation();
+  
+  const dateStr = iso.split('-').reverse().join('/');
+  const agentsOnVacation = [];
+  
+  Object.keys(COMERCIALES).forEach(k => {
+    try {
+      const list = JSON.parse(localStorage.getItem('vacaciones_' + k) || '[]');
+      if (list.includes(iso)) {
+        const motiveKey = 'vacaciones_motivos_' + k;
+        const motives = JSON.parse(localStorage.getItem(motiveKey) || '{}');
+        const motive = motives[iso] || 'Vacaciones';
+        agentsOnVacation.push({
+          name: COMERCIALES[k],
+          motive: motive
+        });
+      }
+    } catch(e){}
+  });
+  
+  if (agentsOnVacation.length === 0) return;
+  
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.style.display = 'flex';
+  overlay.style.zIndex = '9999';
+  
+  overlay.innerHTML = `
+    <div class="modal-content" style="max-width: 420px; width: 92%; padding: 24px; box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); display: flex; flex-direction: column; gap: 16px;">
+      <div class="modal-header" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0;">
+        <h4 style="margin: 0; font-size: 16.5px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #e07b00;"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          Vacaciones el ${dateStr}
+        </h4>
+        <button onclick="this.closest('.modal-overlay').remove()" style="background: transparent; border: none; cursor: pointer; color: var(--t3); display: inline-flex; padding: 4px; transition: color 0.2s;">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+      </div>
+      
+      <div style="display: flex; flex-direction: column; gap: 10px; max-height: 250px; overflow-y: auto; padding-right: 4px;">
+        ${agentsOnVacation.map(agent => {
+          let badgeBg = 'rgba(73, 84, 96, 0.1)';
+          let badgeColor = '#475569';
+          const low = agent.motive.toLowerCase();
+          if (low.includes('baja')) {
+            badgeBg = 'rgba(239, 68, 68, 0.15)';
+            badgeColor = '#dc2626';
+          } else if (low.includes('asuntos')) {
+            badgeBg = 'rgba(14, 165, 233, 0.15)';
+            badgeColor = '#0284c7';
+          } else if (low.includes('hospital')) {
+            badgeBg = 'rgba(236, 72, 153, 0.15)';
+            badgeColor = '#db2777';
+          } else if (low.includes('reposo')) {
+            badgeBg = 'rgba(16, 185, 129, 0.15)';
+            badgeColor = '#059669';
+          } else if (low.includes('vacaciones')) {
+            badgeBg = 'rgba(53, 127, 191, 0.15)';
+            badgeColor = '#357fbf';
+          }
+          
+          return `
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px 14px; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--rs);">
+              <div style="font-weight: 700; color: var(--text); font-size: 13.5px;">${agent.name}</div>
+              <div style="font-size: 10px; font-weight: 800; color: ${badgeColor}; background: ${badgeBg}; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.3px;">${agent.motive}</div>
+            </div>
+          `;
+        }).join('')}
+      </div>
+      
+      <button onclick="this.closest('.modal-overlay').remove()" class="btn btn-secondary" style="width: 100%; padding: 10px; font-weight: 700; background: var(--border); color: var(--text); border: 1.5px solid var(--border); border-radius: var(--rs); cursor: pointer; transition: all 0.2s;">Cerrar</button>
+    </div>
+  `;
+  
+  document.body.appendChild(overlay);
 }
 
 function renderCalCounters(year){
@@ -7838,7 +7946,15 @@ function showPanel(id, btn){
   if(id==='comparativa') calcComp();
   if(id==='condiciones') renderCondiciones();
   if(id==='archivos') renderAdmin();
-  if(id==='calendario') renderCalendar();
+  if(id==='calendario') {
+    renderCalendar();
+    const isGerente = (AGENT_ROLES[currentAgentDni] || 'comercial') === 'gerente';
+    if (isGerente && typeof fetchAllVacationsFromCloud === 'function') {
+      fetchAllVacationsFromCloud().then(() => {
+        renderCalendar();
+      });
+    }
+  }
   if(id==='ranking') loadNativeRanking();
   if(id==='telefonos') renderTelefonos();
   if(id==='agenda') renderAgenda();
