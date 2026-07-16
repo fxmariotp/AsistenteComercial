@@ -3743,6 +3743,52 @@ input:focus, select:focus, textarea:focus {
 .announcement-card.unread {
   border-left: 4px solid var(--blue) !important;
   background: rgba(53, 127, 191, 0.02);
+  position: relative;
+  overflow: hidden;
+}
+.announcement-card.unread .announcement-card-body,
+.announcement-card.unread .announcement-card-footer {
+  opacity: 0.05;
+  filter: blur(5px);
+  pointer-events: none;
+  user-select: none;
+  transition: all 0.4s ease;
+}
+.announcement-mask-overlay {
+  position: absolute;
+  top: 48px;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.4);
+  text-align: center;
+  padding: 10px 20px;
+  z-index: 10;
+  transition: all 0.3s ease;
+  border-radius: 0 0 var(--rs) var(--rs);
+}
+.announcement-mask-text {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 8px 16px;
+  border-radius: 20px;
+  box-shadow: 0 4px 12px rgba(53, 127, 191, 0.1);
+  border: 1px solid rgba(53, 127, 191, 0.15);
+  animation: pulseMaskText 2s infinite ease-in-out;
+}
+@keyframes pulseMaskText {
+  0% { transform: scale(1); box-shadow: 0 4px 12px rgba(53, 127, 191, 0.1); }
+  50% { transform: scale(1.02); box-shadow: 0 6px 16px rgba(53, 127, 191, 0.18); }
+  100% { transform: scale(1); box-shadow: 0 4px 12px rgba(53, 127, 191, 0.1); }
 }
 .announcement-badge-new {
   font-size: 9px;
@@ -3759,6 +3805,15 @@ input:focus, select:focus, textarea:focus {
 }
 .announcement-card.clickable-unread {
   cursor: pointer;
+}
+.announcement-card.revealing .announcement-card-body,
+.announcement-card.revealing .announcement-card-footer {
+  opacity: 1 !important;
+  filter: none !important;
+}
+.announcement-card.revealing .announcement-mask-overlay {
+  opacity: 0;
+  pointer-events: none;
 }
 </style></head>
 <body>
@@ -10028,7 +10083,16 @@ function renderAnnouncements(list) {
       
     const unreadClass = isUnread ? ' unread clickable-unread' : '';
     const badgeNewHtml = isUnread ? `<span class="announcement-badge-new">Nuevo</span>` : '';
-    const clickHandler = isUnread ? `onclick="readSingleAnnouncement('${item.id}')"` : '';
+    const clickHandler = isUnread ? `onclick="readSingleAnnouncement('${item.id}', this)"` : '';
+    
+    const maskOverlayHtml = isUnread 
+      ? `<div class="announcement-mask-overlay">
+          <div class="announcement-mask-text">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Tienes un mensaje pendiente que leer. Haz clic para descubrirlo.
+          </div>
+         </div>` 
+      : '';
       
     return `<div class="announcement-card${unreadClass}" ${clickHandler}>
       <div class="announcement-hdr-row">
@@ -10038,6 +10102,7 @@ function renderAnnouncements(list) {
           ${deleteBtnHtml}
         </div>
       </div>
+      ${maskOverlayHtml}
       <p class="announcement-card-body">${item.notes}</p>
       <div class="announcement-card-footer">
         <div>Publicado por: <span class="announcement-card-author">${item.phone || 'Gerencia'}</span></div>
@@ -10046,9 +10111,17 @@ function renderAnnouncements(list) {
   }).join('');
 }
 
-function readSingleAnnouncement(id) {
-  markAnnouncementAsRead(id);
-  fetchAnnouncements();
+function readSingleAnnouncement(id, cardEl) {
+  if (cardEl) {
+    cardEl.classList.add('revealing');
+    setTimeout(() => {
+      markAnnouncementAsRead(id);
+      fetchAnnouncements();
+    }, 350);
+  } else {
+    markAnnouncementAsRead(id);
+    fetchAnnouncements();
+  }
 }
 
 function markAllAnnouncementsAsRead() {
