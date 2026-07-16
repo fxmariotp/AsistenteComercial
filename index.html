@@ -3876,6 +3876,23 @@ input:focus, select:focus, textarea:focus {
         </div>
       </div>
 
+      <!-- Widget: Tablón de Anuncios -->
+      <div class="db-announcements-section" style="margin-top: 24px; margin-bottom: 24px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 0; display: flex; align-items: center; gap: 8px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #f59e0b;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+            Tablón de Anuncios
+          </h3>
+          <button id="btn-create-announcement" class="btn-primary" onclick="openAnnouncementModal()" style="width: auto; height: 34px; padding: 0 14px; font-size: 12.5px; display: none; align-items: center; gap: 6px; margin-top: 0; box-shadow: 0 4px 10px rgba(53, 127, 191, 0.15);">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            Publicar Anuncio
+          </button>
+        </div>
+        <div id="db-announcements-list" class="announcements-grid">
+          <!-- Cargado dinámicamente -->
+        </div>
+      </div>
+
       <!-- Dashboard widgets preview panel -->
       <div class="db-widgets-row">
         <!-- Widget: Agenda Diaria -->
@@ -3962,23 +3979,6 @@ input:focus, select:focus, textarea:focus {
           <div id="db-widget-ranking-content">
             <!-- Loaded dynamically with circular SVG progress wheel -->
           </div>
-        </div>
-      </div>
-
-      <!-- Widget: Tablón de Anuncios -->
-      <div class="db-announcements-section" style="margin-top: 30px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 0; display: flex; align-items: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #f59e0b;"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-            Tablón de Anuncios
-          </h3>
-          <button id="btn-create-announcement" class="btn-primary" onclick="openAnnouncementModal()" style="width: auto; height: 34px; padding: 0 14px; font-size: 12.5px; display: none; align-items: center; gap: 6px; margin-top: 0; box-shadow: 0 4px 10px rgba(53, 127, 191, 0.15);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-            Publicar Anuncio
-          </button>
-        </div>
-        <div id="db-announcements-list" class="announcements-grid">
-          <!-- Cargado dinámicamente -->
         </div>
       </div>
 
