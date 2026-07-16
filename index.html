@@ -3815,6 +3815,14 @@ input:focus, select:focus, textarea:focus {
   opacity: 0;
   pointer-events: none;
 }
+.pulse-red-dot {
+  animation: pulseRedDot 1.5s infinite ease-in-out;
+}
+@keyframes pulseRedDot {
+  0% { transform: scale(1); opacity: 1; }
+  50% { transform: scale(1.4); opacity: 0.5; }
+  100% { transform: scale(1); opacity: 1; }
+}
 </style></head>
 <body>
 
@@ -3937,6 +3945,7 @@ input:focus, select:focus, textarea:focus {
       <div class="db-header">
         <div class="db-welcome">
           <h1 id="db-welcome-greeting" style="margin-bottom: 0;">Buenas tardes,</h1>
+          <div id="db-announcements-notice" style="margin-top: 10px; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;"></div>
           <div class="db-kpis">
             <div class="db-kpi-item">
               <span class="db-kpi-val" id="db-kpi-sales">0.0 pts</span>
@@ -10035,6 +10044,21 @@ async function fetchAnnouncements() {
       
       const readIds = getReadAnnouncements();
       const unreadCount = data.filter(item => !readIds.includes(item.id)).length;
+      
+      const noticeEl = document.getElementById('db-announcements-notice');
+      if (noticeEl) {
+        if (unreadCount > 0) {
+          noticeEl.innerHTML = `<span style="color: #ef4444; background: rgba(239, 68, 68, 0.08); padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(239, 68, 68, 0.12); cursor: pointer;" onclick="openAnnouncementsListModal()">
+            <span class="pulse-red-dot" style="width: 6px; height: 6px; background: #ef4444; border-radius: 50%; display: inline-block;"></span>
+            Tienes <strong>${unreadCount}</strong> ${unreadCount === 1 ? 'anuncio pendiente' : 'anuncios pendientes'} de leer
+          </span>`;
+        } else {
+          noticeEl.innerHTML = `<span style="color: #10b981; background: rgba(16, 185, 129, 0.08); padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 6px; border: 1px solid rgba(16, 185, 129, 0.12);">
+            <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" style="display:block;"><polyline points="20 6 9 17 4 12"></polyline></svg>
+            Estás al día con los anuncios
+          </span>`;
+        }
+      }
       
       const badge = document.getElementById('announcements-badge');
       if (badge) {
