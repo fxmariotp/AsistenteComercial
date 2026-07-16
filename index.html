@@ -10127,10 +10127,7 @@ function renderAnnouncements(list) {
         </div>
       </div>
       ${maskOverlayHtml}
-      <p class="announcement-card-body">${item.notes}</p>
-      <div class="announcement-card-footer">
-        <div>Publicado por: <span class="announcement-card-author">${item.phone || 'Gerencia'}</span></div>
-      </div>
+      <p class="announcement-card-body" style="margin-bottom: 0;">${item.notes}</p>
     </div>`;
   }).join('');
 }
