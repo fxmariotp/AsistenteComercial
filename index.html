@@ -6482,8 +6482,30 @@ function renderControlVacationsTimeline() {
   
   // ── BODY ROWS ──
   let bodyHtml = '<tbody>';
-  Object.keys(COMERCIALES).forEach(dni => {
-    const name = COMERCIALES[dni];
+  
+  const mappedTimeline = Object.keys(COMERCIALES).map(dni => {
+    const role = AGENT_ROLES[dni] || 'comercial';
+    return {
+      dni,
+      name: COMERCIALES[dni],
+      rol: role
+    };
+  });
+  
+  mappedTimeline.sort((a, b) => {
+    const rolePriority = { 'gerente': 1, 'comercial': 2, 'evaria': 3 };
+    const prioA = rolePriority[a.rol] || 99;
+    const prioB = rolePriority[b.rol] || 99;
+    
+    if (prioA !== prioB) {
+      return prioA - prioB;
+    }
+    return a.name.localeCompare(b.name);
+  });
+  
+  mappedTimeline.forEach(agent => {
+    const dni = agent.dni;
+    const name = agent.name;
     const vacations = getAgentVacations(dni);
     const consumed = vacations.length;
     
