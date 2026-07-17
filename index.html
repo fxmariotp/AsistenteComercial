@@ -8113,7 +8113,21 @@ function renderCondiciones(){
     r.tarifas_gas.forEach(t=>{
       html+=`<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(4)}</span></td><td>${t.tf.toFixed(4)}</td><td>${(t.tf*30).toFixed(2)} €</td></tr>`;
     });
-    html+=`</tbody></table></div></div>`;
+    let svaGasHtml = '';
+    if (r.sva_gas > 0) {
+      svaGasHtml = `<span>Mantenimiento Gas: <strong>${r.sva_gas.toFixed(2)} €/mes</strong></span>`;
+    } else {
+      svaGasHtml = `<span>Mantenimiento Gas: <strong>No disponible</strong></span>`;
+    }
+    html+=`</tbody></table></div>
+    <div style="font-size:12px;color:var(--t3);margin-top:6px;display:flex;flex-direction:column;gap:4px;">
+      <div style="display:flex;justify-content:flex-end;flex-wrap:wrap;gap:4px;align-items:flex-start;">
+        <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
+          ${svaGasHtml}
+        </div>
+      </div>
+    </div>
+    </div>`;
   });
 
   html+=`</div>`;
@@ -8476,6 +8490,7 @@ function renderInvCards(results, useSva){
         </div>
         <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
           ${isLuz ? `<div>Excedentes: <strong style="color:var(--text);">${res.excPrice.toFixed(2)} €/kWh</strong></div>` : ''}
+          ${!isLuz ? `<div>Mant. Gas: <strong style="color:var(--text);">${r.sva_gas > 0 ? r.sva_gas.toFixed(2) + ' €/mes' : 'No disp.'}</strong></div>` : ''}
           <div style="font-size:10.5px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(217,119,6,0.15);white-space:nowrap;">
             Retrocomision: ${retrocomision}
           </div>
