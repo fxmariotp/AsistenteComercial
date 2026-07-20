@@ -4194,13 +4194,27 @@ input:focus, select:focus, textarea:focus {
     
     <!-- â•â•â•â•â•â• SCRIPTS â•â•â•â•â•â• -->
     <div class="panel" id="panel-scripts">
-      <div class="cia-tabs">
-        <button class="ctab active" id="ctab-naturgy" onclick="switchCia(&#39;naturgy&#39;)" style="border-color:#E85D3A;color:#E85D3A"><span class="cdot" style="background:#E85D3A"></span>Naturgy</button>
-        <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia(&#39;naturgy-cif&#39;)"><span class="cdot" style="background:#E85D3A"></span>Naturgy (CIF)</button>
-        <button class="ctab" id="ctab-iberdrola" onclick="switchCia(&#39;iberdrola&#39;)"><span class="cdot" style="background:#008B3C"></span>Iberdrola</button>
-        <button class="ctab" id="ctab-iberdrola-cif" onclick="switchCia(&#39;iberdrola-cif&#39;)"><span class="cdot" style="background:#008B3C"></span>Iberdrola (CIF)</button>
-        <button class="ctab" id="ctab-endesa" onclick="switchCia(&#39;endesa&#39;)"><span class="cdot" style="background:#00A8E0"></span>Endesa</button>
-        <button class="ctab" id="ctab-gana" onclick="switchCia(&#39;gana&#39;)"><span class="cdot" style="background:#E30613"></span>Gana Energia</button>
+      <div class="cia-tabs" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px;">
+        <button class="ctab active" id="ctab-naturgy" onclick="switchCia('naturgy')" style="display:inline-flex;align-items:center;gap:6px;height:38px;padding:4px 12px;border:1.5px solid #E85D3A;background:rgba(232, 93, 58, 0.08);color:#E85D3A;border-radius:10px;cursor:pointer;">
+          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Naturgy%20Logo.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:22px;max-width:90px;object-fit:contain;display:block;">
+        </button>
+        <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia('naturgy-cif')" style="display:inline-flex;align-items:center;gap:6px;height:38px;padding:4px 12px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Naturgy%20Logo.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:22px;max-width:90px;object-fit:contain;display:block;">
+          <span style="font-weight: 800; font-size: 12px; color: var(--text);">(CIF)</span>
+        </button>
+        <button class="ctab" id="ctab-iberdrola" onclick="switchCia('iberdrola')" style="display:inline-flex;align-items:center;gap:6px;height:38px;padding:4px 12px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Iberdrola%20Logo.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:22px;max-width:90px;object-fit:contain;display:block;">
+        </button>
+        <button class="ctab" id="ctab-iberdrola-cif" onclick="switchCia('iberdrola-cif')" style="display:inline-flex;align-items:center;gap:6px;height:38px;padding:4px 12px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Iberdrola%20Logo.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:22px;max-width:90px;object-fit:contain;display:block;">
+          <span style="font-weight: 800; font-size: 12px; color: var(--text);">(CIF)</span>
+        </button>
+        <button class="ctab" id="ctab-endesa" onclick="switchCia('endesa')" style="display:inline-flex;align-items:center;gap:6px;height:38px;padding:4px 12px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Endesa%20Logo.png" onerror="handleLogoError(this, 'endesa')" alt="Endesa" style="height:22px;max-width:90px;object-fit:contain;display:block;">
+        </button>
+        <button class="ctab" id="ctab-gana" onclick="switchCia('gana')" style="display:inline-flex;align-items:center;gap:6px;height:38px;padding:4px 12px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/GanaEnergia%20Logo.png" onerror="handleLogoError(this, 'gana')" alt="Gana Energia" style="height:22px;max-width:90px;object-fit:contain;display:block;">
+        </button>
       </div>
 
       <!-- IBERDROLA -->
@@ -8016,10 +8030,26 @@ function switchCia(id){
     endesa:'#00A8E0',
     gana:'#E30613'
   };
-  document.querySelectorAll('#panel-scripts .ctab').forEach(t=>{t.classList.remove('active');t.style.background='';t.style.borderColor='';t.style.color='';});
+  const bgTints={
+    iberdrola:'rgba(0, 139, 60, 0.08)',
+    'iberdrola-cif':'rgba(0, 139, 60, 0.08)',
+    naturgy:'rgba(232, 93, 58, 0.08)',
+    'naturgy-cif':'rgba(232, 93, 58, 0.08)',
+    endesa:'rgba(0, 168, 224, 0.08)',
+    gana:'rgba(227, 6, 19, 0.08)'
+  };
+  document.querySelectorAll('#panel-scripts .ctab').forEach(t=>{
+    t.classList.remove('active');
+    t.style.background='';
+    t.style.border='1.5px solid transparent';
+    t.style.color='var(--t2)';
+  });
   document.querySelectorAll('.sv').forEach(v=>v.classList.remove('active'));
   const t=document.getElementById('ctab-'+id);
-  t.classList.add('active'); t.style.background=colors[id]; t.style.borderColor=colors[id]; t.style.color='#fff';
+  t.classList.add('active');
+  t.style.background=bgTints[id];
+  t.style.border='1.5px solid ' + colors[id];
+  t.style.color=colors[id];
   document.getElementById('sv-'+id).classList.add('active');
 }
 
@@ -8049,9 +8079,8 @@ function renderCondiciones(){
     }
 
     html+=`<div class="cond-cia-block">
-      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
-        ${logoHtml}
-        <div class="cond-cia-name" style="font-size:15px;font-weight:700;color:var(--text);">${r.name}</div>
+      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;height:34px;">
+        <img src="${getCompanyLogoUrl(id)}" onerror="handleLogoError(this, '${id}')" alt="${r.name}" style="height:28px;max-width:120px;object-fit:contain;display:block;">
         <div style="font-size:10.5px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(217,119,6,0.15);white-space:nowrap;margin-left:4px;">
           Retrocomisión: ${retrocomision}
         </div>
@@ -8138,9 +8167,8 @@ function renderCondiciones(){
     }
 
     html+=`<div class="cond-cia-block">
-      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;">
-        ${logoHtml}
-        <div class="cond-cia-name" style="font-size:15px;font-weight:700;color:var(--text);">${r.name}</div>
+      <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;height:34px;">
+        <img src="${getCompanyLogoUrl(id)}" onerror="handleLogoError(this, '${id}')" alt="${r.name}" style="height:28px;max-width:120px;object-fit:contain;display:block;">
         <div style="font-size:10.5px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(217,119,6,0.15);white-space:nowrap;margin-left:4px;">
           Retrocomisión: ${retrocomision}
         </div>
@@ -8525,8 +8553,8 @@ function renderInvCards(results, useSva){
     return `<div class="inv-card${best?' best':''}">
       <!-- Header -->
       <div class="inv-hdr-minimal">
-        <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;height:28px;">
-          <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height:26px;max-width:110px;object-fit:contain;display:block;">
+        <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;height:36px;">
+          <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height:34px;max-width:130px;object-fit:contain;display:block;">
           ${best?'<span class="best-badge">✓ Mejor opcion</span>':''}
         </div>
         <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
@@ -8892,9 +8920,9 @@ function printCompanyOffer(key) {
     <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
       3. Compañia seleccionada
     </div>
-    <div style="margin-top: 8px; margin-bottom: 12px;">
+    <div style="margin-top: 10px; margin-bottom: 12px;">
       <div class="print-brand-badge" style="display: inline-flex; align-items: center; padding: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height: 38px; max-width: 160px; object-fit: contain; display: block;" />
+        <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height: 48px; max-width: 190px; object-fit: contain; display: block;" />
       </div>
     </div>
     
