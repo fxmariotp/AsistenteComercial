@@ -6455,7 +6455,16 @@ function renderControlVacationsTimeline() {
   const year = 2026;
   document.getElementById('ctrl-timeline-month-title').textContent = MES_NOMBRES[controlCalMonth] + ' ' + year;
   
-  const daysInMonth = new Date(year, controlCalMonth + 1, 0).getDate();
+  const period = PERIODS[controlCalMonth];
+  const start = isoToDate(period.start);
+  const end = isoToDate(period.end);
+  
+  const periodDates = [];
+  let curr = new Date(start);
+  while (curr <= end) {
+    periodDates.push(new Date(curr));
+    curr.setDate(curr.getDate() + 1);
+  }
   
   // ── HEADER ROW ──
   let headerHtml = '<thead><tr style="background: var(--surface); border-bottom: 2px solid var(--border);">';
@@ -6465,19 +6474,21 @@ function renderControlVacationsTimeline() {
     </th>
   `;
   
-  for (let day = 1; day <= daysInMonth; day++) {
-    const dateObj = new Date(year, controlCalMonth, day);
+  periodDates.forEach(dateObj => {
+    const day = dateObj.getDate();
+    const month = dateObj.getMonth();
     const dayOfWeek = (dateObj.getDay() + 6) % 7; // 0=Lu, 6=Do
     const isWeekend = (dayOfWeek === 5 || dayOfWeek === 6);
     const dowAbbr = DOW_NOMBRES[dayOfWeek].substring(0, 2);
+    const fullDateText = `${day} de ${MES_NOMBRES[month]}`;
     
     headerHtml += `
-      <th style="padding: 8px 4px; text-align: center; font-size: 12px; color: ${isWeekend ? 'var(--orange)' : 'var(--text)'}; border-bottom: 1.5px solid var(--border); min-width: 32px; background: ${isWeekend ? 'rgba(0,0,0,0.02)' : 'transparent'};">
+      <th style="padding: 8px 4px; text-align: center; font-size: 12px; color: ${isWeekend ? 'var(--orange)' : 'var(--text)'}; border-bottom: 1.5px solid var(--border); min-width: 32px; background: ${isWeekend ? 'rgba(0,0,0,0.02)' : 'transparent'};" title="${fullDateText}">
         <div style="font-weight: 800;">${day}</div>
         <div style="font-size: 9px; opacity: 0.6; font-weight: 700; margin-top: 2px;">${dowAbbr}</div>
       </th>
     `;
-  }
+  });
   headerHtml += '</tr></thead>';
   
   // ── BODY ROWS ──
@@ -6521,11 +6532,10 @@ function renderControlVacationsTimeline() {
       </td>
     `;
     
-    for (let day = 1; day <= daysInMonth; day++) {
-      const dateObj = new Date(year, controlCalMonth, day);
+    periodDates.forEach(dateObj => {
+      const day = dateObj.getDate();
       const isWeekend = (dateObj.getDay() === 0 || dateObj.getDay() === 6);
-      
-      const dateStr = `${year}-${String(controlCalMonth + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+      const dateStr = toIso(dateObj);
       const isActive = vacations.includes(dateStr);
       
       const colors = getAgentColor(dni);
@@ -6536,12 +6546,12 @@ function renderControlVacationsTimeline() {
         <td style="padding: 8px 4px; border-bottom: 1px solid var(--border); text-align: center; min-width: 32px; background: ${isWeekend ? 'rgba(239, 68, 68, 0.02)' : 'transparent'};">
           <div class="timeline-day-square ${isActive ? 'active' : ''} ${isWeekend ? 'weekend' : ''}" 
                onclick="toggleAgentVacationDay('${dni}', '${dateStr}')" 
-               title="${name} - ${day} de ${MES_NOMBRES[controlCalMonth]} (DNI: ${dni})" 
+               title="${name} - ${day} de ${MES_NOMBRES[dateObj.getMonth()]} (DNI: ${dni})" 
                style="width: 22px; height: 22px; margin: 0 auto; border-radius: 4px; border: 1px solid ${borderCol}; background: ${bgCol}; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; justify-content: center;">
           </div>
         </td>
       `;
-    }
+    });
     
     bodyHtml += '</tr>';
   });
