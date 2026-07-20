@@ -8525,9 +8525,8 @@ function renderInvCards(results, useSva){
     return `<div class="inv-card${best?' best':''}">
       <!-- Header -->
       <div class="inv-hdr-minimal">
-        <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;">
-          ${logoHtml}
-          <div class="inv-cia-name" style="font-size:14px;font-weight:600;color:var(--text);">${r.name}</div>
+        <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;height:28px;">
+          <img src="${getCompanyLogoUrl(cia)}" alt="${r.name}" style="height:26px;max-width:110px;object-fit:contain;display:block;">
           ${best?'<span class="best-badge">✓ Mejor opcion</span>':''}
         </div>
         <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
@@ -8889,16 +8888,13 @@ function printCompanyOffer(key) {
     `;
   }
 
-  const printLogoHtml = `<span class="cdot" style="background: ${printColor} !important; width: 14px; height: 14px; border-radius: 50%; display: inline-block; box-shadow: 0 0 8px ${printColor}33;"></span>`;
-
   html += `
     <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
       3. Compañia seleccionada
     </div>
-    <div style="margin-top: 5px; margin-bottom: 12px;">
-      <div class="print-brand-badge" style="display: inline-flex; align-items: center; gap: 12px; padding: 6px 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        ${printLogoHtml}
-        <span style="font-size: 20px; font-weight: 900; color: ${printColor} !important; letter-spacing: -0.5px; text-transform: uppercase;">${r.name}</span>
+    <div style="margin-top: 8px; margin-bottom: 12px;">
+      <div class="print-brand-badge" style="display: inline-flex; align-items: center; padding: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <img src="${getCompanyLogoUrl(cia)}" alt="${r.name}" style="height: 38px; max-width: 160px; object-fit: contain; display: block;" />
       </div>
     </div>
     
@@ -9049,6 +9045,16 @@ function getShortName(fullName) {
     return toTitleCase(parts[0] + ' ' + parts[1]);
   }
   return toTitleCase(parts[0]);
+}
+
+function getCompanyLogoUrl(ciaKey) {
+  if (!ciaKey) return '';
+  const key = ciaKey.toLowerCase();
+  if (key.includes('iberdrola')) return 'Imagenes Comapañía/Iberdrola Logo.png';
+  if (key.includes('naturgy')) return 'Imagenes Comapañía/Naturgy Logo.png';
+  if (key.includes('endesa')) return 'Imagenes Comapañía/Endesa Logo.png';
+  if (key.includes('gana')) return 'Imagenes Comapañía/GanaEnergia Logo.png';
+  return '';
 }
 
 // ── LOCAL STORAGE MIGRATION FOR ONLY VACATIONS ──
