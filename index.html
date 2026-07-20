@@ -5082,7 +5082,7 @@ input:focus, select:focus, textarea:focus {
               <button type="button" class="btn-clear" onclick="navigateControlTimelineMonth(-1)" style="padding: 6px 10px; border-radius: 4px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: var(--text); display: inline-flex; align-items: center; justify-content: center;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
               </button>
-              <span id="ctrl-timeline-month-title" style="font-size: 14px; font-weight: 700; color: var(--text); min-width: 130px; text-align: center; user-select: none;">Junio 2026</span>
+              <span id="ctrl-timeline-month-title" style="font-size: 14px; font-weight: 700; color: var(--text); min-width: 250px; text-align: center; user-select: none;">Junio 2026</span>
               <button type="button" class="btn-clear" onclick="navigateControlTimelineMonth(1)" style="padding: 6px 10px; border-radius: 4px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; background: transparent; color: var(--text); display: inline-flex; align-items: center; justify-content: center;" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </button>
@@ -6453,11 +6453,17 @@ function renderControlVacationsTimeline() {
   if (!table) return;
   
   const year = 2026;
-  document.getElementById('ctrl-timeline-month-title').textContent = MES_NOMBRES[controlCalMonth] + ' ' + year;
-  
   const period = PERIODS[controlCalMonth];
   const start = isoToDate(period.start);
   const end = isoToDate(period.end);
+  
+  const startDay = start.getDate();
+  const startMonth = String(start.getMonth() + 1).padStart(2, '0');
+  const endDay = end.getDate();
+  const endMonth = String(end.getMonth() + 1).padStart(2, '0');
+  const periodStr = `(${String(startDay).padStart(2, '0')}/${startMonth} al ${String(endDay).padStart(2, '0')}/${endMonth})`;
+  
+  document.getElementById('ctrl-timeline-month-title').textContent = `${MES_NOMBRES[controlCalMonth]} ${year} ${periodStr}`;
   
   const periodDates = [];
   let curr = new Date(start);
