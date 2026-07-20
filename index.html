@@ -8526,7 +8526,7 @@ function renderInvCards(results, useSva){
       <!-- Header -->
       <div class="inv-hdr-minimal">
         <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;height:28px;">
-          <img src="${getCompanyLogoUrl(cia)}" alt="${r.name}" style="height:26px;max-width:110px;object-fit:contain;display:block;">
+          <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height:26px;max-width:110px;object-fit:contain;display:block;">
           ${best?'<span class="best-badge">✓ Mejor opcion</span>':''}
         </div>
         <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
@@ -8894,7 +8894,7 @@ function printCompanyOffer(key) {
     </div>
     <div style="margin-top: 8px; margin-bottom: 12px;">
       <div class="print-brand-badge" style="display: inline-flex; align-items: center; padding: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <img src="${getCompanyLogoUrl(cia)}" alt="${r.name}" style="height: 38px; max-width: 160px; object-fit: contain; display: block;" />
+        <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height: 38px; max-width: 160px; object-fit: contain; display: block;" />
       </div>
     </div>
     
@@ -9050,11 +9050,31 @@ function getShortName(fullName) {
 function getCompanyLogoUrl(ciaKey) {
   if (!ciaKey) return '';
   const key = ciaKey.toLowerCase();
-  if (key.includes('iberdrola')) return 'Imagenes Comapañía/Iberdrola Logo.png';
-  if (key.includes('naturgy')) return 'Imagenes Comapañía/Naturgy Logo.png';
-  if (key.includes('endesa')) return 'Imagenes Comapañía/Endesa Logo.png';
-  if (key.includes('gana')) return 'Imagenes Comapañía/GanaEnergia Logo.png';
+  const folder = 'Imagenes%20Comapa%C3%B1%C3%ADa';
+  if (key.includes('iberdrola')) return `${folder}/Iberdrola%20Logo.png`;
+  if (key.includes('naturgy')) return `${folder}/Naturgy%20Logo.png`;
+  if (key.includes('endesa')) return `${folder}/Endesa%20Logo.png`;
+  if (key.includes('gana')) return `${folder}/GanaEnergia%20Logo.png`;
   return '';
+}
+
+function handleLogoError(img, cia) {
+  if (img.getAttribute('data-tried-fallback') === 'true') {
+    return;
+  }
+  img.setAttribute('data-tried-fallback', 'true');
+  
+  const folderCorrect = 'Imagenes%20Compa%C3%B1%C3%ADa';
+  const key = cia.toLowerCase();
+  let filename = '';
+  if (key.includes('iberdrola')) filename = 'Iberdrola%20Logo.png';
+  else if (key.includes('naturgy')) filename = 'Naturgy%20Logo.png';
+  else if (key.includes('endesa')) filename = 'Endesa%20Logo.png';
+  else if (key.includes('gana')) filename = 'GanaEnergia%20Logo.png';
+  
+  if (filename) {
+    img.src = `${folderCorrect}/${filename}`;
+  }
 }
 
 // ── LOCAL STORAGE MIGRATION FOR ONLY VACATIONS ──
