@@ -2591,6 +2591,15 @@ hr {
     justify-content: center !important;
     margin-top: 4px !important;
   }
+  .cal-card {
+    padding: 12px !important;
+  }
+  .cal-header {
+    flex-direction: column !important;
+    gap: 12px !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+  }
 }
 
 @media (max-width: 576px) {
@@ -4232,24 +4241,24 @@ input:focus, select:focus, textarea:focus {
     <div class="panel" id="panel-scripts">
       <div class="cia-tabs" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
         <button class="ctab active" id="ctab-naturgy" onclick="switchCia('naturgy')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid #E85D3A;background:rgba(232, 93, 58, 0.08);color:#E85D3A;border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Naturgy%20Logo.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Naturgy%20Logo.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
         <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia('naturgy-cif')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Naturgy%20Logo.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Naturgy%20Logo.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
           <span style="font-weight: 800; font-size: 13px; color: var(--text);">(CIF)</span>
         </button>
         <button class="ctab" id="ctab-iberdrola" onclick="switchCia('iberdrola')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Iberdrola%20Logo.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Iberdrola%20Logo.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
         <button class="ctab" id="ctab-iberdrola-cif" onclick="switchCia('iberdrola-cif')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Iberdrola%20Logo.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Iberdrola%20Logo.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
           <span style="font-weight: 800; font-size: 13px; color: var(--text);">(CIF)</span>
         </button>
         <button class="ctab" id="ctab-endesa" onclick="switchCia('endesa')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/Endesa%20Logo.png" onerror="handleLogoError(this, 'endesa')" alt="Endesa" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Endesa%20Logo.png" onerror="handleLogoError(this, 'endesa')" alt="Endesa" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
         <button class="ctab" id="ctab-gana" onclick="switchCia('gana')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Comapa%C3%B1%C3%ADa/GanaEnergia%20Logo.png" onerror="handleLogoError(this, 'gana')" alt="Gana Energia" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="Imagenes%20Compa%C3%B1%C3%ADa/GanaEnergia%20Logo.png" onerror="handleLogoError(this, 'gana')" alt="Gana Energia" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
       </div>
 
@@ -9119,7 +9128,7 @@ function getShortName(fullName) {
 function getCompanyLogoUrl(ciaKey) {
   if (!ciaKey) return '';
   const key = ciaKey.toLowerCase();
-  const folder = 'Imagenes%20Comapa%C3%B1%C3%ADa';
+  const folder = 'Imagenes%20Compa%C3%B1%C3%ADa';
   if (key.includes('iberdrola')) return `${folder}/Iberdrola%20Logo.png`;
   if (key.includes('naturgy')) return `${folder}/Naturgy%20Logo.png`;
   if (key.includes('endesa')) return `${folder}/Endesa%20Logo.png`;
