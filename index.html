@@ -2576,13 +2576,47 @@ hr {
     gap: 4px !important;
   }
   .cal-day {
+    min-height: 52px !important;
     height: auto !important;
-    aspect-ratio: 1 !important;
-    padding: 2px !important;
-    font-size: 12px !important;
+    aspect-ratio: auto !important;
+    padding: 6px !important;
+    font-size: 11px !important;
     display: flex !important;
-    align-items: center !important;
+    flex-direction: column !important;
+    align-items: flex-end !important;
+    justify-content: flex-start !important;
+  }
+  .cal-gerente-vac-btn {
+    width: 100% !important;
     justify-content: center !important;
+    margin-top: 4px !important;
+  }
+}
+
+@media (max-width: 576px) {
+  .agenda-item {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+  }
+  .agenda-item-actions {
+    align-self: flex-end !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .inv-hdr-minimal {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 12px !important;
+    padding: 16px 16px 8px 16px !important;
+  }
+  .inv-hdr-right {
+    align-items: flex-start !important;
+    width: 100% !important;
+  }
+  .inv-savings-grid {
+    padding: 0 16px 12px 16px !important;
   }
 }
 
@@ -2928,8 +2962,10 @@ hr {
 
 /* Header Logout responsive */
 @media (max-width: 576px) {
-  .topbar-logout-text {
-    display: none;
+  .topbar-logout-text,
+  .topbar-password-text,
+  .topbar-s {
+    display: none !important;
   }
   .topbar-right button {
     padding: 10px !important;
@@ -3929,7 +3965,7 @@ input:focus, select:focus, textarea:focus {
       </button>
       <button class="nav-btn" onclick="openPasswordModal()" style="width: auto; margin-bottom: 0; padding: 10px 16px; font-weight: 700; font-size: 13.5px; border: 1.5px solid var(--border); border-radius: var(--rs); display: inline-flex; align-items: center; gap: 8px; color: var(--text); background: var(--surface);">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-        <span>Cambiar contrase&ntilde;a</span>
+        <span class="topbar-password-text">Cambiar contrase&ntilde;a</span>
       </button>
       <button class="nav-btn nav-btn-logout" onclick="logout()" style="width: auto; margin-bottom: 0; padding: 10px 16px; font-weight: 700; font-size: 13.5px; border: 1.5px solid rgba(239, 68, 68, 0.15); border-radius: var(--rs); display: flex; align-items: center; gap: 8px;">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
@@ -8017,6 +8053,7 @@ function showPanel(id, btn){
   if (sidebar) sidebar.classList.remove('mobile-open');
   const overlay = document.getElementById('sidebar-overlay');
   if (overlay) overlay.classList.remove('active');
+  document.body.style.overflow = '';
   
   if (id === 'dashboard') {
     if (typeof updateDashboardAgendaWidget === 'function') updateDashboardAgendaWidget();
@@ -10014,8 +10051,13 @@ function toggleMobileSidebar() {
   const sidebar = document.getElementById('sidebar');
   const overlay = document.getElementById('sidebar-overlay');
   if (sidebar && overlay) {
-    sidebar.classList.toggle('mobile-open');
+    const isOpen = sidebar.classList.toggle('mobile-open');
     overlay.classList.toggle('active');
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
   }
 }
 
