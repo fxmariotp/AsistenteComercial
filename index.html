@@ -10206,7 +10206,8 @@ function getReadAnnouncements() {
   if (!currentAgentDni) return [];
   try {
     const key = 'read_announcements_' + currentAgentDni;
-    return JSON.parse(localStorage.getItem(key) || '[]');
+    const reads = JSON.parse(localStorage.getItem(key) || '[]');
+    return Array.isArray(reads) ? reads.map(id => String(id)) : [];
   } catch (e) {
     return [];
   }
@@ -10217,8 +10218,9 @@ function markAnnouncementAsRead(id) {
   try {
     const key = 'read_announcements_' + currentAgentDni;
     const reads = getReadAnnouncements();
-    if (!reads.includes(id)) {
-      reads.push(id);
+    const strId = String(id);
+    if (!reads.includes(strId)) {
+      reads.push(strId);
       localStorage.setItem(key, JSON.stringify(reads));
     }
   } catch (e) {}
@@ -10264,7 +10266,7 @@ async function fetchAnnouncements() {
       data.sort((a, b) => Number(b.created_at) - Number(a.created_at));
       
       const readIds = getReadAnnouncements();
-      const unreadCount = data.filter(item => !readIds.includes(item.id)).length;
+      const unreadCount = data.filter(item => !readIds.includes(String(item.id))).length;
       
       const noticeEl = document.getElementById('db-announcements-notice');
       if (noticeEl) {
@@ -10318,7 +10320,7 @@ function renderAnnouncements(list) {
   const readIds = getReadAnnouncements();
   
   container.innerHTML = list.map(item => {
-    const isUnread = !readIds.includes(item.id);
+    const isUnread = !readIds.includes(String(item.id));
     const dateStr = item.date ? item.date.split('-').reverse().join('/') : '';
     const deleteBtnHtml = isGerente 
       ? `<button class="announcement-delete-btn" onclick="event.stopPropagation(); deleteAnnouncement('${item.id}');" title="Eliminar anuncio">
@@ -10380,7 +10382,7 @@ function markAllAnnouncementsAsRead() {
     const onclickStr = el.getAttribute('onclick') || '';
     const match = onclickStr.match(/'([^']+)'/);
     if (match && match[1]) {
-      const id = match[1];
+      const id = String(match[1]);
       if (!readIds.includes(id)) {
         readIds.push(id);
       }
