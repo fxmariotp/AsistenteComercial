@@ -233,34 +233,76 @@ if (dni && name && COMERCIALES[dni] === name) {
   window.location.href = 'index.html';
 }
 
+async function writeLoginLogToSupabase(dni, name) {
+  if (!supabaseClient) return;
+  let ip = 'Desconocida';
+  let userAgent = navigator.userAgent || 'Desconocido';
+  if (userAgent.length > 150) {
+    userAgent = userAgent.substring(0, 150) + '...';
+  }
+  
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1500);
+    const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (ipRes.ok) {
+      const ipData = await ipRes.json();
+      if (ipData && ipData.ip) {
+        ip = ipData.ip;
+      }
+    }
+  } catch (e) {
+    console.warn("Could not fetch login IP address:", e);
+  }
+
+  try {
+    const now = new Date();
+    const dateStr = now.toISOString().split('T')[0];
+    const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const logId = 'login_log_' + dni + '_' + Date.now();
+    
+    await supabaseClient.from('tareas').insert({
+      id: logId,
+      dni: 'SYSTEM_LOGIN_LOG',
+      title: dni,
+      type: name,
+      phone: ip,
+      date: dateStr,
+      time: timeStr,
+      notes: userAgent,
+      completed: true,
+      notified: false,
+      created_at: Date.now()
+    });
+  } catch (e) {
+    console.error("Error writing login log to Supabase:", e);
+  }
+}
+
 async function attemptLogin() {
   const submitBtn = document.getElementById('login-submit');
   const errorMsg = document.getElementById('login-error-msg');
   
   const inputDni = document.getElementById('login-dni').value.trim().toUpperCase();
-  const inputPass = document.getElementById('login-password').value.trim();
+  const inputPass = document.getElementById('login-password').value;
   
-  if (!inputDni) {
-    errorMsg.textContent = "Por favor, introduce tu DNI.";
+  if (!inputDni || !inputPass) {
+    errorMsg.textContent = "Por favor, introduce tu DNI y contraseña.";
     return;
   }
   
   const matchedName = COMERCIALES[inputDni];
   if (!matchedName) {
-    errorMsg.textContent = "El DNI ingresado no está registrado.";
-    return;
-  }
-  
-  if (!inputPass) {
-    errorMsg.textContent = "Por favor, introduce tu contraseña.";
+    errorMsg.textContent = "El DNI introducido no corresponde a ningún comercial.";
     return;
   }
   
   submitBtn.disabled = true;
-  submitBtn.textContent = "Verificando...";
+  submitBtn.textContent = "Accediendo...";
   
-  let validPassword = inputDni; // default is DNI
-  let userStatus = "active";
+  let validPassword = inputDni;
+  let userStatus = 'active';
   
   if (supabaseClient) {
     try {
@@ -292,7 +334,7 @@ async function attemptLogin() {
   submitBtn.textContent = "Acceder";
   
   if (userStatus === 'inactive') {
-    errorMsg.textContent = "Tu cuenta de agente est\u00e1 desactivada. Contacta con gerencia.";
+    errorMsg.textContent = "Tu cuenta de agente está desactivada. Contacta con gerencia.";
     return;
   }
   
@@ -300,9 +342,12 @@ async function attemptLogin() {
     localStorage.setItem('comercial_dni', inputDni);
     localStorage.setItem('comercial_nombre', matchedName);
     errorMsg.textContent = "";
-    window.location.href = 'index.html';
+    
+    writeLoginLogToSupabase(inputDni, matchedName).finally(() => {
+      window.location.href = 'index.html';
+    });
   } else {
-    errorMsg.textContent = "La contrase\u00f1a introducida es incorrecta.";
+    errorMsg.textContent = "La contraseña introducida es incorrecta.";
   }
 }
 
