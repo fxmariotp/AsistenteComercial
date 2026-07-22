@@ -9250,6 +9250,11 @@ function startAgentStatusCheck() {
   
   agentStatusCheckInterval = setInterval(async () => {
     if (!currentAgentDni) return;
+    
+    if (typeof registerSessionConnectionLog === 'function') {
+      registerSessionConnectionLog();
+    }
+
     if (typeof supabaseClient !== 'undefined' && supabaseClient) {
       try {
         const { data, error } = await supabaseClient
@@ -9501,8 +9506,10 @@ function updateSelectColor(selectEl) {
 
 async function registerSessionConnectionLog() {
   if (!supabaseClient || !currentAgentDni) return;
-  const sessionKey = 'session_logged_' + currentAgentDni;
-  if (sessionStorage.getItem(sessionKey)) return;
+  
+  const todayStr = new Date().toLocaleDateString('en-CA');
+  const sessionKey = 'session_logged_date_' + currentAgentDni;
+  if (sessionStorage.getItem(sessionKey) === todayStr) return;
 
   let ip = 'Desconocida';
   let userAgent = navigator.userAgent || 'Desconocido';
@@ -9543,7 +9550,7 @@ async function registerSessionConnectionLog() {
       created_at: Date.now()
     });
     if (!error) {
-      sessionStorage.setItem(sessionKey, 'true');
+      sessionStorage.setItem(sessionKey, todayStr);
     }
   } catch (e) {
     console.error("Error writing connection log to Supabase:", e);
