@@ -9583,6 +9583,20 @@ async function loadLoginLogs() {
       return;
     }
 
+    const uniqueIpsByUserAndDate = {};
+    data.forEach(log => {
+      const dni = log.title || '';
+      const date = log.date || '';
+      const ip = log.phone || '';
+      if (dni && date && ip && ip !== 'Desconocida') {
+        const key = dni + '_' + date;
+        if (!uniqueIpsByUserAndDate[key]) {
+          uniqueIpsByUserAndDate[key] = new Set();
+        }
+        uniqueIpsByUserAndDate[key].add(ip);
+      }
+    });
+
     data.sort((a, b) => Number(b.created_at) - Number(a.created_at));
 
     tbody.innerHTML = data.map(log => {
@@ -9603,12 +9617,24 @@ async function loadLoginLogs() {
         ua = 'Ordenador / Otro';
       }
 
-      return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text);">
+      const key = dni + '_' + (log.date || '');
+      const uniqueIpsCount = uniqueIpsByUserAndDate[key] ? uniqueIpsByUserAndDate[key].size : 1;
+      const isSuspicious = uniqueIpsCount > 1;
+      
+      const ipColor = isSuspicious ? '#ef4444' : 'var(--blue)';
+      const ipWeight = isSuspicious ? '800' : '600';
+      const ipTitle = isSuspicious ? `Alerta: Este agente se ha conectado desde ${uniqueIpsCount} IPs distintas hoy` : '';
+      const warningIcon = isSuspicious ? `<span style="color:#ef4444; margin-right:4px;" title="${ipTitle}">⚠️</span>` : '';
+
+      return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); background: ${isSuspicious ? 'rgba(239, 68, 68, 0.02)' : 'transparent'};">
         <td style="padding: 10px 14px; font-weight: 600;">${name}</td>
         <td style="padding: 10px 14px; font-family: monospace;">${dni}</td>
         <td style="padding: 10px 14px;">${date}</td>
         <td style="padding: 10px 14px;">${time}</td>
-        <td style="padding: 10px 14px; font-weight: 600; color: var(--blue);">${ip}</td>
+        <td style="padding: 10px 14px; font-weight: ${ipWeight}; color: ${ipColor}; display: flex; align-items: center;" title="${ipTitle}">
+          ${warningIcon}
+          <span>${ip}</span>
+        </td>
         <td style="padding: 10px 14px; color: var(--t3); font-size: 12.5px;">${ua}</td>
       </tr>`;
     }).join('');
