@@ -9991,7 +9991,7 @@ function updateDashboardLaborablesWidget() {
     cierreEl.innerHTML = `<strong>Cierre de mes:</strong> ${cierreDiaSemana} ${cierreDiaNum} de ${cierreMesNom}`;
   }
 }
-function onLoginSuccess() {
+async function onLoginSuccess() {
   const shortName = getShortName(currentAgentName);
   
   // 1. Mostrar nombre en el saludo del Dashboard (si existe el elemento)
@@ -10028,6 +10028,9 @@ function onLoginSuccess() {
   
   // 7. Cargar datos de ranking y anuncios para dashboard
   fetchRankingForDashboard();
+  if (typeof syncReadAnnouncementsFromCloud === 'function') {
+    await syncReadAnnouncementsFromCloud();
+  }
   if (typeof fetchAnnouncements === 'function') fetchAnnouncements();
   
 
@@ -10253,6 +10256,42 @@ async function deleteVacationDayFromCloud(dni, dateStr) {
 
 // ── TABLON DE ANUNCIOS LOGIC ──
 
+// ── CLOUD SYNC FOR READ ANNOUNCEMENTS ──
+async function syncReadAnnouncementsFromCloud() {
+  if (!supabaseClient || !currentAgentDni) return;
+  try {
+    const { data, error } = await supabaseClient
+      .from('tareas')
+      .select('*')
+      .eq('id', 'read_announcements_' + currentAgentDni)
+      .maybeSingle();
+    if (!error && data && data.notes) {
+      const key = 'read_announcements_' + currentAgentDni;
+      localStorage.setItem(key, data.notes);
+    }
+  } catch (e) {
+    console.error("Error syncing read announcements from cloud:", e);
+  }
+}
+
+async function saveReadAnnouncementsToCloud(reads) {
+  if (!supabaseClient || !currentAgentDni) return;
+  try {
+    await supabaseClient.from('tareas').upsert({
+      id: 'read_announcements_' + currentAgentDni,
+      dni: currentAgentDni,
+      title: 'Read Announcements',
+      type: 'SYSTEM_READ_ANNOUNCEMENTS',
+      notes: JSON.stringify(reads),
+      completed: false,
+      notified: false,
+      created_at: Date.now()
+    });
+  } catch (e) {
+    console.error("Error saving read announcements to cloud:", e);
+  }
+}
+
 function getReadAnnouncements() {
   if (!currentAgentDni) return [];
   try {
@@ -10273,6 +10312,7 @@ function markAnnouncementAsRead(id) {
     if (!reads.includes(strId)) {
       reads.push(strId);
       localStorage.setItem(key, JSON.stringify(reads));
+      saveReadAnnouncementsToCloud(reads);
     }
   } catch (e) {}
 }
@@ -10441,6 +10481,7 @@ function markAllAnnouncementsAsRead() {
   });
   
   localStorage.setItem(key, JSON.stringify(readIds));
+  saveReadAnnouncementsToCloud(readIds);
   fetchAnnouncements();
 }
 
