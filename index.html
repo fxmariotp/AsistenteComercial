@@ -9242,7 +9242,22 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
+const CURRENT_BUILD_VERSION = 1785002930239;
 let agentStatusCheckInterval = null;
+let lastVersionCheckTime = 0;
+
+async function checkAppVersion() {
+  try {
+    const res = await fetch('version.json?t=' + Date.now());
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.version && data.version !== CURRENT_BUILD_VERSION) {
+        console.log("New version detected:", data.version, "reloading...");
+        window.location.reload();
+      }
+    }
+  } catch (e) {}
+}
 
 function startAgentStatusCheck() {
   if (agentStatusCheckInterval) clearInterval(agentStatusCheckInterval);
@@ -9251,8 +9266,23 @@ function startAgentStatusCheck() {
   agentStatusCheckInterval = setInterval(async () => {
     if (!currentAgentDni) return;
     
+    // Check build version every 60 seconds to auto-reload client browser tabs in office
+    const nowTime = Date.now();
+    if (nowTime - lastVersionCheckTime > 60000) {
+      lastVersionCheckTime = nowTime;
+      checkAppVersion();
+    }
+    
     if (typeof registerSessionConnectionLog === 'function') {
       registerSessionConnectionLog();
+    }
+
+    // Auto-refresh connection logs table if Gerente is currently looking at user management panel
+    const activePanel = document.querySelector('.panel.active');
+    if (activePanel && activePanel.id === 'panel-gruposAgentes') {
+      if (typeof loadLoginLogs === 'function') {
+        loadLoginLogs();
+      }
     }
 
     if (typeof supabaseClient !== 'undefined' && supabaseClient) {
