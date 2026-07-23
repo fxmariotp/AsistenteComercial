@@ -31,7 +31,8 @@
       "53283415M": "MÓNICA CEJUDO HIDALGO",
       "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES",
       "MAMAEVARIA": "MARIA CABRERA",
-      "28750523V": "OLGA VILLA"
+      "28750523V": "OLGA VILLA",
+      "29502580C": "LIBRERO"
     };
     const dni = localStorage.getItem('comercial_dni');
     const name = localStorage.getItem('comercial_nombre');
@@ -9117,7 +9118,8 @@ const COMERCIALES = {
   "53283415M": "MÓNICA CEJUDO HIDALGO",
   "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES",
   "MAMAEVARIA": "MARIA CABRERA",
-  "28750523V": "OLGA VILLA"
+  "28750523V": "OLGA VILLA",
+  "29502580C": "LIBRERO"
 };
 
 const DEFAULT_VACATIONS = {
@@ -9249,7 +9251,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930239;
+const CURRENT_BUILD_VERSION = 1785002930240;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -9429,6 +9431,11 @@ if (AGENT_ROLES['47539234M'] === undefined) {
 // Preasignar rol a Olga Villa a Trabajadores Evaria
 if (AGENT_ROLES['28750523V'] === undefined) {
   AGENT_ROLES['28750523V'] = 'evaria';
+}
+
+// Preasignar rol a Librero a Trabajadores Evaria
+if (AGENT_ROLES['29502580C'] === undefined) {
+  AGENT_ROLES['29502580C'] = 'evaria';
 }
 
 async function fetchAgentRolesFromCloud() {
