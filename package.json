@@ -4,7 +4,8 @@
   "description": "Asistente Comercial",
   "main": "index.html",
   "scripts": {
-    "dev": "http-server -c-1 -p 8080"
+    "dev": "http-server -c-1 -p 8080",
+    "build": "echo 'No build required'"
   },
   "dependencies": {
     "http-server": "^14.1.1"
