@@ -9418,7 +9418,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930243;
+const CURRENT_BUILD_VERSION = 1785002930244;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -10756,10 +10756,31 @@ async function fetchAnnouncements() {
       .select('*')
       .eq('dni', 'SYSTEM_ANUNCIO');
     if (!error && data) {
-      data.sort((a, b) => Number(b.created_at) - Number(a.created_at));
+      const nowMs = Date.now();
+      const sevenDaysMs = 7 * 24 * 60 * 60 * 1000;
+      const fortyEightHoursMs = 48 * 60 * 60 * 1000;
+      
+      // 1. Filtrar anuncios con más de 7 días de antigüedad
+      const activeAnnouncements = data.filter(item => {
+        const itemTime = Number(item.created_at || item.id.replace('announcement_', ''));
+        return (nowMs - itemTime) < sevenDaysMs;
+      });
+      
+      activeAnnouncements.sort((a, b) => {
+        const timeA = Number(a.created_at || a.id.replace('announcement_', ''));
+        const timeB = Number(b.created_at || b.id.replace('announcement_', ''));
+        return timeB - timeA;
+      });
       
       const readIds = getReadAnnouncements();
-      const unreadCount = data.filter(item => !readIds.includes(String(item.id))).length;
+      
+      // 2. UnreadCount: solo anuncios no leídos creados en las últimas 48 horas
+      const unreadCount = activeAnnouncements.filter(item => {
+        const itemTime = Number(item.created_at || item.id.replace('announcement_', ''));
+        const isUnread = !readIds.includes(String(item.id));
+        const isNewerThan48h = (nowMs - itemTime) < fortyEightHoursMs;
+        return isUnread && isNewerThan48h;
+      }).length;
       
       const noticeEl = document.getElementById('db-announcements-notice');
       if (noticeEl) {
@@ -10791,7 +10812,7 @@ async function fetchAnnouncements() {
         btnMarkAll.style.display = unreadCount > 0 ? 'inline-block' : 'none';
       }
       
-      renderAnnouncements(data);
+      renderAnnouncements(activeAnnouncements);
     } else if (error) {
       console.error("Error fetching announcements:", error);
     }
@@ -10822,7 +10843,9 @@ function renderAnnouncements(list) {
       : '';
       
     const unreadClass = isUnread ? ' unread clickable-unread' : '';
-    const badgeNewHtml = isUnread ? `<span class="announcement-badge-new">Nuevo</span>` : '';
+    const itemTime = Number(item.created_at || item.id.replace('announcement_', ''));
+    const isNewerThan48h = (Date.now() - itemTime) < (48 * 60 * 60 * 1000);
+    const badgeNewHtml = (isUnread && isNewerThan48h) ? `<span class="announcement-badge-new">Nuevo</span>` : '';
     const clickHandler = isUnread ? `onclick="readSingleAnnouncement('${item.id}', this)"` : '';
     
     const maskOverlayHtml = isUnread 
