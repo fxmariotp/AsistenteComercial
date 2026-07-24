@@ -5251,7 +5251,7 @@ input:focus, select:focus, textarea:focus {
               </div>
               <div style="display: flex; justify-content: space-between; font-size: 13.5px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
                 <span style="font-weight: 700; color: var(--text);">Endesa</span>
-                <span style="color: var(--t2); font-size: 12.5px;">Hostezadis 0-2 meses: <strong>100%</strong></span>
+                <span style="color: var(--t2); font-size: 12.5px;">Hostezadis 0-6 meses: <strong>100%</strong></span>
               </div>
               <div style="display: flex; justify-content: space-between; font-size: 13.5px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
                 <span style="font-weight: 700; color: var(--text);">Gana Energía</span>
@@ -8337,7 +8337,7 @@ function renderCondiciones(){
     if (id === 'iberdrola') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (id === 'endesa') {
-      retrocomision = 'Hostezadis 2m';
+      retrocomision = 'Hostezadis 6m';
     } else if (id === 'naturgy') {
       retrocomision = '4 meses';
     } else if (id === 'gana') {
@@ -8425,7 +8425,7 @@ function renderCondiciones(){
     if (id === 'iberdrola') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (id === 'endesa') {
-      retrocomision = 'Hostezadis 2m';
+      retrocomision = 'Hostezadis 6m';
     } else if (id === 'naturgy') {
       retrocomision = '4 meses';
     } else if (id === 'gana') {
@@ -8807,7 +8807,7 @@ function renderInvCards(results, useSva){
     if (cia === 'iberdrola') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (cia === 'endesa') {
-      retrocomision = 'Hostezadis 2m';
+      retrocomision = 'Hostezadis 6m';
     } else if (cia === 'naturgy') {
       retrocomision = '4 meses';
     } else if (cia === 'gana') {
@@ -9418,7 +9418,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930244;
+const CURRENT_BUILD_VERSION = 1785002930245;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
