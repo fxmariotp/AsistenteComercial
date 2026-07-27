@@ -8326,6 +8326,18 @@ function switchCia(id){
 // ── CONDICIONES ──
 function renderCondiciones(){
   const cias=['iberdrola','naturgy','endesa','gana'];
+  const serviceFilesLuz = {
+    'iberdrola': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO IBERDROLA/PACK IBERDROLA HOGAR.pdf',
+    'naturgy': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO NATURGY/SERVIELECTRIC.pdf',
+    'endesa': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO ENDESA/Proteccion Luz 360.png',
+    'gana': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO GANAENERGIA/SERVICIO LUZ GANA ENERGIA.PNG'
+  };
+  const serviceFilesGas = {
+    'iberdrola': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO IBERDROLA/PACK MANTENIMIENTO GAS.pdf',
+    'naturgy': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO NATURGY/SERVIGAS.pdf',
+    'endesa': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO ENDESA/Servicio Gas Endesa.png',
+    'gana': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO GANAENERGIA/SERVICIO GAS GANA ENERGIA.PNG'
+  };
   
   let html=`<h2 class="cond-sec-title">
     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
@@ -8408,6 +8420,10 @@ function renderCondiciones(){
         <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
           <span>Excedentes: <strong>${r.precio_excedente.toFixed(2)} €/kWh</strong></span>
           ${svaHtml}
+          ${serviceFilesLuz[id] ? `<a href="${serviceFilesLuz[id]}" target="_blank" style="margin-top:4px;display:inline-flex;align-items:center;gap:4px;color:var(--blue);text-decoration:none;font-weight:700;font-size:11px;padding:3px 8px;background:rgba(13,92,158,0.08);border-radius:4px;border:1px solid rgba(13,92,158,0.15);transition:all 0.2s;" onmouseover="this.style.background='rgba(13,92,158,0.15)'" onmouseout="this.style.background='rgba(13,92,158,0.08)'">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Ver Servicio
+          </a>` : ''}
         </div>
       </div>
     </div>
@@ -8464,6 +8480,10 @@ function renderCondiciones(){
       <div style="display:flex;justify-content:flex-end;flex-wrap:wrap;gap:4px;align-items:flex-start;">
         <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
           ${svaGasHtml}
+          ${serviceFilesGas[id] ? `<a href="${serviceFilesGas[id]}" target="_blank" style="margin-top:4px;display:inline-flex;align-items:center;gap:4px;color:var(--blue);text-decoration:none;font-weight:700;font-size:11px;padding:3px 8px;background:rgba(13,92,158,0.08);border-radius:4px;border:1px solid rgba(13,92,158,0.15);transition:all 0.2s;" onmouseover="this.style.background='rgba(13,92,158,0.15)'" onmouseout="this.style.background='rgba(13,92,158,0.08)'">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            Ver Servicio
+          </a>` : ''}
         </div>
       </div>
     </div>
@@ -9422,7 +9442,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930248;
+const CURRENT_BUILD_VERSION = 1785002930249;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
