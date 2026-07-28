@@ -5932,18 +5932,18 @@ const BASE = {
     te_sin:0.1190, te_con:0.1190,
     precio_excedente:0.06,
     sva_luz:4.13, sva_gas:0.00,
-    gas_rl1:{tf:0.1260, tv:0.0610},
-    gas_rl2:{tf:0.2616, tv:0.0589},
-    gas_rl3:{tf:0.5830, tv:0.0555},
+    gas_rl1:{tf:0.1310, tv:0.082885},
+    gas_rl2:{tf:0.270333, tv:0.080344},
+    gas_rl3:{tf:0.627333, tv:0.076230},
     imp_electrico:0.0511,
     tarifas_luz:[
       {n:'Plan 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Precio unico 24h sin permanencia'},
       {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.1000}, {p:'P2 (Llano)', te:0.1250}, {p:'P3 (Valle)', te:0.2050}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestion (+5.00 €/mes)'}
     ],
     tarifas_gas:[
-      {n:'Gana Gas RL1', tv:0.0610, tf:0.1260},
-      {n:'Gana Gas RL2', tv:0.0589, tf:0.2616},
-      {n:'Gana Gas RL3', tv:0.0555, tf:0.5830}
+      {n:'Gana Gas RL1', tv:0.082885, tf:0.1310},
+      {n:'Gana Gas RL2', tv:0.080344, tf:0.270333},
+      {n:'Gana Gas RL3', tv:0.076230, tf:0.627333}
     ]
   }
 };
@@ -9520,7 +9520,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930253;
+const CURRENT_BUILD_VERSION = 1785002930254;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
