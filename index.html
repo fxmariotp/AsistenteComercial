@@ -5909,16 +5909,16 @@ const BASE = {
   endesa:{
     name:'Endesa', color:'#00A8E0',
     tp1:0.0936, tp2:0.0936,
-    te_sin:0.108, te_con:0.104,
+    te_sin:0.124, te_con:0.119,
     precio_excedente:0.06,
     sva_luz:4.77, sva_gas:9.09,
     gas_rl1:{tf:0.2316, tv:0.0736},
     gas_rl2:{tf:0.4709, tv:0.0697},
     gas_rl3:{tf:0.9894, tv:0.0643},
     imp_electrico:0.0511,
-    desc_sin:0.32, desc_con:0.35,
+    desc_sin:0.22596754, desc_con:0.25717853,
     tarifas_luz:[
-      {n:'Luz 24H', te:0.160294, tp1:0.0936, tp2:0.0936, te_sin:0.108, te_con:0.104, nota:'Precio unico 24h sin permanencia'}
+      {n:'Luz 24H', te:0.1602, tp1:0.0936, tp2:0.0936, te_sin:0.124, te_con:0.119, nota:'Precio unico 24h sin permanencia'}
     ],
     tarifas_gas:[
       {n:'Gas Endesa RL1', tv:0.0736, tf:0.2316},
@@ -9520,7 +9520,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930251;
+const CURRENT_BUILD_VERSION = 1785002930252;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
