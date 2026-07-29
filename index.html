@@ -5755,17 +5755,13 @@ input:focus, select:focus, textarea:focus {
                 <!-- Manager Shift Report Actions -->
         <div id="gerente-ranking-actions" style="display: none; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 14px; margin-top: 15px; margin-bottom: 20px; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap;">
           <div style="display: flex; flex-direction: column; gap: 2px;">
-            <div style="font-size: 13.5px; font-weight: 800; color: var(--text);">Recuentos de Turnos (Gerencia)</div>
-            <div style="font-size: 11.5px; color: var(--t3);">Genera y copia una imagen formateada del recuento del turno seleccionado en tu portapapeles.</div>
+            <div style="font-size: 13.5px; font-weight: 800; color: var(--text);">Recuento de Sala (Gerencia)</div>
+            <div style="font-size: 11.5px; color: var(--t3);">Genera y copia una imagen formateada del recuento de la sala en tu portapapeles.</div>
           </div>
           <div style="display: flex; gap: 10px;">
-            <button class="btn btn-secondary" onclick="copyShiftReport('manana')" style="font-size: 12.5px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;">
+            <button class="btn btn-secondary" onclick="copyShiftReport()" style="font-size: 12.5px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-              Copiar Turno Ma&ntilde;ana
-            </button>
-            <button class="btn btn-secondary" onclick="copyShiftReport('tarde')" style="font-size: 12.5px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px;">
-              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-              Copiar Turno Tarde
+              Copiar Recuento de Sala
             </button>
           </div>
         </div>
@@ -7716,42 +7712,28 @@ function renderNativeRanking(data) {
   }).join('');
 }
 
-async function copyShiftReport(shift) {
+async function copyShiftReport() {
   if (!rawRankingData || rawRankingData.length === 0) {
     alert("No hay datos de ranking disponibles para generar el recuento.");
     return;
   }
   
-  // Nombres del turno de tarde para clasificacion
-  const tardeNames = [
-    "MARIO TIBURCIO",
-    "MERCEDES TERRON",
-    "MIGUEL HERNANDEZ",
-    "MARINA MARTINEZ"
-  ];
-  
   // Ordenar comerciales por puntos descendentemente
   const sorted = [...rawRankingData].sort((a, b) => (parseFloat(b[1]) || 0) - (parseFloat(a[1]) || 0));
   
-  let filtered = [];
-  if (shift === 'tarde') {
-    filtered = sorted.filter(row => {
-      const nameUpper = row[0].toUpperCase().trim();
-      return tardeNames.some(tName => nameUpper.includes(tName));
-    });
-  } else {
-    // mañana: todos menos tarde y gerentes
-    filtered = sorted.filter(row => {
-      const nameUpper = row[0].toUpperCase().trim();
-      const isTarde = tardeNames.some(tName => nameUpper.includes(tName));
-      const isGerencia = nameUpper.includes("FRANCISCO MORENTE") || nameUpper.includes("MIGUEL RODRIGUEZ");
-      return !isTarde && !isGerencia;
-    });
-  }
+  // Filtrar gerencia y cuentas del sistema
+  const filtered = sorted.filter(row => {
+    const nameUpper = row[0].toUpperCase().trim();
+    const isGerencia = nameUpper.includes("FRANCISCO MORENTE") || 
+                       nameUpper.includes("MIGUEL RODRIGUEZ") || 
+                       nameUpper.includes("MARIA CABRERA") ||
+                       nameUpper.includes("PAPAEVARIA") ||
+                       nameUpper.includes("MAMAEVARIA");
+    return !isGerencia;
+  });
   
   const now = new Date();
   const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
-    const shiftTitle = shift === 'manana' ? 'MA\u00D1ANA' : 'TARDE';
   
   const reportDiv = document.createElement('div');
   reportDiv.style.width = '480px';
@@ -7804,12 +7786,12 @@ async function copyShiftReport(shift) {
       <img src="logo-renosur-black.png" alt="Renosur" style="height: 34px; width: auto; object-fit: contain; display: block;" />
       <div style="height: 28px; width: 1.5px; background: #efebe4; margin: 0 16px;"></div>
       <div style="text-align: left;">
-        <div style="font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; color: #1d70b8; text-transform: uppercase;">RECUENTO TURNO ${shiftTitle}</div>
+        <div style="font-size: 15.5px; font-weight: 800; letter-spacing: -0.3px; color: #1d70b8; text-transform: uppercase;">RECUENTO SALA</div>
         <div style="font-size: 11.5px; color: #8391a0; font-weight: 600; margin-top: 2px;">${dateStr}</div>
       </div>
     </div>
     <div style="display: flex; flex-direction: column;">
-      ${rowsHtml || '<div style="text-align:center; color:#8391a0; padding: 20px; font-weight: 600;">No hay comerciales activos en este turno hoy.</div>'}
+      ${rowsHtml || '<div style="text-align:center; color:#8391a0; padding: 20px; font-weight: 600;">No hay comerciales activos hoy.</div>'}
     </div>
     <div style="text-align: center; margin-top: 24px; font-size: 9.5px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">
       Generado por Asistente Comercial
@@ -7824,7 +7806,6 @@ async function copyShiftReport(shift) {
     return;
   }
   
-  // Utilizar Promise dentro del constructor ClipboardItem para mantener el contexto del usuario (gesture preservation)
   const blobPromise = new Promise((resolve, reject) => {
     html2canvas(reportDiv, {
       scale: 2,
@@ -7847,13 +7828,12 @@ async function copyShiftReport(shift) {
     if (navigator.clipboard && window.ClipboardItem) {
       const item = new ClipboardItem({ 'image/png': blobPromise });
       await navigator.clipboard.write([item]);
-      alert(`\u{1F4F8} \xA1Imagen de recuento del turno de ` + (shift === 'manana' ? 'ma\xF1ana' : 'tarde') + ` copiada al portapapeles! Listo para pegar en WhatsApp.`);
+      alert(`\u{1F4F8} \xA1Imagen de recuento de la sala copiada al portapapeles! Listo para pegar en WhatsApp.`);
     } else {
       throw new Error("ClipboardItem API no soportada");
     }
   } catch (err) {
     console.error("Clipboard copy failed, downloading instead:", err);
-    // Solo si falla por completo el copiado, descargamos el archivo como plan B
     const canvas = await html2canvas(reportDiv, {
       scale: 2,
       backgroundColor: null,
@@ -7861,7 +7841,7 @@ async function copyShiftReport(shift) {
     });
     const link = document.createElement('a');
     const cleanDate = dateStr.replace(/\//g, '-');
-    link.download = `Recuento_Turno_${shiftTitle}_${cleanDate}.png`;
+    link.download = `Recuento_Sala_${cleanDate}.png`;
     link.href = canvas.toDataURL('image/png');
     link.click();
     alert(`El navegador bloque\xF3 el copiado autom\xE1tico de im\xE1genes. Se ha descargado la imagen "${link.download}" en tu dispositivo.`);
@@ -9520,7 +9500,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930254;
+const CURRENT_BUILD_VERSION = 1785002930255;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
