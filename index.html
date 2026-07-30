@@ -5915,7 +5915,7 @@ const BASE = {
     desc_sin:0.20, desc_con:0.23,
     tarifas_luz:[
       {n:'Luz 24H', te:0.155, tp1:0.0936, tp2:0.0936, te_sin:0.124, te_con:0.119, nota:'Precio unico 24h sin permanencia'},
-      {n:'Solar Plus', te:0.1599, tp1:0.091, tp2:0.091, te_sin:0.1407, te_con:0.1407, nota:'Tarifa Solar con excedentes'}
+      {n:'Solar Plus', te:0.1599, tp1:0.091, tp2:0.091, te_sin:0.1407, te_con:0.1407, desc_sin:0.12, desc_con:0.12, nota:'Tarifa Solar con excedentes'}
     ],
     tarifas_gas:[
       {n:'Gas Endesa RL1', tv:0.0736, tf:0.2316},
@@ -8668,8 +8668,10 @@ function calcComp(){
       r.te_sin = 0.1407;
       r.te_con = 0.1407;
       r.precio_excedente = 0.06;
+      r.desc_sin = 0.12;
+      r.desc_con = 0.12;
       r.tarifas_luz = [
-        {n:'Solar Plus', te:0.1599, tp1:0.091, tp2:0.091, te_sin:0.1407, te_con:0.1407, nota:'Tarifa Solar Plus con excedentes'}
+        {n:'Solar Plus', te:0.1599, tp1:0.091, tp2:0.091, te_sin:0.1407, te_con:0.1407, desc_sin:0.12, desc_con:0.12, nota:'Tarifa Solar Plus con excedentes'}
       ];
     }
     
@@ -9515,7 +9517,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930258;
+const CURRENT_BUILD_VERSION = 1785002930259;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
