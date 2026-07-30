@@ -5914,7 +5914,8 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.20, desc_con:0.23,
     tarifas_luz:[
-      {n:'Luz 24H', te:0.155, tp1:0.0936, tp2:0.0936, te_sin:0.124, te_con:0.119, nota:'Precio unico 24h sin permanencia'}
+      {n:'Luz 24H', te:0.155, tp1:0.0936, tp2:0.0936, te_sin:0.124, te_con:0.119, nota:'Precio unico 24h sin permanencia'},
+      {n:'Solar Plus', te:0.159, tp1:0.091, tp2:0.091, te_sin:0.159, te_con:0.159, nota:'Tarifa Solar con excedentes'}
     ],
     tarifas_gas:[
       {n:'Gas Endesa RL1', tv:0.0736, tf:0.2316},
@@ -8380,6 +8381,9 @@ function renderCondiciones(){
     } else if (r.tarifas_luz.length > 1 && id === 'gana') {
       potHtml = `<span>Potencia Plan Online: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·dia</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia Mercado: TP1 ${r.tarifas_luz[1].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(4)} €/kW·dia</span>`;
+    } else if (r.tarifas_luz.length > 1 && id === 'endesa') {
+      potHtml = `<span>Potencia Luz 24H: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·dia</span>
+                 <br><span style="margin-top:2px;display:inline-block">Potencia Solar Plus: TP1 ${r.tarifas_luz[1].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(4)} €/kW·dia</span>`;
     } else {
       potHtml = `<span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·dia</span>`;
     }
@@ -9511,7 +9515,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930256;
+const CURRENT_BUILD_VERSION = 1785002930257;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
