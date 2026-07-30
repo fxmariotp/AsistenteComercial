@@ -8657,6 +8657,17 @@ function calcComp(){
         {n:'Por Uso Luz (CIF)', te:0.132396, tp1:0.127295, tp2:0.045522, nota:'Tarifa especial para CIF'}
       ];
     }
+    if (cia === 'endesa' && excedente > 0) {
+      r.name = isCif ? 'Endesa Solar Plus (Precio CIF)' : 'Endesa Solar Plus';
+      r.tp1 = 0.091;
+      r.tp2 = 0.091;
+      r.te_sin = 0.159;
+      r.te_con = 0.159;
+      r.precio_excedente = 0.06;
+      r.tarifas_luz = [
+        {n:'Solar Plus', te:0.159, tp1:0.091, tp2:0.091, te_sin:0.159, te_con:0.159, nota:'Tarifa Solar Plus con excedentes'}
+      ];
+    }
     
     // Potencia y energia
     let luzPot = 0;
@@ -9500,7 +9511,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930255;
+const CURRENT_BUILD_VERSION = 1785002930256;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
