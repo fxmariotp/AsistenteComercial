@@ -4667,7 +4667,16 @@ input:focus, select:focus, textarea:focus {
             <div class="fgrp luz-grp"><label>Excedentes (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-excedente" placeholder="0" autocomplete="off" value="" min="0" oninput="calcComp()"></div>
             <div class="fgrp luz-grp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" placeholder="0.85" autocomplete="off" value="0.85" step="0.01" oninput="calcComp()"></div>
             
-            <div class="fgrp gas-grp hidden-grp" style="grid-column: span 2"><label>Gas (kWh)</label><input type="number" id="f-gas" placeholder="0" autocomplete="off" value="" oninput="calcComp()"></div>
+            <div class="fgrp gas-grp hidden-grp"><label>Gas (kWh)</label><input type="number" id="f-gas" placeholder="0" autocomplete="off" value="" oninput="calcComp()"></div>
+            <div class="fgrp gas-grp hidden-grp">
+              <label>Segmento de Gas</label>
+              <select id="f-gas-segmento" onchange="calcComp()">
+                <option value="auto">Automático (Según consumo)</option>
+                <option value="rl1">RL.1 (Consumo bajo)</option>
+                <option value="rl2">RL.2 (Consumo medio)</option>
+                <option value="rl3">RL.3 (Consumo alto)</option>
+              </select>
+            </div>
             
             <div class="fsec">Facturacion actual</div>
             <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" placeholder="138.41" autocomplete="off" value="" step="0.01" oninput="calcComp()"></div>
@@ -8619,12 +8628,15 @@ function calcComp(){
   const scrollContainer = document.querySelector('.content');
   const scrollTop = scrollContainer ? scrollContainer.scrollTop : 0;
 
-  // Determinar banda de gas basada en consumo estimado anual
+  // Determinar banda de gas basada en selección o consumo estimado anual
+  const selectedSegment = document.getElementById('f-gas-segmento') ? document.getElementById('f-gas-segmento').value : 'auto';
   let band = 'rl1';
-  if(gas > 0){
+  if (selectedSegment && selectedSegment !== 'auto') {
+    band = selectedSegment;
+  } else if (gas > 0) {
     const annualGas = gas * (365 / dias);
-    if(annualGas > 5000 && annualGas <= 15000) band = 'rl2';
-    else if(annualGas > 15000) band = 'rl3';
+    if (annualGas > 5000 && annualGas <= 15000) band = 'rl2';
+    else if (annualGas > 15000) band = 'rl3';
   }
 
   let offers = [];
@@ -8817,6 +8829,7 @@ function saveComparisonInputs() {
     excedente: document.getElementById('f-excedente') ? document.getElementById('f-excedente').value : '',
     alquiler: document.getElementById('f-alquiler') ? document.getElementById('f-alquiler').value : '0.85',
     gas: document.getElementById('f-gas') ? document.getElementById('f-gas').value : '',
+    gasSegmento: document.getElementById('f-gas-segmento') ? document.getElementById('f-gas-segmento').value : 'auto',
     actual: document.getElementById('f-actual') ? document.getElementById('f-actual').value : '',
     sva: document.getElementById('f-sva') ? document.getElementById('f-sva').checked : false,
     cif: document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false,
@@ -8847,6 +8860,7 @@ function loadComparisonInputs() {
     if (document.getElementById('f-excedente')) document.getElementById('f-excedente').value = inputs.excedente || '';
     if (document.getElementById('f-alquiler')) document.getElementById('f-alquiler').value = inputs.alquiler !== undefined ? inputs.alquiler : '0.85';
     if (document.getElementById('f-gas')) document.getElementById('f-gas').value = inputs.gas || '';
+    if (document.getElementById('f-gas-segmento')) document.getElementById('f-gas-segmento').value = inputs.gasSegmento || 'auto';
     if (document.getElementById('f-actual')) document.getElementById('f-actual').value = inputs.actual || '';
     if (document.getElementById('f-sva')) document.getElementById('f-sva').checked = !!inputs.sva;
     if (document.getElementById('f-cif')) document.getElementById('f-cif').checked = !!inputs.cif;
@@ -8884,6 +8898,7 @@ function clearComparisonInputs() {
   if (document.getElementById('f-excedente')) document.getElementById('f-excedente').value = '';
   if (document.getElementById('f-alquiler')) document.getElementById('f-alquiler').value = '0.85';
   if (document.getElementById('f-gas')) document.getElementById('f-gas').value = '';
+  if (document.getElementById('f-gas-segmento')) document.getElementById('f-gas-segmento').value = 'auto';
   if (document.getElementById('f-actual')) document.getElementById('f-actual').value = '';
   if (document.getElementById('f-sva')) document.getElementById('f-sva').checked = false;
   if (document.getElementById('f-cif')) document.getElementById('f-cif').checked = false;
@@ -9517,7 +9532,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930260;
+const CURRENT_BUILD_VERSION = 1785002930261;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
