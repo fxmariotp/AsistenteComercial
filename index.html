@@ -7443,6 +7443,58 @@ function getInitials(name) {
   return parts[0].substring(0, 2).toUpperCase();
 }
 
+// Helper to fetch Google Script with direct try & multiple CORS proxy fallbacks
+async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
+  // 1. Try directly first
+  try {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(targetUrl, { signal: controller.signal });
+    clearTimeout(id);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) return data;
+    }
+  } catch (e) {
+    console.warn("Direct fetch to Google Script failed/blocked. Trying CORS Proxy 1 (AllOrigins)...", e);
+  }
+  
+  // 2. Fallback to AllOrigins CORS Proxy
+  try {
+    const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(proxyUrl, { signal: controller.signal });
+    clearTimeout(id);
+    if (res.ok) {
+      const wrapper = await res.json();
+      if (wrapper && wrapper.contents) {
+        const data = JSON.parse(wrapper.contents);
+        if (Array.isArray(data)) return data;
+      }
+    }
+  } catch (e) {
+    console.warn("CORS Proxy 1 (AllOrigins) failed. Trying CORS Proxy 2 (ThingProxy)...", e);
+  }
+
+  // 3. Fallback to ThingProxy CORS Proxy
+  try {
+    const proxyUrl = "https://thingproxy.freeboard.io/fetch/" + targetUrl;
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(proxyUrl, { signal: controller.signal });
+    clearTimeout(id);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) return data;
+    }
+  } catch (e) {
+    console.warn("CORS Proxy 2 (ThingProxy) failed.", e);
+  }
+  
+  throw new Error("All fetch methods (direct and CORS proxies) failed to load Google Script data");
+}
+
 async function loadNativeRanking() {
   const url = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
   const nativeContainer = document.getElementById('ranking-native-container');
@@ -7463,14 +7515,7 @@ async function loadNativeRanking() {
   if (iframeContainer) iframeContainer.style.display = 'none';
 
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-    const res = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeoutId);
-    
-    if (!res.ok) throw new Error("HTTP error " + res.status);
-    const data = await res.json();
-    
+    const data = await fetchGoogleScript(url);
     if (Array.isArray(data)) {
       rawRankingData = data.filter(r => r && r[0]); // Filter empty rows
       if (rawRankingData.length > 0) {
@@ -7962,14 +8007,7 @@ async function testRankingConnection() {
   }
   
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 6000);
-    const res = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeoutId);
-    
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    const data = await res.json();
-    
+    const data = await fetchGoogleScript(url);
     if (Array.isArray(data)) {
       if (statusMsg) {
         statusMsg.textContent = "¡Conexion exitosa! Vista premium desbloqueada.";
@@ -9556,7 +9594,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930263;
+const CURRENT_BUILD_VERSION = 1785002930265;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -12107,12 +12145,7 @@ function toggleTaskCompletionFromDashboard(id) {
 async function fetchRankingForDashboard() {
   const url = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 5000);
-    const res = await fetch(url, { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (!res.ok) throw new Error("HTTP error " + res.status);
-    const data = await res.json();
+    const data = await fetchGoogleScript(url, 5000);
     if (Array.isArray(data)) {
       rawRankingData = data.filter(r => r && r[0]);
       localStorage.setItem('ranking_connected', 'true');
