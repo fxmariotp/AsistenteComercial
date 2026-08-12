@@ -5728,6 +5728,17 @@ input:focus, select:focus, textarea:focus {
         <p class="guide-text">
           Para habilitar esta vista minimalista y profesional en tiempo real, debes modificar la funcion <code>doGet</code> en el editor de Google Apps Script vinculado a tu ranking (Menu Extensiones > Apps Script) para que devuelva los datos en formato JSON cuando se soliciten. Reemplaza tu funcion actual con el siguiente codigo:
         </p>
+        <div style="background: rgba(220, 38, 38, 0.08); border: 1.5px solid rgba(220, 38, 38, 0.2); border-radius: var(--rs); padding: 12px; margin-bottom: 15px; font-size: 13.5px; color: var(--text);">
+          <strong style="color: #dc2626; display: block; margin-bottom: 4px; font-size: 13.5px;">⚠️ ¡PASO CRÍTICO OBLIGATORIO PARA QUE FUNCIONE!</strong>
+          Una vez guardado el código en Apps Script, debes publicar una <strong>Nueva versión</strong> de la aplicación web:
+          <ol style="margin: 6px 0 0 18px; padding: 0; line-height: 1.4;">
+            <li>Haz clic arriba en <strong>Implementar &gt; Administrar implementaciones</strong>.</li>
+            <li>Haz clic en el icono del <strong>Lápiz (Editar)</strong>.</li>
+            <li>En "Versión", selecciona <strong>"Nueva versión"</strong>.</li>
+            <li>Asegúrate de que en "Quién tiene acceso" esté en <strong>"Cualquiera"</strong> (o "Cualquiera, incluso anónimo").</li>
+            <li>Haz clic en <strong>Implementar</strong>. Si no haces esto, los cambios no se publicarán y seguirá dando error de CORS.</li>
+          </ol>
+        </div>
         <div class="guide-code-box">
           <button class="guide-copy-btn" onclick="copyGuideCode(this)">Copiar Codigo</button>
           <pre id="guide-code-text">function doGet(e) {
@@ -9545,7 +9556,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930262;
+const CURRENT_BUILD_VERSION = 1785002930263;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
