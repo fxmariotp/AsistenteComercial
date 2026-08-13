@@ -7452,10 +7452,25 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
       if (Array.isArray(data)) return data;
     }
   } catch (e) {
-    console.warn("Direct fetch to Google Script failed/blocked. Trying CORS Proxy 1 (AllOrigins)...", e);
+    console.warn("Direct fetch to Google Script failed/blocked. Trying CORS Proxy 1 (CodeTabs)...", e);
   }
   
-  // 2. Fallback to AllOrigins CORS Proxy
+  // 2. Fallback to CodeTabs CORS Proxy
+  try {
+    const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(targetUrl);
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(proxyUrl, { signal: controller.signal });
+    clearTimeout(id);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) return data;
+    }
+  } catch (e) {
+    console.warn("CORS Proxy 1 (CodeTabs) failed. Trying CORS Proxy 2 (AllOrigins)...", e);
+  }
+
+  // 3. Fallback to AllOrigins CORS Proxy
   try {
     const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
     const controller = new AbortController();
@@ -7470,12 +7485,12 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
       }
     }
   } catch (e) {
-    console.warn("CORS Proxy 1 (AllOrigins) failed. Trying CORS Proxy 2 (ThingProxy)...", e);
+    console.warn("CORS Proxy 2 (AllOrigins) failed. Trying CORS Proxy 3 (CorsProxy.io)...", e);
   }
 
-  // 3. Fallback to ThingProxy CORS Proxy
+  // 4. Fallback to CorsProxy.io
   try {
-    const proxyUrl = "https://thingproxy.freeboard.io/fetch/" + targetUrl;
+    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(targetUrl);
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeoutMs);
     const res = await fetch(proxyUrl, { signal: controller.signal });
@@ -7485,7 +7500,7 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
       if (Array.isArray(data)) return data;
     }
   } catch (e) {
-    console.warn("CORS Proxy 2 (ThingProxy) failed.", e);
+    console.warn("CORS Proxy 3 (CorsProxy.io) failed.", e);
   }
   
   throw new Error("All fetch methods (direct and CORS proxies) failed to load Google Script data");
@@ -9589,7 +9604,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930266;
+const CURRENT_BUILD_VERSION = 1785002930267;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
