@@ -3913,6 +3913,10 @@ input:focus, select:focus, textarea:focus {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
       Promociones
     </button>
+    <button class="nav-btn" id="btn-nav-procedimientos" onclick="showPanel('procedimientos',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+      Procedimientos
+    </button>
     <button class="nav-btn" id="btn-nav-calendario" onclick="showPanel('calendario',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
       Calendario
@@ -4236,6 +4240,22 @@ input:focus, select:focus, textarea:focus {
             </div>
             <div class="db-tool-action">
               Ver promociones <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
+          <!-- Card 9: Procedimientos -->
+          <div class="db-tool-card" style="--card-color: #8b5cf6; --card-color-bg: rgba(139, 92, 246, 0.08); --card-color-alpha: rgba(139, 92, 246, 0.05);" onclick="showPanel('procedimientos', document.getElementById('btn-nav-procedimientos'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Procedimientos</h4>
+                <p class="db-tool-desc">Documentos y requisitos obligatorios para contratación residencial, PYME y CIF de cada empresa.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Ver procedimientos <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
           </div>
 
@@ -4631,6 +4651,16 @@ input:focus, select:focus, textarea:focus {
         <div class="legend-item"><div class="legend-dot" style="background:var(--orange-bg);border:1.5px solid var(--orange2)"></div>Discriminacion horaria</div>
       </div>
       <div id="cond-render"></div>
+    </div>
+
+    <!-- ══════ PROCEDIMIENTOS ══════ -->
+    <div class="panel" id="panel-procedimientos">
+      <div class="legend" style="margin-bottom:20px">
+        <div class="legend-item"><span class="cdot" style="background:#51c233;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Residencial</div>
+        <div class="legend-item"><span class="cdot" style="background:#357fbf;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Autónomos / Pymes</div>
+        <div class="legend-item"><span class="cdot" style="background:#d97706;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Requisitos Críticos</div>
+      </div>
+      <div id="proc-render"></div>
     </div>
 
     <!-- ══════ COMPARATIVA ══════ -->
@@ -5995,6 +6025,7 @@ const PANELS = {
   gruposAgentes: {title:'Gestión de Usuarios', sub:'Administración de usuarios, contraseñas, roles y estado de actividad', color:'#e08034', icon:'<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\\"></path><circle cx=\"9\" cy=\"7\" r=\"4\\"></circle><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\\"></path><circle cx=\"17\" cy=\"7\" r=\"3\\"></circle>'},
   registroConexiones: {title:'Registro Conexiones', sub:'Historial de accesos de comerciales e IPs de conexión', color:'#ef4444', icon:'<path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"></path>'},
   promociones: {title:'Promociones', sub:'Promociones vigentes de supermercados y grandes superficies', color:'#0d5c9e', icon:'<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>'},
+  procedimientos: {title:'Procedimientos de Contratación', sub:'Requisitos, documentación y proceso de firma por comercializadora', color:'#8b5cf6', icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>'},
 
   sips:        {title:'Enlaces Trabajo', sub:'Consulta de potencias, direcciones y enlaces de trabajo', color:'#1a7a3c', icon:'<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line>'},};
 
@@ -8335,6 +8366,7 @@ function showPanel(id, btn){
   if(id==='agenda') renderAgenda();
   if(id==='controlVacaciones') initControlVacaciones();
   if(id==='promociones') renderPromociones();
+  if(id==='procedimientos') renderProcedimientos();
   if(id==='gruposAgentes') initGruposAgentes();
   if(id==='registroConexiones') {
     if (typeof loadLoginLogs === 'function') loadLoginLogs();
@@ -8638,6 +8670,262 @@ function openServiceDocumentModal(url, title) {
   
   document.body.appendChild(overlay);
 }
+
+// ── PROCEDIMIENTOS DE CONTRATACIÓN ──
+let currentProcCia = 'iberdrola';
+
+const PROCEDIMIENTOS = {
+  iberdrola: {
+    name: 'Iberdrola',
+    color: '#008B3C',
+    residencial: {
+      docs: [
+        'DNI / NIE en vigor (ambas caras legibles) del nuevo titular.',
+        'Código CUPS de luz o gas (o factura anterior).',
+        'Número de cuenta bancaria (IBAN de 24 dígitos) para domiciliación.',
+        'Móvil y correo electrónico para la firma electrónica (SMS/e-mail).'
+      ],
+      process: [
+        'El asesor introduce los datos en el portal y solicita el alta.',
+        'El cliente recibe de inmediato un SMS o e-mail con el enlace de firma.',
+        'El cliente accede al enlace y realiza la firma aceptando las condiciones.',
+        'En cambios de titularidad con deuda del inquilino anterior, se debe adjuntar el Formulario de Cambio de Titular SIN Subrogación de Deuda junto al contrato de alquiler o escrituras de propiedad.'
+      ]
+    },
+    pymes: {
+      docs: [
+        'CIF de la empresa / sociedad.',
+        'DNI / NIE del representante o administrador de la sociedad.',
+        'Escritura de constitución de la empresa o poderes de representación.',
+        'Recibo de autónomo actual o modelo 036 / 037 de alta en Hacienda.',
+        'Última factura completa de la luz/gas del negocio (menos de 3 meses).'
+      ],
+      process: [
+        'Se realiza scoring de riesgo crediticio automatizado.',
+        'Se genera el contrato a nombre del CIF con los datos de representación legal.',
+        'El firmante autorizado firma el contrato digitalmente vía e-mail.'
+      ]
+    },
+    requisitos: [
+      '**Scoring Financiero**: En el alta de cualquier tarifa de Iberdrola se realiza un control automático de riesgo crediticio (Asnef/Equifax). Si el scoring da denegado, se bloquea la contratación directa.',
+      '**Boletín Eléctrico (CIE)**: Es obligatorio aportar el CIE si el suministro lleva de baja más de 12 meses, si la potencia a contratar es mayor que la máxima que figura en el boletín actual, o si la instalación tiene una antigüedad superior a 20 años.',
+      '**Cambios sin deudas**: Para desvincular deudas anteriores, el contrato de arrendamiento o escrituras presentados deben estar debidamente firmados y vigentes.'
+    ]
+  },
+  naturgy: {
+    name: 'Naturgy',
+    color: '#E85D3A',
+    residencial: {
+      docs: [
+        'DNI o NIE en vigor del titular.',
+        'Código CUPS de luz/gas.',
+        'IBAN de la cuenta bancaria.',
+        'Número de teléfono móvil y e-mail de contacto.'
+      ],
+      process: [
+        'Para dar de alta los contratos, es obligatoria la llamada de verificación grabada al PDV del comercial (Renosur/Evaria).',
+        'Adicionalmente, se envía un mensaje de verificación por SMS/WhatsApp al terminal móvil del cliente que debe ser respondido/aceptado para la confirmación de la venta.'
+      ]
+    },
+    pymes: {
+      docs: [
+        'CIF de la empresa.',
+        'DNI / NIE del administrador o representante legal de la empresa.',
+        'Copia de las escrituras de constitución o poderes firmados.',
+        'IBAN de la cuenta bancaria de la empresa.',
+        'Copia de la última factura recibida (completa).'
+      ],
+      process: [
+        'La contratación de tarifas para negocios / CIF está sujeta a la aprobación del departamento de riesgos de Naturgy.',
+        'Firma electrónica a través de enlace certificado enviado por correo al representante legal.'
+      ]
+    },
+    requisitos: [
+      '**Llamada de Calidad PDV**: La llamada de verificación de Naturgy con el comercial es un paso crítico e indispensable. Cualquier error en el guion del cliente o respuesta dudosa anula la venta automáticamente.',
+      '**Boletín Eléctrico (CIE)**: Necesario en aumentos de potencia por encima de lo permitido en el boletín anterior o en instalaciones de más de 20 años de antigüedad.',
+      '**Gestión de Deudas**: Si el suministro tiene deudas previas asociadas al anterior inquilino, se requiere tramitar un cambio de titularidad aportando el contrato de alquiler sellado.'
+    ]
+  },
+  endesa: {
+    name: 'Endesa',
+    color: '#00A8E0',
+    residencial: {
+      docs: [
+        'DNI o NIE vigente del titular.',
+        'Código CUPS.',
+        'IBAN para domiciliación bancaria.',
+        'Teléfono móvil y correo electrónico.'
+      ],
+      process: [
+        'Firma digital mediante SMS con enlace de validación enviado al terminal del cliente.',
+        'En algunas campañas telefónicas específicas, confirmación y lectura de condiciones grabada por voz.'
+      ]
+    },
+    pymes: {
+      docs: [
+        'CIF de la empresa / sociedad.',
+        'DNI / NIE del firmante autorizado de la empresa.',
+        'Escrituras de constitución de la sociedad o poderes de representación.',
+        'Modelo 036 o 037 de la Agencia Tributaria (o recibo de autónomos).',
+        'Última factura completa de luz/gas (máximo 3 meses).'
+      ],
+      process: [
+        'Verificación previa de solvencia económica y scoring comercial de la empresa.',
+        'La cuenta de domiciliación bancaria debe estar registrada a nombre de la razón social de la empresa contratante.'
+      ]
+    },
+    requisitos: [
+      '**Scoring Financiero**: Control de scoring estricto en el alta. Si el scoring resulta denegado, se le exige al cliente un depósito de garantía de 3 mensualidades estimadas para proceder con el alta.',
+      '**Potencias y Boletín CIE**: Si la potencia es superior a 15kW, es indispensable aportar el boletín azul (CIE). Si el punto de suministro es un local de pública concurrencia, además se exigirá el proyecto de ingeniería eléctrica certificado.',
+      '**Exclusión de Deudas**: Se debe aportar el formulario oficial de Endesa de desvinculación de deuda adjuntando el contrato de alquiler oficial del nuevo inquilino.'
+    ]
+  },
+  gana: {
+    name: 'Gana Energía',
+    color: '#E30613',
+    residencial: {
+      docs: [
+        'DNI o NIE vigente del titular.',
+        'Código CUPS.',
+        'Cuenta bancaria de domiciliación (IBAN).',
+        'Correo electrónico activo (requisito indispensable por facturación digital por defecto) y teléfono móvil.'
+      ],
+      process: [
+        'Validación 100% digital a través de firma electrónica por SMS.',
+        'Contratación ágil sin permanencia para el cliente.'
+      ]
+    },
+    pymes: {
+      docs: [
+        'CIF de la empresa.',
+        'DNI / NIE del representante legal.',
+        'Escritura de constitución o poderes firmados.',
+        'Factura actual completa.',
+        'IBAN de la cuenta de la empresa.'
+      ],
+      process: [
+        'Se realiza un scoring rápido automatizado en la plataforma de Gana Energía.',
+        'Firma de contrato digital mediante e-mail certificado enviado al administrador de la empresa.'
+      ]
+    },
+    requisitos: [
+      '**Scoring en Morosidad**: En caso de figurar en registros de impagos (Asnef/Equifax), el alta se deniega directamente en el sistema de Gana Energía sin posibilidad de fianza.',
+      '**Factura Digital Obligatoria**: Gana Energía no realiza envíos de correspondencia postal. Se requiere un correo electrónico real del cliente donde le llegarán todos los recibos.',
+      '**Cambios de Titular**: Proceso ágil en la plataforma, pero si se realiza por mudanza, el titular debe asegurarse de formalizar el traspaso correctamente.'
+    ]
+  }
+};
+
+const procColors = {
+  iberdrola: { main: '#008B3C', bg: 'rgba(0, 139, 96, 0.08)' },
+  naturgy: { main: '#E85D3A', bg: 'rgba(232, 93, 58, 0.08)' },
+  endesa: { main: '#00A8E0', bg: 'rgba(0, 168, 224, 0.08)' },
+  gana: { main: '#E30613', bg: 'rgba(227, 6, 19, 0.08)' }
+};
+
+function setProcCia(ciaId) {
+  currentProcCia = ciaId;
+  renderProcedimientos();
+}
+
+function renderProcedimientos() {
+  const container = document.getElementById('proc-render');
+  if (!container) return;
+  
+  const cias = ['iberdrola', 'naturgy', 'endesa', 'gana'];
+  const procData = PROCEDIMIENTOS[currentProcCia];
+  
+  let html = `
+    <!-- Cabecera de pestañas de empresas -->
+    <div class="ctabs-container" style="display:flex; gap:10px; margin-bottom:24px; flex-wrap:wrap; border-bottom:1.5px solid var(--border); padding-bottom:12px;">
+      ${cias.map(ciaId => {
+        const isActive = ciaId === currentProcCia;
+        const r = RATES[ciaId];
+        const colors = procColors[ciaId];
+        const borderStyle = isActive ? `1.5px solid ${colors.main}` : `1.5px solid transparent`;
+        const bgStyle = isActive ? colors.bg : `transparent`;
+        const colorStyle = isActive ? colors.main : `var(--t2)`;
+        return `
+          <button class="ctab ${isActive ? 'active' : ''}" 
+                  onclick="setProcCia('${ciaId}')"
+                  style="display:inline-flex; align-items:center; gap:8px; height:44px; padding:4px 16px; border:${borderStyle}; background:${bgStyle}; color:${colorStyle}; border-radius:10px; cursor:pointer; font-weight:700; transition: all 0.2s ease;">
+            <img src="${getCompanyLogoUrl(ciaId)}" onerror="handleLogoError(this, '${ciaId}')" alt="${r.name}" style="height:28px; max-width:110px; object-fit:contain; display:block;">
+          </button>
+        `;
+      }).join('')}
+    </div>
+
+    <!-- Info layout: Grid of 2 columns -->
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+      
+      <!-- Particular / Residencial Card -->
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; border-bottom: 1.5px solid var(--border); padding-bottom: 12px;">
+          <span class="cdot" style="background:#51c233; width:12px; height:12px; border-radius:50%; display:inline-block;"></span>
+          <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text);">Residencial (Particular)</h4>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <h5 style="margin: 0 0 10px 0; font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Documentos Necesarios</h5>
+          <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--text); line-height: 1.7; display: flex; flex-direction: column; gap: 6px;">
+            ${procData.residencial.docs.map(doc => `<li>${doc}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div>
+          <h5 style="margin: 0 0 10px 0; font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Proceso de Firma</h5>
+          <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--text); line-height: 1.7; display: flex; flex-direction: column; gap: 6px;">
+            ${procData.residencial.process.map(p => `<li>${p}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Autónomos / Pymes (CIF) Card -->
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
+        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 18px; border-bottom: 1.5px solid var(--border); padding-bottom: 12px;">
+          <span class="cdot" style="background:#357fbf; width:12px; height:12px; border-radius:50%; display:inline-block;"></span>
+          <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text);">Autónomos / Pymes (CIF)</h4>
+        </div>
+        
+        <div style="margin-bottom: 20px;">
+          <h5 style="margin: 0 0 10px 0; font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Documentos Necesarios</h5>
+          <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--text); line-height: 1.7; display: flex; flex-direction: column; gap: 6px;">
+            ${procData.pymes.docs.map(doc => `<li>${doc}</li>`).join('')}
+          </ul>
+        </div>
+        
+        <div>
+          <h5 style="margin: 0 0 10px 0; font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Proceso de Contratación</h5>
+          <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--text); line-height: 1.7; display: flex; flex-direction: column; gap: 6px;">
+            ${procData.pymes.process.map(p => `<li>${p}</li>`).join('')}
+          </ul>
+        </div>
+      </div>
+      
+    </div>
+    
+    <!-- Requisitos Críticos y Notas -->
+    <div style="background: var(--orange-bg); border: 1.5px solid var(--orange2); border-radius: var(--r); padding: 20px; margin-top: 20px; box-shadow: var(--shadow);">
+      <h4 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 800; color: #d97706; display: flex; align-items: center; gap: 8px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        Requisitos Críticos, Validación y Scoring
+      </h4>
+      <div style="display: flex; flex-direction: column; gap: 12px; font-size: 13.5px; color: var(--text); line-height: 1.6;">
+        ${procData.requisitos.map(req => {
+          // Convert markdown bold to HTML bold
+          const formatted = req.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+          return `<div style="display: flex; gap: 8px; align-items: flex-start;">
+            <span style="color: #d97706; font-weight: bold; font-size: 16px; line-height: 1;">•</span>
+            <div>${formatted}</div>
+          </div>`;
+        }).join('')}
+      </div>
+    </div>
+  `;
+  
+  container.innerHTML = html;
+}
+
 
 // ── COMPARATIVA ──
 function f2(n){return(Math.round(n*100)/100).toFixed(2);}
@@ -9596,7 +9884,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930270;
+const CURRENT_BUILD_VERSION = 1785002930271;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
