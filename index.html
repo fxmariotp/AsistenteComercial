@@ -8680,8 +8680,7 @@ const PROCEDIMIENTOS = {
     color: '#008B3C',
     residencial: {
       docs: [
-        'DNI / NIE en vigor (ambas caras legibles) del nuevo titular.',
-        'Móvil y correo electrónico para la firma electrónica (SMS/e-mail).'
+        'DNI / NIE en vigor (ambas caras legibles) del nuevo titular.'
       ],
       process: [
         'El cliente recibe un SMS o correo electrónico con un enlace seguro de Iberdrola.',
@@ -8691,11 +8690,11 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        'CIF de la empresa / sociedad.',
-        'Factura actual completa.',
+        '**Lectura actual del contador** (Iberdrola precisa lectura).',
         'DNI / NIE del representante legal.',
-        'Escritura de constitución o Recibo de autónomo.',
-        '**Lectura actual del contador** (Iberdrola precisa lectura).'
+        'Factura actual completa.',
+        'CIF de la empresa / sociedad.',
+        'Escritura de constitución o Recibo de autónomo.'
       ],
       process: [
         'El representante legal recibe el contrato de la empresa en su correo electrónico.',
@@ -8711,8 +8710,7 @@ const PROCEDIMIENTOS = {
     color: '#E85D3A',
     residencial: {
       docs: [
-        'DNI o NIE en vigor del titular.',
-        'Número de teléfono móvil y e-mail de contacto.'
+        'DNI o NIE en vigor del titular.'
       ],
       process: [
         'El cliente debe realizar la llamada de verificación grabada (llamada de calidad) respondiendo afirmativamente al guion del verificador.',
@@ -8721,11 +8719,11 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        'CIF de la empresa / sociedad.',
-        'Factura actual completa.',
+        '**Lectura actual del contador** (Naturgy precisa lectura).',
         'DNI / NIE del representante legal.',
-        'Escritura de constitución o Recibo de autónomo.',
-        '**Lectura actual del contador** (Naturgy precisa lectura).'
+        'Factura actual completa.',
+        'CIF de la empresa / sociedad.',
+        'Escritura de constitución o Recibo de autónomo.'
       ],
       process: [
         'El administrador / firmante de la empresa recibe el contrato mediante e-mail certificado.',
@@ -8741,8 +8739,7 @@ const PROCEDIMIENTOS = {
     color: '#00A8E0',
     residencial: {
       docs: [
-        'DNI o NIE vigente del titular.',
-        'Teléfono móvil y correo electrónico.'
+        'DNI o NIE vigente del titular.'
       ],
       process: [
         'El cliente recibe un mensaje SMS con un enlace de firma segura de Endesa.',
@@ -8752,9 +8749,9 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        'CIF de la empresa / sociedad.',
-        'Factura actual completa.',
         'DNI / NIE del representante legal.',
+        'Factura actual completa.',
+        'CIF de la empresa / sociedad.',
         'Escritura de constitución o Recibo de autónomo.',
         '**No precisa de lectura de contador**.'
       ],
@@ -8774,8 +8771,7 @@ const PROCEDIMIENTOS = {
     color: '#E30613',
     residencial: {
       docs: [
-        'DNI o NIE vigente del titular.',
-        'Correo electrónico activo (requisito indispensable por facturación digital por defecto) y teléfono móvil.'
+        'DNI o NIE vigente del titular.'
       ],
       process: [
         'El cliente recibe un SMS con un enlace de firma digital certificada.',
@@ -8784,9 +8780,9 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        'CIF de la empresa / sociedad.',
-        'Factura actual completa.',
         'DNI / NIE del representante legal.',
+        'Factura actual completa.',
+        'CIF de la empresa / sociedad.',
         'Escritura de constitución o Recibo de autónomo.',
         '**No precisa de lectura de contador**.'
       ],
@@ -9869,7 +9865,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930274;
+const CURRENT_BUILD_VERSION = 1785002930275;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
