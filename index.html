@@ -8680,7 +8680,7 @@ const PROCEDIMIENTOS = {
     color: '#008B3C',
     residencial: {
       docs: [
-        '**Lectura de texto legal** (Iberdrola precisa lectura).',
+        'Lectura de texto legal.',
         'DNI / NIE en vigor (ambas caras legibles) del nuevo titular (obligatorio a partir del 1 de sep).'
       ],
       process: [
@@ -8691,7 +8691,7 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        '**Lectura de texto legal** (Iberdrola precisa lectura) (hace falta el DNI).',
+        'Lectura de texto legal.',
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
@@ -8705,7 +8705,7 @@ const PROCEDIMIENTOS = {
     },
     requisitos: [
       'No se permite la contratación para personas mayores de 75 años.',
-      '**Cambio de titularidad**: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).'
+      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).'
     ]
   },
   naturgy: {
@@ -8713,7 +8713,7 @@ const PROCEDIMIENTOS = {
     color: '#E85D3A',
     residencial: {
       docs: [
-        '**Lectura de texto legal** (Naturgy precisa lectura).'
+        'Lectura de texto legal.'
       ],
       process: [
         'El cliente recibe un primer SMS o WhatsApp con un enlace de acceso a la página de firma.',
@@ -8723,7 +8723,7 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        '**Lectura de texto legal** (Naturgy precisa lectura).',
+        'Lectura de texto legal.',
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
@@ -8737,7 +8737,7 @@ const PROCEDIMIENTOS = {
     },
     requisitos: [
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
-      '**Cambio de titularidad**: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).'
+      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).'
     ]
   },
   endesa: {
@@ -8746,8 +8746,7 @@ const PROCEDIMIENTOS = {
     residencial: {
       docs: [
         'DNI o NIE vigente del titular.',
-        'Factura actual completa.',
-        '**No precisa de lectura de texto legal**.'
+        'Factura actual completa.'
       ],
       process: [
         'El cliente recibe un mensaje SMS con un enlace de firma segura de Endesa.',
@@ -8760,8 +8759,7 @@ const PROCEDIMIENTOS = {
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
-        'Escritura de constitución o Recibo de autónomo.',
-        '**No precisa de lectura de texto legal**.'
+        'Escritura de constitución o Recibo de autónomo.'
       ],
       process: [
         'El representante legal recibe un SMS o correo electrónico con el enlace de Endesa.',
@@ -8772,7 +8770,7 @@ const PROCEDIMIENTOS = {
       'No se permite añadir SVA (Servicios de Valor Añadido) en las provincias de Ceuta y Melilla.',
       'Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA.',
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
-      '**Cambio de titularidad**: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).'
+      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).'
     ]
   },
   gana: {
@@ -8781,8 +8779,7 @@ const PROCEDIMIENTOS = {
     residencial: {
       docs: [
         'DNI o NIE vigente del titular.',
-        'Factura actual completa.',
-        '**No precisa de lectura de texto legal**.'
+        'Factura actual completa.'
       ],
       process: [
         'El cliente recibe un SMS con un enlace de acceso a la página de firma de Gana Energía, la cual consta de 4 pasos obligatorios:',
@@ -8797,8 +8794,7 @@ const PROCEDIMIENTOS = {
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
-        'Escritura de constitución o Recibo de autónomo.',
-        '**No precisa de lectura de texto legal**.'
+        'Escritura de constitución o Recibo de autónomo.'
       ],
       process: [
         'El administrador de la empresa recibe un SMS o correo electrónico con el enlace de acceso a la página de firma de Gana Energía, la cual consta de 4 pasos obligatorios:',
@@ -8810,7 +8806,7 @@ const PROCEDIMIENTOS = {
     },
     requisitos: [
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
-      '**Cambio de titularidad**: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Gana Energía NO sirve el empadronamiento).'
+      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Gana Energía NO sirve el empadronamiento).'
     ]
   }
 };
@@ -9883,7 +9879,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930292;
+const CURRENT_BUILD_VERSION = 1785002930293;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
