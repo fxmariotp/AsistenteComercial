@@ -8683,8 +8683,9 @@ const PROCEDIMIENTOS = {
         'DNI / NIE en vigor (ambas caras legibles) del nuevo titular.'
       ],
       process: [
-        'El cliente recibe un SMS o correo electrónico con un enlace seguro de Iberdrola.',
-        'Debe hacer clic en el enlace, revisar que sus datos sean correctos y pulsar en firmar digitalmente.',
+        'El cliente recibe un primer SMS de protección de datos que tiene que aceptar obligatoriamente.',
+        'Una vez aceptado, el cliente recibe un segundo SMS con el enlace para la firma digital del contrato.',
+        'Por último, el cliente recibe una llamada breve para verificar un par de datos y darle la bienvenida a Iberdrola.',
         'En cambios de titularidad con deuda, se le enviará un documento digital adicional de desvinculación que también debe firmar adjuntando el contrato de alquiler.'
       ]
     },
@@ -8697,8 +8698,9 @@ const PROCEDIMIENTOS = {
         'Escritura de constitución o Recibo de autónomo.'
       ],
       process: [
-        'El representante legal recibe el contrato de la empresa en su correo electrónico.',
-        'Debe acceder al enlace de firma digital segura de Iberdrola y completar la firma en línea.'
+        'El representante legal recibe un primer SMS o e-mail de protección de datos que tiene que aceptar obligatoriamente.',
+        'Una vez aceptado, recibe el SMS o e-mail de firma del contrato de la empresa para completar la firma en línea.',
+        'Por último, recibe una llamada breve de bienvenida de Iberdrola para confirmar un par de datos de control.'
       ]
     },
     requisitos: [
@@ -9862,7 +9864,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930282;
+const CURRENT_BUILD_VERSION = 1785002930283;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
