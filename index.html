@@ -8745,8 +8745,9 @@ const PROCEDIMIENTOS = {
     color: '#00A8E0',
     residencial: {
       docs: [
-        '**Lectura de texto legal** (Endesa precisa lectura).',
-        'DNI o NIE vigente del titular.'
+        'DNI o NIE vigente del titular.',
+        'Factura actual completa.',
+        '**No precisa de lectura de texto legal**.'
       ],
       process: [
         'El cliente recibe un mensaje SMS con un enlace de firma segura de Endesa.',
@@ -8779,8 +8780,9 @@ const PROCEDIMIENTOS = {
     color: '#E30613',
     residencial: {
       docs: [
-        '**Lectura de texto legal** (Gana Energía precisa lectura).',
-        'DNI o NIE vigente del titular.'
+        'DNI o NIE vigente del titular.',
+        'Factura actual completa.',
+        '**No precisa de lectura de texto legal**.'
       ],
       process: [
         'El cliente recibe un SMS con un enlace de acceso a la página de firma de Gana Energía, la cual consta de 4 pasos obligatorios:',
@@ -9881,7 +9883,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930291;
+const CURRENT_BUILD_VERSION = 1785002930292;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
