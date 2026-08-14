@@ -8685,8 +8685,7 @@ const PROCEDIMIENTOS = {
       process: [
         'El cliente recibe un primer SMS de protección de datos que tiene que aceptar obligatoriamente.',
         'Una vez aceptado, el cliente recibe un segundo SMS con el enlace para la firma digital del contrato.',
-        'Por último, el cliente recibe una llamada breve para verificar un par de datos y darle la bienvenida a Iberdrola.',
-        'En cambios de titularidad con deuda, se le enviará un documento digital adicional de desvinculación que también debe firmar adjuntando el contrato de alquiler.'
+        'Por último, el cliente recibe una llamada breve para verificar un par de datos y darle la bienvenida a Iberdrola.'
       ]
     },
     pymes: {
@@ -8704,7 +8703,8 @@ const PROCEDIMIENTOS = {
       ]
     },
     requisitos: [
-      'No se permite la contratación para personas mayores de 75 años.'
+      'No se permite la contratación para personas mayores de 75 años.',
+      '**Cambio de titularidad**: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o exclusivamente en Iberdrola sirve el certificado de empadronamiento).'
     ]
   },
   naturgy: {
@@ -8734,7 +8734,8 @@ const PROCEDIMIENTOS = {
       ]
     },
     requisitos: [
-      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.'
+      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
+      '**Cambio de titularidad**: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Naturgy NO sirve el empadronamiento).'
     ]
   },
   endesa: {
@@ -8764,7 +8765,8 @@ const PROCEDIMIENTOS = {
     requisitos: [
       'No se permite añadir SVA (Servicios de Valor Añadido) en las provincias de Ceuta y Melilla.',
       'Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA.',
-      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.'
+      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
+      '**Cambio de titularidad**: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).'
     ]
   },
   gana: {
@@ -8791,7 +8793,8 @@ const PROCEDIMIENTOS = {
       ]
     },
     requisitos: [
-      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.'
+      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
+      '**Cambio de titularidad**: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Gana Energía NO sirve el empadronamiento).'
     ]
   }
 };
@@ -9864,7 +9867,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930283;
+const CURRENT_BUILD_VERSION = 1785002930284;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
