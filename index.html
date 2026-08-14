@@ -8710,6 +8710,7 @@ const PROCEDIMIENTOS = {
     color: '#E85D3A',
     residencial: {
       docs: [
+        '**Lectura de texto legal** (Naturgy precisa lectura).',
         'DNI o NIE en vigor del titular.'
       ],
       process: [
@@ -8719,11 +8720,11 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        '**Lectura de texto legal** (Naturgy precisa lectura).',
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
-        'Escritura de constitución o Recibo de autónomo.'
+        'Escritura de constitución o Recibo de autónomo.',
+        '**No precisa de lectura de texto legal**.'
       ],
       process: [
         'El administrador / firmante de la empresa recibe el contrato mediante e-mail certificado.',
@@ -9865,7 +9866,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930277;
+const CURRENT_BUILD_VERSION = 1785002930278;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
