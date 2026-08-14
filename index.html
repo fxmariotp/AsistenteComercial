@@ -8652,7 +8652,7 @@ function openServiceDocumentModal(url, title) {
   downloadBtn.download = url.substring(url.lastIndexOf('/') + 1);
   downloadBtn.className = 'btn btn-secondary';
   downloadBtn.style.cssText = 'text-decoration:none; display:inline-flex; align-items:center; gap:6px; font-size:13px; font-weight:700; padding:8px 16px; border-radius:var(--rs); background:rgba(13,92,158,0.08); border:1.5px solid rgba(13,92,158,0.25); color:var(--blue);';
-  downloadBtn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Descargar`;
+  downloadBtn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg> Descargar (v2.1)`;
 
   const closeFooterBtn = document.createElement('button');
   closeFooterBtn.className = 'btn btn-secondary';
@@ -8695,10 +8695,10 @@ const PROCEDIMIENTOS = {
     pymes: {
       docs: [
         'CIF de la empresa / sociedad.',
-        'DNI / NIE del representante o administrador de la sociedad.',
-        'Escritura de constitución de la empresa o poderes de representación.',
-        'Recibo de autónomo actual o modelo 036 / 037 de alta en Hacienda.',
-        'Última factura completa de la luz/gas del negocio (menos de 3 meses).'
+        'Factura actual completa.',
+        'DNI / NIE del representante legal.',
+        'Escritura de constitución o Recibo de autónomo.',
+        '**Lectura actual del contador** (Iberdrola precisa lectura).'
       ],
       process: [
         'Se realiza scoring de riesgo crediticio automatizado.',
@@ -8729,11 +8729,11 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        'CIF de la empresa.',
-        'DNI / NIE del administrador o representante legal de la empresa.',
-        'Copia de las escrituras de constitución o poderes firmados.',
-        'IBAN de la cuenta bancaria de la empresa.',
-        'Copia de la última factura recibida (completa).'
+        'CIF de la empresa / sociedad.',
+        'Factura actual completa.',
+        'DNI / NIE del representante legal.',
+        'Escritura de constitución o Recibo de autónomo.',
+        '**Lectura actual del contador** (Naturgy precisa lectura).'
       ],
       process: [
         'La contratación de tarifas para negocios / CIF está sujeta a la aprobación del departamento de riesgos de Naturgy.',
@@ -8764,10 +8764,10 @@ const PROCEDIMIENTOS = {
     pymes: {
       docs: [
         'CIF de la empresa / sociedad.',
-        'DNI / NIE del firmante autorizado de la empresa.',
-        'Escrituras de constitución de la sociedad o poderes de representación.',
-        'Modelo 036 o 037 de la Agencia Tributaria (o recibo de autónomos).',
-        'Última factura completa de luz/gas (máximo 3 meses).'
+        'Factura actual completa.',
+        'DNI / NIE del representante legal.',
+        'Escritura de constitución o Recibo de autónomo.',
+        '**No precisa de lectura de contador**.'
       ],
       process: [
         'Verificación previa de solvencia económica y scoring comercial de la empresa.',
@@ -8797,11 +8797,11 @@ const PROCEDIMIENTOS = {
     },
     pymes: {
       docs: [
-        'CIF de la empresa.',
-        'DNI / NIE del representante legal.',
-        'Escritura de constitución o poderes firmados.',
+        'CIF de la empresa / sociedad.',
         'Factura actual completa.',
-        'IBAN de la cuenta de la empresa.'
+        'DNI / NIE del representante legal.',
+        'Escritura de constitución o Recibo de autónomo.',
+        '**No precisa de lectura de contador**.'
       ],
       process: [
         'Se realiza un scoring rápido automatizado en la plataforma de Gana Energía.',
@@ -9884,7 +9884,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930271;
+const CURRENT_BUILD_VERSION = 1785002930272;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
