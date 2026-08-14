@@ -8703,9 +8703,7 @@ const PROCEDIMIENTOS = {
       ]
     },
     requisitos: [
-      '**Scoring Financiero**: En el alta de cualquier tarifa de Iberdrola se realiza un control automático de riesgo crediticio (Asnef/Equifax). Si el scoring da denegado, se bloquea la contratación directa.',
-      '**Boletín Eléctrico (CIE)**: Es obligatorio aportar el CIE si el suministro lleva de baja más de 12 meses, si la potencia a contratar es mayor que la máxima que figura en el boletín actual, o si la instalación tiene una antigüedad superior a 20 años.',
-      '**Cambios sin deudas**: Para desvincular deudas anteriores, el contrato de arrendamiento o escrituras presentados deben estar debidamente firmados y vigentes.'
+      'No se permite la contratación para personas mayores de 75 años.'
     ]
   },
   naturgy: {
@@ -8735,9 +8733,7 @@ const PROCEDIMIENTOS = {
       ]
     },
     requisitos: [
-      '**Llamada de Calidad PDV**: La llamada de verificación de Naturgy con el comercial es un paso crítico e indispensable. Cualquier error en el guion del cliente o respuesta dudosa anula la venta automáticamente.',
-      '**Boletín Eléctrico (CIE)**: Necesario en aumentos de potencia por encima de lo permitido en el boletín anterior o en instalaciones de más de 20 años de antigüedad.',
-      '**Gestión de Deudas**: Si el suministro tiene deudas previas asociadas al anterior inquilino, se requiere tramitar un cambio de titularidad aportando el contrato de alquiler sellado.'
+      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.'
     ]
   },
   endesa: {
@@ -8768,9 +8764,9 @@ const PROCEDIMIENTOS = {
       ]
     },
     requisitos: [
-      '**Scoring Financiero**: Control de scoring estricto en el alta. Si el scoring resulta denegado, se le exige al cliente un depósito de garantía de 3 mensualidades estimadas para proceder con el alta.',
-      '**Potencias y Boletín CIE**: Si la potencia es superior a 15kW, es indispensable aportar el boletín azul (CIE). Si el punto de suministro es un local de pública concurrencia, además se exigirá el proyecto de ingeniería eléctrica certificado.',
-      '**Exclusión de Deudas**: Se debe aportar el formulario oficial de Endesa de desvinculación de deuda adjuntando el contrato de alquiler oficial del nuevo inquilino.'
+      'No se permite añadir SVA (Servicios de Valor Añadido) en las provincias de Ceuta y Melilla.',
+      'Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA.',
+      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.'
     ]
   },
   gana: {
@@ -8800,9 +8796,7 @@ const PROCEDIMIENTOS = {
       ]
     },
     requisitos: [
-      '**Scoring en Morosidad**: En caso de figurar en registros de impagos (Asnef/Equifax), el alta se deniega directamente en el sistema de Gana Energía sin posibilidad de fianza.',
-      '**Factura Digital Obligatoria**: Gana Energía no realiza envíos de correspondencia postal. Se requiere un correo electrónico real del cliente donde le llegarán todos los recibos.',
-      '**Cambios de Titular**: Proceso ágil en la plataforma, pero si se realiza por mudanza, el titular debe asegurarse de formalizar el traspaso correctamente.'
+      'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.'
     ]
   }
 };
@@ -9875,7 +9869,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930273;
+const CURRENT_BUILD_VERSION = 1785002930274;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
