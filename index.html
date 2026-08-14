@@ -8705,7 +8705,9 @@ const PROCEDIMIENTOS = {
     },
     requisitos: [
       'No se permite la contratación para personas mayores de 75 años.',
-      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).'
+      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).',
+      'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
+      'Cambios de potencia: Permitido en Iberdrola. Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
   },
   naturgy: {
@@ -8737,7 +8739,9 @@ const PROCEDIMIENTOS = {
     },
     requisitos: [
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
-      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).'
+      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).',
+      'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
+      'Cambios de potencia: Permitido en Naturgy. Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
   },
   endesa: {
@@ -8770,7 +8774,9 @@ const PROCEDIMIENTOS = {
       'No se permite añadir SVA (Servicios de Valor Añadido) en las provincias de Ceuta y Melilla.',
       'Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA.',
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
-      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).'
+      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).',
+      'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
+      'Cambios de potencia: En Endesa NO podemos hacer cambio de potencia (en las demás compañías sí). Subir la potencia en las otras compañías cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
   },
   gana: {
@@ -8806,7 +8812,9 @@ const PROCEDIMIENTOS = {
     },
     requisitos: [
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
-      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Gana Energía NO sirve el empadronamiento).'
+      'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Gana Energía NO sirve el empadronamiento).',
+      'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
+      'Cambios de potencia: Permitido en Gana Energía. Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
   }
 };
@@ -9879,7 +9887,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930293;
+const CURRENT_BUILD_VERSION = 1785002930294;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
