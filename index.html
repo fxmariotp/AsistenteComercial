@@ -8681,15 +8681,12 @@ const PROCEDIMIENTOS = {
     residencial: {
       docs: [
         'DNI / NIE en vigor (ambas caras legibles) del nuevo titular.',
-        'Código CUPS de luz o gas (o factura anterior).',
-        'Número de cuenta bancaria (IBAN de 24 dígitos) para domiciliación.',
         'Móvil y correo electrónico para la firma electrónica (SMS/e-mail).'
       ],
       process: [
-        'El asesor introduce los datos en el portal y solicita el alta.',
-        'El cliente recibe de inmediato un SMS o e-mail con el enlace de firma.',
-        'El cliente accede al enlace y realiza la firma aceptando las condiciones.',
-        'En cambios de titularidad con deuda del inquilino anterior, se debe adjuntar el Formulario de Cambio de Titular SIN Subrogación de Deuda junto al contrato de alquiler o escrituras de propiedad.'
+        'El cliente recibe un SMS o correo electrónico con un enlace seguro de Iberdrola.',
+        'Debe hacer clic en el enlace, revisar que sus datos sean correctos y pulsar en firmar digitalmente.',
+        'En cambios de titularidad con deuda, se le enviará un documento digital adicional de desvinculación que también debe firmar adjuntando el contrato de alquiler.'
       ]
     },
     pymes: {
@@ -8701,9 +8698,8 @@ const PROCEDIMIENTOS = {
         '**Lectura actual del contador** (Iberdrola precisa lectura).'
       ],
       process: [
-        'Se realiza scoring de riesgo crediticio automatizado.',
-        'Se genera el contrato a nombre del CIF con los datos de representación legal.',
-        'El firmante autorizado firma el contrato digitalmente vía e-mail.'
+        'El representante legal recibe el contrato de la empresa en su correo electrónico.',
+        'Debe acceder al enlace de firma digital segura de Iberdrola y completar la firma en línea.'
       ]
     },
     requisitos: [
@@ -8718,13 +8714,11 @@ const PROCEDIMIENTOS = {
     residencial: {
       docs: [
         'DNI o NIE en vigor del titular.',
-        'Código CUPS de luz/gas.',
-        'IBAN de la cuenta bancaria.',
         'Número de teléfono móvil y e-mail de contacto.'
       ],
       process: [
-        'Para dar de alta los contratos, es obligatoria la llamada de verificación grabada al PDV del comercial (Renosur/Evaria).',
-        'Adicionalmente, se envía un mensaje de verificación por SMS/WhatsApp al terminal móvil del cliente que debe ser respondido/aceptado para la confirmación de la venta.'
+        'El cliente debe realizar la llamada de verificación grabada (llamada de calidad) respondiendo afirmativamente al guion del verificador.',
+        'Posteriormente, el cliente debe abrir y aceptar el mensaje SMS o WhatsApp enviado por Naturgy para confirmar la activación definitiva del contrato.'
       ]
     },
     pymes: {
@@ -8736,8 +8730,8 @@ const PROCEDIMIENTOS = {
         '**Lectura actual del contador** (Naturgy precisa lectura).'
       ],
       process: [
-        'La contratación de tarifas para negocios / CIF está sujeta a la aprobación del departamento de riesgos de Naturgy.',
-        'Firma electrónica a través de enlace certificado enviado por correo al representante legal.'
+        'El administrador / firmante de la empresa recibe el contrato mediante e-mail certificado.',
+        'Debe hacer clic en el enlace y realizar la firma electrónica autorizando el cambio.'
       ]
     },
     requisitos: [
@@ -8752,13 +8746,12 @@ const PROCEDIMIENTOS = {
     residencial: {
       docs: [
         'DNI o NIE vigente del titular.',
-        'Código CUPS.',
-        'IBAN para domiciliación bancaria.',
         'Teléfono móvil y correo electrónico.'
       ],
       process: [
-        'Firma digital mediante SMS con enlace de validación enviado al terminal del cliente.',
-        'En algunas campañas telefónicas específicas, confirmación y lectura de condiciones grabada por voz.'
+        'El cliente recibe un mensaje SMS con un enlace de firma segura de Endesa.',
+        'Debe hacer clic en el enlace, validar el PIN temporal recibido y firmar el contrato digitalmente.',
+        'En campañas específicas autorizadas, el proceso se realiza mediante una grabación de voz telefónica directa.'
       ]
     },
     pymes: {
@@ -8770,8 +8763,8 @@ const PROCEDIMIENTOS = {
         '**No precisa de lectura de contador**.'
       ],
       process: [
-        'Verificación previa de solvencia económica y scoring comercial de la empresa.',
-        'La cuenta de domiciliación bancaria debe estar registrada a nombre de la razón social de la empresa contratante.'
+        'El representante legal recibe un SMS o correo electrónico con el enlace de Endesa.',
+        'Debe acceder al portal, verificar los datos fiscales de la empresa y realizar la firma digital del contrato.'
       ]
     },
     requisitos: [
@@ -8786,13 +8779,11 @@ const PROCEDIMIENTOS = {
     residencial: {
       docs: [
         'DNI o NIE vigente del titular.',
-        'Código CUPS.',
-        'Cuenta bancaria de domiciliación (IBAN).',
         'Correo electrónico activo (requisito indispensable por facturación digital por defecto) y teléfono móvil.'
       ],
       process: [
-        'Validación 100% digital a través de firma electrónica por SMS.',
-        'Contratación ágil sin permanencia para el cliente.'
+        'El cliente recibe un SMS con un enlace de firma digital certificada.',
+        'Debe introducir el código PIN temporal recibido y aceptar las condiciones para firmar el alta 100% online.'
       ]
     },
     pymes: {
@@ -8804,8 +8795,8 @@ const PROCEDIMIENTOS = {
         '**No precisa de lectura de contador**.'
       ],
       process: [
-        'Se realiza un scoring rápido automatizado en la plataforma de Gana Energía.',
-        'Firma de contrato digital mediante e-mail certificado enviado al administrador de la empresa.'
+        'El administrador de la empresa recibe un correo electrónico certificado de Gana Energía.',
+        'Debe acceder a la plataforma de firma digital y aceptar las condiciones del contrato corporativo.'
       ]
     },
     requisitos: [
@@ -8873,7 +8864,7 @@ function renderProcedimientos() {
         </div>
         
         <div>
-          <h5 style="margin: 0 0 10px 0; font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Proceso de Firma</h5>
+          <h5 style="margin: 0 0 10px 0; font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Proceso de firma del cliente</h5>
           <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--text); line-height: 1.7; display: flex; flex-direction: column; gap: 6px;">
             ${procData.residencial.process.map(p => `<li>${p}</li>`).join('')}
           </ul>
@@ -8895,7 +8886,7 @@ function renderProcedimientos() {
         </div>
         
         <div>
-          <h5 style="margin: 0 0 10px 0; font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Proceso de Contratación</h5>
+          <h5 style="margin: 0 0 10px 0; font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.5px;">Proceso de firma del cliente</h5>
           <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--text); line-height: 1.7; display: flex; flex-direction: column; gap: 6px;">
             ${procData.pymes.process.map(p => `<li>${p}</li>`).join('')}
           </ul>
@@ -9884,7 +9875,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930272;
+const CURRENT_BUILD_VERSION = 1785002930273;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
