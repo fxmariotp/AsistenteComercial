@@ -8716,8 +8716,9 @@ const PROCEDIMIENTOS = {
         'DNI o NIE en vigor del titular.'
       ],
       process: [
-        'El cliente debe realizar la llamada de verificación grabada (llamada de calidad) respondiendo afirmativamente al guion del verificador.',
-        'Posteriormente, el cliente debe abrir y aceptar el mensaje SMS o WhatsApp enviado por Naturgy para confirmar la activación definitiva del contrato.'
+        'El cliente recibe un primer SMS o WhatsApp con un enlace de acceso a la página de firma.',
+        'Debe introducir su DNI, aceptar las condiciones del contrato y listo.',
+        'Por último, el cliente recibe una llamada breve para verificar un par de datos y darle la bienvenida a Naturgy.'
       ]
     },
     pymes: {
@@ -8729,8 +8730,9 @@ const PROCEDIMIENTOS = {
         'Escritura de constitución o Recibo de autónomo.'
       ],
       process: [
-        'El administrador / firmante de la empresa recibe el contrato mediante e-mail certificado.',
-        'Debe hacer clic en el enlace y realizar la firma electrónica autorizando el cambio.'
+        'El firmante de la empresa recibe un primer SMS o WhatsApp con un enlace de acceso a la página de firma.',
+        'Debe introducir su DNI, aceptar las condiciones del contrato corporativo y listo.',
+        'Por último, recibe una llamada breve para verificar un par de datos y darle la bienvenida a Naturgy.'
       ]
     },
     requisitos: [
@@ -9867,7 +9869,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930285;
+const CURRENT_BUILD_VERSION = 1785002930286;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
