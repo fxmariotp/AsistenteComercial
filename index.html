@@ -8779,8 +8779,11 @@ const PROCEDIMIENTOS = {
         'DNI o NIE vigente del titular.'
       ],
       process: [
-        'El cliente recibe un SMS con un enlace de firma digital certificada.',
-        'Debe introducir el código PIN temporal recibido y aceptar las condiciones para firmar el alta 100% online.'
+        'El cliente recibe un SMS con un enlace de acceso a la página de firma de Gana Energía, la cual consta de 4 pasos obligatorios:',
+        'Paso 1: Descargar los dos archivos PDF de las condiciones del contrato.',
+        'Paso 2: Marcar la casilla indicando que el contrato ha sido leído.',
+        'Paso 3: Solicitar y recibir un segundo SMS con un código de validación PIN.',
+        'Paso 4: Introducir el código recibido en el campo correspondiente y pulsar en firmar.'
       ]
     },
     pymes: {
@@ -8790,8 +8793,11 @@ const PROCEDIMIENTOS = {
         '**No precisa de lectura de texto legal**.'
       ],
       process: [
-        'El administrador de la empresa recibe un correo electrónico certificado de Gana Energía.',
-        'Debe acceder a la plataforma de firma digital y aceptar las condiciones del contrato corporativo.'
+        'El administrador de la empresa recibe un SMS o correo electrónico con el enlace de acceso a la página de firma de Gana Energía, la cual consta de 4 pasos obligatorios:',
+        'Paso 1: Descargar los dos archivos PDF corporativos.',
+        'Paso 2: Marcar la casilla indicando que el contrato corporativo ha sido leído.',
+        'Paso 3: Solicitar y recibir un SMS con un código de validación PIN.',
+        'Paso 4: Introducir el código recibido en el campo correspondiente y pulsar en firmar.'
       ]
     },
     requisitos: [
@@ -9869,7 +9875,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930286;
+const CURRENT_BUILD_VERSION = 1785002930287;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
