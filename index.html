@@ -3872,7 +3872,7 @@ input:focus, select:focus, textarea:focus {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 8px 12px 8px;
+  padding: 16px 12px 12px 12px;
   background: transparent;
   flex-wrap: wrap;
   gap: 16px;
@@ -3885,13 +3885,13 @@ input:focus, select:focus, textarea:focus {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: rgba(16, 185, 129, 0.06);
-  border: 1px solid rgba(16, 185, 129, 0.15);
+  background: rgba(16, 185, 129, 0.05);
+  border: 1.5px solid rgba(16, 185, 129, 0.15);
   color: #059669;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
-  padding: 4px 10px;
-  border-radius: 20px;
+  padding: 4px 12px;
+  border-radius: 9999px; /* Pill */
   text-transform: uppercase;
   letter-spacing: 0.05em;
   margin-bottom: 8px;
@@ -3902,33 +3902,33 @@ input:focus, select:focus, textarea:focus {
   background-color: #10b981;
   border-radius: 50%;
   display: inline-block;
-  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
-  animation: dbStatusPulse 2s infinite;
+  box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+  animation: dbStatusPulse 2.5s infinite;
 }
 @keyframes dbStatusPulse {
   0% {
-    transform: scale(0.95);
-    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+    transform: scale(0.9);
+    box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
   }
   70% {
     transform: scale(1);
-    box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+    box-shadow: 0 0 0 8px rgba(16, 185, 129, 0);
   }
   100% {
-    transform: scale(0.95);
+    transform: scale(0.9);
     box-shadow: 0 0 0 0 rgba(16, 185, 129, 0);
   }
 }
 .db-hero-title {
-  font-size: 26px !important;
+  font-size: 28px !important;
   font-weight: 800 !important;
   color: #111827 !important;
   letter-spacing: -0.04em !important;
   margin: 0 0 4px 0 !important;
-  line-height: 1.2;
+  line-height: 1.25;
 }
 .db-hero-subtitle {
-  font-size: 13px !important;
+  font-size: 13.5px !important;
   color: #4b5563 !important;
   margin: 0 !important;
   font-weight: 500 !important;
@@ -3945,13 +3945,13 @@ input:focus, select:focus, textarea:focus {
   flex-direction: column;
   align-items: flex-end;
   background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 10px 16px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  border: 1.5px solid var(--border);
+  border-radius: 20px; /* Rounded corners */
+  padding: 12px 18px;
+  box-shadow: 0 4px 20px -8px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.01);
 }
 .db-clock-time-sleek {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 800;
   color: #111827;
   font-family: monospace;
@@ -3972,48 +3972,48 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   justify-content: flex-end;
   gap: 6px;
-  font-size: 11px;
+  font-size: 11.5px;
   font-weight: 700;
   color: #ef4444;
 }
 
-/* Metrics bar styles */
+/* Metrics bar styles as capsule */
 .db-metrics-bar {
   display: flex;
   align-items: center;
   justify-content: space-between;
   background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 14px 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 9999px; /* Pill shape */
+  padding: 12px 32px;
   margin-top: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  margin-bottom: 28px;
+  box-shadow: 0 8px 30px -10px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.01);
   flex-wrap: wrap;
   gap: 12px;
 }
 .db-metric-box {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 2px;
   flex: 1;
   min-width: 110px;
   align-items: center;
   text-align: center;
-  transition: transform 0.2s ease;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .db-metric-box:hover {
-  transform: translateY(-1px);
+  transform: translateY(-2px) scale(1.03);
 }
 .db-metric-label {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   color: #6b7280;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 .db-metric-value {
-  font-size: 16px;
+  font-size: 17px;
   font-weight: 800;
   color: #111827;
   letter-spacing: -0.02em;
@@ -4022,16 +4022,17 @@ input:focus, select:focus, textarea:focus {
   color: #2563eb;
 }
 .db-metric-sep {
-  width: 1px;
-  height: 24px;
+  width: 1.5px;
+  height: 20px;
   background: var(--border);
 }
-@media (max-width: 640px) {
+@media (max-width: 768px) {
   .db-metrics-bar {
+    border-radius: 24px; /* Soft card instead of pill on smaller screens */
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 16px;
-    padding: 16px;
+    padding: 18px;
   }
   .db-metric-sep {
     display: none;
@@ -4041,7 +4042,7 @@ input:focus, select:focus, textarea:focus {
 /* Two column layout grid */
 .db-grid-layout {
   display: grid;
-  grid-template-columns: 2fr 1fr;
+  grid-template-columns: 1.9fr 1.1fr;
   gap: 24px;
   margin-bottom: 30px;
   align-items: start;
@@ -4056,99 +4057,99 @@ input:focus, select:focus, textarea:focus {
 .db-main-area {
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: 18px;
 }
 .db-sidebar-area {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
 }
 
 .db-section-header {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   margin-bottom: 4px;
+  padding-left: 6px;
 }
 .db-section-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 28px;
-  height: 28px;
-  border-radius: 8px;
-  background: rgba(37, 99, 235, 0.06);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; /* Circle */
+  background: rgba(37, 99, 235, 0.05);
   color: #2563eb;
+  border: 1px solid rgba(37, 99, 235, 0.1);
 }
 .db-section-title {
-  font-size: 14.5px !important;
+  font-size: 15px !important;
   font-weight: 800 !important;
   color: #111827 !important;
   margin: 0 !important;
   letter-spacing: -0.01em;
 }
 
-/* Tools grid and cards */
+/* Tools layout as capsule buttons */
 .db-tools-grid-new {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 16px;
-}
-@media (max-width: 1200px) {
-  .db-tools-grid-new {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-@media (max-width: 640px) {
-  .db-tools-grid-new {
-    grid-template-columns: 1fr;
-  }
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
 .db-tool-card-new {
   background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 20px;
+  border: 1.5px solid var(--border);
+  border-radius: 9999px; /* Perfect Capsule Pill */
+  padding: 10px 16px 10px 12px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   justify-content: space-between;
   gap: 16px;
   cursor: pointer;
   position: relative;
   overflow: hidden;
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   box-shadow: 0 1px 2px rgba(0,0,0,0.01);
 }
 .db-tool-card-new:hover {
-  transform: translateY(-2px);
+  transform: scale(1.015) translateY(-1px);
   border-color: var(--card-color);
-  box-shadow: 0 8px 24px -6px rgba(0, 0, 0, 0.04), 0 0 0 3px var(--card-color-alpha);
+  box-shadow: 0 8px 30px -10px var(--card-color-alpha), 0 0 0 3px var(--card-color-alpha);
+  background: #ffffff;
 }
 .db-tool-card-content-new {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-direction: row;
+  align-items: center;
+  gap: 14px;
+  flex: 1;
+  min-width: 0;
 }
 .db-tool-icon-wrap-new {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%; /* Circle icon wrapper */
   background: var(--card-color-bg);
   color: var(--card-color);
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  transition: transform 0.2s ease;
+  transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  border: 1px solid var(--card-color-alpha);
 }
 .db-tool-card-new:hover .db-tool-icon-wrap-new {
-  transform: scale(1.04);
+  transform: scale(1.1) rotate(6deg);
 }
 .db-tool-info-new {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: 1px;
+  flex: 1;
+  min-width: 0;
 }
 .db-tool-title-new {
   font-size: 14.5px !important;
@@ -4158,55 +4159,67 @@ input:focus, select:focus, textarea:focus {
   letter-spacing: -0.02em;
 }
 .db-tool-desc-new {
-  font-size: 12px;
-  color: #4b5563;
-  line-height: 1.45;
+  font-size: 11.5px;
+  color: #6b7280;
   margin: 0;
   letter-spacing: -0.01em;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 .db-tool-action-new {
-  font-size: 11.5px;
-  font-weight: 700;
-  color: var(--card-color);
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 4px;
-  margin-top: auto;
-  align-self: flex-start;
-  transition: gap 0.2s ease;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%; /* Circular action button */
+  background: var(--card-color-bg);
+  color: var(--card-color);
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  flex-shrink: 0;
+  border: 1px solid var(--card-color-alpha);
 }
 .db-tool-card-new:hover .db-tool-action-new {
-  gap: 8px;
+  background: var(--card-color);
+  color: #ffffff;
+  transform: scale(1.08);
+}
+.db-tool-action-new svg {
+  stroke-width: 3px;
+  transition: transform 0.3s ease;
+}
+.db-tool-card-new:hover .db-tool-action-new svg {
+  transform: translateX(1px);
 }
 
-/* Sidebar cards */
+/* Sidebar widget cards */
 .db-sidebar-card {
   background: #ffffff;
-  border: 1px solid var(--border);
-  border-radius: var(--r);
-  padding: 16px 18px;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+  border: 1.5px solid var(--border);
+  border-radius: 24px; /* Extra rounded card */
+  padding: 18px 20px;
+  box-shadow: 0 4px 20px -8px rgba(0,0,0,0.02), 0 1px 2px rgba(0,0,0,0.01);
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  transition: all 0.25s ease;
+  gap: 14px;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 .db-sidebar-card:hover {
   border-color: var(--border-hover);
-  box-shadow: 0 6px 18px -4px rgba(0,0,0,0.03);
+  box-shadow: 0 12px 30px -10px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.01);
+  transform: translateY(-2px);
 }
 .db-card-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid var(--border);
-  padding-bottom: 8px;
+  border-bottom: 1.5px solid var(--border);
+  padding-bottom: 10px;
   margin-bottom: 2px;
 }
 .db-card-title {
-  font-size: 12px !important;
+  font-size: 11.5px !important;
   font-weight: 800 !important;
   color: #111827 !important;
   margin: 0 !important;
@@ -4214,7 +4227,7 @@ input:focus, select:focus, textarea:focus {
   align-items: center;
   gap: 6px;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.06em;
 }
 .db-card-title svg {
   color: #2563eb;
@@ -4224,32 +4237,34 @@ input:focus, select:focus, textarea:focus {
   font-weight: 700;
   color: #2563eb;
   text-decoration: none;
-  transition: color 0.15s ease;
+  transition: color 0.15s ease, transform 0.2s ease;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   cursor: pointer;
+  display: inline-block;
 }
 .db-card-link:hover {
   color: #3b82f6;
+  transform: translateX(2px);
 }
 
 /* Sidebar widget: Agenda */
 .db-agenda-filters-new {
   display: flex;
-  gap: 4px;
+  gap: 6px;
   flex-wrap: wrap;
   margin-bottom: 2px;
 }
 .db-filter-pill-new {
   background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: 16px;
-  padding: 3px 9px;
+  border: 1.5px solid var(--border);
+  border-radius: 9999px; /* Pill */
+  padding: 4px 12px;
   font-size: 10.5px;
   font-weight: 700;
   color: #4b5563;
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.25s ease;
 }
 .db-filter-pill-new:hover {
   border-color: #2563eb;
@@ -4259,6 +4274,7 @@ input:focus, select:focus, textarea:focus {
   background: #2563eb;
   border-color: #2563eb;
   color: #ffffff;
+  box-shadow: 0 4px 12px -4px rgba(37, 99, 235, 0.4);
 }
 .db-quick-add-new {
   position: relative;
@@ -4267,38 +4283,38 @@ input:focus, select:focus, textarea:focus {
 }
 .db-quick-add-new input {
   width: 100%;
-  padding: 7px 10px;
-  border: 1px solid var(--border);
-  border-radius: var(--rs);
+  padding: 8px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 9999px; /* Pill */
   font-size: 12px;
   outline: none;
-  transition: all 0.15s ease;
+  transition: all 0.25s ease;
   background: var(--bg);
   color: #111827;
-  padding-right: 48px;
+  padding-right: 50px;
 }
 .db-quick-add-new input:focus {
   border-color: #2563eb;
   background: #ffffff;
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.05);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.06);
 }
 .db-quick-add-enter {
   position: absolute;
-  right: 6px;
+  right: 8px;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 8.5px;
+  font-size: 8px;
   color: #9ca3af;
   pointer-events: none;
   font-weight: 700;
   background: var(--border);
-  padding: 2px 4px;
-  border-radius: 3px;
+  padding: 2px 6px;
+  border-radius: 9999px; /* Pill badge */
 }
 .db-agenda-list-new {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 /* Sidebar widget: Cierre */
@@ -4324,17 +4340,17 @@ input:focus, select:focus, textarea:focus {
   color: #111827;
 }
 .db-cierre-divider {
-  height: 1px;
+  height: 1.5px;
   background: var(--border);
 }
 .db-cierre-banner {
   background: #fff7ed;
-  border: 1px solid #ffedd5;
-  border-radius: var(--rs);
-  padding: 8px 12px;
+  border: 1.5px solid #ffedd5;
+  border-radius: 16px; /* Rounded banner */
+  padding: 10px 14px;
   font-size: 11.5px;
   color: #c2410c;
-  line-height: 1.4;
+  line-height: 1.45;
 }
 </style></head>
 <body>
@@ -4535,7 +4551,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Ver clasificación <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -4551,7 +4567,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Abrir agenda <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -4567,7 +4583,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Ver guiones <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -4583,7 +4599,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Crear comparativa <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -4599,7 +4615,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Ver calendario <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -4615,7 +4631,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Ver tarifas <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -4631,7 +4647,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Abrir enlaces <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -4647,7 +4663,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Ver promociones <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -4663,7 +4679,7 @@ input:focus, select:focus, textarea:focus {
                 </div>
               </div>
               <div class="db-tool-action-new">
-                Ver requisitos <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </div>
             </div>
 
@@ -10370,7 +10386,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930295;
+const CURRENT_BUILD_VERSION = 1785002930296;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
