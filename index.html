@@ -2912,28 +2912,38 @@ hr {
 
 .normas-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 12px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
 }
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .normas-grid {
     grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
   }
 }
 @media (max-width: 768px) {
   .normas-grid {
     grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .normas-grid .norma-card-wide {
+    grid-column: span 1 !important;
   }
 }
 .norma-card {
   background: var(--surface);
   border: 1.5px solid var(--border);
   border-radius: var(--r);
-  padding: 14px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 6px;
   transition: all 0.2s ease;
+}
+@media (min-width: 769px) {
+  .norma-card-wide {
+    grid-column: span 2;
+  }
 }
 .norma-card:hover {
   border-color: var(--blue);
@@ -4869,35 +4879,20 @@ input:focus, select:focus, textarea:focus {
 
   <!-- ══════ NORMAS DE SALA ══════ -->
   <div class="panel" id="panel-normas">
-    <div style="display: flex; align-items: center; margin-bottom: 24px; gap: 12px;">
-      <h3 class="cond-sub-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-        Normas de Sala
-      </h3>
-    </div>
-
-    <div class="normas-container" style="display: flex; flex-direction: column; gap: 20px; max-width: 800px; margin: 0 auto;">
+    <div class="normas-container" style="display: flex; flex-direction: column; gap: 14px; max-width: 100%; margin: 0;">
       
-      <!-- Welcome / Mission statement card -->
-      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 20px; box-shadow: var(--shadow); text-align: center; position: relative; overflow: hidden;">
-        <div style="position: absolute; top: -10px; right: -10px; font-size: 80px; opacity: 0.03; font-weight: 900; user-select: none;">💡</div>
-        <p style="font-size: 15.0px; font-weight: 500; color: var(--text); margin: 0; line-height: 1.6; font-style: italic;">
-          "Garantizar un entorno de trabajo profesional, respetuoso, saludable y orientado al rendimiento dentro de la sala de Contratacion."
-        </p>
-      </div>
-
       <div class="normas-grid">
         
         <!-- Card 1 -->
         <div class="norma-card">
           <div class="norma-card-header">
             <div class="norma-num norma-num-1">1</div>
-            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Uso adecuado del espacio</h4>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">Uso adecuado del espacio</h4>
           </div>
-          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
-            <li>La sala de Contratacion es un espacio profesional destinado exclusivamente a la actividad laboral.</li>
-            <li>Todas las personas deberan mantener su puesto de trabajo en condiciones adecuadas de orden y limpieza durante la jornada.</li>
-            <li>No esta permitido generar o introducir olores molestos o persistentes que puedan afectar al entorno comun.</li>
+          <ul style="margin: 0; padding-left: 16px; color: var(--t2); font-size: 12.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px;">
+            <li>La sala de Contratación es exclusiva para la actividad laboral.</li>
+            <li>Mantener el puesto de trabajo ordenado y limpio durante la jornada.</li>
+            <li>No introducir olores molestos que afecten al entorno común.</li>
           </ul>
         </div>
 
@@ -4905,12 +4900,12 @@ input:focus, select:focus, textarea:focus {
         <div class="norma-card">
           <div class="norma-card-header">
             <div class="norma-num norma-num-2">2</div>
-            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Prohibicion de fumar y uso de dispositivos</h4>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">Prohibición de vaper y dispositivos</h4>
           </div>
-          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
-            <li>Queda terminantemente prohibido fumar dentro de la sala, incluyendo el uso de cigarrillos electronicos, vapers o dispositivos similares.</li>
-            <li>Esta norma responde a criterios de salud, higiene y respeto al resto del equipo.</li>
-            <li>El incumplimiento de esta norma sera considerado una falta y podra conllevar la aplicacion de medidas disciplinarias conforme a la normativa interna de la empresa.</li>
+          <ul style="margin: 0; padding-left: 16px; color: var(--t2); font-size: 12.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px;">
+            <li>Prohibido fumar dentro de la sala (cigarrillos electrónicos, vapers, etc.).</li>
+            <li>Norma estricta por criterios de salud, higiene y respeto al equipo.</li>
+            <li>El incumplimiento conllevará medidas disciplinarias inmediatas.</li>
           </ul>
         </div>
 
@@ -4918,11 +4913,11 @@ input:focus, select:focus, textarea:focus {
         <div class="norma-card">
           <div class="norma-card-header">
             <div class="norma-num norma-num-3">3</div>
-            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Respeto y convivencia</h4>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">Respeto y convivencia</h4>
           </div>
-          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
-            <li>Se debera mantener en todo momento un comportamiento respetuoso hacia el resto de compañeros.</li>
-            <li>No se permitiran conductas que generen incomodidad en el entorno de trabajo, tales como ruidos innecesarios, comentarios inapropiados o cualquier otra actuacion que altere la convivencia.</li>
+          <ul style="margin: 0; padding-left: 16px; color: var(--t2); font-size: 12.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px;">
+            <li>Comportamiento respetuoso hacia todos los compañeros en todo momento.</li>
+            <li>Prohibido generar ruidos innecesarios o comentarios inapropiados.</li>
           </ul>
         </div>
 
@@ -4930,24 +4925,24 @@ input:focus, select:focus, textarea:focus {
         <div class="norma-card">
           <div class="norma-card-header">
             <div class="norma-num norma-num-4">4</div>
-            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Profesionalidad en el entorno de trabajo</h4>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">Profesionalidad en la sala</h4>
           </div>
-          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
-            <li>Se espera de todas las personas una actitud alineada con los valores de la empresa: compromiso, responsabilidad y respeto.</li>
-            <li>No esta permitido realizar actividades ajenas al trabajo que interfieran en el desempeño propio o del equipo.</li>
+          <ul style="margin: 0; padding-left: 16px; color: var(--t2); font-size: 12.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px;">
+            <li>Actitud profesional: compromiso, responsabilidad y respeto mutuo.</li>
+            <li>Prohibidas actividades ajenas al trabajo que interfieran en el desempeño.</li>
           </ul>
         </div>
 
         <!-- Card 5 -->
-        <div class="norma-card" style="border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.04);">
+        <div class="norma-card norma-card-wide" style="border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.04);">
           <div class="norma-card-header">
             <div class="norma-num norma-num-5">5</div>
-            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #dc2626;">Tolerancia cero al fraude y malas prácticas</h4>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: #dc2626;">Tolerancia cero al fraude y malas prácticas</h4>
           </div>
-          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+          <ul style="margin: 0; padding-left: 16px; color: var(--t2); font-size: 12.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px;">
             <li>Queda totalmente prohibido realizar cualquier acto fraudulento o engañoso para la formalización de contratos.</li>
-            <li>Está estrictamente prohibido suplantar la identidad de los clientes, así como introducir datos falsos, ficticios o de contacto propios (como el número de teléfono o correo electrónico del comercial) en el contrato de un cliente.</li>
-            <li>Cualquier práctica fraudulenta o alteración de datos supondrá la rescisión inmediata de la relación laboral y la adopción de las medidas legales oportunas.</li>
+            <li>Está estrictamente prohibido suplantar la identidad de los clientes, así como introducir datos falsos, ficticios o de contacto propios (como el número de teléfono o correo del comercial) en el contrato.</li>
+            <li>Cualquier práctica fraudulenta o alteración de datos supondrá la rescisión inmediata de la relación laboral y medidas legales.</li>
           </ul>
         </div>
 
@@ -4955,11 +4950,11 @@ input:focus, select:focus, textarea:focus {
         <div class="norma-card">
           <div class="norma-card-header">
             <div class="norma-num norma-num-6">6</div>
-            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Responsabilidad individual</h4>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">Responsabilidad individual</h4>
           </div>
-          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+          <ul style="margin: 0; padding-left: 16px; color: var(--t2); font-size: 12.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px;">
             <li>Cada persona es responsable del cumplimiento de estas normas.</li>
-            <li>Cualquier incidencia debera ser comunicada a la persona coordinadora o responsable del area.</li>
+            <li>Cualquier incidencia debe reportarse al coordinador o responsable.</li>
           </ul>
         </div>
 
@@ -4967,10 +4962,10 @@ input:focus, select:focus, textarea:focus {
         <div class="norma-card">
           <div class="norma-card-header">
             <div class="norma-num norma-num-7">7</div>
-            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Seguimiento y cumplimiento</h4>
+            <h4 style="margin: 0; font-size: 14px; font-weight: 700; color: var(--text);">Seguimiento y cumplimiento</h4>
           </div>
-          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
-            <li>El incumplimiento de estas normas podra dar lugar a la aplicacion de medidas disciplinarias conforme al regimen interno de la empresa.</li>
+          <ul style="margin: 0; padding-left: 16px; color: var(--t2); font-size: 12.5px; line-height: 1.45; display: flex; flex-direction: column; gap: 4px;">
+            <li>El incumplimiento de estas normas dará lugar a la aplicación de medidas disciplinarias según el régimen interno.</li>
           </ul>
         </div>
 
@@ -6301,7 +6296,7 @@ const PANELS = {
   condiciones: {title:'Condiciones',   sub:'Precios de mas barato a mas caro · PVP 2026', color:'#e07b00', icon:'<path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/>'},
   calendario:  {title:'Calendario',      sub:'Dias laborables 2026 · Calendario RENOSUR-TM', color:'#10b981', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
   telefonos:   {title:'Telefonos',               sub:'Atencion al cliente y averias de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
-  normas:      {title:'Normas de sala',          sub:'Normativa interna para la sala de contratacion', color:'#64748b', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>'},
+  normas:      {title:'Normas de sala',          sub:'Garantizar un entorno de trabajo profesional, respetuoso, saludable y orientado al rendimiento.', color:'#64748b', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>'},
   telemarketing: {title:'Condiciones Telemarketing', sub:'Objetivos mínimos, comisiones y condiciones de contratación', color:'#d97706', icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>'},
   controlVacaciones: {title:'Control Vacaciones', sub:'Gestion y control de vacaciones de todos los comerciales', color:'#e08034', icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'},
   gruposAgentes: {title:'Gestión de Usuarios', sub:'Administración de usuarios, contraseñas, roles y estado de actividad', color:'#e08034', icon:'<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\\"></path><circle cx=\"9\" cy=\"7\" r=\"4\\"></circle><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\\"></path><circle cx=\"17\" cy=\"7\" r=\"3\\"></circle>'},
@@ -10169,7 +10164,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930309;
+const CURRENT_BUILD_VERSION = 1785002930310;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
