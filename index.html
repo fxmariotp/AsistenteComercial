@@ -5597,7 +5597,7 @@ input:focus, select:focus, textarea:focus {
           </div>
           <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
             <div style="position: relative; display: inline-block;">
-              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 260px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
+              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 260px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
             <button onclick="loadLoginLogs()" style="background: var(--border); color: var(--text); border: 1.5px solid var(--border); padding: 8px 16px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;">
@@ -10006,7 +10006,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930305;
+const CURRENT_BUILD_VERSION = 1785002930306;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
