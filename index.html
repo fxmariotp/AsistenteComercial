@@ -5494,17 +5494,23 @@ input:focus, select:focus, textarea:focus {
     <!-- ══════ REGISTRO DE CONEXIONES (GERENTE) ══════ -->
     <div class="panel" id="panel-registroConexiones">
       <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 16px;">
           <div>
             <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Registro de Conexiones</h3>
             <p style="font-size: 13.5px; color: var(--t3); margin: 0;">
               Historial de accesos de los agentes a la plataforma con fecha, hora y dirección IP de conexión.
             </p>
           </div>
-          <button onclick="loadLoginLogs()" style="background: var(--border); color: var(--text); border: 1.5px solid var(--border); padding: 8px 16px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;">
-            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
-            Actualizar Registro
-          </button>
+          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <div style="position: relative; display: inline-block;">
+              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 260px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            </div>
+            <button onclick="loadLoginLogs()" style="background: var(--border); color: var(--text); border: 1.5px solid var(--border); padding: 8px 16px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;">
+              <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
+              Actualizar Registro
+            </button>
+          </div>
         </div>
         
         <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
@@ -9905,7 +9911,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930302;
+const CURRENT_BUILD_VERSION = 1785002930303;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -10255,6 +10261,8 @@ async function registerSessionConnectionLog() {
   }
 }
 
+let cachedLoginLogs = [];
+
 async function loadLoginLogs() {
   const tbody = document.getElementById('tbl-login-logs-body');
   if (!tbody) return;
@@ -10278,68 +10286,125 @@ async function loadLoginLogs() {
 
     if (!data || data.length === 0) {
       tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
+      cachedLoginLogs = [];
       return;
     }
 
-    const uniqueIpsByUserAndDate = {};
-    data.forEach(log => {
-      const dni = log.title || '';
-      const date = log.date || '';
-      const ip = log.phone || '';
-      if (dni && date && ip && ip !== 'Desconocida') {
-        const key = dni + '_' + date;
-        if (!uniqueIpsByUserAndDate[key]) {
-          uniqueIpsByUserAndDate[key] = new Set();
-        }
-        uniqueIpsByUserAndDate[key].add(ip);
-      }
-    });
-
     data.sort((a, b) => Number(b.created_at) - Number(a.created_at));
+    cachedLoginLogs = data;
 
-    tbody.innerHTML = data.map(log => {
-      const name = log.type || 'Desconocido';
-      const dni = log.title || '—';
-      const date = log.date ? log.date.split('-').reverse().join('/') : '—';
-      const time = log.time || '—';
-      const ip = log.phone || 'Desconocida';
-      
-      let ua = log.notes || '—';
-      if (ua.toLowerCase().includes('mobile') || ua.toLowerCase().includes('android') || ua.toLowerCase().includes('iphone')) {
-        ua = 'Móvil (' + (ua.toLowerCase().includes('iphone') ? 'iOS' : 'Android') + ')';
-      } else if (ua.toLowerCase().includes('windows')) {
-        ua = 'Ordenador (Windows)';
-      } else if (ua.toLowerCase().includes('macintosh')) {
-        ua = 'Ordenador (macOS)';
-      } else {
-        ua = 'Ordenador / Otro';
-      }
-
-      const key = dni + '_' + (log.date || '');
-      const uniqueIpsCount = uniqueIpsByUserAndDate[key] ? uniqueIpsByUserAndDate[key].size : 1;
-      const isSuspicious = uniqueIpsCount > 1;
-      
-      const ipColor = isSuspicious ? '#ef4444' : 'var(--blue)';
-      const ipWeight = isSuspicious ? '800' : '600';
-      const ipTitle = isSuspicious ? `Alerta: Este agente se ha conectado desde ${uniqueIpsCount} IPs distintas hoy` : '';
-      const warningIcon = isSuspicious ? `<span style="color:#ef4444; margin-right:4px;" title="${ipTitle}">⚠️</span>` : '';
-
-      return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); background: ${isSuspicious ? 'rgba(239, 68, 68, 0.02)' : 'transparent'};">
-        <td style="padding: 10px 14px; font-weight: 600;">${name}</td>
-        <td style="padding: 10px 14px; font-family: monospace;">${dni}</td>
-        <td style="padding: 10px 14px;">${date}</td>
-        <td style="padding: 10px 14px;">${time}</td>
-        <td style="padding: 10px 14px; font-weight: ${ipWeight}; color: ${ipColor}; display: flex; align-items: center;" title="${ipTitle}">
-          ${warningIcon}
-          <span>${ip}</span>
-        </td>
-        <td style="padding: 10px 14px; color: var(--t3); font-size: 12.5px;">${ua}</td>
-      </tr>`;
-    }).join('');
+    const searchInput = document.getElementById('input-search-login-logs');
+    if (searchInput && searchInput.value) {
+      filterLoginLogs();
+    } else {
+      renderLoginLogs(cachedLoginLogs);
+    }
   } catch (e) {
     console.error("Exception loading login logs:", e);
     tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
   }
+}
+
+function renderLoginLogs(logs) {
+  const tbody = document.getElementById('tbl-login-logs-body');
+  if (!tbody) return;
+
+  if (logs.length === 0) {
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros que coincidan con la búsqueda.</td></tr>`;
+    return;
+  }
+
+  const uniqueIpsByUserAndDate = {};
+  cachedLoginLogs.forEach(log => {
+    const dni = log.title || '';
+    const date = log.date || '';
+    const ip = log.phone || '';
+    if (dni && date && ip && ip !== 'Desconocida') {
+      const key = dni + '_' + date;
+      if (!uniqueIpsByUserAndDate[key]) {
+        uniqueIpsByUserAndDate[key] = new Set();
+      }
+      uniqueIpsByUserAndDate[key].add(ip);
+    }
+  });
+
+  tbody.innerHTML = logs.map(log => {
+    const name = log.type || 'Desconocido';
+    const dni = log.title || '—';
+    const date = log.date ? log.date.split('-').reverse().join('/') : '—';
+    const time = log.time || '—';
+    const ip = log.phone || 'Desconocida';
+    
+    let ua = log.notes || '—';
+    if (ua.toLowerCase().includes('mobile') || ua.toLowerCase().includes('android') || ua.toLowerCase().includes('iphone')) {
+      ua = 'Móvil (' + (ua.toLowerCase().includes('iphone') ? 'iOS' : 'Android') + ')';
+    } else if (ua.toLowerCase().includes('windows')) {
+      ua = 'Ordenador (Windows)';
+    } else if (ua.toLowerCase().includes('macintosh')) {
+      ua = 'Ordenador (macOS)';
+    } else {
+      ua = 'Ordenador / Otro';
+    }
+
+    const key = dni + '_' + (log.date || '');
+    const uniqueIpsCount = uniqueIpsByUserAndDate[key] ? uniqueIpsByUserAndDate[key].size : 1;
+    const isSuspicious = uniqueIpsCount > 1;
+    
+    const ipColor = isSuspicious ? '#ef4444' : 'var(--blue)';
+    const ipWeight = isSuspicious ? '800' : '600';
+    const ipTitle = isSuspicious ? `Alerta: Este agente se ha conectado desde ${uniqueIpsCount} IPs distintas hoy` : '';
+    const warningIcon = isSuspicious ? `<span style="color:#ef4444; margin-right:4px;" title="${ipTitle}">⚠️</span>` : '';
+
+    return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); background: ${isSuspicious ? 'rgba(239, 68, 68, 0.02)' : 'transparent'};">
+      <td style="padding: 10px 14px; font-weight: 600;">${name}</td>
+      <td style="padding: 10px 14px; font-family: monospace;">${dni}</td>
+      <td style="padding: 10px 14px;">${date}</td>
+      <td style="padding: 10px 14px;">${time}</td>
+      <td style="padding: 10px 14px; font-weight: ${ipWeight}; color: ${ipColor}; display: flex; align-items: center;" title="${ipTitle}">
+        ${warningIcon}
+        <span>${ip}</span>
+      </td>
+      <td style="padding: 10px 14px; color: var(--t3); font-size: 12.5px;">${ua}</td>
+    </tr>`;
+  }).join('');
+}
+
+function filterLoginLogs() {
+  const query = document.getElementById('input-search-login-logs').value.toLowerCase().trim();
+  if (!query) {
+    renderLoginLogs(cachedLoginLogs);
+    return;
+  }
+
+  const filtered = cachedLoginLogs.filter(log => {
+    const name = (log.type || 'desconocido').toLowerCase();
+    const dni = (log.title || '').toLowerCase();
+    const rawDate = log.date || '';
+    const formattedDate = rawDate ? rawDate.split('-').reverse().join('/') : '';
+    const time = (log.time || '').toLowerCase();
+    const ip = (log.phone || '').toLowerCase();
+    
+    let ua = (log.notes || '').toLowerCase();
+    if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
+      ua = 'móvil ios android';
+    } else if (ua.includes('windows')) {
+      ua = 'ordenador windows pc';
+    } else if (ua.includes('macintosh')) {
+      ua = 'ordenador macos mac apple';
+    } else {
+      ua = 'ordenador pc';
+    }
+
+    return name.includes(query) || 
+           dni.includes(query) || 
+           rawDate.includes(query) || 
+           formattedDate.includes(query) || 
+           time.includes(query) || 
+           ip.includes(query) || 
+           ua.includes(query);
+  });
+
+  renderLoginLogs(filtered);
 }
 
 function initGruposAgentes() {
