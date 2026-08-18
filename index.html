@@ -5185,166 +5185,244 @@ input:focus, select:focus, textarea:focus {
 
     <!-- ══════ CONDICIONES TELEMARKETING ══════ -->
     <div class="panel" id="panel-telemarketing">
-      <div style="display: flex; align-items: center; margin-bottom: 24px; gap: 12px;">
-        <h3 class="cond-sub-title" style="margin: 0; display: flex; align-items: center; gap: 8px;">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-          Condiciones Comercial - Telemarketing
-        </h3>
-      </div>
+      <style>
+        .telemarketing-grid {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+          max-width: 100%;
+        }
+        @media (max-width: 1024px) {
+          .telemarketing-grid {
+            grid-template-columns: 1fr;
+            gap: 14px;
+          }
+        }
+        .tele-card {
+          background: var(--surface);
+          border: 1.5px solid var(--border);
+          border-radius: var(--r);
+          padding: 16px;
+          box-shadow: var(--shadow);
+          display: flex;
+          flex-direction: column;
+        }
+        .tele-card-title {
+          margin: 0 0 10px 0;
+          font-size: 14px;
+          font-weight: 800;
+          color: var(--text);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .tele-table {
+          width: 100%;
+          border-collapse: collapse;
+          text-align: left;
+          font-size: 12.5px;
+        }
+        .tele-table th {
+          padding: 6px 10px;
+          border-bottom: 2px solid var(--border);
+          color: var(--t3);
+          font-weight: 700;
+        }
+        .tele-table td {
+          padding: 6px 10px;
+          border-bottom: 1px solid var(--border);
+        }
+        .tele-table tr:last-child td {
+          border-bottom: none;
+        }
+        .tele-note {
+          margin-top: 10px;
+          background: rgba(53, 127, 191, 0.05);
+          border: 1px dashed rgba(53, 127, 191, 0.2);
+          border-radius: var(--rs);
+          padding: 10px;
+          font-size: 11.5px;
+          font-weight: 700;
+          color: var(--blue);
+          display: flex;
+          align-items: center;
+          gap: 6px;
+        }
+        .tele-list {
+          margin: 0;
+          padding-left: 16px;
+          font-size: 12.5px;
+          color: var(--text);
+          line-height: 1.5;
+          display: flex;
+          flex-direction: column;
+          gap: 8px;
+        }
+        .tele-descom-row {
+          display: flex;
+          justify-content: space-between;
+          font-size: 12.5px;
+          border-bottom: 1px solid var(--border);
+          padding-bottom: 6px;
+        }
+        .tele-descom-row:last-child {
+          border-bottom: none;
+          padding-bottom: 0;
+        }
+      </style>
 
-      <div style="display: flex; flex-direction: column; gap: 24px; max-width: 900px; margin: 0 auto;">
+      <div class="telemarketing-grid">
         
-        <!-- Cumplimiento Mínimo Mensual -->
-        <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
-          <h4 style="margin: 0 0 12px 0; font-size: 15.5px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--blue);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            Cumplimiento Mínimo Mensual
-          </h4>
-          <p style="margin: 0 0 16px 0; font-size: 13.5px; color: var(--t2); line-height: 1.5;">
-            Se marca un cumplimiento mínimo mensual de ventas por comercial para continuar de alta en la empresa:
-          </p>
-          <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
-              <thead>
-                <tr style="border-bottom: 2px solid var(--border); color: var(--t3); font-weight: 700;">
-                  <th style="padding: 10px 14px;">Tipo de Contratación</th>
-                  <th style="padding: 10px 14px; text-align: center;">Objetivo Ventas Luz*</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Alta 20 H</td>
-                  <td style="padding: 10px 14px; text-align: center; font-weight: 700; color: var(--blue);">15</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Alta 25 H</td>
-                  <td style="padding: 10px 14px; text-align: center; font-weight: 700; color: var(--blue);">18</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Alta 30 H</td>
-                  <td style="padding: 10px 14px; text-align: center; font-weight: 700; color: var(--blue);">21</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Alta 40 H</td>
-                  <td style="padding: 10px 14px; text-align: center; font-weight: 700; color: var(--blue);">27</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <div style="margin-top: 14px; background: rgba(53, 127, 191, 0.05); border: 1px dashed rgba(53, 127, 191, 0.2); border-radius: var(--rs); padding: 12px; font-size: 13px; font-weight: 700; color: var(--blue); display: flex; align-items: center; gap: 8px;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-            * Al menos el 50% de las ventas deben ser con servicio de mantenimiento.
-          </div>
-        </div>
-
-        <!-- Tabla de Comisionamiento -->
-        <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
-          <h4 style="margin: 0 0 12px 0; font-size: 15.5px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #10b981;"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-            Comisionado por Ventas Extra
-          </h4>
-          <p style="margin: 0 0 16px 0; font-size: 13.5px; color: var(--t2); line-height: 1.5;">
-            Superado el objetivo mínimo, se marca un comisionado por cada una de las ventas que superen el objetivo del mes:
-          </p>
-          <div style="overflow-x: auto;">
-            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 13.5px;">
-              <thead>
-                <tr style="border-bottom: 2px solid var(--border); color: var(--t3); font-weight: 700;">
-                  <th style="padding: 10px 14px;">Producto</th>
-                  <th style="padding: 10px 14px; text-align: right;">Comisión Bruta</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Luz con servicio &lt; 15kW</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">50,00 €</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Luz sin servicio &lt; 15kW</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">30,00 €</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Luz &gt; 15kW (Iberdrola, Endesa)</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">100,00 €</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Gas con mantenimiento</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">30,00 €</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Gas sin mantenimiento</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">10,00 €</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Alarma (Securitas)</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">100,00 €</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Solar Cloud</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">50,00 €</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">Suscripción CCSS (Comunidades Solares)</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">30,00 €</td>
-                </tr>
-                <tr style="border-bottom: 1px solid var(--border);">
-                  <td style="padding: 10px 14px; font-weight: 600;">PYMES (Acciona, Total, Ignis, etc...)</td>
-                  <td style="padding: 10px 14px; text-align: right; font-weight: 700; color: #10b981;">40% de comisión total</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Condiciones de Contratación y Descomisiones -->
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(340px, 1fr)); gap: 24px;">
+        <!-- Left Column -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
           
-          <!-- Condiciones de Contratación -->
-          <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
-            <h4 style="margin: 0 0 16px 0; font-size: 15px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--blue);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          <!-- Card 1: Cumplimiento Mínimo Mensual -->
+          <div class="tele-card">
+            <h4 class="tele-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--blue);"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Cumplimiento Mínimo Mensual
+            </h4>
+            <p style="margin: 0 0 10px 0; font-size: 12.5px; color: var(--t2); line-height: 1.45;">
+              Objetivo mínimo de ventas mensuales exigido por comercial según su jornada:
+            </p>
+            <div style="overflow-x: auto;">
+              <table class="tele-table">
+                <thead>
+                  <tr>
+                    <th>Tipo de Contratación</th>
+                    <th style="text-align: center;">Objetivo Ventas Luz*</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 600;">Alta 20 H</td>
+                    <td style="text-align: center; font-weight: 700; color: var(--blue);">15</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Alta 25 H</td>
+                    <td style="text-align: center; font-weight: 700; color: var(--blue);">18</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Alta 30 H</td>
+                    <td style="text-align: center; font-weight: 700; color: var(--blue);">21</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Alta 40 H</td>
+                    <td style="text-align: center; font-weight: 700; color: var(--blue);">27</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="tele-note">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+              * Al menos el 50% de las ventas deben ser con servicio de mantenimiento.
+            </div>
+          </div>
+
+          <!-- Card 3: Condiciones de Contratación -->
+          <div class="tele-card">
+            <h4 class="tele-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: var(--blue);"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
               Condiciones de Contratación
             </h4>
-            <ul style="margin: 0; padding-left: 20px; font-size: 13.5px; color: var(--text); line-height: 1.6; display: flex; flex-direction: column; gap: 10px;">
+            <ul class="tele-list">
               <li>
-                Al cierre del mes <strong>solo contarán los contratos que estén en verde</strong> (Grabados, Formalizados, Activado y Renovación), pasando los contratos pendientes al mes siguiente.
+                Al cierre del mes <strong>solo contarán los contratos en estado verde</strong> (Grabados, Formalizados, Activado y Renovación), trasladando los contratos pendientes al mes siguiente.
               </li>
             </ul>
           </div>
 
-          <!-- Descomisiones -->
-          <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
-            <h4 style="margin: 0 0 12px 0; font-size: 15px; font-weight: 800; color: var(--text); display: flex; align-items: center; gap: 8px;">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ef4444;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+        </div>
+
+        <!-- Right Column -->
+        <div style="display: flex; flex-direction: column; gap: 16px;">
+          
+          <!-- Card 2: Comisionado por Ventas Extra -->
+          <div class="tele-card">
+            <h4 class="tele-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #10b981;"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
+              Comisionado por Ventas Extra
+            </h4>
+            <div style="overflow-x: auto;">
+              <table class="tele-table">
+                <thead>
+                  <tr>
+                    <th>Producto</th>
+                    <th style="text-align: right;">Comisión Bruta</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td style="font-weight: 600;">Luz con servicio &lt; 15kW</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981;">50,00 €</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Luz sin servicio &lt; 15kW</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981;">30,00 €</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Luz &gt; 15kW (Iberdrola, Endesa)</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981;">100,00 €</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Gas con mantenimiento</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981;">30,00 €</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Gas sin mantenimiento</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981;">10,00 €</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Alarma (Securitas)</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981;">100,00 €</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Solar Cloud</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981;">50,00 €</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">Suscripción CCSS (Comunidades)</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981;">30,00 €</td>
+                  </tr>
+                  <tr>
+                    <td style="font-weight: 600;">PYMES (Acciona, Total, Ignis...)</td>
+                    <td style="text-align: right; font-weight: 700; color: #10b981; font-size: 11.5px;">40% comisionado</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Card 4: Descomisiones -->
+          <div class="tele-card">
+            <h4 class="tele-card-title">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ef4444;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
               Descomisiones
             </h4>
-            <p style="margin: 0 0 12px 0; font-size: 13.5px; color: var(--t2); line-height: 1.5;">
-              Los contratos tendrán una descomisión si no se encuentran activos en los siguientes períodos:
-            </p>
-            <div style="display: flex; flex-direction: column; gap: 8px;">
-              <div style="display: flex; justify-content: space-between; font-size: 13.5px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+            <div style="display: flex; flex-direction: column; gap: 7px;">
+              <div class="tele-descom-row">
                 <span style="font-weight: 700; color: var(--text);">Iberdrola</span>
-                <span style="color: var(--t2); font-size: 12.5px;">0-2 meses: <strong>100%</strong> | 2-4 meses: <strong>50%</strong></span>
+                <span style="color: var(--t2); font-size: 12px;">0-2 meses: <strong>100%</strong> | 2-4 meses: <strong>50%</strong></span>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 13.5px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+              <div class="tele-descom-row">
                 <span style="font-weight: 700; color: var(--text);">Naturgy</span>
-                <span style="color: var(--t2); font-size: 12.5px;">0-2 meses: <strong>100%</strong> | 2-4 meses: <strong>50%</strong></span>
+                <span style="color: var(--t2); font-size: 12px;">0-2 meses: <strong>100%</strong> | 2-4 meses: <strong>50%</strong></span>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 13.5px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+              <div class="tele-descom-row">
                 <span style="font-weight: 700; color: var(--text);">Endesa</span>
-                <span style="color: var(--t2); font-size: 12.5px;">12 meses: <strong>100%</strong></span>
+                <span style="color: var(--t2); font-size: 12px;">12 meses: <strong>100%</strong></span>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 13.5px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+              <div class="tele-descom-row">
                 <span style="font-weight: 700; color: var(--text);">Gana Energía</span>
-                <span style="color: var(--t2); font-size: 12.5px;">12 meses: <strong>100%</strong></span>
+                <span style="color: var(--t2); font-size: 12px;">12 meses: <strong>100%</strong></span>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 13.5px; border-bottom: 1px solid var(--border); padding-bottom: 6px;">
+              <div class="tele-descom-row">
                 <span style="font-weight: 700; color: var(--text);">Pymes</span>
-                <span style="color: var(--t2); font-size: 12.5px;">12 meses: <strong>100%</strong></span>
+                <span style="color: var(--t2); font-size: 12px;">12 meses: <strong>100%</strong></span>
               </div>
-              <div style="display: flex; justify-content: space-between; font-size: 13.5px;">
+              <div class="tele-descom-row">
                 <span style="font-weight: 700; color: var(--text);">Securitas</span>
-                <span style="color: var(--t2); font-size: 12.5px;">6 meses: <strong>100%</strong></span>
+                <span style="color: var(--t2); font-size: 12px;">6 meses: <strong>100%</strong></span>
               </div>
             </div>
           </div>
@@ -10164,7 +10242,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930310;
+const CURRENT_BUILD_VERSION = 1785002930311;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
