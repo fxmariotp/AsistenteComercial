@@ -5693,162 +5693,311 @@ input:focus, select:focus, textarea:focus {
         <!-- â•â•â•â•â•â• ENLACES TRABAJO â•â•â•â•â•â• -->
     <div class="panel" id="panel-sips">
       <style>
-        .sips-btn-container {
+        .enlaces-section-title {
+          font-size: 13px;
+          font-weight: 800;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          color: var(--t3);
+          margin: 28px 0 14px 0;
+          padding-bottom: 6px;
+          border-bottom: 1.5px solid var(--border);
+          display: flex;
+          align-items: center;
+          gap: 8px;
+        }
+        .enlaces-section-title:first-of-type {
+          margin-top: 0;
+        }
+        .enlaces-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: 16px;
+          margin-bottom: 24px;
+        }
+        @media (max-width: 1024px) {
+          .enlaces-grid {
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+          }
+        }
+        @media (max-width: 640px) {
+          .enlaces-grid {
+            grid-template-columns: 1fr;
+            gap: 12px;
+          }
+        }
+        .enlace-card {
+          background: #ffffff;
+          border: 1.5px solid var(--border);
+          border-radius: var(--r);
+          padding: 18px;
           display: flex;
           flex-direction: column;
-          gap: 12px;
-          width: 100%;
-          max-width: 600px;
-          margin: 20px 0;
-        }
-        .sips-btn {
-          display: flex;
-          align-items: center;
           justify-content: space-between;
-          padding: 14px 20px;
-          border-radius: var(--rs);
-          font-size: 14.5px;
-          font-weight: 700;
-          text-align: left;
-          transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+          gap: 12px;
           cursor: pointer;
-          background: var(--surface);
-          border: 1px solid var(--border);
-          color: var(--text);
+          position: relative;
+          overflow: hidden;
           text-decoration: none !important;
-          box-shadow: 0 1px 2px rgba(0,0,0,0.02);
+          color: var(--text) !important;
+          transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+          box-shadow: 0 1px 2px rgba(0,0,0,0.01);
         }
-        .sips-btn:hover {
-          transform: translateX(6px);
-          box-shadow: 0 6px 16px rgba(32, 40, 84, 0.05);
-          border-color: var(--blue) !important;
-          color: var(--blue) !important;
+        .enlace-card:hover {
+          transform: translateY(-3px);
+          border-color: var(--theme-color) !important;
+          box-shadow: 0 8px 20px -6px var(--theme-color-glow), 0 0 0 3px var(--theme-color-ring);
         }
-        .sips-btn-content {
+        .enlace-card-header {
           display: flex;
-          align-items: center;
-          gap: 14px;
-          min-width: 0;
+          align-items: flex-start;
+          gap: 12px;
         }
-        .sips-btn-icon-box {
-          width: 36px;
-          height: 36px;
+        .enlace-card-icon-box {
+          width: 38px;
+          height: 38px;
+          border-radius: 8px;
+          background: var(--theme-color-bg);
+          color: var(--theme-color);
           display: flex;
           align-items: center;
           justify-content: center;
-          border-radius: 10px;
           flex-shrink: 0;
           transition: all 0.2s;
         }
-        .sips-btn:hover .sips-btn-icon-box {
+        .enlace-card:hover .enlace-card-icon-box {
           transform: scale(1.05);
         }
-        .sips-btn-text {
+        .enlace-card-info {
+          display: flex;
+          flex-direction: column;
+          gap: 2px;
+          min-width: 0;
+        }
+        .enlace-card-title {
+          font-size: 14.5px;
+          font-weight: 800;
+          color: var(--text);
+          margin: 0;
+          letter-spacing: -0.01em;
           white-space: nowrap;
           overflow: hidden;
           text-overflow: ellipsis;
         }
-        .sips-btn-arrow {
-          flex-shrink: 0;
-          color: #94a3b8;
+        .enlace-card-desc {
+          font-size: 11.5px;
+          color: var(--t2);
+          line-height: 1.45;
+          margin: 0;
+          display: -webkit-box;
+          -webkit-line-clamp: 2;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
+        }
+        .enlace-card-footer {
+          font-size: 11px;
+          font-weight: 700;
+          color: var(--theme-color);
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-top: auto;
+          padding-top: 8px;
           transition: transform 0.2s;
         }
-        .sips-btn:hover .sips-btn-arrow {
-          transform: translateX(2px);
-          color: var(--blue);
+        .enlace-card-arrow {
+          transition: transform 0.2s;
+        }
+        .enlace-card:hover .enlace-card-arrow {
+          transform: translateX(3px);
         }
       </style>
 
-      <div class="sips-btn-container">
-        <a href="https://web.whatsapp.com/" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(37, 211, 102, 0.1); color: #25D366;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-            </span>
-            <span class="sips-btn-text">Whatsapp Web</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
+        
+        <!-- Categoría 1: CRM y Sistemas de Gestión -->
+        <div class="enlaces-section-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+          Sistemas Internos y CRM
+        </div>
+        <div class="enlaces-grid">
+          
+          <!-- Card: Renosur -->
+          <a href="https://renosur.miga.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #0d5c9e; --theme-color-bg: rgba(13, 92, 158, 0.06); --theme-color-glow: rgba(13, 92, 158, 0.12); --theme-color-ring: rgba(13, 92, 158, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Renosur</h4>
+                <p class="enlace-card-desc">Acceso al CRM principal y gestor de contratos de Renosur.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Abrir Renosur
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
 
-        <a href="https://evaria.miga.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(99, 102, 241, 0.1); color: #6366f1;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-            </span>
-            <span class="sips-btn-text">Evaria</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+          <!-- Card: Evaria -->
+          <a href="https://evaria.miga.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #6366f1; --theme-color-bg: rgba(99, 102, 241, 0.06); --theme-color-glow: rgba(99, 102, 241, 0.12); --theme-color-ring: rgba(99, 102, 241, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Evaria</h4>
+                <p class="enlace-card-desc">Acceso al CRM interno y plataforma de contratación de Evaria.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Abrir Evaria
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
 
-        <a href="https://renosur.miga.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(53, 127, 191, 0.1); color: #357fbf;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-            </span>
-            <span class="sips-btn-text">Renosur</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+          <!-- Card: Hostezadis -->
+          <a href="https://hostezadis.omniasoluciones.es/" target="_blank" class="enlace-card" style="--theme-color: #f59e0b; --theme-color-bg: rgba(245, 158, 11, 0.06); --theme-color-glow: rgba(245, 158, 11, 0.12); --theme-color-ring: rgba(245, 158, 11, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Hostezadis</h4>
+                <p class="enlace-card-desc">Acceso al portal fiscal y extranet corporativa de Hostezadis.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Abrir Hostezadis
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
 
-        <a href="https://hostezadis.omniasoluciones.es/" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(245, 158, 11, 0.1); color: #f59e0b;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-            </span>
-            <span class="sips-btn-text">Hostezadis</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+          <!-- Card: Energiza -->
+          <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #10b981; --theme-color-bg: rgba(16, 185, 129, 0.06); --theme-color-glow: rgba(16, 185, 129, 0.12); --theme-color-ring: rgba(16, 185, 129, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Energiza</h4>
+                <p class="enlace-card-desc">Acceso al portal comercial y gestión de Grupo Energiza.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Abrir Energiza
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
 
-        <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="6" width="18" height="12" rx="2" ry="2"></rect><line x1="23" y1="11" x2="23" y2="13"></line><line x1="8" y1="6" x2="8" y2="18"></line></svg>
-            </span>
-            <span class="sips-btn-text">Energiza</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+        </div>
 
-        <a href="https://rrhh.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(59, 130, 246, 0.1); color: #3b82f6;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-            </span>
-            <span class="sips-btn-text">OnTime</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+        <!-- Categoría 2: Herramientas de Verificación y Consultas -->
+        <div class="enlaces-section-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          Verificación y Consultas
+        </div>
+        <div class="enlaces-grid">
 
-        <a href="https://fortuluz.es/calculadora" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(139, 92, 246, 0.1); color: #8b5cf6;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="8" y1="14" x2="8" y2="18"></line></svg>
-            </span>
-            <span class="sips-btn-text">Mirar Potencia</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+          <!-- Card: Mirar Potencia (Fortuluz) -->
+          <a href="https://fortuluz.es/calculadora" target="_blank" class="enlace-card" style="--theme-color: #8b5cf6; --theme-color-bg: rgba(139, 92, 246, 0.06); --theme-color-glow: rgba(139, 92, 246, 0.12); --theme-color-ring: rgba(139, 92, 246, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="8" y1="14" x2="8" y2="18"></line></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Mirar Potencia</h4>
+                <p class="enlace-card-desc">Calculadora de tarifas para comprobar y optimizar potencias eléctricas.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Comprobar Potencia
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
 
-        <a href="https://checkout.naturgy.es/?sel=E0001&amp;vn=907008005&amp;agv=GRWEBCOL&amp;src=hogar&amp;origen=web&amp;id=es&amp;tipo=luz&amp;idCampaign%5B%5D=019e20cb-1206-7e90-8b40-a743e214d065&amp;company=nycli" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(249, 115, 22, 0.1); color: #f97316;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-            </span>
-            <span class="sips-btn-text">Consultar Direccion</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+          <!-- Card: Consultar Dirección (Naturgy) -->
+          <a href="https://checkout.naturgy.es/?sel=E0001&amp;vn=907008005&amp;agv=GRWEBCOL&amp;src=hogar&amp;origen=web&amp;id=es&amp;tipo=luz&amp;idCampaign%5B%5D=019e20cb-1206-7e90-8b40-a743e214d065&amp;company=nycli" target="_blank" class="enlace-card" style="--theme-color: #f97316; --theme-color-bg: rgba(249, 115, 22, 0.06); --theme-color-glow: rgba(249, 115, 22, 0.12); --theme-color-ring: rgba(249, 115, 22, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Consultar Dirección</h4>
+                <p class="enlace-card-desc">Verificador de direcciones y coberturas en la web oficial de Naturgy.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Verificar Cobertura
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
 
-        <a href="https://www.iberdrola.es/gestiones/facturas/ver-y-pagar/consultar-y-pagar" target="_blank" class="sips-btn">
-          <span class="sips-btn-content">
-            <span class="sips-btn-icon-box" style="background: rgba(16, 185, 129, 0.1); color: #10b981;">
-              <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-            </span>
-            <span class="sips-btn-text">Consultar Facturas Iberdrola</span>
-          </span>
-          <svg class="sips-btn-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-        </a>
+          <!-- Card: Consultar Facturas (Iberdrola) -->
+          <a href="https://www.iberdrola.es/gestiones/facturas/ver-y-pagar/consultar-y-pagar" target="_blank" class="enlace-card" style="--theme-color: #10b981; --theme-color-bg: rgba(16, 185, 129, 0.06); --theme-color-glow: rgba(16, 185, 129, 0.12); --theme-color-ring: rgba(16, 185, 129, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Facturas Iberdrola</h4>
+                <p class="enlace-card-desc">Consulta rápida y pago online de facturas pendientes de clientes.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Consultar Facturas
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
+
+        </div>
+
+        <!-- Categoría 3: Utilidades y Registro Diario -->
+        <div class="enlaces-section-title">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+          Utilidades Diarias
+        </div>
+        <div class="enlaces-grid">
+
+          <!-- Card: Whatsapp Web -->
+          <a href="https://web.whatsapp.com/" target="_blank" class="enlace-card" style="--theme-color: #25D366; --theme-color-bg: rgba(37, 211, 102, 0.06); --theme-color-glow: rgba(37, 211, 102, 0.12); --theme-color-ring: rgba(37, 211, 102, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Whatsapp Web</h4>
+                <p class="enlace-card-desc">Comunicación directa con clientes y envío inmediato de enlaces de firma.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Abrir Whatsapp
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
+
+          <!-- Card: OnTime -->
+          <a href="https://rrhh.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #3b82f6; --theme-color-bg: rgba(59, 130, 246, 0.06); --theme-color-glow: rgba(59, 130, 246, 0.12); --theme-color-ring: rgba(59, 130, 246, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">OnTime</h4>
+                <p class="enlace-card-desc">Portal de RRHH para registro de jornada laboral y fichajes del día.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Fichar Jornada
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
+
+        </div>
+
       </div>
     </div>
     
@@ -10006,7 +10155,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930306;
+const CURRENT_BUILD_VERSION = 1785002930307;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
