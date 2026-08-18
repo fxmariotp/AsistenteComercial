@@ -2964,8 +2964,9 @@ hr {
 .norma-num-2 { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
 .norma-num-3 { background: rgba(16, 185, 129, 0.1); color: var(--green); }
 .norma-num-4 { background: rgba(245, 158, 11, 0.1); color: #d97706; }
-.norma-num-5 { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
-.norma-num-6 { background: rgba(100, 116, 139, 0.1); color: var(--t2); }
+.norma-num-5 { background: rgba(239, 68, 68, 0.1); color: #ef4444; }
+.norma-num-6 { background: rgba(139, 92, 246, 0.1); color: #8b5cf6; }
+.norma-num-7 { background: rgba(100, 116, 139, 0.1); color: var(--t2); }
 
 /* Header Logout responsive */
 @media (max-width: 576px) {
@@ -4938,9 +4939,22 @@ input:focus, select:focus, textarea:focus {
         </div>
 
         <!-- Card 5 -->
-        <div class="norma-card">
+        <div class="norma-card" style="border-color: rgba(239, 68, 68, 0.4); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.04);">
           <div class="norma-card-header">
             <div class="norma-num norma-num-5">5</div>
+            <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: #dc2626;">Tolerancia cero al fraude y malas prácticas</h4>
+          </div>
+          <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
+            <li>Queda totalmente prohibido realizar cualquier acto fraudulento o engañoso para la formalización de contratos.</li>
+            <li>Está estrictamente prohibido suplantar la identidad de los clientes, así como introducir datos falsos, ficticios o de contacto propios (como el número de teléfono o correo electrónico del comercial) en el contrato de un cliente.</li>
+            <li>Cualquier práctica fraudulenta o alteración de datos supondrá la rescisión inmediata de la relación laboral y la adopción de las medidas legales oportunas.</li>
+          </ul>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="norma-card">
+          <div class="norma-card-header">
+            <div class="norma-num norma-num-6">6</div>
             <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Responsabilidad individual</h4>
           </div>
           <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
@@ -4949,10 +4963,10 @@ input:focus, select:focus, textarea:focus {
           </ul>
         </div>
 
-        <!-- Card 6 -->
+        <!-- Card 7 -->
         <div class="norma-card">
           <div class="norma-card-header">
-            <div class="norma-num norma-num-6">6</div>
+            <div class="norma-num norma-num-7">7</div>
             <h4 style="margin: 0; font-size: 15px; font-weight: 700; color: var(--text);">Seguimiento y cumplimiento</h4>
           </div>
           <ul style="margin: 0; padding-left: 20px; color: var(--t2); font-size: 13.5px; line-height: 1.6; display: flex; flex-direction: column; gap: 6px;">
@@ -10155,7 +10169,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930308;
+const CURRENT_BUILD_VERSION = 1785002930309;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
