@@ -6231,14 +6231,22 @@ input:focus, select:focus, textarea:focus {
       
       <!-- Iframe Fallback View -->
       <div id="ranking-iframe-container" style="height: 76vh; width: 100%; display: none; flex-direction: column; gap: 12px;">
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-          <span style="font-size: 13px; font-weight: 600; color: var(--t2);">
-            Mostrando la version original giratoria.
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-wrap: wrap; gap: 8px;">
+          <span id="ranking-iframe-status-text" style="font-size: 13px; font-weight: 600; color: var(--t2); display: flex; align-items: center; gap: 6px;">
+            Mostrando la versión original giratoria.
           </span>
-          <button class="btn" onclick="switchRankingView('native')" id="btn-switch-to-native" style="padding: 8px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-            Volver a Vista Nativa
-          </button>
+          <div style="display: flex; gap: 8px;">
+            <button class="btn btn-secondary" onclick="toggleSetupGuide(true)" id="btn-iframe-guide" style="padding: 8px 12px; font-size: 13px; display: none;">
+              Ver guía de conexión
+            </button>
+            <button class="btn btn-secondary" onclick="retryNativeRankingFromIframe()" id="btn-iframe-retry" style="padding: 8px 12px; font-size: 13px; display: none;">
+              Reintentar Vista Premium
+            </button>
+            <button class="btn" onclick="switchRankingView('native')" id="btn-switch-to-native" style="padding: 8px 12px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+              Volver a Vista Nativa
+            </button>
+          </div>
         </div>
         <div style="flex: 1; height: 100%; border-radius: var(--r); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid var(--border);">
           <iframe src="https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec" style="width: 100%; height: 100%; border: none;" allow="autoplay"></iframe>
@@ -7940,6 +7948,18 @@ async function loadNativeRanking() {
       rawRankingData = data.filter(r => r && r[0]); // Filter empty rows
       if (rawRankingData.length > 0) {
         localStorage.setItem('ranking_connected', 'true');
+        
+        // Reset iframe status
+        const statusText = document.getElementById('ranking-iframe-status-text');
+        const guideBtn = document.getElementById('btn-iframe-guide');
+        const retryBtn = document.getElementById('btn-iframe-retry');
+        if (statusText) statusText.textContent = "Mostrando la versión original giratoria.";
+        if (guideBtn) guideBtn.style.display = 'none';
+        if (retryBtn) {
+          retryBtn.style.display = 'none';
+          retryBtn.disabled = false;
+        }
+
         renderNativeRanking(rawRankingData);
         return;
       }
@@ -7947,6 +7967,22 @@ async function loadNativeRanking() {
     throw new Error("Invalid data format received");
   } catch (err) {
     console.warn("No se pudo cargar el ranking nativo (CORS o script no actualizado):", err);
+    
+    // Fallback automatically to iframe view
+    switchRankingView('iframe');
+    
+    // Update status bar in iframe view
+    const statusText = document.getElementById('ranking-iframe-status-text');
+    const guideBtn = document.getElementById('btn-iframe-guide');
+    const retryBtn = document.getElementById('btn-iframe-retry');
+    if (statusText) {
+      statusText.innerHTML = `<span style="color: #d97706; display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Conexión Premium fallida (CORS/Red). Mostrando versión original.</span>`;
+    }
+    if (guideBtn) guideBtn.style.display = 'inline-flex';
+    if (retryBtn) {
+      retryBtn.style.display = 'inline-flex';
+      retryBtn.disabled = false;
+    }
     
     // Clear podium
     if (podiumContainer) podiumContainer.innerHTML = '';
@@ -7958,7 +7994,7 @@ async function loadNativeRanking() {
           <div style="font-size: 32px; margin-bottom: 12px;">🔌</div>
           <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px;">Conexion Premium Pendiente</h3>
           <p style="font-size: 13.5px; color: var(--t2); max-width: 480px; margin: 0 auto 20px; line-height: 1.5;">
-            No se pudo cargar el ranking de forma nativa. Esto sucede si el script de Google aun no se ha configurado para devolver JSON, o si hay un bloqueo temporal de CORS / red.
+            No se pudo cargar el ranking de forma nativa. Esto sucede si el script de Google aún no se ha configurado para devolver JSON, o si hay un bloqueo temporal de CORS / red.
           </p>
           <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
             <button class="btn" onclick="toggleSetupGuide(true)">Ver guia de conexion</button>
@@ -8392,6 +8428,16 @@ function switchRankingView(view) {
     if (nativeContainer) nativeContainer.style.display = 'none';
     if (iframeContainer) iframeContainer.style.display = 'flex';
   }
+}
+
+function retryNativeRankingFromIframe() {
+  const retryBtn = document.getElementById('btn-iframe-retry');
+  const statusText = document.getElementById('ranking-iframe-status-text');
+  if (retryBtn) retryBtn.disabled = true;
+  if (statusText) {
+    statusText.innerHTML = `<span class="cdot" style="background:var(--blue);width:8px;height:8px;animation:pulse 1s infinite alternate;margin-right:6px;display:inline-block;border-radius:50%;"></span> Reintentando conectar a vista premium...`;
+  }
+  switchRankingView('native');
 }
 
 function toggleSetupGuide(show) {
@@ -10264,7 +10310,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930312;
+const CURRENT_BUILD_VERSION = 1785002930313;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
