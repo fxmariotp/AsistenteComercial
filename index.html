@@ -4746,6 +4746,7 @@ input:focus, select:focus, textarea:focus {
             <div class="fgrp luz-grp"><label>Luz P3 (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-kwh3" placeholder="0" autocomplete="off" value="" oninput="calcComp()"></div>
             
             <div class="fgrp luz-grp"><label>Excedentes (kWh) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-excedente" placeholder="0" autocomplete="off" value="" min="0" oninput="calcComp()"></div>
+            <div class="fgrp luz-grp"><label>Batería Virtual (€ con IVA) <span style="font-weight:400;color:var(--t3)">opcional</span></label><input type="number" id="f-bateria-virtual" placeholder="0.00" autocomplete="off" value="" min="0" step="0.01" oninput="calcComp()"></div>
             <div class="fgrp luz-grp"><label>Alquiler de equipos (€)</label><input type="number" id="f-alquiler" placeholder="0.85" autocomplete="off" value="0.85" step="0.01" oninput="calcComp()"></div>
             
             <div class="fgrp gas-grp hidden-grp"><label>Gas (kWh)</label><input type="number" id="f-gas" placeholder="0" autocomplete="off" value="" oninput="calcComp()"></div>
@@ -9396,7 +9397,7 @@ function calcComp(){
   const isCif=document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false;
   const iva=gv('f-iva')||0.21, actual=gv('f-actual');
   
-  let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, kwh3 = 0, excedente = 0, gas = 0, alq = 0;
+  let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, kwh3 = 0, excedente = 0, bateriaVirtual = 0, gas = 0, alq = 0;
   
   if (compMode === 'luz') {
     pot1 = gv('f-pot1') || 0;
@@ -9405,6 +9406,7 @@ function calcComp(){
     kwh2 = gv('f-kwh2') || 0;
     kwh3 = gv('f-kwh3') || 0;
     excedente = gv('f-excedente') || 0;
+    bateriaVirtual = gv('f-bateria-virtual') || 0;
     alq = gv('f-alquiler') || 0;
   }
   if (compMode === 'gas') {
@@ -9412,7 +9414,7 @@ function calcComp(){
   }
 
   // Check empty states
-  if (compMode === 'luz' && !kwh1 && !pot1 && !excedente) {
+  if (compMode === 'luz' && !kwh1 && !pot1 && !excedente && !bateriaVirtual) {
     document.getElementById('comp-empty').style.display='block';
     document.getElementById('comp-cards').innerHTML='';
     document.getElementById('comp-summary').innerHTML='';
@@ -9587,12 +9589,19 @@ function calcComp(){
       total = subtotal + ivaAmt;
     }
 
+    // Apply general virtual battery discount (Multicasa)
+    let appliedBateriaVirtual = 0;
+    if (bateriaVirtual > 0 && compMode === 'luz') {
+      appliedBateriaVirtual = Math.min(bateriaVirtual, total);
+      total = total - appliedBateriaVirtual;
+    }
+
     const ahorro = actual > 0 ? actual - total : null;
     return {
       key, cia, type: off.type, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
       dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
-      costeGestion
+      costeGestion, bateriaVirtual, appliedBateriaVirtual
     };
   });
 
@@ -9628,6 +9637,7 @@ function saveComparisonInputs() {
     kwh2: document.getElementById('f-kwh2') ? document.getElementById('f-kwh2').value : '',
     kwh3: document.getElementById('f-kwh3') ? document.getElementById('f-kwh3').value : '',
     excedente: document.getElementById('f-excedente') ? document.getElementById('f-excedente').value : '',
+    bateriaVirtual: document.getElementById('f-bateria-virtual') ? document.getElementById('f-bateria-virtual').value : '',
     alquiler: document.getElementById('f-alquiler') ? document.getElementById('f-alquiler').value : '0.85',
     gas: document.getElementById('f-gas') ? document.getElementById('f-gas').value : '',
     gasSegmento: document.getElementById('f-gas-segmento') ? document.getElementById('f-gas-segmento').value : 'auto',
@@ -9659,6 +9669,7 @@ function loadComparisonInputs() {
     if (document.getElementById('f-kwh2')) document.getElementById('f-kwh2').value = inputs.kwh2 || '';
     if (document.getElementById('f-kwh3')) document.getElementById('f-kwh3').value = inputs.kwh3 || '';
     if (document.getElementById('f-excedente')) document.getElementById('f-excedente').value = inputs.excedente || '';
+    if (document.getElementById('f-bateria-virtual')) document.getElementById('f-bateria-virtual').value = inputs.bateriaVirtual || '';
     if (document.getElementById('f-alquiler')) document.getElementById('f-alquiler').value = inputs.alquiler !== undefined ? inputs.alquiler : '0.85';
     if (document.getElementById('f-gas')) document.getElementById('f-gas').value = inputs.gas || '';
     if (document.getElementById('f-gas-segmento')) document.getElementById('f-gas-segmento').value = inputs.gasSegmento || 'auto';
@@ -9697,6 +9708,7 @@ function clearComparisonInputs() {
   if (document.getElementById('f-kwh2')) document.getElementById('f-kwh2').value = '';
   if (document.getElementById('f-kwh3')) document.getElementById('f-kwh3').value = '';
   if (document.getElementById('f-excedente')) document.getElementById('f-excedente').value = '';
+  if (document.getElementById('f-bateria-virtual')) document.getElementById('f-bateria-virtual').value = '';
   if (document.getElementById('f-alquiler')) document.getElementById('f-alquiler').value = '0.85';
   if (document.getElementById('f-gas')) document.getElementById('f-gas').value = '';
   if (document.getElementById('f-gas-segmento')) document.getElementById('f-gas-segmento').value = 'auto';
@@ -9831,7 +9843,7 @@ function printCompanyOffer(key) {
     cia, type, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
     excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
     dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
-    costeGestion
+    costeGestion, appliedBateriaVirtual
   } = targetRes;
 
   const te = useSva ? r.te_con : r.te_sin;
@@ -10010,6 +10022,16 @@ function printCompanyOffer(key) {
         <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Virtual</td>
         <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">${formulaText}</td>
         <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(batteryDiscount)} €</td>
+      </tr>
+    `;
+  }
+
+  if (appliedBateriaVirtual > 0) {
+    tbodyHtml += `
+      <tr style="font-weight: 600; color: #166534; background: #f0fdf4;">
+        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Multicasa</td>
+        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">Saldo batería virtual aplicado (con IVA)</td>
+        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(appliedBateriaVirtual)} €</td>
       </tr>
     `;
   }
@@ -10340,7 +10362,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930315;
+const CURRENT_BUILD_VERSION = 1785002930316;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
