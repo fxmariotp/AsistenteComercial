@@ -9918,13 +9918,28 @@ function printCompanyOffer(key) {
         val: `${f2(costeGestion)} €`
       });
     }
-    if (excedente > 0) {
-      rows.push({
-        concept: 'Compensacion Excedentes',
-        calc: `${excedente.toFixed(2)} kWh × ${excPrice.toFixed(4)} €/kWh`,
-        val: `−${f2(excOffset)} €`,
-        isGreen: true
-      });
+    if (excedente > 0 && !useSva) {
+      const energyCost = luzP1 + luzP2 + luzP3;
+      if (excAmt > energyCost) {
+        rows.push({
+          concept: 'Compensacion Excedentes',
+          calc: `${excedente.toFixed(2)} kWh × ${excPrice.toFixed(4)} €/kWh`,
+          val: `−${f2(excAmt)} €`,
+          isGreen: true
+        });
+        rows.push({
+          concept: 'Límite de Compensación (Sin Batería)',
+          calc: `El descuento no puede superar el término de energía`,
+          val: `+${f2(excAmt - energyCost)} €`
+        });
+      } else {
+        rows.push({
+          concept: 'Compensacion Excedentes',
+          calc: `${excedente.toFixed(2)} kWh × ${excPrice.toFixed(4)} €/kWh`,
+          val: `−${f2(excAmt)} €`,
+          isGreen: true
+        });
+      }
     }
     rows.push({
       concept: 'Impuesto Electricidad',
@@ -9989,10 +10004,11 @@ function printCompanyOffer(key) {
 
   if (useSva && excedente > 0 && compMode === 'luz') {
     const batteryDiscount = Math.min(excAmt * (1 + iva), subtotalNoExc * (1 + iva));
+    const formulaText = `${excedente.toFixed(2)} kWh × ${(excPrice * (1 + iva)).toFixed(4)} €/kWh (IVA inc.)`;
     tbodyHtml += `
       <tr style="font-weight: 600; color: #166534; background: #f0fdf4;">
-        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Bateria Virtual</td>
-        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">Offset excedentes (con IVA)</td>
+        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Virtual</td>
+        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">${formulaText}</td>
         <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(batteryDiscount)} €</td>
       </tr>
     `;
@@ -10324,7 +10340,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930314;
+const CURRENT_BUILD_VERSION = 1785002930315;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
