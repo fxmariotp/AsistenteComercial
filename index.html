@@ -7858,11 +7858,25 @@ function getInitials(name) {
 
 // Helper to fetch Google Script with direct try & multiple CORS proxy fallbacks
 async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
-  // 1. Try directly first
+  // 1. Try our same-origin Vercel serverless proxy first (fully bypasses CORS & adblockers)
   try {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeoutMs);
-    const res = await fetch(targetUrl, { signal: controller.signal });
+    const res = await fetch("/api/ranking", { signal: controller.signal });
+    clearTimeout(id);
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data)) return data;
+    }
+  } catch (e) {
+    console.warn("Vercel serverless proxy failed. Trying direct Google Script fetch...", e);
+  }
+
+  // 2. Try directly second (omitting credentials to avoid credential-redirect CORS blocks)
+  try {
+    const controller = new AbortController();
+    const id = setTimeout(() => controller.abort(), timeoutMs);
+    const res = await fetch(targetUrl, { signal: controller.signal, credentials: 'omit' });
     clearTimeout(id);
     if (res.ok) {
       const data = await res.json();
@@ -7872,7 +7886,7 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
     console.warn("Direct fetch to Google Script failed/blocked. Trying CORS Proxy 1 (CodeTabs)...", e);
   }
   
-  // 2. Fallback to CodeTabs CORS Proxy
+  // 3. Fallback to CodeTabs CORS Proxy
   try {
     const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(targetUrl);
     const controller = new AbortController();
@@ -7887,7 +7901,7 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
     console.warn("CORS Proxy 1 (CodeTabs) failed. Trying CORS Proxy 2 (AllOrigins)...", e);
   }
 
-  // 3. Fallback to AllOrigins CORS Proxy
+  // 4. Fallback to AllOrigins CORS Proxy
   try {
     const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
     const controller = new AbortController();
@@ -7905,7 +7919,7 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
     console.warn("CORS Proxy 2 (AllOrigins) failed. Trying CORS Proxy 3 (CorsProxy.io)...", e);
   }
 
-  // 4. Fallback to CorsProxy.io
+  // 5. Fallback to CorsProxy.io
   try {
     const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(targetUrl);
     const controller = new AbortController();
@@ -7920,7 +7934,7 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
     console.warn("CORS Proxy 3 (CorsProxy.io) failed.", e);
   }
   
-  throw new Error("All fetch methods (direct and CORS proxies) failed to load Google Script data");
+  throw new Error("All fetch methods (Vercel proxy, direct, and CORS proxies) failed to load Google Script data");
 }
 
 async function loadNativeRanking() {
@@ -10310,7 +10324,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930313;
+const CURRENT_BUILD_VERSION = 1785002930314;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
