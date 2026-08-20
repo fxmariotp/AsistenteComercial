@@ -4579,6 +4579,21 @@ input:focus, select:focus, textarea:focus {
       <div class="sv" id="sv-endesa">
         <div class="script-big-card">
 
+          <!-- Advertencia Canal Especial -->
+          <div style="background: rgba(239, 68, 68, 0.08); border: 1.5px solid rgba(239, 68, 68, 0.2); border-left: 5px solid #ef4444; border-radius: var(--rs); padding: 16px; margin-bottom: 20px;">
+            <div style="display: flex; gap: 10px; align-items: flex-start;">
+              <span style="font-size: 20px; line-height: 1;">⚠️</span>
+              <div>
+                <strong style="color: #dc2626; font-size: 15px; display: block; margin-bottom: 4px; font-weight: 800;">ADVERTENCIA IMPORTANTE (SOLO GESTORA HOSTEZADIS)</strong>
+                <p style="margin: 0; font-size: 13.5px; line-height: 1.5; color: #7f1d1d; font-weight: 500;">
+                  Este texto de Endesa <strong>NO es un guión de llamada convencional</strong> como el de las demás compañías. 
+                  <strong>ÚNICAMENTE es válido para la gestora Hostezadis cuando se realiza un cambio de titularidad</strong>. 
+                  No debe ser utilizado para contrataciones estándar.
+                </p>
+              </div>
+            </div>
+          </div>
+
           <!-- Selector de zona -->
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#00A8E0"></span>Selecciona la zona antes de empezar</div>
@@ -4589,6 +4604,8 @@ input:focus, select:focus, textarea:focus {
                   <option value="">— Selecciona zona —</option>
                   <option value="Inmobiliaria Varesse">ALJARAFE</option>
                   <option value="GYA HERCULES">SEVILLA</option>
+                  <option value="INMOBILIARIA TU HOGAR">SEVILLA (Alcalá de Guadaíra)</option>
+                  <option value="Vivenzia Consulting">SEVILLA (Rochelambert)</option>
                   <option value="INMOBILIARIA EL PUENTE">CADIZ (El Puente)</option>
                   <option value="URIAHOMES INMOBILIARIA">CADIZ (Uriahomes)</option>
                   <option value="ESTUDIO HABITALIA">MADRID</option>
@@ -4596,7 +4613,7 @@ input:focus, select:focus, textarea:focus {
                   <option value="Inmobiliaria Siglo XXI">JAEN</option>
                   <option value="CASAKA INMOBILIARIA">GRANADA</option>
                   <option value="INMOBILIARIA GERMA JULI">BARCELONA</option>
-                  <option value="REMAX URBE II">VALENCIA</option>
+                  <option value="REMAX urbe ll">VALENCIA</option>
                   <option value="Inmolamayor">CIUDAD REAL</option>
                   <option value="GRUPO REIN INMO">TOLEDO</option>
                   <option value="Morhabitat Asesores Inmobiliarios">HUELVA CAPITAL</option>
@@ -4606,7 +4623,7 @@ input:focus, select:focus, textarea:focus {
                 </select>
               </div>
               <div style="flex:1;min-width:180px">
-                <label style="font-size:13px;font-weight:700;color:var(--t2);display:block;margin-bottom:6px">Centro de trabajo</label>
+                <label style="font-size:13px;font-weight:700;color:var(--t2);display:block;margin-bottom:6px">Centro de trabajo / IS</label>
                 <div id="endesa-centro" style="padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:16px;font-weight:700;color:var(--blue);background:var(--blue-bg);min-height:44px">—</div>
               </div>
             </div>
@@ -4624,34 +4641,35 @@ input:focus, select:focus, textarea:focus {
 
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#00A8E0"></span>Apertura</div>
-            <p class="stxt">Buenos dias/tardes, mi nombre es <span class="agent-name-placeholder"></span> y le llamo de parte de <strong>Endesa</strong>. Es una llamada breve de bienvenida sujeta a grabacion. ¿Hablo con <span class="blank blg">(nombre y apellidos)</span>? recientemente se registro una contratacion en uno de nuestros puntos de venta para su suministro de <span class="blank">(servicio de luz/gas)</span> situado en <span class="blank blg">(direccion)</span>, y queriamos confirmar que la venta ha sido realizada con usted presente.</p>
+            <p class="stxt">AGENTE: Buenos días / tardes, mi nombre es <span class="agent-name-placeholder"></span> y le llamo de parte de <strong>Endesa</strong>. Es una llamada breve de bienvenida sujeta a grabación. ¿Hablo con <span class="blank blg">(nombre y apellidos del titular)</span>?</p>
+            <p class="stxt">Hoy día <span class="blank">(DD/MM/AA)</span> siendo las <span class="blank">(HH:MM)</span> se registró una contratación en uno de nuestros puntos de venta para su suministro de <span class="blank">(Luz y/o Gas)</span> situado en <span class="blank blg">(dirección del suministro)</span>, y queríamos confirmar que la venta ha sido realizada con usted presente.</p>
           </div>
 
           <div class="script-section">
-            <div class="script-sec-title"><span style="background:#e07b00"></span>Confirmacion de contratacion presencial</div>
-            <p class="nota">Lee el apartado que corresponda segun el tipo de contratacion</p>
+            <div class="script-sec-title"><span style="background:#e07b00"></span>Confirmación de contratación presencial</div>
+            <p class="nota">Lee únicamente el apartado que corresponda según el tipo de contratación:</p>
 
-            <div class="prod-block">
-              <strong>Contratacion domestico</strong>
-              ¿Firmo usted el contrato de manera presencial en la ubicacion
-              <strong id="endesa-loc-inline" style="color:var(--blue)">[selecciona zona arriba]</strong>?
+            <div class="prod-block" style="margin-bottom: 12px;">
+              <strong style="color: var(--text); display: block; margin-bottom: 4px;">EN CASO DE CONTRATACIÓN DE DOMÉSTICO:</strong>
+              ¿Firmó usted el contrato de manera presencial en la ubicación <strong id="endesa-loc-inline" style="color:var(--blue)">[selecciona zona arriba]</strong>?
             </div>
 
             <div class="prod-block">
-              <strong>Arrastre domestico en PPNN</strong>
-              ¿Firmo usted el contrato de manera presencial en su <strong>centro de trabajo</strong>
-              <strong id="endesa-loc-ppnn" style="color:var(--blue)"></strong>?
+              <strong style="color: var(--text); display: block; margin-bottom: 4px;">EN CASO DE ARRASTRE DE DOMÉSTICO EN PPNN:</strong>
+              ¿Firmó usted el contrato de manera presencial en su <strong>CENTRO DE TRABAJO</strong> <strong id="endesa-loc-ppnn" style="color:var(--blue)"></strong>?
             </div>
           </div>
 
           <div class="script-section">
-            <div class="script-sec-title"><span style="background:#008B3C"></span>Respuesta afirmativa — Cierre</div>
-            <p class="stxt"><span class="ry">✓ CLIENTE: SI</span> perfecto, muchisimas gracias por confirmarlo. Le damos la bienvenida a <strong>Endesa</strong> y agradecemos su confianza. En breve recibira toda la informacion correspondiente a su contrato. Que tenga un excelente dia.</p>
+            <div class="script-sec-title"><span style="background:#008B3C"></span>Respuesta afirmativa (Sí) — Cierre</div>
+            <p class="stxt"><span class="ry">✓ CLIENTE: SÍ</span></p>
+            <p class="stxt">AGENTE: Perfecto, muchísimas gracias por confirmarlo. Le damos la bienvenida a <strong>Endesa</strong> y agradecemos su confianza. En breve recibirá toda la información correspondiente a su contrato. Que tenga un excelente día.</p>
           </div>
 
           <div class="script-section">
-            <div class="script-sec-title"><span style="background:#c0392b"></span>Respuesta negativa — Cierre</div>
-            <p class="stxt"><span class="rn">✗ CLIENTE: NO</span> gracias por la informacion. Vamos a revisar internamente lo ocurrido con esta contratacion. Le agradecemos mucho su colaboracion y su tiempo. Si tiene cualquier duda adicional, no dude en contactarnos. Buen dia.</p>
+            <div class="script-sec-title"><span style="background:#c0392b"></span>Respuesta negativa (No) — Cierre</div>
+            <p class="stxt"><span class="rn">✗ CLIENTE: NO</span></p>
+            <p class="stxt">AGENTE: Entiendo, gracias por la información. Vamos a revisar internamente lo ocurrido con esta contratación. Le agradecemos mucho su colaboración y su tiempo. Si tiene cualquier duda adicional, no dude en contactarnos. Buen día.</p>
           </div>
 
         </div>
@@ -9213,6 +9231,7 @@ const PROCEDIMIENTOS = {
       'Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA.',
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
       'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).',
+      'Grabación / Guión legal: El texto de verificación Cosmos Mobile para Endesa NO es de uso general; es de uso exclusivo para la gestora Hostezadis al realizar un cambio de titularidad.',
       'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
       'Cambios de potencia: En Endesa NO podemos hacer cambio de potencia (en las demás compañías sí). Subir la potencia en las otras compañías cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
@@ -10362,7 +10381,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930316;
+const CURRENT_BUILD_VERSION = 1785002930317;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
