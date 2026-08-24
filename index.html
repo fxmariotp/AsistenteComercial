@@ -26,8 +26,8 @@
       "77822813J": "MARIO TIBURCIO PORRAS",
       "30369873Y": "MERCEDES TERRON DIEZ",
       "53283415M": "MÓNICA CEJUDO HIDALGO",
-      "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES",
-      "MAMAEVARIA": "MARIA CABRERA",
+      "MIGUELR": "MIGUEL RODRIGUEZ FLORES",
+      "MARIAC": "MARIA CABRERA",
       "28750523V": "OLGA VILLA",
       "29502580C": "LIBRERO"
     };
@@ -8309,8 +8309,8 @@ async function copyShiftReport() {
     const isGerencia = nameUpper.includes("FRANCISCO MORENTE") || 
                        nameUpper.includes("MIGUEL RODRIGUEZ") || 
                        nameUpper.includes("MARIA CABRERA") ||
-                       nameUpper.includes("PAPAEVARIA") ||
-                       nameUpper.includes("MAMAEVARIA");
+                       nameUpper.includes("MIGUELR") ||
+                       nameUpper.includes("MARIAC");
     return !isGerencia;
   });
   
@@ -10271,8 +10271,8 @@ const COMERCIALES = {
   "77822813J": "MARIO TIBURCIO PORRAS",
   "30369873Y": "MERCEDES TERRON DIEZ",
   "53283415M": "MÓNICA CEJUDO HIDALGO",
-  "PAPAEVARIA": "MIGUEL RODRIGUEZ FLORES",
-  "MAMAEVARIA": "MARIA CABRERA",
+  "MIGUELR": "MIGUEL RODRIGUEZ FLORES",
+  "MARIAC": "MARIA CABRERA",
   "28750523V": "OLGA VILLA",
   "29502580C": "LIBRERO"
 };
@@ -10290,8 +10290,8 @@ const DEFAULT_VACATIONS = {
   "77822813J": ["2026-04-20", "2026-04-21", "2026-04-23", "2026-04-24", "2026-06-05", "2026-06-22", "2026-06-23", "2026-07-10", "2026-08-05", "2026-08-06", "2026-08-07"],
   "30369873Y": ["2026-02-05", "2026-02-06", "2026-04-21", "2026-04-23", "2026-04-24", "2026-06-05", "2026-07-10", "2026-07-14", "2026-07-15", "2026-07-22", "2026-07-23", "2026-07-24"],
   "53283415M": ["2026-02-13", "2026-03-27", "2026-04-01", "2026-05-05", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-06-05", "2026-06-08", "2026-07-24", "2026-07-27"],
-  "PAPAEVARIA": [],
-  "MAMAEVARIA": [],
+  "MIGUELR": [],
+  "MARIAC": [],
 };
 
 const DEFAULT_VACATION_MOTIVES = {};
@@ -10400,7 +10400,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930319;
+const CURRENT_BUILD_VERSION = 1785002930320;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -10565,11 +10565,11 @@ try {
 if (AGENT_ROLES['77860623B'] === undefined) {
   AGENT_ROLES['77860623B'] = 'gerente';
 }
-if (AGENT_ROLES['PAPAEVARIA'] === undefined) {
-  AGENT_ROLES['PAPAEVARIA'] = 'gerente';
+if (AGENT_ROLES['MIGUELR'] === undefined) {
+  AGENT_ROLES['MIGUELR'] = 'gerente';
 }
-if (AGENT_ROLES['MAMAEVARIA'] === undefined) {
-  AGENT_ROLES['MAMAEVARIA'] = 'gerente';
+if (AGENT_ROLES['MARIAC'] === undefined) {
+  AGENT_ROLES['MARIAC'] = 'gerente';
 }
 
 // Preasignar rol a Ana Rocio Galera Morillo a Trabajadores Evaria
