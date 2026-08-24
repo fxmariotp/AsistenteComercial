@@ -30,7 +30,7 @@
       "MARIAC": "MARIA CABRERA",
       "28750523V": "OLGA VILLA",
       "29502580C": "LIBRERO",
-      "29732688J": "NURIA CEBALLOS DURAN"
+      "53343101Y": "NURIA CEBALLOS DURAN"
     };
     const dni = localStorage.getItem('comercial_dni');
     const name = localStorage.getItem('comercial_nombre');
@@ -10276,7 +10276,7 @@ const COMERCIALES = {
   "MARIAC": "MARIA CABRERA",
   "28750523V": "OLGA VILLA",
   "29502580C": "LIBRERO",
-  "29732688J": "NURIA CEBALLOS DURAN"
+  "53343101Y": "NURIA CEBALLOS DURAN"
 };
 
 const DEFAULT_VACATIONS = {
@@ -10294,7 +10294,7 @@ const DEFAULT_VACATIONS = {
   "53283415M": ["2026-02-13", "2026-03-27", "2026-04-01", "2026-05-05", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-06-05", "2026-06-08", "2026-07-24", "2026-07-27"],
   "MIGUELR": [],
   "MARIAC": [],
-  "29732688J": [],
+  "53343101Y": [],
 };
 
 const DEFAULT_VACATION_MOTIVES = {};
@@ -10403,7 +10403,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930321;
+const CURRENT_BUILD_VERSION = 1785002930322;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -10591,8 +10591,8 @@ if (AGENT_ROLES['29502580C'] === undefined) {
 }
 
 // Preasignar rol a Nuria Ceballos Durán a Trabajadores Evaria
-if (AGENT_ROLES['29732688J'] === undefined) {
-  AGENT_ROLES['29732688J'] = 'evaria';
+if (AGENT_ROLES['53343101Y'] === undefined) {
+  AGENT_ROLES['53343101Y'] = 'evaria';
 }
 
 async function fetchAgentRolesFromCloud() {
