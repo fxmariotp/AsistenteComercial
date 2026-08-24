@@ -10420,7 +10420,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930323;
+const CURRENT_BUILD_VERSION = 1785002930324;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -10849,6 +10849,14 @@ function renderLoginLogs(logs) {
     const time = log.time || '—';
     const ip = log.phone || 'Desconocida';
     
+    // Censurar la IP dejando visibles solo los últimos 4 dígitos
+    let displayIp = ip;
+    if (ip && ip !== 'Desconocida') {
+      if (ip.length > 4) {
+        displayIp = '••••' + ip.substring(ip.length - 4);
+      }
+    }
+    
     let ua = log.notes || '—';
     if (ua.toLowerCase().includes('mobile') || ua.toLowerCase().includes('android') || ua.toLowerCase().includes('iphone')) {
       ua = 'Móvil (' + (ua.toLowerCase().includes('iphone') ? 'iOS' : 'Android') + ')';
@@ -10876,7 +10884,7 @@ function renderLoginLogs(logs) {
       <td style="padding: 10px 14px;">${time}</td>
       <td style="padding: 10px 14px; font-weight: ${ipWeight}; color: ${ipColor}; display: flex; align-items: center;" title="${ipTitle}">
         ${warningIcon}
-        <span>${ip}</span>
+        <span>${displayIp}</span>
       </td>
       <td style="padding: 10px 14px; color: var(--t3); font-size: 12.5px;">${ua}</td>
     </tr>`;
