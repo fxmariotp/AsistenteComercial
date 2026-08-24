@@ -5779,8 +5779,24 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
 
-    <!-- â•â•â•â•â•â• PROMOCIONES SUPERMERCADO â•â•â•â•â•â• -->
+    <!-- ══════ PROMOCIONES SUPERMERCADO ══════ -->
     <div class="panel" id="panel-promociones">
+      
+      <!-- Banner de Normas e Importante sobre Promociones -->
+      <div style="background: rgba(239, 68, 68, 0.04); border: 1.5px solid rgba(239, 68, 68, 0.15); border-left: 5px solid #ef4444; border-radius: var(--r); padding: 16px; margin-bottom: 24px;">
+        <div style="display: flex; gap: 12px; align-items: flex-start;">
+          <span style="font-size: 22px; line-height: 1;">⚠️</span>
+          <div>
+            <strong style="color: #dc2626; font-size: 15px; display: block; margin-bottom: 6px; font-weight: 800;">CONDICIONES OBLIGATORIAS DE LAS PROMOCIONES</strong>
+            <ul style="margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; color: #7f1d1d; font-weight: 600;">
+              <li>Las promociones son <strong>exclusivamente válidas para contratos con Iberdrola</strong>.</li>
+              <li>Los contratos con <strong>CIF (Pymes/Empresas)</strong> tienen una promoción máxima de <strong>30€</strong> y en ningún caso optan a la promoción de 50€.</li>
+              <li>Las <strong>CCPP (Comunidades de Propietarios)</strong> tienen totalmente <strong>prohibido y excluido</strong> el acceso a tarjetas promocionales.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
       <div class="promociones-grid" id="promociones-container" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 20px;">
         <!-- Se cargara dinamicamente -->
       </div>
@@ -9182,6 +9198,7 @@ const PROCEDIMIENTOS = {
     requisitos: [
       'No se permite la contratación para personas mayores de 75 años.',
       'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).',
+      'Promociones comerciales (Tarjetas regalo): Solo válidas para contratos con Iberdrola. Los contratos con CIF (Pymes) reciben 30€ (no optan a los 50€) y las CCPP (Comunidades de Propietarios) tienen prohibido tener tarjeta.',
       'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
       'Cambios de potencia: Permitido en Iberdrola. Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
@@ -10403,7 +10420,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930322;
+const CURRENT_BUILD_VERSION = 1785002930323;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
