@@ -3953,6 +3953,18 @@ input:focus, select:focus, textarea:focus {
     display: none !important;
   }
 }
+@media (max-width: 480px) {
+  #renosur-chat-window {
+    width: calc(100% - 32px) !important;
+    right: 16px !important;
+    left: 16px !important;
+    bottom: 80px !important;
+  }
+  #renosur-chat-bubble {
+    right: 16px !important;
+    bottom: 16px !important;
+  }
+}
 </style></head>
 <body>
 
@@ -10440,7 +10452,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930326;
+const CURRENT_BUILD_VERSION = 1785002930327;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13123,10 +13135,12 @@ function handleGlobalSearch() {
   const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined') ? (AGENT_ROLES[currentAgentDni] || 'comercial') : 'comercial';
   const isGerente = userRole === 'gerente';
 
-  const results = SEARCH_INDEX.filter(item => {
-    if (item.requireGerente && !isGerente) return false;
-    return item.title.toLowerCase().includes(query) || item.keywords.some(keyword => keyword.toLowerCase().includes(query));
-  });
+  const results = SEARCH_INDEX
+    .map((item, idx) => ({ ...item, originalIdx: idx }))
+    .filter(item => {
+      if (item.requireGerente && !isGerente) return false;
+      return item.title.toLowerCase().includes(query) || item.keywords.some(keyword => keyword.toLowerCase().includes(query));
+    });
 
   if (results.length === 0) {
     dropdown.innerHTML = `<div style="padding: 12px 16px; font-size: 13px; color: var(--t3); font-style: italic; text-align: center;">No se encontraron resultados</div>`;
@@ -13134,8 +13148,8 @@ function handleGlobalSearch() {
     return;
   }
 
-  dropdown.innerHTML = results.map((item, idx) => {
-    return `<div onclick="triggerSearchAction(${idx})" style="padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border);" onmouseover="this.style.background='var(--blue-bg)'" onmouseout="this.style.background='transparent'">
+  dropdown.innerHTML = results.map(item => {
+    return `<div onclick="triggerSearchAction(${item.originalIdx})" style="padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border);" onmouseover="this.style.background='var(--blue-bg)'" onmouseout="this.style.background='transparent'">
       <span>${item.title}</span>
       <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" style="color: var(--t3);"><polyline points="9 18 15 12 9 6"></polyline></svg>
     </div>`;
@@ -13159,6 +13173,93 @@ function closeGlobalSearch() {
   }
 }
 
+// ── ASISTENTE VIRTUAL CHATBOT ──
+function toggleRenosurChat() {
+  const windowEl = document.getElementById('renosur-chat-window');
+  const bubbleEl = document.getElementById('renosur-chat-bubble');
+  const notifDot = document.getElementById('chat-notification-dot');
+  if (!windowEl) return;
+  
+  if (windowEl.style.display === 'none' || windowEl.style.display === '') {
+    windowEl.style.display = 'flex';
+    if (notifDot) notifDot.style.display = 'none';
+    setTimeout(() => {
+      const inputEl = document.getElementById('renosur-chat-input');
+      if (inputEl) inputEl.focus();
+    }, 100);
+  } else {
+    windowEl.style.display = 'none';
+  }
+}
+
+function sendQuickChatQuery(text) {
+  const inputEl = document.getElementById('renosur-chat-input');
+  if (inputEl) {
+    inputEl.value = text;
+    sendRenosurChatMessage();
+  }
+}
+
+function sendRenosurChatMessage() {
+  const inputEl = document.getElementById('renosur-chat-input');
+  const messagesEl = document.getElementById('renosur-chat-messages');
+  if (!inputEl || !messagesEl) return;
+  
+  const text = inputEl.value.trim();
+  if (!text) return;
+  
+  inputEl.value = '';
+  
+  const userHtml = `<div style="align-self: flex-end; max-width: 80%; background: var(--blue); color: white; border-radius: 14px 14px 2px 14px; padding: 10px 14px; font-size: 13px; line-height: 1.5; font-weight: 600; box-shadow: 0 2px 6px rgba(53,127,191,0.25);">${escapeHtml(text)}</div>`;
+  messagesEl.insertAdjacentHTML('beforeend', userHtml);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
+  
+  setTimeout(() => {
+    const response = getRenosurChatResponse(text);
+    const aiHtml = `<div style="align-self: flex-start; max-width: 85%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px 14px 14px 2px; padding: 10px 14px; font-size: 13px; line-height: 1.5; color: var(--text); font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">${response}</div>`;
+    messagesEl.insertAdjacentHTML('beforeend', aiHtml);
+    messagesEl.scrollTop = messagesEl.scrollHeight;
+  }, 350);
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function getRenosurChatResponse(query) {
+  const q = query.toLowerCase().trim();
+  
+  if (q === 'hola' || q === 'buenas' || q === 'buenos dias' || q === 'buenas tardes') {
+    return "¡Hola! ¿En qué puedo ayudarte hoy comercial? Pregúntame sobre el comparador, las comisiones, las promociones de supermercado o cierres de mes.";
+  }
+  if (q === 'gracias' || q === 'gracia' || q === 'de lujo' || q === 'perfecto' || q === 'ok') {
+    return "¡De nada, mi rey! Si necesitas buscar cualquier otra sección, dímelo y te la encuentro volando.";
+  }
+  
+  const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined') ? (AGENT_ROLES[currentAgentDni] || 'comercial') : 'comercial';
+  const isGerente = userRole === 'gerente';
+
+  const results = SEARCH_INDEX
+    .map((item, idx) => ({ ...item, originalIdx: idx }))
+    .filter(item => {
+      if (item.requireGerente && !isGerente) return false;
+      return item.title.toLowerCase().includes(q) || item.keywords.some(keyword => keyword.toLowerCase().includes(q));
+    });
+
+  if (results.length > 0) {
+    let reply = "He encontrado estas herramientas que coinciden con tu consulta:<br><br>";
+    results.forEach(item => {
+      reply += `<button onclick="triggerSearchAction(${item.originalIdx}); toggleRenosurChat();" style="width: 100%; text-align: left; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 8px 12px; margin-bottom: 6px; font-size: 12.5px; font-weight: 700; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.15s;" onmouseover="this.style.borderColor='var(--blue)'; this.style.background='var(--blue-bg)'" onmouseout="this.style.borderColor='var(--border)'; this.style.background='var(--surface)'">
+        <span>${item.title}</span>
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" style="color: var(--blue);"><polyline points="9 18 15 12 9 6"></polyline></svg>
+      </button>`;
+    });
+    return reply;
+  }
+  
+  return "Lo siento, no he encontrado información exacta para esa búsqueda. Intenta con palabras clave como 'Iberdrola', 'Carrefour', 'cierre', 'retro' o 'comisiones'.";
+}
+
 // ── INIT ──
 document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('today-date').textContent=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
@@ -13167,5 +13268,52 @@ document.addEventListener('DOMContentLoaded',()=>{
 });
 </script>
 
+<!-- ══════════ CHATBOT VIRTUAL RENOSUR AI ══════════ -->
+<!-- Botón flotante del Chatbot -->
+<div id="renosur-chat-bubble" onclick="toggleRenosurChat()" style="position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), #2563eb); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35); z-index: 999999; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+  <span id="chat-notification-dot" style="position: absolute; top: 0; right: 0; width: 14px; height: 14px; border-radius: 50%; background: #ef4444; border: 2px solid white; display: block; animation: pulseRedDot 1.5s infinite ease-in-out;"></span>
+</div>
+
+<!-- Ventana de Chat -->
+<div id="renosur-chat-window" style="display: none; position: fixed; bottom: 92px; right: 24px; width: 360px; height: 500px; max-height: 80vh; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15); z-index: 999999; flex-direction: column; overflow: hidden; font-family: inherit; transition: all 0.25s ease;">
+  <!-- Header -->
+  <div style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08);">
+    <div style="display: flex; align-items: center; gap: 10px;">
+      <div style="position: relative;">
+        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--blue-bg); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--blue); font-size: 15px;">🤖</div>
+        <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #0f172a;"></span>
+      </div>
+      <div>
+        <div style="font-weight: 800; font-size: 14px; line-height: 1.2;">Asistente Renosur AI</div>
+        <div style="font-size: 11px; color: #a1a1aa; font-weight: 600;">En línea para ayudarte</div>
+      </div>
+    </div>
+    <button onclick="toggleRenosurChat()" style="background: none; border: none; color: #a1a1aa; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; border-radius: 50%; transition: all 0.2s;" onmouseover="this.style.color='white'; this.style.background='rgba(255,255,255,0.1)'" onmouseout="this.style.color='#a1a1aa'; this.style.background='none'">
+      <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+    </button>
+  </div>
+
+  <!-- Messages Area -->
+  <div id="renosur-chat-messages" style="flex: 1; padding: 16px; overflow-y: auto; background: var(--bg); display: flex; flex-direction: column; gap: 12px;">
+    <!-- Welcome Message -->
+    <div style="align-self: flex-start; max-width: 85%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px 14px 14px 2px; padding: 10px 14px; font-size: 13px; line-height: 1.5; color: var(--text); font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+      ¡Hola! Soy tu asistente de Renosur. Pregúntame lo que necesites, por ejemplo:
+      <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+        <button onclick="sendQuickChatQuery('promociones')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.15); color: var(--blue); padding: 6px 10px; border-radius: var(--rs); font-size: 11.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🎁 ¿Qué promociones hay hoy?</button>
+        <button onclick="sendQuickChatQuery('cierre de mes')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.15); color: var(--blue); padding: 6px 10px; border-radius: var(--rs); font-size: 11.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">📅 ¿Cuándo es el cierre de mes?</button>
+        <button onclick="sendQuickChatQuery('retrocomisiones')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.15); color: var(--blue); padding: 6px 10px; border-radius: var(--rs); font-size: 11.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">💸 ¿Cómo van las retrocomisiones?</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input Area -->
+  <div style="padding: 12px 16px; background: var(--surface); border-top: 1.5px solid var(--border); display: flex; gap: 8px; align-items: center;">
+    <input type="text" id="renosur-chat-input" placeholder="Pregúntame algo..." autocomplete="off" style="flex: 1; padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; background: var(--bg); color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" onkeydown="if(event.key==='Enter') sendRenosurChatMessage()">
+    <button onclick="sendRenosurChatMessage()" style="width: 38px; height: 38px; border-radius: var(--rs); border: none; background: var(--blue); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: background 0.2s;" onmouseover="this.style.background='#2563eb'" onmouseout="this.style.background='var(--blue)'">
+      <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </button>
+  </div>
+</div>
 
 </body></html>
