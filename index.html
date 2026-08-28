@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930335;
+const CURRENT_BUILD_VERSION = 1785002930336;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13633,7 +13633,10 @@ document.addEventListener('DOMContentLoaded',()=>{
         <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #0f172a;"></span>
       </div>
       <div>
-        <div style="font-weight: 800; font-size: 14px; line-height: 1.2;">Asistente Renosur AI</div>
+        <div style="font-weight: 800; font-size: 14px; line-height: 1.2; display: flex; align-items: center; gap: 6px;">
+          Asistente Renosur AI
+          <span style="background: var(--blue); color: white; font-size: 9px; font-weight: 800; padding: 2px 5px; border-radius: 4px; line-height: 1; text-transform: uppercase;">Beta</span>
+        </div>
         <div style="font-size: 11px; color: #a1a1aa; font-weight: 600;">En línea para ayudarte</div>
       </div>
     </div>
@@ -13646,6 +13649,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   <div id="renosur-chat-messages" style="flex: 1; padding: 16px; overflow-y: auto; background: var(--bg); display: flex; flex-direction: column; gap: 12px;">
     <!-- Welcome Message -->
     <div style="align-self: flex-start; max-width: 85%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px 14px 14px 2px; padding: 10px 14px; font-size: 13px; line-height: 1.5; color: var(--text); font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
+      <div style="color: #ef4444; font-size: 11px; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 4px;">
+        ⚠️ ASISTENTE EN FASE BETA
+      </div>
       ¡Hola! Soy tu asistente de Renosur. Pregúntame lo que necesites, por ejemplo:
       <div style="margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
         <button onclick="sendQuickChatQuery('promociones')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.15); color: var(--blue); padding: 6px 10px; border-radius: var(--rs); font-size: 11.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🎁 ¿Qué promociones hay hoy?</button>
