@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930330;
+const CURRENT_BUILD_VERSION = 1785002930331;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13370,7 +13370,7 @@ const KNOWLEDGE_BASE = [
     • Certificado de empadronamiento actual en el suministro.`
   },
   {
-    keywords: ["cie", "boletin", "boletín", "alta nueva", "altas nuevas"],
+    keywords: ["cie", "boletin", "boletín", "boletines", "alta nueva", "altas nuevas"],
     answer: `<strong>Certificado de Instalación Eléctrica (CIE):</strong><br><br>
     • Para dar de **alta un nuevo suministro** (donde no había luz o está dada de baja), es **obligatorio** aportar el CIE (Boletín de enganche) en vigor (menos de 20 años de antigüedad).`
   },
@@ -13381,7 +13381,7 @@ const KNOWLEDGE_BASE = [
     • <strong>Bajar la potencia:</strong> Cuesta aproximadamente **9€ en total** (tasa fija, independientemente de cuántos kW se bajen y sin límite de tramos).`
   },
   {
-    keywords: ["cierre", "cierre de mes", "cierre de mez", "comienzo", "comienzo de mes", "comiendo de mes", "calendario", "festivos", "laborables"],
+    keywords: ["cierre", "cierra", "cierran", "cierres", "cierre de mes", "cierre de mez", "comienzo", "comienzo de mes", "comiendo de mes", "calendario", "festivos", "laborables"],
     answer: `<strong>Calendario y Cierres de Mes 2026 (Renosur-TM):</strong><br><br>
     Los cierres de ventas mensuales se realizan en las fechas exactas siguientes:<br>
     • <strong>Enero:</strong> Comienza 27/Dic - Cierra 27/Ene.<br>
@@ -13421,6 +13421,20 @@ const KNOWLEDGE_BASE = [
     • En el comparador, puedes indicar un **descuento mensual opcional por batería virtual** (Multicasa) que se restará directamente del coste de la propuesta del cliente con IVA.`
   }
 ];
+
+function matchKeyword(query, keyword) {
+  const q = query.toLowerCase().trim();
+  const kw = keyword.toLowerCase().trim();
+  if (kw.includes(' ')) {
+    return q.includes(kw);
+  }
+  if (kw.length <= 3) {
+    const regex = new RegExp('\\b' + kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&') + '\\b', 'i');
+    return regex.test(q);
+  }
+  const regex = new RegExp('\\b' + kw.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&'), 'i');
+  return regex.test(q);
+}
 
 function getRenosurChatResponse(query) {
   const q = query.toLowerCase().trim();
@@ -13485,7 +13499,7 @@ function getRenosurChatResponse(query) {
   
   // 1. Buscar en la Base de Conocimientos (Q&A Directo)
   const kbMatch = KNOWLEDGE_BASE.find(item => 
-    item.keywords.some(keyword => q.includes(keyword) || keyword.includes(q))
+    item.keywords.some(keyword => matchKeyword(q, keyword))
   );
   if (kbMatch) {
     return kbMatch.answer;
