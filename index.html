@@ -4060,10 +4060,10 @@ input:focus, select:focus, textarea:focus {
     <!-- Buscador del Asistente -->
     <div class="topbar-search-wrapper" style="flex: 1; max-width: 320px; margin: 0 20px; position: relative;">
       <div style="position: relative; display: flex; align-items: center;">
-        <span style="position: absolute; left: 12px; color: var(--t3); display: flex; align-items: center; pointer-events: none;">
+        <span style="position: absolute; left: 14px; color: var(--t3); display: flex; align-items: center; pointer-events: none;">
           <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
         </span>
-        <input type="text" id="global-search-input" placeholder="Buscar en el asistente..." autocomplete="off" style="width: 100%; padding: 8px 12px 8px 34px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; background: var(--surface); color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="setTimeout(closeGlobalSearch, 250); this.style.borderColor='var(--border)'" oninput="handleGlobalSearch()">
+        <input type="text" id="global-search-input" placeholder="Buscar en el asistente..." autocomplete="off" style="width: 100%; padding: 8px 12px 8px 38px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; background: var(--surface); color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="setTimeout(closeGlobalSearch, 250); this.style.borderColor='var(--border)'" oninput="handleGlobalSearch()">
       </div>
       <!-- Desplegable de búsqueda -->
       <div id="global-search-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); left: 0; width: 100%; max-height: 280px; overflow-y: auto; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05); z-index: 99999;">
@@ -10440,7 +10440,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930325;
+const CURRENT_BUILD_VERSION = 1785002930326;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13091,11 +13091,14 @@ const SEARCH_INDEX = [
   // Comparador
   { title: "Comparador de Luz y Gas", keywords: ["comparador", "luz", "gas", "potencia", "kwh", "excedentes", "bateria virtual", "ahorro", "propuesta", "pdf"], action: () => showPanel('comparativa', document.getElementById('btn-nav-comparativa')) },
 
+  // Calendario
+  { title: "Calendario Laboral (Cierres e Inicio de Mes)", keywords: ["calendario", "cierre de mes", "cierre de mez", "comiendo de mes", "comienzo de mes", "cierre", "apertura", "festivos", "dias laborables"], action: () => showPanel('calendario', document.getElementById('btn-nav-calendario')) },
+
   // Normas de Sala
   { title: "Normas de Sala", keywords: ["normas", "sala", "horarios", "conducta", "movil", "silencio", "faltas", "mision", "valores"], action: () => showPanel('normas', document.getElementById('btn-nav-normas')) },
 
   // Condiciones Telemarketing
-  { title: "Condiciones Telemarketing", keywords: ["condiciones", "telemarketing", "comisiones", "descomisiones", "objetivos", "securitas", "direct", "iberdrola", "endesa", "gana", "naturgy"], action: () => showPanel('telemarketing', document.getElementById('btn-nav-telemarketing')) },
+  { title: "Condiciones Telemarketing y Comisiones", keywords: ["condiciones", "telemarketing", "comisiones", "descomisiones", "retro", "retrocomision", "retrocomisiones", "retrocomisión", "objetivos", "securitas", "direct", "iberdrola", "endesa", "gana", "naturgy"], action: () => showPanel('telemarketing', document.getElementById('btn-nav-telemarketing')) },
 
   // Enlaces de Trabajo
   { title: "Enlaces de Trabajo (WhatsApp, CRM, Consultas)", keywords: ["enlaces", "utilidades", "whatsapp", "crm", "consultas", "ontime", "sips", "energiza", "calculadora", "owncloud"], action: () => showPanel('sips', document.getElementById('btn-nav-sips')) },
