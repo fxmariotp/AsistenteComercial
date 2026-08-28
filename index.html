@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930329;
+const CURRENT_BUILD_VERSION = 1785002930330;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13216,6 +13216,40 @@ function escapeHtml(str) {
 
 const KNOWLEDGE_BASE = [
   {
+    keywords: ["retro de gana", "retro gana", "retrocomision gana", "retrocomisión gana", "retro de gana energia", "retro de gana energía", "retro gana energia", "retro gana energía"],
+    answer: `<strong>Retrocomisión / Descomisión de Gana Energía:</strong><br><br>
+    La retro/permanencia de comisión para Gana Energía es de <strong>12 meses (100%)</strong>. Si el suministro se da de baja dentro de los primeros 12 meses, se descuenta el 100% de la comisión.`
+  },
+  {
+    keywords: ["retro de endesa", "retro endesa", "retrocomision endesa", "retrocomisión endesa"],
+    answer: `<strong>Retrocomisión / Descomisión de Endesa:</strong><br><br>
+    La retro/permanencia de comisión para Endesa es de <strong>12 meses (100%)</strong>. Si el suministro se da de baja dentro de los primeros 12 meses, se descuenta el 100% de la comisión.`
+  },
+  {
+    keywords: ["retro de iberdrola", "retro iberdrola", "retrocomision iberdrola", "retrocomisión iberdrola"],
+    answer: `<strong>Retrocomisión / Descomisión de Iberdrola:</strong><br><br>
+    La retro/permanencia de comisión para Iberdrola es de:<br>
+    • <strong>0 a 2 meses:</strong> 100% de descomisión.<br>
+    • <strong>2 a 4 meses:</strong> 50% de descomisión.`
+  },
+  {
+    keywords: ["retro de naturgy", "retro naturgy", "retrocomision naturgy", "retrocomisión naturgy"],
+    answer: `<strong>Retrocomisión / Descomisión de Naturgy:</strong><br><br>
+    La retro/permanencia de comisión para Naturgy es de:<br>
+    • <strong>0 a 2 meses:</strong> 100% de descomisión.<br>
+    • <strong>2 a 4 meses:</strong> 50% de descomisión.`
+  },
+  {
+    keywords: ["retro de pymes", "retro pymes"],
+    answer: `<strong>Retrocomisión / Descomisión de Pymes:</strong><br><br>
+    La retro/permanencia de comisión para Pymes es de <strong>12 meses (100%)</strong>.`
+  },
+  {
+    keywords: ["retro de securitas", "retro securitas"],
+    answer: `<strong>Retrocomisión / Descomisión de Securitas Direct:</strong><br><br>
+    La retro/permanencia de comisión para Securitas Direct es de <strong>6 meses (100%)</strong>.`
+  },
+  {
     keywords: ["retro", "retrocomision", "retrocomisiones", "retrocomisión"],
     answer: `<strong>Retrocomisiones en Telemarketing:</strong><br><br>
     Las comisiones retroactivas se aplican cuando un comercial no alcanza el objetivo mínimo en el mes actual pero compensa el volumen en el mes siguiente, o según las siguientes condiciones reguladas:<br>
@@ -13396,6 +13430,57 @@ function getRenosurChatResponse(query) {
   }
   if (q === 'gracias' || q === 'gracia' || q === 'de lujo' || q === 'perfecto' || q === 'ok') {
     return "¡De nada, mi rey! Si necesitas buscar cualquier otra sección, dímelo y te la encuentro volando.";
+  }
+
+  // Búsqueda dinámica de tiendas de Carrefour
+  if (q.includes('carrefour') && (q.includes('donde') || q.includes('dónde') || q.includes('tienda') || q.includes('provincia') || q.includes('activo') || q.includes('activa') || q.includes('lista') || q.includes('sitio') || q.includes('que hay'))) {
+    const config = getPromocionesConfig();
+    const carrefourPromo = config.find(p => p.id === 'carrefour');
+    if (carrefourPromo) {
+      if (!carrefourPromo.active) {
+        return "La promoción de Carrefour está actualmente <strong>desactivada</strong>.";
+      }
+      let reply = "<strong>Tiendas y Provincias Activas de Carrefour:</strong><br><br>";
+      carrefourPromo.provinces.forEach(prov => {
+        reply += `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})<br>`;
+      });
+      reply += "<br>*Nota: Estas promociones solo son válidas para contratos firmados con Iberdrola.*";
+      return reply;
+    }
+  }
+
+  // Búsqueda dinámica de tiendas de Leroy Merlin
+  if ((q.includes('leroy') || q.includes('merlin')) && (q.includes('donde') || q.includes('dónde') || q.includes('tienda') || q.includes('provincia') || q.includes('activo') || q.includes('activa') || q.includes('lista') || q.includes('sitio') || q.includes('que hay'))) {
+    const config = getPromocionesConfig();
+    const leroyPromo = config.find(p => p.id === 'leroy-merlin');
+    if (leroyPromo) {
+      if (!leroyPromo.active) {
+        return "La promoción de Leroy Merlin está actualmente <strong>desactivada</strong>.";
+      }
+      let reply = "<strong>Tiendas y Provincias Activas de Leroy Merlin:</strong><br><br>";
+      leroyPromo.provinces.forEach(prov => {
+        reply += `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})<br>`;
+      });
+      reply += "<br>*Nota: Estas promociones solo son válidas para contratos firmados con Iberdrola.*";
+      return reply;
+    }
+  }
+
+  // Búsqueda dinámica de tiendas de Caprabo
+  if (q.includes('caprabo') && (q.includes('donde') || q.includes('dónde') || q.includes('tienda') || q.includes('provincia') || q.includes('activo') || q.includes('activa') || q.includes('lista') || q.includes('sitio') || q.includes('que hay'))) {
+    const config = getPromocionesConfig();
+    const capraboPromo = config.find(p => p.id === 'caprabo');
+    if (capraboPromo) {
+      if (!capraboPromo.active) {
+        return "La promoción de Caprabo está actualmente <strong>desactivada</strong>.";
+      }
+      let reply = "<strong>Tiendas y Provincias Activas de Caprabo:</strong><br><br>";
+      capraboPromo.provinces.forEach(prov => {
+        reply += `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})<br>`;
+      });
+      reply += "<br>*Nota: Estas promociones solo son válidas para contratos firmados con Iberdrola.*";
+      return reply;
+    }
   }
   
   // 1. Buscar en la Base de Conocimientos (Q&A Directo)
