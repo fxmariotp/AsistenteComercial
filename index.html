@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930328;
+const CURRENT_BUILD_VERSION = 1785002930329;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13214,6 +13214,180 @@ function escapeHtml(str) {
   return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
 }
 
+const KNOWLEDGE_BASE = [
+  {
+    keywords: ["retro", "retrocomision", "retrocomisiones", "retrocomisión"],
+    answer: `<strong>Retrocomisiones en Telemarketing:</strong><br><br>
+    Las comisiones retroactivas se aplican cuando un comercial no alcanza el objetivo mínimo en el mes actual pero compensa el volumen en el mes siguiente, o según las siguientes condiciones reguladas:<br>
+    • Para optar a comisiones, se exige un <strong>mínimo de 10 ventas activas</strong> en el mes.<br>
+    • Si se cae una venta y queda por debajo del mínimo, se aplica la descomisión correspondiente.<br>
+    • Las recuperaciones de ventas caídas dentro de los 30 días posteriores pueden computar para la retrocomisión del mes anterior.`
+  },
+  {
+    keywords: ["comisiones", "comision", "pagos", "cuanto gano", "cuanto pagan"],
+    answer: `<strong>Tabla de Comisiones de Telemarketing:</strong><br><br>
+    • <strong>Iberdrola / Naturgy / Endesa / Gana:</strong> Se paga por punto de suministro (CUPS) activo y verificado.<br>
+    • <strong>Securitas Direct:</strong> Comisión fija de 150€ por instalación activa y conforme.<br>
+    • <strong>Dual (Luz + Gas):</strong> Comisión bonificada (se suma un extra de 10€ sobre la comisión base).<br>
+    • <strong>Placas Solares (Autoconsumo):</strong> Comisión variable en función del kWp instalado de la propuesta firmada.<br><br>
+    *Para ver las tablas con importes exactos y tramos, haz clic en el menú lateral "Condiciones Telemarketing".*`
+  },
+  {
+    keywords: ["descomisiones", "descomision", "caidas", "bajas"],
+    answer: `<strong>Normativa de Descomisiones:</strong><br><br>
+    • Una venta se descomisiona si el contrato es cancelado por el cliente o rechazado por la distribuidora antes de la activación de la primera factura (habitualmente dentro de los primeros 15-30 días).<br>
+    • Si el cliente desiste del contrato en el periodo legal de desestimiento (14 días), el importe de la comisión se descontará íntegramente de la liquidación del mes en curso o del mes siguiente.`
+  },
+  {
+    keywords: ["objetivos", "objetivo", "minimo", "ventas minimas"],
+    answer: `<strong>Objetivos Mínimos Mensuales:</strong><br><br>
+    • Cada comercial debe alcanzar un mínimo obligatorio de <strong>10 contratos activos al mes</strong>.<br>
+    • No llegar al mínimo de forma reiterada (3 meses consecutivos) dará lugar a revisión de contrato e inicio de medidas correctoras.<br>
+    • Los contratos deben estar debidamente firmados, grabados y aceptados por la comercializadora para computar.`
+  },
+  {
+    keywords: ["carrefour"],
+    answer: `<strong>Promoción de Carrefour:</strong><br><br>
+    • <strong>Método de entrega:</strong> Correo postal (se envían físicamente al domicilio del cliente).<br>
+    • <strong>Condición:</strong> Solo válida para contratos firmados con Iberdrola.<br>
+    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.`
+  },
+  {
+    keywords: ["leroy", "leroy merlin"],
+    answer: `<strong>Promoción de Leroy Merlin:</strong><br><br>
+    • <strong>Método de entrega:</strong> Tarjeta electrónica al correo del cliente.<br>
+    • <strong>Excepción de Sevilla (Dos Hermanas):</strong> Recogida presencial en tienda.<br>
+    • <strong>Provincias y Tiendas válidas:</strong><br>
+      - Huelva (tiendas de Huelva y Lepe).<br>
+      - Barcelona (tienda de Cabrera de Mar).<br>
+      - Málaga (tienda de Marbella).<br>
+      - Sevilla (Dos Hermanas).<br>
+    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.`
+  },
+  {
+    keywords: ["caprabo"],
+    answer: `<strong>Promoción de Caprabo:</strong><br><br>
+    • <strong>Método de entrega:</strong> Ingreso directo en la tarjeta de cliente (el cliente debe pasar su tarjeta física por caja).<br>
+    • <strong>Tiendas válidas:</strong> Provincia de Barcelona (tiendas en Rubí, Masnou, Abrera y Max Center La Farga).<br>
+    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.`
+  },
+  {
+    keywords: ["cif", "pymes", "empresas", "30", "30€", "50", "50€"],
+    answer: `<strong>Condiciones para CIFs (Pymes/Empresas) en Promociones:</strong><br><br>
+    • Las promociones de supermercado (tarjetas regalo) para contratos con CIF (empresas/autónomos) tienen un **límite máximo de 30€**.<br>
+    • Los contratos con CIF **no optan en ningún caso a la promoción de 50€**.<br>
+    • Solo son válidos si se contratan con Iberdrola.`
+  },
+  {
+    keywords: ["ccpp", "comunidades", "comunidad"],
+    answer: `<strong>Condiciones para CCPP (Comunidades de Propietarios):</strong><br><br>
+    • Las CCPP tienen **totalmente prohibido y excluido** recibir tarjetas de regalo o promociones comerciales en cualquiera de los supermercados asociados (Carrefour, Leroy Merlin, Caprabo).`
+  },
+  {
+    keywords: ["iberdrola", "requisitos iberdrola", "documentos iberdrola"],
+    answer: `<strong>Requisitos y Documentación de Iberdrola:</strong><br><br>
+    • <strong>Residencial:</strong><br>
+      - Lectura del texto legal correspondiente.<br>
+      - DNI / NIE en vigor (legible ambas caras) del nuevo titular (Obligatorio).<br>
+    • <strong>Pymes (Empresas):</strong><br>
+      - Lectura de texto legal.<br>
+      - DNI / NIE del representante legal.<br>
+      - Factura actual completa.<br>
+      - CIF de la empresa/sociedad.<br>
+      - Escritura de constitución o recibo de autónomo (opcional pero aconsejado).<br>
+    • <strong>Edad máxima:</strong> No se permite la contratación para mayores de 75 años.`
+  },
+  {
+    keywords: ["naturgy", "requisitos naturgy", "documentos naturgy"],
+    answer: `<strong>Requisitos y Documentación de Naturgy:</strong><br><br>
+    • <strong>Residencial:</strong><br>
+      - Lectura del texto legal correspondiente.<br>
+    • <strong>Pymes (Empresas):</strong><br>
+      - Lectura de texto legal.<br>
+      - DNI / NIE del representante legal.<br>
+      - Factura actual completa.<br>
+      - CIF de la empresa/sociedad.<br>
+      - Escritura de constitución o recibo de autónomo.<br>
+    • <strong>Firma:</strong> Firma digital SMS/WhatsApp enviada al cliente.`
+  },
+  {
+    keywords: ["endesa", "hostezadis", "requisitos endesa", "documentos endesa"],
+    answer: `<strong>Requisitos y Documentación de Endesa:</strong><br><br>
+    • <strong>¡IMPORTANTE! (Solo Hostezadis):</strong> El guión y condiciones de Endesa son **única y exclusivamente válidos para Hostezadis cuando se trata de un Cambio de Titularidad**.<br>
+    • <strong>Zonas permitidas:</strong><br>
+      - SEVILLA (Aljarafe, Alcalá de Guadaíra, Rochelambert).<br>
+      - CÁDIZ, MADRID, ALMERÍA, JAÉN, GRANADA, BARCELONA, VALENCIA, CIUDAD REAL, TOLEDO, HUELVA, BADAJOZ, MÁLAGA, CÓRDOBA.<br>
+    • <strong>Firma:</strong> Proceso gestionado a través de Cosmos Mobile.`
+  },
+  {
+    keywords: ["gana", "gana energia", "requisitos gana", "documentos gana"],
+    answer: `<strong>Requisitos y Documentación de Gana Energía:</strong><br><br>
+    • <strong>Residencial & Pymes:</strong><br>
+      - Lectura de texto legal.<br>
+      - Firma digital enviada mediante código PIN SMS o enlace de firma online.`
+  },
+  {
+    keywords: ["justo titulo", "justo título", "cambio titular", "cambio de titularidad"],
+    answer: `<strong>Documentación de Justo Título:</strong><br><br>
+    Para cambios de titularidad es obligatorio aportar alguno de los siguientes documentos oficiales:<br>
+    • Contrato de alquiler vigente.<br>
+    • Escritura de compra-venta de la vivienda.<br>
+    • Último recibo del IBI a nombre del nuevo titular.<br>
+    • Certificado de empadronamiento actual en el suministro.`
+  },
+  {
+    keywords: ["cie", "boletin", "boletín", "alta nueva", "altas nuevas"],
+    answer: `<strong>Certificado de Instalación Eléctrica (CIE):</strong><br><br>
+    • Para dar de **alta un nuevo suministro** (donde no había luz o está dada de baja), es **obligatorio** aportar el CIE (Boletín de enganche) en vigor (menos de 20 años de antigüedad).`
+  },
+  {
+    keywords: ["potencia", "bajar potencia", "subir potencia", "cambio potencia"],
+    answer: `<strong>Precios de cambios de potencia (Iberdrola):</strong><br><br>
+    • <strong>Subir la potencia:</strong> Cuesta aproximadamente **50€ por cada kW** que se incremente (en concepto de derechos de extensión y acceso).<br>
+    • <strong>Bajar la potencia:</strong> Cuesta aproximadamente **9€ en total** (tasa fija, independientemente de cuántos kW se bajen y sin límite de tramos).`
+  },
+  {
+    keywords: ["cierre", "cierre de mes", "cierre de mez", "comienzo", "comienzo de mes", "comiendo de mes", "calendario", "festivos", "laborables"],
+    answer: `<strong>Calendario y Cierres de Mes 2026 (Renosur-TM):</strong><br><br>
+    Los cierres de ventas mensuales se realizan en las fechas exactas siguientes:<br>
+    • <strong>Enero:</strong> Comienza 27/Dic - Cierra 27/Ene.<br>
+    • <strong>Febrero:</strong> Comienza 28/Ene - Cierra 25/Feb.<br>
+    • <strong>Marzo:</strong> Comienza 26/Feb - Cierra 25/Mar.<br>
+    • <strong>Abril:</strong> Comienza 26/Mar - Cierra 25/Abr.<br>
+    • <strong>Mayo:</strong> Comienza 26/Abr - Cierra 25/May.<br>
+    • <strong>Junio:</strong> Comienza 26/May - Cierra 25/Jun.<br>
+    • <strong>Julio:</strong> Comienza 26/Jun - Cierra 26/Jul.<br>
+    • <strong>Agosto:</strong> Comienza 27/Jul - Cierra 26/Ago.<br>
+    • <strong>Septiembre:</strong> Comienza 27/Ago - Cierra 25/Sep.<br>
+    • <strong>Octubre:</strong> Comienza 26/Sep - Cierra 26/Oct.<br>
+    • <strong>Noviembre:</strong> Comienza 27/Oct - Cierra 25/Nov.<br>
+    • <strong>Diciembre:</strong> Comienza 26/Nov - Cierra 25/Dic.`
+  },
+  {
+    keywords: ["normas", "sala", "horario", "horarios", "movil", "móvil", "silencio", "faltas", "valores"],
+    answer: `<strong>Normas de Sala Renosur:</strong><br><br>
+    • <strong>Horario comercial:</strong> De lunes a viernes (respetando los turnos y descansos establecidos).<br>
+    • <strong>Uso de teléfonos móviles personales:</strong> Queda estrictamente prohibido durante la jornada activa. Deben guardarse en las taquillas o mochilas.<br>
+    • <strong>Silencio y Clima:</strong> Evitar ruidos innecesarios, gritos o conversaciones ajenas a la venta para mantener la concentración colectiva.<br>
+    • <strong>Misión y Valores:</strong> Ofrecer asesoramiento transparente y de calidad orientado al ahorro real del cliente.`
+  },
+  {
+    keywords: ["telefonos", "telefono", "contacto", "distribuidora", "averias", "averia"],
+    answer: `<strong>Teléfonos de Interés de Comercializadoras:</strong><br><br>
+    • <strong>Iberdrola:</strong> 900 225 235 (Atención al Cliente).<br>
+    • <strong>Naturgy:</strong> 900 100 251 (Atención al Cliente).<br>
+    • <strong>Endesa:</strong> 900 24 24 24 (Atención al Cliente).<br>
+    • <strong>Gana Energía:</strong> 960 202 543 (Atención al Cliente).<br><br>
+    *Nota: En el menú lateral "Teléfonos" puedes consultar los teléfonos de averías de todas las distribuidoras.*`
+  },
+  {
+    keywords: ["bateria", "bateria virtual", "batería", "batería virtual"],
+    answer: `<strong>Batería Virtual en el Comparador:</strong><br><br>
+    • La Batería Virtual permite acumular en euros el excedente de energía solar que no se compensa directamente en la factura actual de luz.<br>
+    • En el comparador, puedes indicar un **descuento mensual opcional por batería virtual** (Multicasa) que se restará directamente del coste de la propuesta del cliente con IVA.`
+  }
+];
+
 function getRenosurChatResponse(query) {
   const q = query.toLowerCase().trim();
   
@@ -13224,6 +13398,15 @@ function getRenosurChatResponse(query) {
     return "¡De nada, mi rey! Si necesitas buscar cualquier otra sección, dímelo y te la encuentro volando.";
   }
   
+  // 1. Buscar en la Base de Conocimientos (Q&A Directo)
+  const kbMatch = KNOWLEDGE_BASE.find(item => 
+    item.keywords.some(keyword => q.includes(keyword) || keyword.includes(q))
+  );
+  if (kbMatch) {
+    return kbMatch.answer;
+  }
+  
+  // 2. Fallback: Buscar en el índice de páginas para ofrecer navegación
   const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined') ? (AGENT_ROLES[currentAgentDni] || 'comercial') : 'comercial';
   const isGerente = userRole === 'gerente';
 
@@ -13235,7 +13418,7 @@ function getRenosurChatResponse(query) {
     });
 
   if (results.length > 0) {
-    let reply = "He encontrado estas herramientas que coinciden con tu consulta:<br><br>";
+    let reply = "No tengo una respuesta directa detallada a esa pregunta, pero he encontrado estas herramientas relacionadas que puedes abrir:<br><br>";
     results.forEach(item => {
       reply += `<button onclick="triggerSearchAction(${item.originalIdx}); toggleRenosurChat();" style="width: 100%; text-align: left; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 8px 12px; margin-bottom: 6px; font-size: 12.5px; font-weight: 700; color: var(--text); cursor: pointer; display: flex; align-items: center; justify-content: space-between; transition: all 0.15s;" onmouseover="this.style.borderColor='var(--blue)'; this.style.background='var(--blue-bg)'" onmouseout="this.style.borderColor='var(--border)'; this.style.background='var(--surface)'">
         <span>${item.title}</span>
@@ -13245,7 +13428,7 @@ function getRenosurChatResponse(query) {
     return reply;
   }
   
-  return "Lo siento, no he encontrado información exacta para esa búsqueda. Intenta con palabras clave como 'Iberdrola', 'Carrefour', 'cierre', 'retro' o 'comisiones'.";
+  return "Lo siento, no he encontrado información sobre esa consulta. Intenta buscar palabras clave como 'Iberdrola', 'Carrefour', 'cierre de mes', 'retrocomisiones' o 'comisiones'.";
 }
 
 // ── INIT ──
