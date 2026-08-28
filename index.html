@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930332;
+const CURRENT_BUILD_VERSION = 1785002930333;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13451,54 +13451,142 @@ function getRenosurChatResponse(query) {
     return "¡De nada, mi rey! Si necesitas buscar cualquier otra sección, dímelo y te la encuentro volando.";
   }
 
+  function cleanStr(str) {
+    return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  }
+
   // Búsqueda dinámica de tiendas de Carrefour
-  if (q.includes('carrefour') && (q.includes('donde') || q.includes('dónde') || q.includes('tienda') || q.includes('provincia') || q.includes('activo') || q.includes('activa') || q.includes('lista') || q.includes('sitio') || q.includes('que hay'))) {
+  if (q.includes('carrefour')) {
     const config = getPromocionesConfig();
     const carrefourPromo = config.find(p => p.id === 'carrefour');
     if (carrefourPromo) {
       if (!carrefourPromo.active) {
         return "La promoción de Carrefour está actualmente <strong>desactivada</strong>.";
       }
-      let reply = "<strong>Tiendas y Provincias Activas de Carrefour:</strong><br><br>";
-      carrefourPromo.provinces.forEach(prov => {
-        reply += `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})<br>`;
-      });
-      reply += "<br>*Nota: Estas promociones solo son válidas para contratos firmados con Iberdrola.*";
-      return reply;
+      
+      const stopWords = ['hay', 'en', 'de', 'el', 'la', 'un', 'una', 'si', 'dónde', 'donde', 'que', 'qué', 'con', 'para', 'carrefour', 'promocion', 'promoción', 'tienda', 'tiendas', 'provincia', 'provincias', 'activo', 'activa', 'activos', 'activas', 'cual', 'cuál', 'esta', 'estas', 'este', 'estos', 'los', 'las', 'al', 'del', 'o', 'y', 'por', 'alguna', 'algun', 'algún', 'ciudad', 'ciudades', 'sitio', 'sitios'];
+      const words = q.split(/\s+/).filter(w => !stopWords.includes(w));
+      const searchLoc = words.join(' ').trim();
+      
+      const activeListHtml = carrefourPromo.provinces.map(prov => `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')}`).join('<br>');
+      
+      if (searchLoc) {
+        const cleanSearch = cleanStr(searchLoc);
+        let matchProv = null;
+        
+        for (const prov of carrefourPromo.provinces) {
+          if (cleanStr(prov.name).includes(cleanSearch) || cleanSearch.includes(cleanStr(prov.name))) {
+            matchProv = prov;
+            break;
+          }
+          const foundStore = prov.stores.find(st => cleanStr(st).includes(cleanSearch) || cleanSearch.includes(cleanStr(st)));
+          if (foundStore) {
+            matchProv = prov;
+            break;
+          }
+        }
+        
+        if (matchProv) {
+          return `<strong>¡Sí! Hay promoción de Carrefour</strong> en <strong>${matchProv.name}</strong>.<br><br>` +
+                 `• Tiendas: ${matchProv.stores.join(', ')}<br>` +
+                 `• Entrega: ${matchProv.delivery}`;
+        } else {
+          return `<strong>No hay promoción de Carrefour</strong> en <strong>"${escapeHtml(searchLoc)}"</strong>.<br><br>` +
+                 `Está disponible únicamente en estas ciudades:<br>${activeListHtml}`;
+        }
+      }
+      
+      return `<strong>Tiendas y Provincias Activas de Carrefour:</strong><br><br>${activeListHtml}<br><br>*Entrega: Envío a domicilio por correo postal.*`;
     }
   }
 
   // Búsqueda dinámica de tiendas de Leroy Merlin
-  if ((q.includes('leroy') || q.includes('merlin')) && (q.includes('donde') || q.includes('dónde') || q.includes('tienda') || q.includes('provincia') || q.includes('activo') || q.includes('activa') || q.includes('lista') || q.includes('sitio') || q.includes('que hay'))) {
+  if (q.includes('leroy') || q.includes('merlin')) {
     const config = getPromocionesConfig();
     const leroyPromo = config.find(p => p.id === 'leroy-merlin');
     if (leroyPromo) {
       if (!leroyPromo.active) {
         return "La promoción de Leroy Merlin está actualmente <strong>desactivada</strong>.";
       }
-      let reply = "<strong>Tiendas y Provincias Activas de Leroy Merlin:</strong><br><br>";
-      leroyPromo.provinces.forEach(prov => {
-        reply += `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})<br>`;
-      });
-      reply += "<br>*Nota: Estas promociones solo son válidas para contratos firmados con Iberdrola.*";
-      return reply;
+      
+      const stopWords = ['hay', 'en', 'de', 'el', 'la', 'un', 'una', 'si', 'dónde', 'donde', 'que', 'qué', 'con', 'para', 'leroy', 'merlin', 'promocion', 'promoción', 'tienda', 'tiendas', 'provincia', 'provincias', 'activo', 'activa', 'activos', 'activas', 'cual', 'cuál', 'esta', 'estas', 'este', 'estos', 'los', 'las', 'al', 'del', 'o', 'y', 'por', 'alguna', 'algun', 'algún', 'ciudad', 'ciudades', 'sitio', 'sitios'];
+      const words = q.split(/\s+/).filter(w => !stopWords.includes(w));
+      const searchLoc = words.join(' ').trim();
+      
+      const activeListHtml = leroyPromo.provinces.map(prov => `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})`).join('<br>');
+      
+      if (searchLoc) {
+        const cleanSearch = cleanStr(searchLoc);
+        let matchProv = null;
+        
+        for (const prov of leroyPromo.provinces) {
+          if (cleanStr(prov.name).includes(cleanSearch) || cleanSearch.includes(cleanStr(prov.name))) {
+            matchProv = prov;
+            break;
+          }
+          const foundStore = prov.stores.find(st => cleanStr(st).includes(cleanSearch) || cleanSearch.includes(cleanStr(st)));
+          if (foundStore) {
+            matchProv = prov;
+            break;
+          }
+        }
+        
+        if (matchProv) {
+          return `<strong>¡Sí! Hay promoción de Leroy Merlin</strong> en <strong>${matchProv.name}</strong>.<br><br>` +
+                 `• Tiendas: ${matchProv.stores.join(', ')}<br>` +
+                 `• Entrega: ${matchProv.delivery}`;
+        } else {
+          return `<strong>No hay promoción de Leroy Merlin</strong> en <strong>"${escapeHtml(searchLoc)}"</strong>.<br><br>` +
+                 `Está disponible únicamente en estas ciudades:<br>${activeListHtml}`;
+        }
+      }
+      
+      return `<strong>Tiendas y Provincias Activas de Leroy Merlin:</strong><br><br>${activeListHtml}`;
     }
   }
 
   // Búsqueda dinámica de tiendas de Caprabo
-  if (q.includes('caprabo') && (q.includes('donde') || q.includes('dónde') || q.includes('tienda') || q.includes('provincia') || q.includes('activo') || q.includes('activa') || q.includes('lista') || q.includes('sitio') || q.includes('que hay'))) {
+  if (q.includes('caprabo')) {
     const config = getPromocionesConfig();
     const capraboPromo = config.find(p => p.id === 'caprabo');
     if (capraboPromo) {
       if (!capraboPromo.active) {
         return "La promoción de Caprabo está actualmente <strong>desactivada</strong>.";
       }
-      let reply = "<strong>Tiendas y Provincias Activas de Caprabo:</strong><br><br>";
-      capraboPromo.provinces.forEach(prov => {
-        reply += `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})<br>`;
-      });
-      reply += "<br>*Nota: Estas promociones solo son válidas para contratos firmados con Iberdrola.*";
-      return reply;
+      
+      const stopWords = ['hay', 'en', 'de', 'el', 'la', 'un', 'una', 'si', 'dónde', 'donde', 'que', 'qué', 'con', 'para', 'caprabo', 'promocion', 'promoción', 'tienda', 'tiendas', 'provincia', 'provincias', 'activo', 'activa', 'activos', 'activas', 'cual', 'cuál', 'esta', 'estas', 'este', 'estos', 'los', 'las', 'al', 'del', 'o', 'y', 'por', 'alguna', 'algun', 'algún', 'ciudad', 'ciudades', 'sitio', 'sitios'];
+      const words = q.split(/\s+/).filter(w => !stopWords.includes(w));
+      const searchLoc = words.join(' ').trim();
+      
+      const activeListHtml = capraboPromo.provinces.map(prov => `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})`).join('<br>');
+      
+      if (searchLoc) {
+        const cleanSearch = cleanStr(searchLoc);
+        let matchProv = null;
+        
+        for (const prov of capraboPromo.provinces) {
+          if (cleanStr(prov.name).includes(cleanSearch) || cleanSearch.includes(cleanStr(prov.name))) {
+            matchProv = prov;
+            break;
+          }
+          const foundStore = prov.stores.find(st => cleanStr(st).includes(cleanSearch) || cleanSearch.includes(cleanStr(st)));
+          if (foundStore) {
+            matchProv = prov;
+            break;
+          }
+        }
+        
+        if (matchProv) {
+          return `<strong>¡Sí! Hay promoción de Caprabo</strong> en <strong>${matchProv.name}</strong>.<br><br>` +
+                 `• Tiendas: ${matchProv.stores.join(', ')}<br>` +
+                 `• Entrega: ${matchProv.delivery}`;
+        } else {
+          return `<strong>No hay promoción de Caprabo</strong> en <strong>"${escapeHtml(searchLoc)}"</strong>.<br><br>` +
+                 `Está disponible únicamente en estas ciudades:<br>${activeListHtml}`;
+        }
+      }
+      
+      return `<strong>Tiendas y Provincias Activas de Caprabo:</strong><br><br>${activeListHtml}`;
     }
   }
   
