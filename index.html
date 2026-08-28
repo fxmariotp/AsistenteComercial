@@ -3948,6 +3948,11 @@ input:focus, select:focus, textarea:focus {
   50% { transform: scale(1.4); opacity: 0.5; }
   100% { transform: scale(1); opacity: 1; }
 }
+@media (max-width: 768px) {
+  .topbar-search-wrapper {
+    display: none !important;
+  }
+}
 </style></head>
 <body>
 
@@ -4051,6 +4056,21 @@ input:focus, select:focus, textarea:focus {
         <div class="topbar-s" id="psub">Selecciona la compañia y sigue el guion</div>
       </div>
     </div>
+    
+    <!-- Buscador del Asistente -->
+    <div class="topbar-search-wrapper" style="flex: 1; max-width: 320px; margin: 0 20px; position: relative;">
+      <div style="position: relative; display: flex; align-items: center;">
+        <span style="position: absolute; left: 12px; color: var(--t3); display: flex; align-items: center; pointer-events: none;">
+          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </span>
+        <input type="text" id="global-search-input" placeholder="Buscar en el asistente..." autocomplete="off" style="width: 100%; padding: 8px 12px 8px 34px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; background: var(--surface); color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="setTimeout(closeGlobalSearch, 250); this.style.borderColor='var(--border)'" oninput="handleGlobalSearch()">
+      </div>
+      <!-- Desplegable de búsqueda -->
+      <div id="global-search-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); left: 0; width: 100%; max-height: 280px; overflow-y: auto; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05); z-index: 99999;">
+        <!-- Se cargará dinámicamente -->
+      </div>
+    </div>
+
     <div class="topbar-right" style="display: flex; gap: 10px; align-items: center;">
       <button id="btn-announcements-trigger" onclick="openAnnouncementsListModal()" style="position: relative; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; padding: 0;" title="Tablón de Anuncios">
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
@@ -10420,7 +10440,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930324;
+const CURRENT_BUILD_VERSION = 1785002930325;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13052,6 +13072,88 @@ async function fetchRankingForDashboard() {
     console.warn("Could not fetch ranking for dashboard widget:", e);
   }
   updateDashboardRankingWidget();
+}
+
+// ── BUSCADOR GLOBAL DEL ASISTENTE ──
+const SEARCH_INDEX = [
+  // Manual / Guiones (panel-scripts)
+  { title: "Texto Legal: Iberdrola (Residencial, Pymes, Requisitos)", keywords: ["iberdrola", "pymes", "texto legal", "grabacion", "requisitos", "justo titulo", "sms"], action: () => { showPanel('scripts', document.getElementById('btn-nav-scripts')); switchCia('iberdrola'); } },
+  { title: "Texto Legal: Naturgy (Residencial, Pymes, Requisitos)", keywords: ["naturgy", "pymes", "texto legal", "grabacion", "requisitos", "justo titulo", "sms", "whatsapp"], action: () => { showPanel('scripts', document.getElementById('btn-nav-scripts')); switchCia('naturgy'); } },
+  { title: "Texto Legal: Endesa (Cosmos Mobile, Zonas, Requisitos)", keywords: ["endesa", "cosmos", "hostezadis", "aljarafe", "sevilla", "cadiz", "madrid", "almeria", "jaen", "granada", "barcelona", "valencia", "ciudad real", "toledo", "huelva", "badajoz", "malaga", "cordoba", "justo titulo", "requisitos"], action: () => { showPanel('scripts', document.getElementById('btn-nav-scripts')); switchCia('endesa'); } },
+  { title: "Texto Legal: Gana Energía (Residencial, Pymes, Requisitos)", keywords: ["gana", "gana energia", "pymes", "requisitos", "sms", "pin", "firma"], action: () => { showPanel('scripts', document.getElementById('btn-nav-scripts')); switchCia('gana'); } },
+  
+  // Promociones
+  { title: "Promociones: Carrefour", keywords: ["carrefour", "promociones", "tarjeta", "regalo", "supermercado", "correo", "postal"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
+  { title: "Promociones: Leroy Merlin", keywords: ["leroy merlin", "promociones", "tarjeta", "regalo", "supermercado", "electronica", "presencial", "tienda", "sevilla", "huelva", "malaga", "barcelona"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
+  { title: "Promociones: Caprabo", keywords: ["caprabo", "promociones", "tarjeta", "regalo", "supermercado", "barcelona", "cliente"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
+  { title: "Promociones Supermercados (Iberdrola)", keywords: ["promociones", "tarjetas", "regalo", "supermercado", "cif", "30€", "50€", "ccpp"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
+
+  // Comparador
+  { title: "Comparador de Luz y Gas", keywords: ["comparador", "luz", "gas", "potencia", "kwh", "excedentes", "bateria virtual", "ahorro", "propuesta", "pdf"], action: () => showPanel('comparativa', document.getElementById('btn-nav-comparativa')) },
+
+  // Normas de Sala
+  { title: "Normas de Sala", keywords: ["normas", "sala", "horarios", "conducta", "movil", "silencio", "faltas", "mision", "valores"], action: () => showPanel('normas', document.getElementById('btn-nav-normas')) },
+
+  // Condiciones Telemarketing
+  { title: "Condiciones Telemarketing", keywords: ["condiciones", "telemarketing", "comisiones", "descomisiones", "objetivos", "securitas", "direct", "iberdrola", "endesa", "gana", "naturgy"], action: () => showPanel('telemarketing', document.getElementById('btn-nav-telemarketing')) },
+
+  // Enlaces de Trabajo
+  { title: "Enlaces de Trabajo (WhatsApp, CRM, Consultas)", keywords: ["enlaces", "utilidades", "whatsapp", "crm", "consultas", "ontime", "sips", "energiza", "calculadora", "owncloud"], action: () => showPanel('sips', document.getElementById('btn-nav-sips')) },
+
+  // Gerencia (solo si es gerente)
+  { title: "Gerencia: Control de Vacaciones", keywords: ["gerencia", "vacaciones", "calendario", "comerciales"], action: () => showPanel('controlVacaciones', document.getElementById('btn-nav-gerenteHub')), requireGerente: true },
+  { title: "Gerencia: Gestión de Usuarios", keywords: ["gerencia", "usuarios", "contraseñas", "roles", "personal"], action: () => showPanel('gruposAgentes', document.getElementById('btn-nav-gerenteHub')), requireGerente: true },
+  { title: "Gerencia: Registro de Conexiones (IPs)", keywords: ["gerencia", "conexiones", "ips", "auditoria", "accesos"], action: () => showPanel('registroConexiones', document.getElementById('btn-nav-gerenteHub')), requireGerente: true }
+];
+
+function handleGlobalSearch() {
+  const query = document.getElementById('global-search-input').value.toLowerCase().trim();
+  const dropdown = document.getElementById('global-search-dropdown');
+  if (!dropdown) return;
+
+  if (!query) {
+    dropdown.innerHTML = '';
+    dropdown.style.display = 'none';
+    return;
+  }
+
+  const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined') ? (AGENT_ROLES[currentAgentDni] || 'comercial') : 'comercial';
+  const isGerente = userRole === 'gerente';
+
+  const results = SEARCH_INDEX.filter(item => {
+    if (item.requireGerente && !isGerente) return false;
+    return item.title.toLowerCase().includes(query) || item.keywords.some(keyword => keyword.toLowerCase().includes(query));
+  });
+
+  if (results.length === 0) {
+    dropdown.innerHTML = `<div style="padding: 12px 16px; font-size: 13px; color: var(--t3); font-style: italic; text-align: center;">No se encontraron resultados</div>`;
+    dropdown.style.display = 'block';
+    return;
+  }
+
+  dropdown.innerHTML = results.map((item, idx) => {
+    return `<div onclick="triggerSearchAction(${idx})" style="padding: 10px 14px; font-size: 13px; font-weight: 600; color: var(--text); cursor: pointer; transition: background 0.15s; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border);" onmouseover="this.style.background='var(--blue-bg)'" onmouseout="this.style.background='transparent'">
+      <span>${item.title}</span>
+      <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3" style="color: var(--t3);"><polyline points="9 18 15 12 9 6"></polyline></svg>
+    </div>`;
+  }).join('');
+  dropdown.style.display = 'block';
+}
+
+function triggerSearchAction(index) {
+  const item = SEARCH_INDEX[index];
+  if (item && typeof item.action === 'function') {
+    item.action();
+    document.getElementById('global-search-input').value = '';
+    closeGlobalSearch();
+  }
+}
+
+function closeGlobalSearch() {
+  const dropdown = document.getElementById('global-search-dropdown');
+  if (dropdown) {
+    dropdown.style.display = 'none';
+  }
 }
 
 // ── INIT ──
