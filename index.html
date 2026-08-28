@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930336;
+const CURRENT_BUILD_VERSION = 1785002930337;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13618,9 +13618,9 @@ document.addEventListener('DOMContentLoaded',()=>{
 
 <!-- ══════════ CHATBOT VIRTUAL RENOSUR AI ══════════ -->
 <!-- Botón flotante del Chatbot -->
-<div id="renosur-chat-bubble" onclick="toggleRenosurChat()" style="position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: linear-gradient(135deg, var(--blue), #2563eb); color: white; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 8px 24px rgba(37, 99, 235, 0.35); z-index: 999999; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-  <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-  <span id="chat-notification-dot" style="position: absolute; top: 0; right: 0; width: 14px; height: 14px; border-radius: 50%; background: #ef4444; border: 2px solid white; display: block; animation: pulseRedDot 1.5s infinite ease-in-out;"></span>
+<div id="renosur-chat-bubble" onclick="toggleRenosurChat()" style="position: fixed; bottom: 24px; right: 24px; width: 56px; height: 56px; border-radius: 50%; background: var(--surface); border: 1.5px solid var(--border); cursor: pointer; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); z-index: 999999; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center; overflow: visible;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
+  <img src="Imagenes%20Compa%C3%B1%C3%ADa/Imagen%20ChatBot.png" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block;">
+  <span id="chat-notification-dot" style="position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; background: #ef4444; border: 2px solid white; display: block; animation: pulseRedDot 1.5s infinite ease-in-out;"></span>
 </div>
 
 <!-- Ventana de Chat -->
@@ -13629,7 +13629,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   <div style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 16px; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.08);">
     <div style="display: flex; align-items: center; gap: 10px;">
       <div style="position: relative;">
-        <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--blue-bg); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--blue); font-size: 15px;">🤖</div>
+        <div style="width: 36px; height: 36px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; background: white;">
+          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Imagen%20ChatBot.png" style="width: 100%; height: 100%; object-fit: cover;">
+        </div>
         <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #0f172a;"></span>
       </div>
       <div>
