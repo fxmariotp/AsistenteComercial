@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930338;
+const CURRENT_BUILD_VERSION = 1785002930339;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13438,6 +13438,346 @@ function getRenosurChatResponse(query) {
 
   function cleanStr(str) {
     return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+  }
+
+  // ── BASE DE DATOS DE TARIFAS DE LUZ Y GAS ──
+  const TARIFFS_DATA = {
+    iberdrola: {
+      luz: {
+        name: "Iberdrola Impulsa 24h",
+        base: "0,1561 €/kWh",
+        sin_mantenimiento: "0,1240 €/kWh",
+        con_mantenimiento: "0,1170 €/kWh",
+        descuento_sin_mantenimiento: "20%",
+        descuento_con_mantenimiento: "25%",
+        descuento_general: "20% sin mantenimiento / 25% con mantenimiento",
+        potencia: "TP1: 0,1240 €/kW-día | TP2: 0,0620 €/kW-día",
+        excedentes: "0,05 €/kWh",
+        mantenimiento: "4,48 €/mes",
+        permanencia: "No tiene permanencia.",
+        retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
+      },
+      gas: {
+        rl1: "TV (Término Variable): 0,1024 €/kWh | TF (Término Fijo): 0,2112 €/día (Equivalente mensual: 6,34 €/mes)",
+        rl2: "TV (Término Variable): 0,1013 €/kWh | TF (Término Fijo): 0,3606 €/día (Equivalente mensual: 10,82 €/mes)",
+        rl3: "TV (Término Variable): 0,1013 €/kWh | TF (Término Fijo): 0,6945 €/día (Equivalente mensual: 20,84 €/mes)",
+        mantenimiento: "9,95 €/mes",
+        retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
+      }
+    },
+    naturgy: {
+      luz: {
+        por_uso: {
+          name: "Por Uso Luz",
+          base: "0,1120 €/kWh",
+          sin_mantenimiento: "0,1120 €/kWh (Igual que el precio base)",
+          con_mantenimiento: "0,1120 €/kWh (Igual que el precio base)",
+          descuento_sin_mantenimiento: "0%",
+          descuento_con_mantenimiento: "no indicado / —",
+          potencia: "TP1: 0,1230 €/kW-día | TP2: 0,0616 €/kW-día",
+          excedentes: "0,06 €/kWh",
+          mantenimiento: "8,48 €/mes",
+          permanencia: "No tiene permanencia.",
+          retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
+        },
+        cif: {
+          name: "Por Uso Luz (CIF)",
+          base: "0,1324 €/kWh",
+          sin_mantenimiento: "0,1324 €/kWh (Igual que el precio base)",
+          con_mantenimiento: "0,1324 €/kWh (Igual que el precio base)",
+          descuento_sin_mantenimiento: "0%",
+          descuento_con_mantenimiento: "no indicado / —",
+          potencia: "TP1: 0,127295 €/kW-día | TP2: 0,045522 €/kW-día",
+          excedentes: "0,06 €/kWh",
+          mantenimiento: "8,48 €/mes",
+          permanencia: "Ese dato no aparece en la información disponible de esta tarifa.",
+          retrocomision: "Ese dato no aparece en la información disponible de esta tarifa."
+        }
+      },
+      gas: {
+        rl1: "TV (Término Variable): 0,0795 €/kWh | TF (Término Fijo): 0,1693 €/día (Equivalente mensual: 5,08 €/mes)",
+        rl2: "TV (Término Variable): 0,0774 €/kWh | TF (Término Fijo): 0,3008 €/día (Equivalente mensual: 9,02 €/mes)",
+        rl3: "TV (Término Variable): 0,0740 €/kWh | TF (Término Fijo): 0,6496 €/día (Equivalente mensual: 19,49 €/mes)",
+        mantenimiento: "11,81 €/mes",
+        retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
+      }
+    },
+    endesa: {
+      luz: {
+        luz_24h: {
+          name: "Endesa Luz 24H",
+          base: "0,1550 €/kWh",
+          sin_mantenimiento: "0,1240 €/kWh",
+          con_mantenimiento: "0,1190 €/kWh",
+          descuento_sin_mantenimiento: "20% sin mantenimiento",
+          descuento_con_mantenimiento: "23% con mantenimiento",
+          potencia: "TP1: 0,0936 €/kW-día | TP2: 0,0936 €/kW-día",
+          excedentes: "0,06 €/kWh",
+          mantenimiento: "4,77 €/mes",
+          permanencia: "No tiene permanencia.",
+          retrocomision: "12 meses"
+        },
+        solar_plus: {
+          name: "Endesa Solar Plus",
+          base: "0,1599 €/kWh",
+          sin_mantenimiento: "0,1407 €/kWh",
+          con_mantenimiento: "0,1407 €/kWh",
+          descuento_sin_mantenimiento: "12% sin mantenimiento",
+          descuento_con_mantenimiento: "12% con mantenimiento",
+          potencia: "TP1: 0,0910 €/kW-día | TP2: 0,0910 €/kW-día",
+          excedentes: "0,06 €/kWh",
+          mantenimiento: "4,77 €/mes",
+          permanencia: "Ese dato no aparece en la información disponible de esta tarifa.",
+          retrocomision: "12 meses",
+          nota: "Tarifa Solar con excedentes."
+        }
+      },
+      gas: {
+        rl1: "TV (Término Variable): 0,0736 €/kWh | TF (Término Fijo): 0,2316 €/día (Equivalente mensual: 6,95 €/mes)",
+        rl2: "TV (Término Variable): 0,0697 €/kWh | TF (Término Fijo): 0,4709 €/día (Equivalente mensual: 14,13 €/mes)",
+        rl3: "TV (Término Variable): 0,0643 €/kWh | TF (Término Fijo): 0,9894 €/día (Equivalente mensual: 29,68 €/mes)",
+        mantenimiento: "9,09 €/mes",
+        retrocomision: "12 meses"
+      }
+    },
+    gana: {
+      luz: {
+        plan_24h: {
+          name: "Plan 24 Horas",
+          base: "0,1190 €/kWh",
+          sin_mantenimiento: "0,1190 €/kWh (Igual que el precio base)",
+          con_mantenimiento: "0,1190 €/kWh (Igual que el precio base)",
+          descuento_sin_mantenimiento: "0%",
+          descuento_con_mantenimiento: "No se muestra descuento adicional con mantenimiento.",
+          potencia: "TP1: 0,0894 €/kW-día | TP2: 0,0894 €/kW-día",
+          excedentes: "0,06 €/kWh",
+          mantenimiento: "No se indica un coste de mantenimiento específico en esta tarjeta.",
+          permanencia: "No tiene permanencia.",
+          retrocomision: "12 meses"
+        },
+        mercado: {
+          name: "Precio de Mercado",
+          base: "Tarifa variable indexada. P1 (Punta): 0,1000 €/kWh | P2 (Llano): 0,1250 €/kWh | P3 (Valle): 0,2050 €/kWh",
+          sin_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
+          con_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
+          descuento_sin_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
+          descuento_con_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
+          potencia: "TP1: 0,0760 €/kW-día | TP2: 0,0200 €/kW-día",
+          excedentes: "0,06 €/kWh",
+          gestion: "5,00 €/mes",
+          mantenimiento: "no disponible",
+          permanencia: "Ese dato no aparece en la información disponible de esta tarifa.",
+          retrocomision: "12 meses",
+          nota: "Es una tarifa variable indexada y tiene un coste de gestión de 5 €/mes."
+        }
+      },
+      gas: {
+        rl1: "TV (Término Variable): 0,0829 €/kWh | TF (Término Fijo): 0,1310 €/día (Equivalente mensual: 3,93 €/mes)",
+        rl2: "TV (Término Variable): 0,0803 €/kWh | TF (Término Fijo): 0,2703 €/día (Equivalente mensual: 8,11 €/mes)",
+        rl3: "TV (Término Variable): 0,0762 €/kWh | TF (Término Fijo): 0,6273 €/día (Equivalente mensual: 18,82 €/mes)",
+        mantenimiento: "no disponible",
+        retrocomision: "12 meses"
+      }
+    }
+  };
+
+  // Triggers exactos para los ejemplos provistos en la base
+  if (q.includes('cuanto cuesta iberdrola impulsa 24h') || q.includes('cuánto cuesta iberdrola impulsa 24h') || q.includes('cuesta iberdrola impulsa 24h')) {
+    return "El precio base de Iberdrola Impulsa 24h es de 0,1561 €/kWh. El precio mostrado es de 0,1240 €/kWh sin mantenimiento y 0,1170 €/kWh con mantenimiento. El mantenimiento cuesta 4,48 €/mes.";
+  }
+  if (q.includes('cual es la tarifa de naturgy de luz') || q.includes('cuál es la tarifa de naturgy de luz') || (q.includes('tarifa') && q.includes('naturgy') && q.includes('luz'))) {
+    return "Naturgy ofrece la tarifa Por Uso Luz, con un precio de 0,1120 €/kWh. El precio aparece como igual tanto sin mantenimiento como con mantenimiento. También existe Por Uso Luz (CIF), una tarifa especial para CIF, con un precio de 0,1324 €/kWh.";
+  }
+  if (q.includes('que tarifa tiene endesa para placas solares') || q.includes('qué tarifa tiene endesa para placas solares') || q.includes('tarifa de endesa para placas solares') || q.includes('endesa para placas solares')) {
+    return "La tarifa mostrada de Endesa orientada a clientes con energía solar es Solar Plus, identificada como una tarifa solar con excedentes. Su precio base es de 0,1599 €/kWh y el precio mostrado sin y con mantenimiento es de 0,1407 €/kWh. Los excedentes se pagan a 0,06 €/kWh.";
+  }
+  if (q.includes('cuanto paga gana energia por los excedentes') || q.includes('cuánto paga gana energía por los excedentes') || q.includes('gana energia por los excedentes') || q.includes('gana energía por los excedentes')) {
+    return "En las tarifas de luz de Gana Energía mostradas, los excedentes están valorados en 0,06 €/kWh.";
+  }
+  if (q.includes('que precio tiene gana energia de mercado') || q.includes('qué precio tiene gana energía de mercado') || q.includes('gana energia de mercado') || q.includes('gana energía de mercado')) {
+    return "Gana Energía tiene una tarifa denominada Precio de Mercado, que es variable e indexada. Los precios mostrados son 0,1000 €/kWh en P1 (Punta), 0,1250 €/kWh en P2 (Llano) y 0,2050 €/kWh en P3 (Valle). Además, tiene un coste de gestión de 5 €/mes.";
+  }
+
+  // Comprobar si es consulta de tarifas de luz y gas
+  const isTarifasQuery = q.includes('tarifa') || q.includes('precio') || q.includes('costar') || q.includes('cuesta') || q.includes('luz') || q.includes('gas') || q.includes('energia') || q.includes('energía') || q.includes('potencia') || q.includes('excedent') || q.includes('mantenimiento') || q.includes('descuento') || q.includes('cif') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3') || q.includes('punta') || q.includes('valle') || q.includes('llano') || q.includes('barat') || q.includes('gestión') || q.includes('gestion') || q.includes('permanencia') || q.includes('retro');
+
+  if (isTarifasQuery) {
+    const isGas = q.includes('gas') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3');
+    
+    // Comparativas de más barato
+    if (q.includes('mas barata') || q.includes('más barata') || q.includes('mas barato') || q.includes('más barato') || q.includes('barato') || q.includes('barata') || q.includes('comparativa') || q.includes('comparar')) {
+      if (isGas) {
+        if (q.includes('rl1')) {
+          return `Según los precios mostrados, el término variable más bajo de gas RL1 es <strong>Endesa Gas RL1</strong> (0,0736 €/kWh), pero el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,1310 €/día o 3,93 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+        }
+        if (q.includes('rl2')) {
+          return `Según los precios mostrados, el término variable más bajo de gas RL2 es <strong>Endesa Gas RL2</strong> (0,0697 €/kWh), pero el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,2703 €/día o 8,11 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+        }
+        if (q.includes('rl3')) {
+          return `Según los precios mostrados, el término variable más bajo de gas RL3 es <strong>Endesa Gas RL3</strong> (0,0643 €/kWh), pero el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,6273 €/día o 18,82 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+        }
+        return `<strong>Comparativa de Gas por tramos (precios variables de consumo):</strong><br><br>` +
+               `• <strong>RL1 más barata:</strong> Variable: Endesa (0,0736 €/kWh) | Fijo: Gana Energía (0,1310 €/día).<br>` +
+               `• <strong>RL2 más barata:</strong> Variable: Endesa (0,0697 €/kWh) | Fijo: Gana Energía (0,2703 €/día).<br>` +
+               `• <strong>RL3 más barata:</strong> Variable: Endesa (0,0643 €/kWh) | Fijo: Gana Energía (0,6273 €/día).<br><br>` +
+               `<em>*Nota:* El precio final dependerá del consumo total mensual. No se puede afirmar que una compañía es globalmente la más barata sin realizar la estimación correspondiente.</em>`;
+    }
+      
+      // Luz más barata
+      if (q.includes('mas barata') || q.includes('más barata') || q.includes('mas barato') || q.includes('más barato') || q.includes('barat')) {
+        return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h sin mantenimiento):</strong><br><br>` +
+               `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
+               `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1190 €/kWh<br>` +
+               `• <strong>Iberdrola Impulsa 24h:</strong> 0,1240 €/kWh<br>` +
+               `• <strong>Endesa Luz 24H:</strong> 0,1240 €/kWh<br>` +
+               `• <strong>Endesa Solar Plus:</strong> 0,1407 €/kWh<br><br>` +
+               `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos no incluidos en esta comparativa rápida.</em>`;
+      }
+    }
+
+    // Identificar compañía
+    let company = null;
+    if (q.includes('iberdrola') || q.includes('impulsa')) company = 'iberdrola';
+    else if (q.includes('naturgy') || q.includes('por uso')) company = 'naturgy';
+    else if (q.includes('endesa') || q.includes('solar')) company = 'endesa';
+    else if (q.includes('gana')) company = 'gana';
+
+    if (company) {
+      if (isGas) {
+        let rl = null;
+        if (q.includes('rl1')) rl = 'rl1';
+        else if (q.includes('rl2')) rl = 'rl2';
+        else if (q.includes('rl3')) rl = 'rl3';
+
+        const data = TARIFFS_DATA[company].gas;
+        
+        if (q.includes('mantenimiento')) {
+          if (data.mantenimiento === "Ese dato no aparece en la información disponible de esta tarifa.") {
+            return `Ese dato no aparece en la información disponible de esta tarifa.`;
+          }
+          return `El coste de mantenimiento del gas de ${company.charAt(0).toUpperCase() + company.slice(1)} es de <strong>${data.mantenimiento}</strong>.`;
+        }
+        if (q.includes('retro')) {
+          return `La retrocomisión del gas de ${company.charAt(0).toUpperCase() + company.slice(1)} es de <strong>${data.retrocomision}</strong>.`;
+        }
+
+        if (rl) {
+          return `<strong>Tarifa de Gas de ${company.charAt(0).toUpperCase() + company.slice(1)} (${rl.toUpperCase()}):</strong><br><br>` +
+                 `• Consumo: ${data[rl]}<br>` +
+                 `• Mantenimiento: ${data.mantenimiento}<br>` +
+                 `• Retrocomisión: ${data.retrocomision}`;
+        }
+        
+        return `<strong>Tarifas de Gas de ${company.charAt(0).toUpperCase() + company.slice(1)}:</strong><br><br>` +
+               `• <strong>RL1:</strong> ${data.rl1}<br>` +
+               `• <strong>RL2:</strong> ${data.rl2}<br>` +
+               `• <strong>RL3:</strong> ${data.rl3}<br>` +
+               `• <strong>Mantenimiento:</strong> ${data.mantenimiento}<br>` +
+               `• <strong>Retrocomisión:</strong> ${data.retrocomision}`;
+      }
+
+      // Luz
+      let isCif = q.includes('cif');
+      let isSolar = q.includes('solar') || q.includes('placa') || q.includes('excedent');
+      let isMercado = q.includes('mercado') || q.includes('indexad') || q.includes('variable') || q.includes('punta') || q.includes('llano') || q.includes('valle');
+
+      let tariffKey = 'luz';
+      if (company === 'naturgy') {
+        tariffKey = isCif ? 'cif' : 'por_uso';
+      } else if (company === 'endesa') {
+        tariffKey = isSolar ? 'solar_plus' : 'luz_24h';
+      } else if (company === 'gana') {
+        tariffKey = isMercado ? 'mercado' : 'plan_24h';
+      }
+
+      const t = (company === 'naturgy' || company === 'endesa' || company === 'gana') 
+        ? TARIFFS_DATA[company].luz[tariffKey] 
+        : TARIFFS_DATA[company].luz;
+
+      // Consultas específicas
+      if (q.includes('energia') || q.includes('energía') || q.includes('kwh') || q.includes('consumo') || q.includes('precio de la luz') || q.includes('cuesta la luz') || q.includes('cuánto cuesta') || q.includes('cuanto cuesta')) {
+        let prefix = `<strong>Precio de Energía - ${t.name}:</strong><br><br>`;
+        if (company === 'gana' && tariffKey === 'mercado') {
+          return prefix + `Es una tarifa variable indexada a precio de mercado:<br>` +
+                 `• P1 (Punta): 0,1000 €/kWh<br>` +
+                 `• P2 (Llano): 0,1250 €/kWh<br>` +
+                 `• P3 (Valle): 0,2050 €/kWh<br>` +
+                 `• Coste de gestión: +5,00 €/mes`;
+        }
+        
+        let details = `• Precio Base: ${t.base}<br>`;
+        if (t.sin_mantenimiento.includes('Igual')) {
+          details += `• Sin Mantenimiento: ${t.base} (Igual que el precio base)<br>`;
+        } else {
+          details += `• Sin Mantenimiento: ${t.sin_mantenimiento}<br>`;
+        }
+        
+        if (t.con_mantenimiento.includes('Igual')) {
+          details += `• Con Mantenimiento: ${t.base} (Igual que el precio base)<br>`;
+        } else {
+          details += `• Con Mantenimiento: ${t.con_mantenimiento}<br>`;
+        }
+        
+        return prefix + details;
+      }
+
+      if (q.includes('potencia') || q.includes('kw-dia') || q.includes('kw-día') || q.includes('término fijo') || q.includes('termino fijo') || q.includes('potencias')) {
+        return `<strong>Precio de Potencia - ${t.name}:</strong><br><br>${t.potencia}`;
+      }
+
+      if (q.includes('excedente') || q.includes('compensacion') || q.includes('compensación')) {
+        return `<strong>Precio de Excedentes - ${t.name}:</strong><br><br>${t.excedentes}`;
+      }
+
+      if (q.includes('mantenimiento') || q.includes('gestion') || q.includes('gestión')) {
+        let reply = `<strong>Coste de Mantenimiento / Gestión - ${t.name}:</strong><br><br>`;
+        if (t.gestion) {
+          reply += `• Coste de gestión: <strong>${t.gestion}</strong><br>`;
+        }
+        if (t.mantenimiento === "Ese dato no aparece en la información disponible de esta tarifa.") {
+          reply += `• Coste de mantenimiento: Ese dato no aparece en la información disponible de esta tarifa.`;
+        } else {
+          reply += `• Coste de mantenimiento: <strong>${t.mantenimiento}</strong>`;
+        }
+        return reply;
+      }
+
+      if (q.includes('descuento') || q.includes('dto')) {
+        let reply = `<strong>Descuentos en Energía - ${t.name}:</strong><br><br>`;
+        if (t.descuento_general) {
+          reply += `• ${t.descuento_general}`;
+        } else {
+          reply += `• Sin Mantenimiento: ${t.descuento_sin_mantenimiento}<br>` +
+                   `• Con Mantenimiento: ${t.descuento_con_mantenimiento}`;
+        }
+        return reply;
+      }
+
+      if (q.includes('permanencia') || q.includes('penalizacion') || q.includes('penalización')) {
+        return `<strong>Permanencia - ${t.name}:</strong><br><br>${t.permanencia}`;
+      }
+
+      if (q.includes('retrocomisión') || q.includes('retrocomision') || q.includes('retro') || q.includes('descomision') || q.includes('descomisión')) {
+        return `<strong>Retrocomisión - ${t.name}:</strong><br><br>${t.retrocomision}`;
+      }
+
+      // Ficha completa
+      let fullInfo = `<strong>Ficha de Tarifa: ${t.name}</strong><br><br>` +
+                     `• <strong>Precio Energía:</strong> Base: ${t.base} | Sin Mant: ${t.sin_mantenimiento} | Con Mant: ${t.con_mantenimiento}<br>` +
+                     `• <strong>Descuentos:</strong> ${t.descuento_general || ('Sin Mant: ' + t.descuento_sin_mantenimiento + ' / Con Mant: ' + t.descuento_con_mantenimiento)}<br>` +
+                     `• <strong>Potencia:</strong> ${t.potencia}<br>` +
+                     `• <strong>Excedentes:</strong> ${t.excedentes}<br>` +
+                     `• <strong>Mantenimiento:</strong> ${t.mantenimiento}<br>` +
+                     `• <strong>Permanencia:</strong> ${t.permanencia}<br>` +
+                     `• <strong>Retrocomisión:</strong> ${t.retrocomision}`;
+      if (t.gestion) {
+        fullInfo += `<br>• <strong>Gestión:</strong> ${t.gestion}`;
+      }
+      if (t.nota) {
+        fullInfo += `<br><br><em>*Nota:* ${t.nota}`;
+      }
+      return fullInfo;
+    }
   }
 
   // Búsqueda dinámica de tiendas de Carrefour
