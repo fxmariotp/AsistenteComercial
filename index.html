@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930331;
+const CURRENT_BUILD_VERSION = 1785002930332;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13250,12 +13250,17 @@ const KNOWLEDGE_BASE = [
     La retro/permanencia de comisión para Securitas Direct es de <strong>6 meses (100%)</strong>.`
   },
   {
-    keywords: ["retro", "retrocomision", "retrocomisiones", "retrocomisión"],
-    answer: `<strong>Retrocomisiones en Telemarketing:</strong><br><br>
-    Las comisiones retroactivas se aplican cuando un comercial no alcanza el objetivo mínimo en el mes actual pero compensa el volumen en el mes siguiente, o según las siguientes condiciones reguladas:<br>
+    keywords: ["retro", "retrocomision", "retrocomisiones", "retrocomisión", "retros", "descomisiones", "descomision"],
+    answer: `<strong>Permanencia y Retrocomisiones (Clawbacks) por Compañía:</strong><br><br>
+    • <strong>Gana Energía:</strong> 12 meses (100% de descomisión si se da de baja antes).<br>
+    • <strong>Endesa:</strong> 12 meses (100% de descomisión si se da de baja antes).<br>
+    • <strong>Iberdrola:</strong> 0-2 meses (100% de descomisión) | 2-4 meses (50% de descomisión).<br>
+    • <strong>Naturgy:</strong> 0-2 meses (100% de descomisión) | 2-4 meses (50% de descomisión).<br>
+    • <strong>Pymes:</strong> 12 meses (100% de descomisión).<br>
+    • <strong>Securitas Direct:</strong> 6 meses (100% de descomisión).<br><br>
+    <strong>Regla General de Objetivos Mínimos:</strong><br>
     • Para optar a comisiones, se exige un <strong>mínimo de 10 ventas activas</strong> en el mes.<br>
-    • Si se cae una venta y queda por debajo del mínimo, se aplica la descomisión correspondiente.<br>
-    • Las recuperaciones de ventas caídas dentro de los 30 días posteriores pueden computar para la retrocomisión del mes anterior.`
+    • Si se cae una venta y queda por debajo del mínimo, se aplica la descomisión correspondiente. Las recuperaciones dentro de 30 días computan para la retrocomisión del mes anterior.`
   },
   {
     keywords: ["comisiones", "comision", "pagos", "cuanto gano", "cuanto pagan"],
