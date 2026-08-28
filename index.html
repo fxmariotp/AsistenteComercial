@@ -4068,20 +4068,7 @@ input:focus, select:focus, textarea:focus {
         <div class="topbar-s" id="psub">Selecciona la compañia y sigue el guion</div>
       </div>
     </div>
-    
-    <!-- Buscador del Asistente -->
-    <div class="topbar-search-wrapper" style="flex: 1; max-width: 320px; margin: 0 20px; position: relative;">
-      <div style="position: relative; display: flex; align-items: center;">
-        <span style="position: absolute; left: 14px; color: var(--t3); display: flex; align-items: center; pointer-events: none;">
-          <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
-        </span>
-        <input type="text" id="global-search-input" placeholder="Buscar en el asistente..." autocomplete="off" style="width: 100%; padding: 8px 12px 8px 38px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; background: var(--surface); color: var(--text); outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='var(--blue)'" onblur="setTimeout(closeGlobalSearch, 250); this.style.borderColor='var(--border)'" oninput="handleGlobalSearch()">
-      </div>
-      <!-- Desplegable de búsqueda -->
-      <div id="global-search-dropdown" style="display: none; position: absolute; top: calc(100% + 6px); left: 0; width: 100%; max-height: 280px; overflow-y: auto; background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1), 0 8px 10px -6px rgba(0,0,0,0.05); z-index: 99999;">
-        <!-- Se cargará dinámicamente -->
-      </div>
-    </div>
+
 
     <div class="topbar-right" style="display: flex; gap: 10px; align-items: center;">
       <button id="btn-announcements-trigger" onclick="openAnnouncementsListModal()" style="position: relative; width: 40px; height: 40px; border-radius: 50%; border: 1.5px solid var(--border); background: var(--surface); color: var(--text); display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; padding: 0;" title="Tablón de Anuncios">
@@ -10452,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930327;
+const CURRENT_BUILD_VERSION = 1785002930328;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13161,7 +13148,8 @@ function triggerSearchAction(index) {
   const item = SEARCH_INDEX[index];
   if (item && typeof item.action === 'function') {
     item.action();
-    document.getElementById('global-search-input').value = '';
+    const inputEl = document.getElementById('global-search-input');
+    if (inputEl) inputEl.value = '';
     closeGlobalSearch();
   }
 }
