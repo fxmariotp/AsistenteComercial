@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930345;
+const CURRENT_BUILD_VERSION = 1785002930346;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13961,7 +13961,7 @@ function getRenosurChatResponse(query) {
   }
 
   // Comprobar si es consulta de tarifas de luz y gas
-  const isTarifasQuery = q.includes('tarifa') || q.includes('precio') || q.includes('costar') || q.includes('cuesta') || q.includes('luz') || q.includes('gas') || q.includes('energia') || q.includes('energía') || q.includes('potencia') || q.includes('excedent') || q.includes('mantenimiento') || q.includes('descuento') || q.includes('cif') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3') || q.includes('punta') || q.includes('valle') || q.includes('llano') || q.includes('barat') || q.includes('gestión') || q.includes('gestion') || q.includes('permanencia') || q.includes('retro');
+  const isTarifasQuery = q.includes('tarifa') || q.includes('precio') || q.includes('costar') || q.includes('cuesta') || q.includes('luz') || q.includes('gas') || q.includes('energia') || q.includes('energía') || q.includes('potencia') || q.includes('excedent') || q.includes('mantenimiento') || q.includes('descuento') || q.includes('cif') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3') || q.includes('punta') || q.includes('valle') || q.includes('llano') || q.includes('barat') || q.includes('gestión') || q.includes('gestion') || q.includes('permanencia') || q.includes('retro') || q.includes('kw') || q.includes('kwh') || q.includes('tarifas') || q.includes('precios');
 
   if (isTarifasQuery) {
     const isGas = q.includes('gas') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3');
@@ -14005,6 +14005,87 @@ function getRenosurChatResponse(query) {
     else if (q.includes('gana')) company = 'gana';
 
     if (company) {
+      // Si la consulta es general de tarifas/precios de la compañía (o incluye kw/kwh de forma genérica)
+      const isSpecific = q.includes('excedent') || q.includes('mantenimiento') || q.includes('retro') || q.includes('permanencia') || q.includes('gestion') || q.includes('sva') || q.includes('cif') || q.includes('solar') || q.includes('potencia') || q.includes('kw-dia') || q.includes('kw-día') || q.includes('fijo');
+      
+      if (!isSpecific && (q.includes('tarifa') || q.includes('tarifas') || q.includes('precio') || q.includes('precios') || q.includes('cuesta') || q.includes('kw') || q.includes('kwh') || q.includes('de la luz') || q.includes('del gas'))) {
+        if (company === 'iberdrola') {
+          return `<strong>Tarifas y Precios de Iberdrola:</strong><br><br>` +
+                 `<strong>1. TARIFA DE LUZ: Impulsa 24h</strong> (Precio único 24h sin permanencia)<br>` +
+                 `• <strong>Término de Energía:</strong><br>` +
+                 `  - Precio Base: 0,1561 €/kWh<br>` +
+                 `  - Sin Mantenimiento (20% dto): 0,1240 €/kWh<br>` +
+                 `  - Con Mantenimiento (25% dto): 0,1170 €/kWh<br>` +
+                 `• <strong>Término de Potencia:</strong> TP1: 0,1240 €/kW-día | TP2: 0,0620 €/kW-día<br>` +
+                 `• <strong>Excedentes Solar:</strong> 0,05 €/kWh<br>` +
+                 `• <strong>Mantenimiento Luz:</strong> 4,48 €/mes<br>` +
+                 `• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%<br><br>` +
+                 `<strong>2. TARIFA DE GAS: Iberdrola Gas</strong><br>` +
+                 `• <strong>RL.1 (Consumo &lt; 5.000 kWh/año):</strong> Variable: 0,1024 €/kWh | Fijo: 0,2112 €/día (Equiv: 6,34 €/mes)<br>` +
+                 `• <strong>RL.2 (Consumo 5.000 - 15.000 kWh/año):</strong> Variable: 0,1013 €/kWh | Fijo: 0,3608 €/día (Equiv: 10,82 €/mes)<br>` +
+                 `• <strong>RL.3 (Consumo 15.000 - 50.000 kWh/año):</strong> Variable: 0,1013 €/kWh | Fijo: 0,6945 €/día (Equiv: 20,84 €/mes)<br>` +
+                 `• <strong>Mantenimiento Gas:</strong> 9,95 €/mes`;
+        }
+        if (company === 'naturgy') {
+          return `<strong>Tarifas y Precios de Naturgy:</strong><br><br>` +
+                 `<strong>1. TARIFAS DE LUZ: Por Uso Luz</strong> (Precio único 24h sin permanencia)<br>` +
+                 `• <strong>Por Uso Luz (Particulares/DNI):</strong><br>` +
+                 `  - Término Energía: 0,1120 €/kWh (Igual con/sin mantenimiento)<br>` +
+                 `  - Término Potencia: TP1: 0,1230 €/kW-día | TP2: 0,0616 €/kW-día<br>` +
+                 `• <strong>Por Uso Luz (CIF/Empresas):</strong><br>` +
+                 `  - Término Energía: 0,1324 €/kWh<br>` +
+                 `  - Término Potencia: TP1: 0,127295 €/kW-día | TP2: 0,045522 €/kW-día<br>` +
+                 `• <strong>Excedentes Solar:</strong> 0,06 €/kWh<br>` +
+                 `• <strong>Mantenimiento Luz:</strong> 8,48 €/mes<br>` +
+                 `• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%<br><br>` +
+                 `<strong>2. TARIFA DE GAS: Gas Por Uso</strong><br>` +
+                 `• <strong>RL.1:</strong> Variable: 0,0795 €/kWh | Fijo: 0,1693 €/día (Equiv: 5,08 €/mes)<br>` +
+                 `• <strong>RL.2:</strong> Variable: 0,0774 €/kWh | Fijo: 0,3008 €/día (Equiv: 9,02 €/mes)<br>` +
+                 `• <strong>RL.3:</strong> Variable: 0,0740 €/kWh | Fijo: 0,6496 €/día (Equiv: 19,49 €/mes)<br>` +
+                 `• <strong>Mantenimiento Gas:</strong> 11,81 €/mes`;
+        }
+        if (company === 'endesa') {
+          return `<strong>Tarifas y Precios de Endesa:</strong><br><br>` +
+                 `<strong>1. TARIFAS DE LUZ:</strong><br>` +
+                 `• <strong>Luz 24H</strong> (Precio único 24h sin permanencia):<br>` +
+                 `  - Precio Base: 0,1550 €/kWh<br>` +
+                 `  - Sin Mantenimiento (20% dto): 0,1240 €/kWh<br>` +
+                 `  - Con Mantenimiento (23% dto): 0,1190 €/kWh<br>` +
+                 `  - Término Potencia: TP1: 0,0936 €/kW-día | TP2: 0,0936 €/kW-día<br>` +
+                 `• <strong>Solar Plus</strong> (Tarifa solar con excedentes):<br>` +
+                 `  - Precio Base: 0,1599 €/kWh<br>` +
+                 `  - Precio con/sin Mantenimiento (12% dto): 0,1407 €/kWh<br>` +
+                 `  - Término Potencia: TP1: 0,0910 €/kW-día | TP2: 0,0910 €/kW-día<br>` +
+                 `• <strong>Excedentes Solar:</strong> 0,06 €/kWh<br>` +
+                 `• <strong>Mantenimiento Luz:</strong> 4,77 €/mes<br>` +
+                 `• <strong>Retrocomisión:</strong> 12 meses<br><br>` +
+                 `<strong>2. TARIFA DE GAS: Gas Endesa</strong><br>` +
+                 `• <strong>RL.1:</strong> Variable: 0,0736 €/kWh | Fijo: 0,2316 €/día (Equiv: 6,95 €/mes)<br>` +
+                 `• <strong>RL.2:</strong> Variable: 0,0697 €/kWh | Fijo: 0,4709 €/día (Equiv: 14,13 €/mes)<br>` +
+                 `• <strong>RL.3:</strong> Variable: 0,0643 €/kWh | Fijo: 0,9894 €/día (Equiv: 29,68 €/mes)<br>` +
+                 `• <strong>Mantenimiento Gas:</strong> 9,09 €/mes`;
+        }
+        if (company === 'gana') {
+          return `<strong>Tarifas y Precios de Gana Energía:</strong><br><br>` +
+                 `<strong>1. TARIFAS DE LUZ:</strong><br>` +
+                 `• <strong>Plan 24 Horas</strong> (Precio único 24h sin permanencia):<br>` +
+                 `  - Término Energía: 0,1190 €/kWh (Igual con/sin mantenimiento)<br>` +
+                 `  - Término Potencia: TP1: 0,0894 €/kW-día | TP2: 0,0894 €/kW-día<br>` +
+                 `• <strong>Precio de Mercado</strong> (Variable indexada a precio de mercado):<br>` +
+                 `  - P1 (Punta): 0,1000 €/kWh | P2 (Llano): 0,1250 €/kWh | P3 (Valle): 0,2050 €/kWh<br>` +
+                 `  - Coste de gestión: +5,00 €/mes<br>` +
+                 `  - Término Potencia: TP1: 0,0760 €/kW-día | TP2: 0,0020 €/kW-día<br>` +
+                 `• <strong>Excedentes Solar:</strong> 0,06 €/kWh<br>` +
+                 `• <strong>Mantenimiento Luz:</strong> 4,25 €/mes (0,1374 €/día)<br>` +
+                 `• <strong>Retrocomisión:</strong> 12 meses<br><br>` +
+                 `<strong>2. TARIFA DE GAS: Gana Gas</strong><br>` +
+                 `• <strong>RL.1:</strong> Variable: 0,0829 €/kWh | Fijo: 0,1310 €/día (Equiv: 3,93 €/mes)<br>` +
+                 `• <strong>RL.2:</strong> Variable: 0,0803 €/kWh | Fijo: 0,2703 €/día (Equiv: 8,11 €/mes)<br>` +
+                 `• <strong>RL.3:</strong> Variable: 0,0762 €/kWh | Fijo: 0,6273 €/día (Equiv: 18,82 €/mes)<br>` +
+                 `• <strong>Mantenimiento Gas:</strong> 9,38 €/mes (0,3027 €/día)`;
+        }
+      }
+
       if (isGas) {
         let rl = null;
         if (q.includes('rl1')) rl = 'rl1';
