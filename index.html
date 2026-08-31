@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930344;
+const CURRENT_BUILD_VERSION = 1785002930345;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13313,62 +13313,89 @@ const KNOWLEDGE_BASE = [
     • Las CCPP tienen **totalmente prohibido y excluido** recibir tarjetas de regalo o promociones comerciales en cualquiera de los supermercados asociados (Carrefour, Leroy Merlin, Caprabo).`
   },
   {
-    keywords: ["iberdrola", "requisitos iberdrola", "documentos iberdrola"],
-    answer: `<strong>Requisitos y Documentación de Iberdrola:</strong><br><br>
-    • <strong>Residencial:</strong><br>
-      - Lectura del texto legal correspondiente.<br>
-      - DNI / NIE en vigor (legible ambas caras) del nuevo titular (Obligatorio).<br>
-    • <strong>Pymes (Empresas):</strong><br>
-      - Lectura de texto legal.<br>
-      - DNI / NIE del representante legal.<br>
-      - Factura actual completa.<br>
-      - CIF de la empresa/sociedad.<br>
-      - Escritura de constitución o recibo de autónomo (opcional pero aconsejado).<br>
-    • <strong>Edad máxima:</strong> No se permite la contratación para mayores de 75 años.`
+    keywords: ["iberdrola", "requisitos iberdrola", "documentos iberdrola", "firma iberdrola"],
+    answer: `<strong>Iberdrola - Requisitos, Documentación y Firma:</strong><br><br>
+    • <strong>Residencial (Particulares):</strong><br>
+      - <strong>Documentos:</strong> Lectura de texto legal. DNI/NIE en vigor, ambas caras legibles (obligatorio a partir del 1 de sep).<br>
+      - <strong>Firma:</strong> 1) SMS de protección de datos (aceptación obligatoria) → 2) SMS con enlace de firma digital del contrato → 3) llamada breve de bienvenida para verificar datos de control.<br><br>
+    • <strong>Autónomos/Pymes (CIF):</strong><br>
+      - <strong>Documentos:</strong> Lectura de texto legal, DNI/NIE del representante legal, factura actual completa, escritura de constitución o recibo de autónomo (recomendable añadirlo aunque pueda entrar sin él).<br>
+      - <strong>Firma:</strong> 1) SMS o email de protección de datos (aceptación obligatoria) → 2) SMS/email de firma del contrato de empresa → 3) llamada breve de bienvenida para confirmar datos de control.<br><br>
+    • <strong>Requisitos Críticos:</strong><br>
+      - No se permite contratar a mayores de 75 años.<br>
+      - Cambio de titularidad: obligatorio justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>
+      - Promociones (tarjetas regalo): solo válidas en contratos Iberdrola. CIF/Pymes reciben 30€ (no aplican los 50€). Comunidades de Propietarios (CCPP) tienen prohibido recibir tarjeta.<br>
+      - Altas nuevas: obligatorio aportar el CIE (Certificado de Instalación Eléctrica).<br>
+      - Cambios de potencia: permitido. Subir potencia ≈50€ por kW incrementado. Bajar potencia ≈9€ en total, independientemente de los kW (sin límite).`
   },
   {
-    keywords: ["naturgy", "requisitos naturgy", "documentos naturgy"],
-    answer: `<strong>Requisitos y Documentación de Naturgy:</strong><br><br>
-    • <strong>Residencial:</strong><br>
-      - Lectura del texto legal correspondiente.<br>
-    • <strong>Pymes (Empresas):</strong><br>
-      - Lectura de texto legal.<br>
-      - DNI / NIE del representante legal.<br>
-      - Factura actual completa.<br>
-      - CIF de la empresa/sociedad.<br>
-      - Escritura de constitución o recibo de autónomo.<br>
-    • <strong>Firma:</strong> Firma digital SMS/WhatsApp enviada al cliente.`
+    keywords: ["naturgy", "requisitos naturgy", "documentos naturgy", "firma naturgy"],
+    answer: `<strong>Naturgy - Requisitos, Documentación y Firma:</strong><br><br>
+    • <strong>Residencial (Particulares):</strong><br>
+      - <strong>Documentos:</strong> Lectura de texto legal.<br>
+      - <strong>Firma:</strong> 1) SMS o WhatsApp con enlace de firma → 2) introducir DNI y aceptar condiciones → 3) llamada breve de verificación y bienvenida.<br><br>
+    • <strong>Autónomos/Pymes (CIF):</strong><br>
+      - <strong>Documentos:</strong> Lectura de texto legal, DNI/NIE del representante legal, factura actual completa, escritura de constitución o recibo de autónomo.<br>
+      - <strong>Firma:</strong> 1) SMS o WhatsApp con enlace de firma → 2) introducir DNI y aceptar condiciones corporativas → 3) llamada breve de verificación y bienvenida.<br><br>
+    • <strong>Requisitos Críticos:</strong><br>
+      - Si el cliente tiene más de 75 años: introducir año ficticio de nacimiento en la ficha y aclarar la edad real en Observaciones.<br>
+      - Cambio de titularidad: justo título (alquiler, escrituras de compraventa, IBI; también sirve el certificado de empadronamiento).<br>
+      - Altas nuevas: obligatorio el CIE.<br>
+      - Cambios de potencia: permitido. Subir ≈50€ por kW. Bajar ≈9€ en total (sin límite de kW).`
   },
   {
-    keywords: ["endesa", "hostezadis", "requisitos endesa", "documentos endesa"],
-    answer: `<strong>Requisitos y Documentación de Endesa:</strong><br><br>
-    • <strong>¡IMPORTANTE! (Solo Hostezadis):</strong> El guión y condiciones de Endesa son **única y exclusivamente válidos para Hostezadis cuando se trata de un Cambio de Titularidad**.<br>
-    • <strong>Zonas permitidas:</strong><br>
-      - SEVILLA (Aljarafe, Alcalá de Guadaíra, Rochelambert).<br>
-      - CÁDIZ, MADRID, ALMERÍA, JAÉN, GRANADA, BARCELONA, VALENCIA, CIUDAD REAL, TOLEDO, HUELVA, BADAJOZ, MÁLAGA, CÓRDOBA.<br>
-    • <strong>Firma:</strong> Proceso gestionado a través de Cosmos Mobile.`
+    keywords: ["endesa", "hostezadis", "requisitos endesa", "documentos endesa", "firma endesa"],
+    answer: `<strong>Endesa - Requisitos, Documentación y Firma:</strong><br><br>
+    • <strong>Residencial (Particulares):</strong><br>
+      - <strong>Documentos:</strong> DNI o NIE vigente del titular, factura actual completa.<br>
+      - <strong>Firma:</strong> SMS con enlace de firma segura → clic en enlace, validar PIN temporal, firmar digitalmente. En campañas específicas autorizadas, el proceso puede hacerse por grabación de voz telefónica directa.<br><br>
+    • <strong>Autónomos/Pymes (CIF):</strong><br>
+      - <strong>Documentos:</strong> DNI/NIE del representante legal, factura actual completa, CIF de la empresa/sociedad, escritura de constitución o recibo de autónomo.<br>
+      - <strong>Firma:</strong> SMS o email con enlace → acceder al portal, verificar datos fiscales de la empresa y realizar firma digital del contrato.<br><br>
+    • <strong>Requisitos Críticos:</strong><br>
+      - No se permite añadir SVA (Servicios de Valor Añadido) en Ceuta y Melilla.<br>
+      - Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA.<br>
+      - Si el cliente tiene más de 75 años: introducir año ficticio de nacimiento y aclarar edad real en Observaciones.<br>
+      - Cambio de titularidad: obligatorio justo título (no sirve el empadronamiento).<br>
+      - Grabación/Guión legal: el texto de verificación "Cosmos Mobile" para Endesa NO es de uso general; es exclusivo de la gestora Hostezadis para cambios de titularidad.<br>
+      - Altas nuevas: obligatorio el CIE.<br>
+      - Cambios de potencia: en Endesa NO se puede hacer cambio de potencia (en las demás compañías sí). [Nota: subir/bajar potencia con los mismos importes aplica solo a las otras compañías, no a Endesa].`
   },
   {
-    keywords: ["gana", "gana energia", "requisitos gana", "documentos gana"],
-    answer: `<strong>Requisitos y Documentación de Gana Energía:</strong><br><br>
-    • <strong>Residencial & Pymes:</strong><br>
-      - Lectura de texto legal.<br>
-      - Firma digital enviada mediante código PIN SMS o enlace de firma online.`
+    keywords: ["gana", "gana energia", "requisitos gana", "documentos gana", "firma gana"],
+    answer: `<strong>Gana Energía - Requisitos, Documentación y Firma:</strong><br><br>
+    • <strong>Residencial (Particulares):</strong><br>
+      - <strong>Documentos:</strong> DNI o NIE vigente del titular, factura actual completa.<br>
+      - <strong>Firma:</strong> el cliente recibe SMS con enlace de acceso a la página de firma de Gana Energía (4 pasos): 1) descargar los dos PDF de condiciones del contrato → 2) marcar casilla de contrato leído → 3) solicitar y recibir SMS con código PIN de validación → 4) introducir el código y pulsar firmar.<br><br>
+    • <strong>Autónomos/Pymes (CIF):</strong><br>
+      - <strong>Documentos:</strong> DNI/NIE del representante legal, factura actual completa, CIF de la empresa/sociedad, escritura de constitución o recibo de autónomo.<br>
+      - <strong>Firma:</strong> el administrador recibe SMS o email con enlace a la página de firma corporativa (4 pasos): 1) descargar los dos PDF corporativos → 2) marcar casilla de contrato corporativo leído → 3) recibir SMS con código PIN → 4) introducir código y pulsar firmar.<br><br>
+    • <strong>Requisitos Críticos:</strong><br>
+      - Si el cliente tiene más de 75 años: introducir año ficticio de nacimiento y aclarar edad real en Observaciones.<br>
+      - Cambio de titularidad: justo título (alquiler, escrituras de compraventa, IBI; NO sirve el empadronamiento).<br>
+      - Altas nuevas: obligatorio el CIE.<br>
+      - Cambios de potencia: permitido. Subir ≈50€ por kW incrementado. Bajar ≈9€ en total (sin límite de kW).`
   },
   {
     keywords: ["justo titulo", "justo título", "cambio titular", "cambio de titularidad", "cambio de ct", "cambio ct"],
-    answer: `<strong>Cambio de titularidad:</strong> Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).`
+    answer: `<strong>Cambio de titularidad (Por Compañía):</strong><br><br>
+    • <strong>Iberdrola:</strong> Obligatorio aportar justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>
+    • <strong>Naturgy:</strong> Obligatorio aportar justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>
+    • <strong>Endesa:</strong> Obligatorio aportar justo título (contrato de alquiler, escrituras de compraventa o IBI). **NO sirve el certificado de empadronamiento**.<br>
+    • <strong>Gana Energía:</strong> Obligatorio aportar justo título (contrato de alquiler, escrituras de compraventa o IBI). **NO sirve el certificado de empadronamiento**.`
   },
   {
     keywords: ["cie", "boletin", "boletín", "boletines", "alta nueva", "altas nuevas"],
-    answer: `<strong>Certificado de Instalación Eléctrica (CIE):</strong><br><br>
-    • Para dar de **alta un nuevo suministro** (donde no había luz o está dada de baja), es **obligatorio** aportar el CIE (Boletín de enganche) en vigor (menos de 20 años de antigüedad).`
+    answer: `<strong>Altas Nuevas y Certificado de Instalación Eléctrica (CIE):</strong><br><br>
+    • Para dar de alta un suministro nuevo o reactivar uno de baja, en las cuatro compañías (**Iberdrola, Naturgy, Endesa y Gana Energía**) es **obligatorio** aportar el CIE (Certificado de Instalación Eléctrica).`
   },
   {
     keywords: ["potencia", "bajar potencia", "subir potencia", "cambio potencia"],
-    answer: `<strong>Precios de cambios de potencia (Iberdrola):</strong><br><br>
-    • <strong>Subir la potencia:</strong> Cuesta aproximadamente **50€ por cada kW** que se incremente (en concepto de derechos de extensión y acceso).<br>
-    • <strong>Bajar la potencia:</strong> Cuesta aproximadamente **9€ en total** (tasa fija, independientemente de cuántos kW se bajen y sin límite de tramos).`
+    answer: `<strong>Cambios de Potencia (Por Compañía):</strong><br><br>
+    • <strong>Iberdrola, Naturgy y Gana Energía:</strong> Permitido.<br>
+      - **Subir potencia:** ≈50€ por cada kW incrementado.<br>
+      - **Bajar potencia:** ≈9€ en total (sin límite de kW, independientemente del cambio).<br>
+    • <strong>Endesa:</strong> **NO se permite realizar cambios de potencia** (la tarifa se contrata con la potencia actual del suministro).`
   },
   {
     keywords: ["cierre", "cierra", "cierran", "cierres", "cierre de mes", "cierre de mez", "comienzo", "comienzo de mes", "comiendo de mes", "calendario", "festivos", "laborables"],
