@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930340;
+const CURRENT_BUILD_VERSION = 1785002930341;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13610,10 +13610,31 @@ function getRenosurChatResponse(query) {
     lowerQ.includes('manitas de gana') || lowerQ.includes('manitas gana') ||
     lowerQ.includes('mantenimiento gas gana') || lowerQ.includes('servicio gas gana') ||
     lowerQ.includes('pack mantenimiento gas') ||
+    lowerQ.includes('precios de los servicios') || lowerQ.includes('precios de los mantenimientos') ||
+    lowerQ.includes('precios de mantenimiento') || lowerQ.includes('precio de los servicios') ||
+    lowerQ.includes('precio de los mantenimientos') || lowerQ.includes('precio de mantenimiento') ||
+    (lowerQ.includes('precios') && lowerQ.includes('mantenimiento')) ||
     (lowerQ.includes('todos') && lowerQ.includes('servicios') && (lowerQ.includes('cuatro') || lowerQ.includes('4'))) ||
     (lowerQ.includes('diferencia') && (lowerQ.includes('naturgy') || lowerQ.includes('iberdrola') || lowerQ.includes('endesa') || lowerQ.includes('gana')));
 
   if (isServicesQuery) {
+    // 0. Mostrar los precios de todos los servicios/mantenimientos
+    if (lowerQ.includes('precio') && (lowerQ.includes('servicios') || lowerQ.includes('mantenimiento') || lowerQ.includes('mantenimientos'))) {
+      return `<strong>Precios de los Servicios y Mantenimientos de Luz y Gas (4 Compañías):</strong><br><br>` +
+        `<h3>1. IBERDROLA</h3>` +
+        `• <strong>Luz (Pack Iberdrola Hogar / Digital):</strong> 8,95 €/mes sin impuestos (10,83 €/mes con impuestos). 50% de descuento durante los 4 primeros meses. (También existe la opción básica asociada a tarifa por 4,48 €/mes).<br>` +
+        `• <strong>Gas (Pack Mantenimiento Gas):</strong> 9,95 €/mes (según tarifa). El PDF de las condiciones particulares del servicio de gas no detalla su precio por separado.<br><br>` +
+        `<h3>2. NATURGY</h3>` +
+        `• <strong>Luz (Servielectric):</strong> 8,48 €/mes (tarifa base para Servielectric Xpress / de referencia sin promociones). El PDF del servicio no detalla otros importes por separado.<br>` +
+        `• <strong>Gas (Servigas Complet):</strong> 11,81 €/mes (tarifa base / de referencia sin promociones). El PDF del servicio no detalla otros importes por separado.<br><br>` +
+        `<h3>3. ENDESA</h3>` +
+        `• <strong>Luz (Protección Luz 360 / Plus):</strong> 4,54 €/mes con impuestos incluidos. (La opción asociada a la tarifa Luz Fija 24h es 4,77 €/mes).<br>` +
+        `• <strong>Gas (Mantenimiento Gas Completo):</strong> 9,09 €/mes con impuestos incluidos.<br><br>` +
+        `<h3>4. GANA ENERGÍA</h3>` +
+        `• <strong>Luz (Servicio Manitas):</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
+        `• <strong>Gas (Servicio Gas Gana Energía):</strong> El PDF describe este servicio, pero no especifica su precio.`;
+    }
+
     // 1. Mostrar todos los servicios
     if (lowerQ.includes('todos los servicios de las cuatro compa') || lowerQ.includes('dime todos los servicios') || lowerQ.includes('todos los servicios de las 4 compa') || lowerQ.includes('todos los servicios')) {
       return `<strong>Catálogo de Servicios de Mantenimiento (4 Compañías):</strong><br><br>` +
