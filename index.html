@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930341;
+const CURRENT_BUILD_VERSION = 1785002930342;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13562,8 +13562,8 @@ function getRenosurChatResponse(query) {
         name: "Servicio Manitas (Servicio Luz)",
         family: "Electricidad / Cerrajería / Manitas",
         modalidad: "Servicio Manitas.",
-        price_no_tax: "El PDF describe este servicio, pero no especifica su precio.",
-        price_with_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        price_no_tax: "4,25 €/mes (0,1374 €/día)",
+        price_with_tax: "4,25 €/mes (0,1374 €/día)",
         promo: "No indicada.",
         billing: "Mensual.",
         permanencia: "Sin permanencia. Se puede cancelar sin penalización en cualquier momento.",
@@ -13581,8 +13581,8 @@ function getRenosurChatResponse(query) {
         name: "Servicio Gas Gana Energía",
         family: "Gas / Calefacción",
         modalidad: "Servicio Gas Gana Energía.",
-        price_no_tax: "El PDF describe este servicio, pero no especifica su precio.",
-        price_with_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        price_no_tax: "9,38 €/mes (0,3027 €/día)",
+        price_with_tax: "9,38 €/mes (0,3027 €/día)",
         promo: "No indicada.",
         billing: "Mensual.",
         permanencia: "No se especifica permanencia en la documentación.",
@@ -13631,8 +13631,8 @@ function getRenosurChatResponse(query) {
         `• <strong>Luz (Protección Luz 360 / Plus):</strong> 4,54 €/mes con impuestos incluidos. (La opción asociada a la tarifa Luz Fija 24h es 4,77 €/mes).<br>` +
         `• <strong>Gas (Mantenimiento Gas Completo):</strong> 9,09 €/mes con impuestos incluidos.<br><br>` +
         `<h3>4. GANA ENERGÍA</h3>` +
-        `• <strong>Luz (Servicio Manitas):</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
-        `• <strong>Gas (Servicio Gas Gana Energía):</strong> El PDF describe este servicio, pero no especifica su precio.`;
+        `• <strong>Luz (Servicio Manitas):</strong> 4,25 €/mes (0,1374 €/día).<br>` +
+        `• <strong>Gas (Servicio Gas Gana Energía):</strong> 9,38 €/mes (0,3027 €/día).`;
     }
 
     // 1. Mostrar todos los servicios
@@ -13648,8 +13648,8 @@ function getRenosurChatResponse(query) {
         `• <strong>Protección Luz 360 / Plus:</strong> 4,54€/mes con imp. (sin imp. no especificado). Incluye reparación eléctrica <3h, electrodomésticos, cerrajería, fontanería y cristalería (<48h, piezas y mano obra gratis hasta 500€/intervención, máx 2/año) y protección de pagos. Sin permanencia.<br>` +
         `• <strong>Mantenimiento Gas Completo:</strong> 9,09€/mes con imp. (sin imp. no especificado). Incluye revisión anual e Inspección obligatoria bienal, reparaciones urgentes <3h (desplazamiento y 3h mano de obra gratis, máx 2/año).<br><br>` +
         `<h3>GANA ENERGÍA</h3>` +
-        `• <strong>Servicio Manitas (Servicio Luz):</strong> El PDF describe este servicio, pero no especifica su precio. Asistencia urgente <3h (luz y cerrajería), desplazamientos manitas gratis, presupuestos gratis. Sin permanencia.<br>` +
-        `• <strong>Servicio Gas Gana Energía:</strong> El PDF describe este servicio, pero no especifica su precio. Revisión bienal de caldera, averías con materiales gratis hasta 300€, desplazamiento y mano de obra incluidos. Garantía de 12 meses.`;
+        `• <strong>Servicio Manitas (Servicio Luz):</strong> 4,25€/mes (0,1374€/día). Asistencia urgente <3h (luz y cerrajería), desplazamientos manitas gratis, presupuestos gratis. Sin permanencia.<br>` +
+        `• <strong>Servicio Gas Gana Energía:</strong> 9,38€/mes (0,3027€/día). Revisión bienal de caldera, averías con materiales gratis hasta 300€, desplazamiento y mano de obra incluidos. Garantía de 12 meses.`;
     }
 
     // 2. Comparativas y diferencias
@@ -13659,14 +13659,14 @@ function getRenosurChatResponse(query) {
           `• <strong>Iberdrola (Pack Hogar/Digital):</strong> 10,83 €/mes (con imp.). Incluye piezas (si eq. <10 años, tope 300€), urgencias <3h (tope 550€), bricolaje, ciberseguridad, antivirus y protección de pagos. Carencia: 30 días.<br>` +
           `• <strong>Naturgy (Servielectric Xpress/Complet):</strong> El PDF no especifica su precio. Incluye urgencias <3h (3h mano de obra gratis), electrodomésticos y manitas (2h). Complet añade climatización. Piezas incluidas en Xpress Piezas (máx 300€). Carencia: 15 días.<br>` +
           `• <strong>Endesa (Protección Luz 360):</strong> 4,54 €/mes (con imp.). Incluye urgencias <3h, y reparaciones de electrodomésticos, cerrajería, fontanería y cristalería (<48h, mano de obra y piezas gratis hasta 500€/intervención, máx 2/año) y protección de pagos. Sin permanencia.<br>` +
-          `• <strong>Gana Energía (Servicio Manitas):</strong> El PDF no especifica su precio. Incluye urgencias <3h (luz/cerrajería), manitas con desplazamientos gratis y presupuestos gratis. Sin permanencia.`;
+          `• <strong>Gana Energía (Servicio Manitas):</strong> 4,25 €/mes (0,1374 €/día). Incluye urgencias <3h (luz/cerrajería), manitas con desplazamientos gratis y presupuestos gratis. Sin permanencia.`;
       }
       if (lowerQ.includes('gas') || lowerQ.includes('caldera') || lowerQ.includes('calefac')) {
         return `<strong>Comparativa de Mantenimiento de Gas y Calefacción:</strong><br><br>` +
           `• <strong>Iberdrola (Pack Mantenimiento Gas):</strong> El PDF no especifica su precio. Incluye revisión bienal (anual con pack), reparación con 3h mano de obra y piezas hasta 50€ (máx 2/año). Carencia: 15 días. Contrato anual.<br>` +
           `• <strong>Naturgy (Servigas Complet):</strong> El PDF no especifica su precio. Incluye revisión anual de caldera y calefacción, Inspección Periódica de 5 años y urgencias en <3h (3h mano de obra gratis). Carencia: 15 días. Contrato anual.<br>` +
           `• <strong>Endesa (Mantenimiento Gas Completo):</strong> 9,09 €/mes (con imp.). Incluye revisión anual e Inspección bienal, urgencias en <3h (3h mano de obra gratis, máx 2/año).<br>` +
-          `• <strong>Gana Energía (Servicio Gas):</strong> El PDF no especifica su precio. Incluye revisión bienal de caldera, averías con materiales gratis hasta 300€, desplazamiento y mano de obra incluidos. Garantía de 12 meses.`;
+          `• <strong>Gana Energía (Servicio Gas):</strong> 9,38 €/mes (0,3027 €/día). Incluye revisión bienal de caldera, averías con materiales gratis hasta 300€, desplazamiento y mano de obra incluidos. Garantía de 12 meses.`;
       }
     }
 
@@ -13756,7 +13756,7 @@ function getRenosurChatResponse(query) {
     }
     if (lowerQ.includes('servicio manitas') || lowerQ.includes('manitas gana') || lowerQ.includes('manitas de gana')) {
       return `<strong>El Servicio Manitas es un servicio de Gana Energía.</strong><br><br>` +
-        `• <strong>Precio:</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
+        `• <strong>Precio:</strong> 4,25 €/mes (0,1374 €/día).<br>` +
         `• <strong>Incluye:</strong> Urgencia eléctrica o de cerrajería en menos de 3 horas, atención 24h los 365 días, desplazamientos gratuitos del operario manitas (colgar cuadros, reparaciones urgentes) y presupuestos gratuitos para reformas y reparaciones.<br>` +
         `• <strong>Carencia:</strong> No se especifica carencia en la documentación.<br>` +
         `• <strong>Garantía:</strong> No se especifica garantía en la documentación.<br>` +
@@ -13764,7 +13764,7 @@ function getRenosurChatResponse(query) {
     }
     if (lowerQ.includes('servicio gas') && lowerQ.includes('gana')) {
       return `<strong>El Servicio de Gas es un servicio de Gana Energía.</strong><br><br>` +
-        `• <strong>Precio:</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
+        `• <strong>Precio:</strong> 9,38 €/mes (0,3027 €/día).<br>` +
         `• <strong>Incluye:</strong> Revisión bienal obligatoria de caldera e instalación, reparación de averías encontradas cubriendo materiales hasta 300€, urgencias <3h para calefacción/agua caliente, desplazamiento y mano de obra incluidos.<br>` +
         `• <strong>Límites:</strong> Hasta 300€ en piezas/materiales.<br>` +
         `• <strong>Garantía:</strong> Mínimo 12 meses (1 año) en cada reparación.`;
