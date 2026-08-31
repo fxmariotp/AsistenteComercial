@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930339;
+const CURRENT_BUILD_VERSION = 1785002930340;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13434,6 +13434,320 @@ function getRenosurChatResponse(query) {
   }
   if (q === 'gracias' || q === 'gracia' || q === 'de lujo' || q === 'perfecto' || q === 'ok') {
     return "¡De nada, mi rey! Si necesitas buscar cualquier otra sección, dímelo y te la encuentro volando.";
+  }
+
+  // ── BASE DE DATOS DE SERVICIOS DE MANTENIMIENTO ──
+  const SERVICES_DATA = {
+    iberdrola: {
+      hogar: {
+        name: "Pack Iberdrola Hogar",
+        alias: "Pack Iberdrola Digital",
+        family: "Electricidad / Hogar / Asistencia / Digital",
+        modalidad: "Pack Iberdrola Hogar, y Pack Iberdrola Hogar sin Asistente Smart (AS).",
+        price_no_tax: "8,95 €/mes",
+        price_with_tax: "10,83 €/mes",
+        promo: "50% de descuento sobre el Pack Iberdrola Hogar durante los 4 primeros meses. Además, un 5% de descuento sobre el término de energía del contrato de electricidad mientras se mantenga el servicio.",
+        billing: "Mensual, facturado junto a la luz o por domiciliación.",
+        permanencia: "No tiene permanencia. Se puede dar de baja en cualquier momento sin penalización, notificándolo con al menos 15 días de antelación.",
+        carencia: "30 días de carencia desde su entrada en vigor (excepto el Asesoramiento Energético que tiene 6 meses, y la Protección de Pagos que no tiene carencia).",
+        warranty: "6 meses de garantía en las reparaciones.",
+        includes: [
+          "Protección Electrodomésticos 10: reparación a domicilio de frigorífico, lavadora, cocina eléctrica, horno, campana, lavavajillas, secadora, congelador, termo o caldera eléctricos y televisor. Si tienen <= 10 años (TV <= 5 años) cubre piezas, mano de obra y desplazamiento hasta 300€/año por equipo. Si son mayores de 10 años (TV > 5 años), cubre el coste de desplazamiento y las 3 primeras horas de mano de obra (las piezas y horas extra a cargo del cliente). Pago por sustitución si es irreparable (hasta 300€ según antigüedad).",
+          "Urgencias Eléctricas: asistencia en menos de 3 horas por falta de energía eléctrica en la vivienda o avería que afecte a la nevera/congelador, con un límite anual de 550€ en reparaciones, sin límite de intervenciones.",
+          "Asistente Smart: información y control de consumo en la App (requiere potencia < 15 kW y contador inteligente).",
+          "Seguro de Protección de Pagos Esencial: asegura facturas de luz hasta 600€ (suscrito con MetLife). Menores de 65 años: fallecimiento por cualquier causa, incapacidad absoluta y permanente, incapacidad temporal u hospitalización. De 65 a 98 años: fallecimiento por accidente u hospitalización por accidente.",
+          "Hogar Digital: antivirus (5 disp. Bitdefender), control parental (5 disp.), ciberseguridad, protección de tarjetas bancarias (3) y borrado digital (3/año).",
+          "Bricolaje Eléctrico: 1 intervención anual con desplazamiento y hasta 3 horas de mano de obra (ej. sustituir mecanismos, colgar lámparas).",
+          "Asesoramiento Energético: 1 diagnóstico energético cada 4 años."
+        ],
+        exclusions: "Instalaciones de potencia > 15 kW, averías fuera de la instalación privativa (comunitaria), bombillas y elementos de iluminación, aparatos comerciales o industriales, mandos a distancia, gomas de admisión/desagüe."
+      },
+      gas: {
+        name: "Pack Mantenimiento Gas",
+        family: "Gas / Calefacción",
+        modalidad: "Pack Mantenimiento Gas (incluye Protección Gas y Asistencia Gas).",
+        price_no_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        price_with_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        promo: "No indicada.",
+        billing: "Facturación periódica.",
+        permanencia: "Contrato anual. La resolución anticipada por decisión del cliente obliga al pago de la totalidad del periodo anual vigente restante.",
+        carencia: "15 días naturales desde la fecha de contratación.",
+        warranty: "6 meses de garantía en las reparaciones.",
+        includes: [
+          "Protección Gas: visita de diagnóstico y mantenimiento bienal (se convierte en anual al contratar el Pack) que revisa la instalación receptora individual, caldera, calentador y circuito hidráulico de calefacción (radiadores, llaves, purgadores).",
+          "Asistencia Gas: reparación de defectos y averías con desplazamiento gratuito, 3 horas de mano de obra gratuitas y piezas cubiertas hasta un máximo de 50€.",
+          "Límite: Máximo de dos reparaciones por año de vigencia del contrato."
+        ],
+        exclusions: "Aparatos y calderas de potencia >= 70 kW, cocinas vitrocerámicas de gas, aparatos de más de 10 años de antigüedad (no se garantiza su reparación), instalaciones comunitarias, daños por heladas."
+      }
+    },
+    naturgy: {
+      servielectric: {
+        name: "Servielectric",
+        family: "Electricidad / Climatización / Electrodomésticos",
+        price_no_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        price_with_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        promo: "Las promociones no se consolidan y el precio se revisa por IPC cada febrero.",
+        billing: "Mensual por domiciliación bancaria.",
+        permanencia: "Vigencia anual con renovación automática. Se puede dar de baja avisando con al menos 1 mes de antelación.",
+        carencia: "15 días de carencia para el servicio de intervención urgente desde la fecha de firma o activación.",
+        warranty: "6 meses de garantía en las reparaciones.",
+        modalidades: {
+          xpress: "Urgencias en menos de 3 horas (24/365), desplazamiento y 3 horas de mano de obra gratis para electrodomésticos de gama blanca, aire acondicionado, calentador y termo eléctrico. Incluye 2 horas de manitas eléctrico.",
+          xpress_piezas: "Todo lo de Xpress + piezas incluidas en urgencias (para electrodomésticos < 10 años, fuera de garantía, límite 300€ con IVA por intervención).",
+          complet: "Todo lo de Xpress + revisión anual preventiva de aire acondicionado y bomba de calor (RITE para equipos < 70 kW)."
+        },
+        exclusions: "Potencia contratada > 10 kW (o tarifa no 2.0TD), electrodomésticos > 10 años (asistencias de reparación reiteradas), microondas independientes, aparatos en garantía del fabricante."
+      },
+      servigas: {
+        name: "Servigas",
+        family: "Gas / Calefacción",
+        price_no_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        price_with_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        promo: "Las promociones no se consolidan y el precio se revisa por IPC cada febrero.",
+        billing: "Mensual por domiciliación bancaria.",
+        permanencia: "Vigencia anual con renovación automática. Se puede dar de baja avisando con al menos 1 mes de antelación.",
+        carencia: "15 días de carencia para el servicio de intervención urgente desde la fecha de firma o activación.",
+        warranty: "6 meses de garantía en las reparaciones.",
+        modalidades: {
+          complet: "Revisión preventiva anual de IRI, caldera y sistema de calefacción (caldera, circuito hidráulico y radiadores). Incluye la Inspección Periódica obligatoria de cada 5 años y servicio de urgencias en < 3 horas (3h de mano de obra gratis).",
+          complet_agua_caliente: "Igual a Complet pero para calentador de agua caliente sanitaria (sin calefacción).",
+          xpress: "Servicios de reparación urgente (24h, < 3 horas, 3 horas de mano de obra gratis, desplazamiento gratis). No incluye revisiones preventivas.",
+          basico: "Solo revisión preventiva anual de la instalación y aparatos, incluyendo la Inspección Periódica de cada 5 años (sin servicio de urgencias)."
+        },
+        exclusions: "Instalaciones de gas comunitarias o no domésticas, aparatos de potencia > 50 kW, termos eléctricos, más de una caldera/calentador, instalaciones de GLP desde depósitos individuales."
+      }
+    },
+    endesa: {
+      luz: {
+        name: "Protección Luz 360",
+        alias: "Protección 360 Plus",
+        family: "Electricidad / Asistencia / Cerrajería / Fontanería / Cristalería",
+        modalidad: "Protección Luz 360.",
+        price_no_tax: "El PDF no especifica el precio sin impuestos.",
+        price_with_tax: "4,54 €/mes (según imagen)",
+        promo: "No indicada.",
+        billing: "Mensual.",
+        permanencia: "No tiene permanencia.",
+        carencia: "No se especifica carencia en la documentación.",
+        warranty: "6 meses de garantía en reparaciones.",
+        includes: [
+          "Reparación de instalación eléctrica: asistencia urgente en menos de 3 horas por falta de energía o fallo en enchufe de nevera/congelador (48h laborables en otros casos). Desplazamiento y 3h de mano de obra gratis.",
+          "Asistencia en electrodomésticos, cerrajería, fontanería o cristalería: en menos de 48 horas. Incluye desplazamiento, mano de obra y piezas hasta 500€ (IVA incluido) por intervención. Límite de 2 intervenciones al año.",
+          "Seguro de protección de pagos de facturas de luz con Quantum Leben (requiere suministro eléctrico activo con Endesa en la misma dirección). Teléfono del seguro: 800 00 95 56."
+        ],
+        exclusions: "Potencia > 15 kW, locales comerciales o industriales, electrodomésticos > 10 años para asistencias reiteradas, microondas independientes."
+      },
+      gas: {
+        name: "Mantenimiento Gas Completo",
+        family: "Gas / Calefacción",
+        modalidad: "Mantenimiento Gas Completo.",
+        price_no_tax: "El PDF no especifica el precio sin impuestos.",
+        price_with_tax: "9,09 €/mes (según imagen)",
+        promo: "No indicada.",
+        billing: "Mensual.",
+        permanencia: "No se especifica permanencia en la documentación.",
+        carencia: "No se especifica carencia en la documentación.",
+        warranty: "No se especifica garantía en la documentación.",
+        includes: [
+          "Mantenimiento anual de la instalación individual de gas y sistema de calefacción (caldera, circuito hidráulico y radiadores) o agua caliente (calentador).",
+          "Revisión bienal obligatoria de la instalación y equipamiento de gas (R.D. 919/2006 and R.D. 1027/2007).",
+          "Servicio técnico de reparaciones urgentes: asistencia en menos de 3 horas ante averías en calefacción o agua caliente. Desplazamiento y 3 primeras horas de mano de obra gratis. Límite de 2 reparaciones al año."
+        ],
+        exclusions: "Daños causados por heladas, cocinas vitrocerámicas de gas, instalaciones comerciales o comunitarias."
+      }
+    },
+    gana: {
+      luz: {
+        name: "Servicio Manitas (Servicio Luz)",
+        family: "Electricidad / Cerrajería / Manitas",
+        modalidad: "Servicio Manitas.",
+        price_no_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        price_with_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        promo: "No indicada.",
+        billing: "Mensual.",
+        permanencia: "Sin permanencia. Se puede cancelar sin penalización en cualquier momento.",
+        carencia: "No se especifica carencia en la documentación.",
+        warranty: "No se especifica garantía en la documentación.",
+        includes: [
+          "Urgencias las 24 horas del día, los 365 días del año (366 si es bisiesto).",
+          "Asistencia en menos de 3 horas en caso de falta de luz o necesidad de cambio de cerradura tras intento de robo.",
+          "Desplazamientos gratuitos del operario manitas para tareas como colgar un cuadro o reparar averías urgentes.",
+          "Presupuestos gratuitos y sin compromiso para reformas, reparaciones y averías."
+        ],
+        exclusions: "Reparaciones fuera del alcance básico sin presupuesto previo aceptado."
+      },
+      gas: {
+        name: "Servicio Gas Gana Energía",
+        family: "Gas / Calefacción",
+        modalidad: "Servicio Gas Gana Energía.",
+        price_no_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        price_with_tax: "El PDF describe este servicio, pero no especifica su precio.",
+        promo: "No indicada.",
+        billing: "Mensual.",
+        permanencia: "No se especifica permanencia en la documentación.",
+        carencia: "No se especifica carencia en la documentación.",
+        warranty: "Garantía mínima de 12 meses (1 año) en cada reparación.",
+        includes: [
+          "Revisión bienal obligatoria de la caldera e instalación.",
+          "Reparación de averías detectadas durante la revisión, cubriendo los materiales/piezas hasta 300€.",
+          "Urgencias en menos de 3 horas ante falta de calefacción o agua caliente.",
+          "Desplazamiento y mano de obra incluidos en el servicio."
+        ],
+        exclusions: "Averías que excedan el límite de materiales de 300€ (se facturará presupuesto adicional)."
+      }
+    }
+  };
+
+  const lowerQ = q.toLowerCase();
+
+  // ── DETECTAR QUERIES DE SERVICIOS DE MANTENIMIENTO ──
+  const isServicesQuery = lowerQ.includes('servielectric') || lowerQ.includes('servigas') || 
+    lowerQ.includes('proteccion luz 360') || lowerQ.includes('protección luz 360') || 
+    lowerQ.includes('proteccion 360') || lowerQ.includes('protección 360') || 
+    lowerQ.includes('pack iberdrola hogar') || lowerQ.includes('pack iberdrola digital') || 
+    lowerQ.includes('mantenimiento gas completo') || lowerQ.includes('servicio manitas') || 
+    lowerQ.includes('manitas de gana') || lowerQ.includes('manitas gana') ||
+    lowerQ.includes('mantenimiento gas gana') || lowerQ.includes('servicio gas gana') ||
+    lowerQ.includes('pack mantenimiento gas') ||
+    (lowerQ.includes('todos') && lowerQ.includes('servicios') && (lowerQ.includes('cuatro') || lowerQ.includes('4'))) ||
+    (lowerQ.includes('diferencia') && (lowerQ.includes('naturgy') || lowerQ.includes('iberdrola') || lowerQ.includes('endesa') || lowerQ.includes('gana')));
+
+  if (isServicesQuery) {
+    // 1. Mostrar todos los servicios
+    if (lowerQ.includes('todos los servicios de las cuatro compa') || lowerQ.includes('dime todos los servicios') || lowerQ.includes('todos los servicios de las 4 compa') || lowerQ.includes('todos los servicios')) {
+      return `<strong>Catálogo de Servicios de Mantenimiento (4 Compañías):</strong><br><br>` +
+        `<h3>IBERDROLA</h3>` +
+        `• <strong>Pack Iberdrola Hogar / Digital:</strong> 8,95€/mes sin imp. (10,83€/mes con imp.). Incluye protección electrodomésticos, urgencias eléctricas (<3h), asistente smart, seguro protección pagos, bricolaje eléctrico y hogar digital. Carencia: 30 días.<br>` +
+        `• <strong>Pack Mantenimiento Gas:</strong> El PDF describe este servicio, pero no especifica su precio. Incluye protección gas bienal (revisión de caldera e instalación) y asistencia (2 reparaciones/año con 3h mano de obra gratis y piezas hasta 50€). Carencia: 15 días.<br><br>` +
+        `<h3>NATURGY</h3>` +
+        `• <strong>Servielectric (Xpress / Complet):</strong> El PDF describe este servicio, pero no especifica su precio. Incluye urgencia eléctrica <3h (3h mano de obra gratis), reparación de electrodomésticos y manitas. Complet incluye revisión aire acondicionado. Xpress Piezas incluye piezas. Carencia: 15 días.<br>` +
+        `• <strong>Servigas (Complet / Xpress / Básico):</strong> El PDF describe este servicio, pero no especifica su precio. Complet incluye revisión anual preventiva de IRI y caldera, Inspección Periódica 5 años y urgencias. Carencia: 15 días.<br><br>` +
+        `<h3>ENDESA</h3>` +
+        `• <strong>Protección Luz 360 / Plus:</strong> 4,54€/mes con imp. (sin imp. no especificado). Incluye reparación eléctrica <3h, electrodomésticos, cerrajería, fontanería y cristalería (<48h, piezas y mano obra gratis hasta 500€/intervención, máx 2/año) y protección de pagos. Sin permanencia.<br>` +
+        `• <strong>Mantenimiento Gas Completo:</strong> 9,09€/mes con imp. (sin imp. no especificado). Incluye revisión anual e Inspección obligatoria bienal, reparaciones urgentes <3h (desplazamiento y 3h mano de obra gratis, máx 2/año).<br><br>` +
+        `<h3>GANA ENERGÍA</h3>` +
+        `• <strong>Servicio Manitas (Servicio Luz):</strong> El PDF describe este servicio, pero no especifica su precio. Asistencia urgente <3h (luz y cerrajería), desplazamientos manitas gratis, presupuestos gratis. Sin permanencia.<br>` +
+        `• <strong>Servicio Gas Gana Energía:</strong> El PDF describe este servicio, pero no especifica su precio. Revisión bienal de caldera, averías con materiales gratis hasta 300€, desplazamiento y mano de obra incluidos. Garantía de 12 meses.`;
+    }
+
+    // 2. Comparativas y diferencias
+    if (lowerQ.includes('diferencia') || lowerQ.includes('comparar') || lowerQ.includes('comparativa') || lowerQ.includes('cual es mejor') || lowerQ.includes('cuál es mejor')) {
+      if (lowerQ.includes('eléctric') || lowerQ.includes('luz') || lowerQ.includes('electrodom')) {
+        return `<strong>Comparativa de Mantenimiento Eléctrico y Hogar:</strong><br><br>` +
+          `• <strong>Iberdrola (Pack Hogar/Digital):</strong> 10,83 €/mes (con imp.). Incluye piezas (si eq. <10 años, tope 300€), urgencias <3h (tope 550€), bricolaje, ciberseguridad, antivirus y protección de pagos. Carencia: 30 días.<br>` +
+          `• <strong>Naturgy (Servielectric Xpress/Complet):</strong> El PDF no especifica su precio. Incluye urgencias <3h (3h mano de obra gratis), electrodomésticos y manitas (2h). Complet añade climatización. Piezas incluidas en Xpress Piezas (máx 300€). Carencia: 15 días.<br>` +
+          `• <strong>Endesa (Protección Luz 360):</strong> 4,54 €/mes (con imp.). Incluye urgencias <3h, y reparaciones de electrodomésticos, cerrajería, fontanería y cristalería (<48h, mano de obra y piezas gratis hasta 500€/intervención, máx 2/año) y protección de pagos. Sin permanencia.<br>` +
+          `• <strong>Gana Energía (Servicio Manitas):</strong> El PDF no especifica su precio. Incluye urgencias <3h (luz/cerrajería), manitas con desplazamientos gratis y presupuestos gratis. Sin permanencia.`;
+      }
+      if (lowerQ.includes('gas') || lowerQ.includes('caldera') || lowerQ.includes('calefac')) {
+        return `<strong>Comparativa de Mantenimiento de Gas y Calefacción:</strong><br><br>` +
+          `• <strong>Iberdrola (Pack Mantenimiento Gas):</strong> El PDF no especifica su precio. Incluye revisión bienal (anual con pack), reparación con 3h mano de obra y piezas hasta 50€ (máx 2/año). Carencia: 15 días. Contrato anual.<br>` +
+          `• <strong>Naturgy (Servigas Complet):</strong> El PDF no especifica su precio. Incluye revisión anual de caldera y calefacción, Inspección Periódica de 5 años y urgencias en <3h (3h mano de obra gratis). Carencia: 15 días. Contrato anual.<br>` +
+          `• <strong>Endesa (Mantenimiento Gas Completo):</strong> 9,09 €/mes (con imp.). Incluye revisión anual e Inspección bienal, urgencias en <3h (3h mano de obra gratis, máx 2/año).<br>` +
+          `• <strong>Gana Energía (Servicio Gas):</strong> El PDF no especifica su precio. Incluye revisión bienal de caldera, averías con materiales gratis hasta 300€, desplazamiento y mano de obra incluidos. Garantía de 12 meses.`;
+      }
+    }
+
+    // 3. De qué compañía es
+    if (lowerQ.includes('de que') || lowerQ.includes('de qué') || lowerQ.includes('quien ofrece') || lowerQ.includes('quién ofrece') || lowerQ.includes('quien es') || lowerQ.includes('quién es')) {
+      if (lowerQ.includes('servielectric')) {
+        return `Es de <strong>Naturgy</strong>. El servicio se llama <strong>Servielectric</strong>.`;
+      }
+      if (lowerQ.includes('servigas')) {
+        return `Es de <strong>Naturgy</strong>. El servicio se llama <strong>Servigas</strong>.`;
+      }
+      if (lowerQ.includes('pack iberdrola') || lowerQ.includes('digital') || lowerQ.includes('hogar')) {
+        return `Es de <strong>Iberdrola</strong>. El servicio se llama <strong>Pack Iberdrola Hogar</strong> (o <strong>Pack Iberdrola Digital</strong>).`;
+      }
+      if (lowerQ.includes('proteccion luz 360') || lowerQ.includes('protección luz 360')) {
+        return `Es de <strong>Endesa</strong>. El servicio se llama <strong>Protección Luz 360</strong>.`;
+      }
+      if (lowerQ.includes('mantenimiento gas completo')) {
+        return `Es de <strong>Endesa</strong>. El servicio se llama <strong>Mantenimiento Gas Completo</strong>.`;
+      }
+      if (lowerQ.includes('manitas')) {
+        return `Es de <strong>Gana Energía</strong>. El servicio se llama <strong>Servicio Manitas</strong>.`;
+      }
+      if (lowerQ.includes('servicio gas') && lowerQ.includes('gana')) {
+        return `Es de <strong>Gana Energía</strong>. El servicio se llama <strong>Servicio Gas Gana Energía</strong>.`;
+      }
+    }
+
+    // 4. Búsqueda individual de servicios
+    if (lowerQ.includes('servielectric')) {
+      return `<strong>Servielectric es un servicio de Naturgy.</strong><br><br>` +
+        `• <strong>Precio:</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
+        `• <strong>Modalidades:</strong> Xpress (urgencias <3h, electrodomésticos gama blanca, manitas 2h), Xpress Piezas (añade piezas hasta 300€ para eq. <10 años) y Complet (añade revisión anual de climatización RITE < 70 kW).<br>` +
+        `• <strong>Asistencia/Urgencias:</strong> En menos de 3 horas. Desplazamiento y 3 horas de mano de obra gratis.<br>` +
+        `• <strong>Carencia:</strong> 15 días para reparación urgente.<br>` +
+        `• <strong>Garantía:</strong> 6 meses.<br>` +
+        `• <strong>Baja:</strong> Sin penalización al final del contrato avisando con 1 mes de antelación.<br>` +
+        `• <strong>Exclusiones:</strong> Potencia > 10 kW, equipos > 10 años (en Xpress Piezas/asistencias reiteradas), microondas independientes, aparatos en garantía.`;
+    }
+    if (lowerQ.includes('servigas')) {
+      return `<strong>Servigas es un servicio de Naturgy.</strong><br><br>` +
+        `• <strong>Precio:</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
+        `• <strong>Modalidades:</strong> Complet (IRI, caldera y calefacción, incluye Inspección Periódica 5 años e urgencias), Complet Agua Caliente (Complet pero sin calefacción), Xpress (solo urgencias) y Básico (revisión e IP 5 años, sin urgencias).<br>` +
+        `• <strong>Asistencia/Urgencias:</strong> En menos de 3 horas. Desplazamiento y 3 horas de mano de obra gratis.<br>` +
+        `• <strong>Carencia:</strong> 15 días para reparación urgente.<br>` +
+        `• <strong>Garantía:</strong> 6 meses.<br>` +
+        `• <strong>Baja:</strong> Sin penalización al final del contrato avisando con 1 mes de antelación.<br>` +
+        `• <strong>Exclusiones:</strong> IRI > 50 kW, termos eléctricos, más de una caldera/calentador, GLP de depósitos individuales.`;
+    }
+    if (lowerQ.includes('pack iberdrola hogar') || lowerQ.includes('pack iberdrola digital') || lowerQ.includes('pack iberdrola')) {
+      return `<strong>El Pack Iberdrola Hogar (o Pack Iberdrola Digital) es un servicio de Iberdrola.</strong><br><br>` +
+        `• <strong>Precio:</strong> 8,95 €/mes sin impuestos (10,83 €/mes con impuestos).<br>` +
+        `• <strong>Promoción:</strong> 50% de descuento los primeros 4 meses + 5% de descuento en el término de energía de luz de por vida mientras esté contratado.<br>` +
+        `• <strong>Modalidades:</strong> Pack Iberdrola Hogar, y Pack Iberdrola Hogar sin Asistente Smart.<br>` +
+        `• <strong>Incluye:</strong> Protección Electrodomésticos 10 (reparación a domicilio hasta 300€/año por equipo), Urgencias Eléctricas (<3h, límite 550€/año), Asistente Smart (potencia <15kW y contador inteligente), Seguro de Protección de Pagos (MetLife, hasta 600€), Hogar Digital (antivirus, control parental, copia de seguridad 10GB), Bricolaje Eléctrico (1/año), Asesoramiento Energético (1 visita cada 4 años).<br>` +
+        `• <strong>Carencia:</strong> 30 días (6 meses para asesoramiento energético, sin carencia para protección de pagos).<br>` +
+        `• <strong>Garantía:</strong> 6 meses.<br>` +
+        `• <strong>Baja:</strong> Libre en cualquier momento comunicándolo con 15 días de antelación sin penalizaciones.<br>` +
+        `• <strong>Exclusiones:</strong> Potencia > 15 kW, averías fuera de la instalación privativa, bombillas e iluminación, equipos en garantía o comerciales.`;
+    }
+    if (lowerQ.includes('pack mantenimiento gas') || (lowerQ.includes('mantenimiento gas') && lowerQ.includes('iberdrola'))) {
+      return `<strong>El Pack Mantenimiento Gas es un servicio de Iberdrola.</strong><br><br>` +
+        `• <strong>Precio:</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
+        `• <strong>Incluye:</strong> Protección Gas (visita anual de IRI, caldera, calentador y circuito calefacción) y Asistencia Gas (reparación de averías, desplazamiento gratis, 3h mano de obra gratis y piezas hasta 50€).<br>` +
+        `• <strong>Límites:</strong> Máximo de dos reparaciones por año.<br>` +
+        `• <strong>Carencia:</strong> 15 días naturales desde contratación.<br>` +
+        `• <strong>Garantía:</strong> 6 meses.<br>` +
+        `• <strong>Baja:</strong> Contrato anual. La baja anticipada obliga a pagar la totalidad del periodo anual vigente restante.<br>` +
+        `• <strong>Exclusiones:</strong> Equipos >= 70 kW, vitrocerámicas de gas, calefacción comunitaria, aparatos > 10 años (no se garantiza reparación).`;
+    }
+    if (lowerQ.includes('proteccion luz 360') || lowerQ.includes('protección luz 360') || lowerQ.includes('proteccion 360') || lowerQ.includes('protección 360')) {
+      return `<strong>Protección Luz 360 (o Protección 360 Plus) es un servicio de Endesa.</strong><br><br>` +
+        `• <strong>Precio:</strong> El PDF no especifica el precio sin impuestos. 4,54 €/mes con impuestos (según imagen).<br>` +
+        `• <strong>Incluye:</strong> Reparación de instalación eléctrica urgente en <3h (o 48h laborables no urgentes). Asistencia en electrodomésticos (lavadora, secadora, nevera, congelador, campana, lavavajillas, vitro, horno, cocina eléctrica), cerrajería (pérdida/robo/rotura llaves), fontanería (fuga de agua) y cristalería (rotura ventanas) en <48h con piezas y mano de obra gratis hasta 500€/intervención (máx 2/año). Seguro de protección de pagos de facturas de luz con Quantum Leben (tel: 800 00 95 56).<br>` +
+        `• <strong>Carencia:</strong> No se especifica carencia en la documentación.<br>` +
+        `• <strong>Garantía:</strong> 6 meses.<br>` +
+        `• <strong>Baja:</strong> Sin permanencia.<br>` +
+        `• <strong>Exclusiones:</strong> Potencia > 15 kW, locales comerciales, equipos > 10 años (asistencias de reparación reiteradas), microondas independientes.`;
+    }
+    if (lowerQ.includes('mantenimiento gas completo')) {
+      return `<strong>Mantenimiento Gas Completo es un servicio de Endesa.</strong><br><br>` +
+        `• <strong>Precio:</strong> El PDF no especifica el precio sin impuestos. 9,09 €/mes con impuestos (según imagen).<br>` +
+        `• <strong>Incluye:</strong> Mantenimiento anual de la instalación de gas y calefacción (caldera, circuito hidráulico y radiadores) o calentador. Cumplimiento de revisión bienal obligatoria. Reparación urgente en menos de 3 horas ante averías en calefacción o agua caliente. Desplazamiento y 3 primeras horas de mano de obra gratis.<br>` +
+        `• <strong>Límites:</strong> Máximo de 2 reparaciones al año.<br>` +
+        `• <strong>Carencia:</strong> No se especifica carencia en la documentación.<br>` +
+        `• <strong>Garantía:</strong> No se especifica garantía en la documentación.`;
+    }
+    if (lowerQ.includes('servicio manitas') || lowerQ.includes('manitas gana') || lowerQ.includes('manitas de gana')) {
+      return `<strong>El Servicio Manitas es un servicio de Gana Energía.</strong><br><br>` +
+        `• <strong>Precio:</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
+        `• <strong>Incluye:</strong> Urgencia eléctrica o de cerrajería en menos de 3 horas, atención 24h los 365 días, desplazamientos gratuitos del operario manitas (colgar cuadros, reparaciones urgentes) y presupuestos gratuitos para reformas y reparaciones.<br>` +
+        `• <strong>Carencia:</strong> No se especifica carencia en la documentación.<br>` +
+        `• <strong>Garantía:</strong> No se especifica garantía en la documentación.<br>` +
+        `• <strong>Baja:</strong> Sin permanencia. Se puede cancelar en cualquier momento sin penalizaciones.`;
+    }
+    if (lowerQ.includes('servicio gas') && lowerQ.includes('gana')) {
+      return `<strong>El Servicio de Gas es un servicio de Gana Energía.</strong><br><br>` +
+        `• <strong>Precio:</strong> El PDF describe este servicio, pero no especifica su precio.<br>` +
+        `• <strong>Incluye:</strong> Revisión bienal obligatoria de caldera e instalación, reparación de averías encontradas cubriendo materiales hasta 300€, urgencias <3h para calefacción/agua caliente, desplazamiento y mano de obra incluidos.<br>` +
+        `• <strong>Límites:</strong> Hasta 300€ en piezas/materiales.<br>` +
+        `• <strong>Garantía:</strong> Mínimo 12 meses (1 año) en cada reparación.`;
+    }
   }
 
   function cleanStr(str) {
