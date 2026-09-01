@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930347;
+const CURRENT_BUILD_VERSION = 1785002930348;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13313,7 +13313,7 @@ const KNOWLEDGE_BASE = [
     • Las CCPP tienen **totalmente prohibido y excluido** recibir tarjetas de regalo o promociones comerciales en cualquiera de los supermercados asociados (Carrefour, Leroy Merlin, Caprabo).`
   },
   {
-    keywords: ["iberdrola", "requisitos iberdrola", "documentos iberdrola", "firma iberdrola"],
+    keywords: ["iberdrola", "requisitos iberdrola", "documentos iberdrola", "firma iberdrola", "contratar iberdrola", "que se necesita para iberdrola", "que piden en iberdrola", "procedimiento iberdrola"],
     answer: `<strong>Iberdrola - Requisitos, Documentación y Firma:</strong><br><br>
     • <strong>Residencial (Particulares):</strong><br>
       - <strong>Documentos:</strong> Lectura de texto legal. DNI/NIE en vigor, ambas caras legibles (obligatorio a partir del 1 de sep).<br>
@@ -13329,7 +13329,7 @@ const KNOWLEDGE_BASE = [
       - Cambios de potencia: permitido. Subir potencia ≈50€ por kW incrementado. Bajar potencia ≈9€ en total, independientemente de los kW (sin límite).`
   },
   {
-    keywords: ["naturgy", "requisitos naturgy", "documentos naturgy", "firma naturgy"],
+    keywords: ["naturgy", "requisitos naturgy", "documentos naturgy", "firma naturgy", "contratar naturgy", "que se necesita para naturgy", "que piden en naturgy", "procedimiento naturgy"],
     answer: `<strong>Naturgy - Requisitos, Documentación y Firma:</strong><br><br>
     • <strong>Residencial (Particulares):</strong><br>
       - <strong>Documentos:</strong> Lectura de texto legal.<br>
@@ -13344,7 +13344,7 @@ const KNOWLEDGE_BASE = [
       - Cambios de potencia: permitido. Subir ≈50€ por kW. Bajar ≈9€ en total (sin límite de kW).`
   },
   {
-    keywords: ["endesa", "hostezadis", "requisitos endesa", "documentos endesa", "firma endesa"],
+    keywords: ["endesa", "hostezadis", "requisitos endesa", "documentos endesa", "firma endesa", "contratar endesa", "que se necesita para endesa", "que piden en endesa", "procedimiento endesa"],
     answer: `<strong>Endesa - Requisitos, Documentación y Firma:</strong><br><br>
     • <strong>Residencial (Particulares):</strong><br>
       - <strong>Documentos:</strong> DNI o NIE vigente del titular, factura actual completa.<br>
@@ -13362,7 +13362,7 @@ const KNOWLEDGE_BASE = [
       - Cambios de potencia: en Endesa NO se puede hacer cambio de potencia (en las demás compañías sí). [Nota: subir/bajar potencia con los mismos importes aplica solo a las otras compañías, no a Endesa].`
   },
   {
-    keywords: ["gana", "gana energia", "requisitos gana", "documentos gana", "firma gana"],
+    keywords: ["gana", "gana energia", "requisitos gana", "documentos gana", "firma gana", "contratar gana", "que se necesita para gana", "que piden en gana", "que se necesita para gana energia", "procedimiento gana"],
     answer: `<strong>Gana Energía - Requisitos, Documentación y Firma:</strong><br><br>
     • <strong>Residencial (Particulares):</strong><br>
       - <strong>Documentos:</strong> DNI o NIE vigente del titular, factura actual completa.<br>
@@ -13439,6 +13439,11 @@ const KNOWLEDGE_BASE = [
   }
 ];
 
+function cleanStr(str) {
+  if (!str) return '';
+  return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
+}
+
 function matchKeyword(query, keyword) {
   const q = query.toLowerCase().trim();
   const kw = keyword.toLowerCase().trim();
@@ -13461,6 +13466,153 @@ function getRenosurChatResponse(query) {
   }
   if (q === 'gracias' || q === 'gracia' || q === 'de lujo' || q === 'perfecto' || q === 'ok') {
     return "¡De nada, mi rey! Si necesitas buscar cualquier otra sección, dímelo y te la encuentro volando.";
+  }
+
+  const cleanQ = cleanStr(q);
+
+  // ── 0. CONSULTAS ESPECÍFICAS DE CAMBIO DE TITULAR, JUSTO TÍTULO, POTENCIA O CIE ──
+  if (cleanQ.includes('justo titulo') || cleanQ.includes('cambio de titular') || cleanQ.includes('cambio titular') || cleanQ.includes('cambio de ct') || cleanQ.includes('cambio ct') || cleanQ.includes('empadronamiento')) {
+    return `<strong>Cambio de Titularidad y Justo Título (Por Compañía):</strong><br><br>` +
+           `• <strong>Iberdrola:</strong> Obligatorio aportar justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
+           `• <strong>Naturgy:</strong> Obligatorio aportar justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
+           `• <strong>Endesa:</strong> Obligatorio aportar justo título (contrato de alquiler, escrituras de compraventa o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
+           `• <strong>Gana Energía:</strong> Obligatorio aportar justo título (contrato de alquiler, escrituras de compraventa o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.`;
+  }
+  
+  if ((cleanQ.includes('potencia') && (cleanQ.includes('subir') || cleanQ.includes('bajar') || cleanQ.includes('cambio') || cleanQ.includes('modificar') || cleanQ.includes('aumentar') || cleanQ.includes('reducir'))) || cleanQ.includes('cambio de potencia') || cleanQ.includes('cambio potencia')) {
+    return `<strong>Cambios de Potencia (Por Compañía):</strong><br><br>` +
+           `• <strong>Iberdrola, Naturgy y Gana Energía:</strong> Permitido.<br>` +
+           `  - <strong>Subir potencia:</strong> ≈50€ por cada kW incrementado.<br>` +
+           `  - <strong>Bajar potencia:</strong> ≈9€ en total (sin límite de kW, independientemente del cambio).<br>` +
+           `• <strong>Endesa:</strong> <strong>NO se permite realizar cambios de potencia</strong> (la tarifa se debe contratar con la potencia existente).`;
+  }
+
+  if (cleanQ.includes('cie') || cleanQ.includes('boletin') || cleanQ.includes('alta nueva') || cleanQ.includes('altas nuevas') || cleanQ.includes('reactivar')) {
+    return `<strong>Altas Nuevas y Certificado de Instalación Eléctrica (CIE):</strong><br><br>` +
+           `• Para dar de alta un suministro nuevo o reactivar uno de baja, en las cuatro compañías (<strong>Iberdrola, Naturgy, Endesa y Gana Energía</strong>) es <strong>obligatorio</strong> aportar el CIE (Certificado de Instalación Eléctrica o Boletín).`;
+  }
+
+  // ── 1. CONSULTAS DE REQUISITOS, DOCUMENTACIÓN, PROCEDIMIENTO Y FIRMA POR COMPAÑÍA ──
+  const isReqIntent = (
+    cleanQ.includes('necesita') || 
+    cleanQ.includes('hace falta') || 
+    cleanQ.includes('hacen falta') || 
+    cleanQ.includes('requisito') || 
+    cleanQ.includes('document') || 
+    cleanQ.includes('procedimiento') || 
+    cleanQ.includes('proceso') || 
+    cleanQ.includes('como contratar') || 
+    cleanQ.includes('como se contrata') || 
+    cleanQ.includes('como firmar') || 
+    cleanQ.includes('como se firma') || 
+    cleanQ.includes('firma') || 
+    cleanQ.includes('pasos') || 
+    cleanQ.includes('que piden') || 
+    cleanQ.includes('que se pide') || 
+    cleanQ.includes('que pide') || 
+    cleanQ.includes('que hace farta') || 
+    cleanQ.includes('condiciones de contratacion') || 
+    cleanQ.includes('condicion de contratacion') ||
+    cleanQ.includes('para contratar') ||
+    cleanQ.includes('para tramitar') ||
+    cleanQ.includes('como tramitar')
+  );
+
+  const isCompanyDirect = cleanQ === 'naturgy' || cleanQ === 'iberdrola' || cleanQ === 'endesa' || cleanQ === 'gana' || cleanQ === 'gana energia';
+
+  if (isReqIntent || isCompanyDirect) {
+    const hasIberdrola = cleanQ.includes('iberdrola');
+    const hasNaturgy = cleanQ.includes('naturgy');
+    const hasEndesa = cleanQ.includes('endesa') || cleanQ.includes('hostezadis');
+    const hasGana = cleanQ.includes('gana');
+
+    if (hasIberdrola) {
+      return `<strong>Iberdrola — Requisitos, Documentación y Procedimiento de Contratación:</strong><br><br>` +
+             `• <strong>Residencial (Particulares):</strong><br>` +
+             `  - <strong>Documentación necesaria:</strong> Lectura de texto legal. DNI/NIE en vigor, ambas caras legibles (obligatorio a partir del 1 de septiembre).<br>` +
+             `  - <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
+             `    1) SMS de protección de datos (aceptación obligatoria del cliente).<br>` +
+             `    2) SMS con enlace de firma digital del contrato.<br>` +
+             `    3) Llamada breve de bienvenida para verificar datos de control.<br><br>` +
+             `• <strong>Autónomos / Pymes (CIF):</strong><br>` +
+             `  - <strong>Documentación necesaria:</strong> Lectura de texto legal, DNI/NIE del representante legal, factura actual completa, CIF de la empresa, escritura de constitución o recibo de autónomo (recomendable adjuntarlo).<br>` +
+             `  - <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
+             `    1) SMS o email de protección de datos (aceptación obligatoria).<br>` +
+             `    2) SMS/email con enlace de firma del contrato corporativo.<br>` +
+             `    3) Llamada breve de bienvenida para confirmar datos de control.<br><br>` +
+             `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+             `  - <strong>Límite de edad:</strong> No se permite contratar a personas mayores de 75 años.<br>` +
+             `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
+             `  - <strong>Promociones (tarjetas regalo):</strong> Válidas únicamente en contratos Iberdrola. CIF/Pymes reciben máximo 30€ (no optan a 50€). Comunidades de Propietarios (CCPP) prohibidas.<br>` +
+             `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE (Certificado de Instalación Eléctrica).<br>` +
+             `  - <strong>Cambios de potencia:</strong> Permitido. Subir potencia ≈50€ por cada kW incrementado. Bajar potencia ≈9€ en total, independientemente de los kW.`;
+    }
+
+    if (hasNaturgy) {
+      return `<strong>Naturgy — Requisitos, Documentación y Procedimiento de Contratación:</strong><br><br>` +
+             `• <strong>Residencial (Particulares):</strong><br>` +
+             `  - <strong>Documentación necesaria:</strong> Lectura de texto legal (no se exige DNI adjunto si la lectura es conforme).<br>` +
+             `  - <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
+             `    1) SMS o WhatsApp con enlace directo de firma.<br>` +
+             `    2) Introducir el DNI del titular y aceptar condiciones.<br>` +
+             `    3) Llamada breve de verificación y bienvenida.<br><br>` +
+             `• <strong>Autónomos / Pymes (CIF):</strong><br>` +
+             `  - <strong>Documentación necesaria:</strong> Lectura de texto legal, DNI/NIE del representante legal, factura actual completa, escritura de constitución o recibo de autónomo.<br>` +
+             `  - <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
+             `    1) SMS o WhatsApp con enlace de firma corporativa.<br>` +
+             `    2) Introducir DNI del apoderado y aceptar condiciones corporativas.<br>` +
+             `    3) Llamada breve de verificación y bienvenida.<br><br>` +
+             `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+             `  - <strong>Mayores de 75 años:</strong> Se debe introducir un año ficticio de nacimiento en la ficha y especificar la edad real en el campo de Observaciones.<br>` +
+             `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
+             `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE (Certificado de Instalación Eléctrica).<br>` +
+             `  - <strong>Cambios de potencia:</strong> Permitido. Subir potencia ≈50€ por cada kW incrementado. Bajar potencia ≈9€ en total (sin límite de kW).`;
+    }
+
+    if (hasEndesa) {
+      return `<strong>Endesa — Requisitos, Documentación y Procedimiento de Contratación:</strong><br><br>` +
+             `• <strong>Residencial (Particulares):</strong><br>` +
+             `  - <strong>Documentación necesaria:</strong> DNI o NIE vigente del titular y factura actual completa.<br>` +
+             `  - <strong>Procedimiento de Firma:</strong> SMS con enlace de firma segura → clic en el enlace, validar PIN temporal recibido y firmar digitalmente. (En campañas específicas autorizadas, el proceso puede realizarse mediante grabación de voz telefónica directa).<br><br>` +
+             `• <strong>Autónomos / Pymes (CIF):</strong><br>` +
+             `  - <strong>Documentación necesaria:</strong> DNI/NIE del representante legal, factura actual completa, CIF de la empresa/sociedad, escritura de constitución o recibo de autónomo.<br>` +
+             `  - <strong>Procedimiento de Firma:</strong> SMS o email con enlace → acceder al portal, verificar datos fiscales de la empresa y realizar la firma digital.<br><br>` +
+             `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+             `  - <strong>Servicios de Mantenimiento (SVA):</strong> Prohibido añadir SVA en Ceuta y Melilla, o si la potencia contratada es inferior a 3 kW.<br>` +
+             `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y aclarar la edad real en Observaciones.<br>` +
+             `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
+             `  - <strong>Grabación / Guión legal:</strong> El texto de verificación "Cosmos Mobile" es exclusivo de la gestora Hostezadis para cambios de titularidad (no es de uso general).<br>` +
+             `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
+             `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Endesa</strong> (se debe contratar con la potencia actual).`;
+    }
+
+    if (hasGana) {
+      return `<strong>Gana Energía — Requisitos, Documentación y Procedimiento de Contratación:</strong><br><br>` +
+             `• <strong>Residencial (Particulares):</strong><br>` +
+             `  - <strong>Documentación necesaria:</strong> DNI o NIE vigente del titular y factura actual completa.<br>` +
+             `  - <strong>Procedimiento de Firma (4 pasos obligatorios):</strong><br>` +
+             `    1) El cliente recibe SMS con enlace de acceso a la web de firma de Gana Energía.<br>` +
+             `    2) Descargar obligatoriamente los 2 PDFs con las condiciones del contrato.<br>` +
+             `    3) Marcar la casilla de confirmación de lectura del contrato.<br>` +
+             `    4) Solicitar y recibir SMS con código PIN de validación, introducirlo y pulsar firmar.<br><br>` +
+             `• <strong>Autónomos / Pymes (CIF):</strong><br>` +
+             `  - <strong>Documentación necesaria:</strong> DNI/NIE del representante legal, factura actual completa, CIF de la empresa/sociedad, escritura de constitución o recibo de autónomo.<br>` +
+             `  - <strong>Procedimiento de Firma (4 pasos corporativos):</strong> Mismo proceso en 4 pasos (descargar PDFs corporativos, marcar leído, solicitar PIN por SMS y firmar).<br><br>` +
+             `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+             `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y aclarar la edad real en Observaciones.<br>` +
+             `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
+             `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
+             `  - <strong>Cambios de potencia:</strong> Permitido. Subir potencia ≈50€ por kW incrementado. Bajar potencia ≈9€ en total (sin límite de kW).`;
+    }
+
+    if (!hasIberdrola && !hasNaturgy && !hasEndesa && !hasGana) {
+      return `<strong>Requisitos y Procedimientos de Contratación por Compañía:</strong><br><br>` +
+             `• <strong>Iberdrola:</strong> Lectura legal + DNI/NIE ambas caras (obligatorio). Firma por doble SMS (Protección de Datos + Contrato) + llamada de bienvenida. Límite estricto 75 años.<br><br>` +
+             `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones.<br><br>` +
+             `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
+             `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
+             `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Naturgy?") para ver el desglose completo de particulares, empresas y requisitos críticos.*</em>`;
+    }
   }
 
   // ── BASE DE DATOS DE SERVICIOS DE MANTENIMIENTO ──
@@ -13798,9 +13950,6 @@ function getRenosurChatResponse(query) {
     }
   }
 
-  function cleanStr(str) {
-    return str.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "").trim();
-  }
 
   // ── BASE DE DATOS DE TARIFAS DE LUZ Y GAS ──
   const TARIFFS_DATA = {
