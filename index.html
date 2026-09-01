@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930349;
+const CURRENT_BUILD_VERSION = 1785002930350;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13198,15 +13198,28 @@ function sendRenosurChatMessage() {
   
   inputEl.value = '';
   
-  const userHtml = `<div style="align-self: flex-end; max-width: 80%; background: var(--blue); color: white; border-radius: 14px 14px 2px 14px; padding: 10px 14px; font-size: 14.5px; line-height: 1.5; font-weight: 600; box-shadow: 0 2px 6px rgba(53,127,191,0.25);">${escapeHtml(text)}</div>`;
-  messagesEl.insertAdjacentHTML('beforeend', userHtml);
+  const userDiv = document.createElement('div');
+  userDiv.style.cssText = "align-self: flex-end; max-width: 80%; background: var(--blue); color: white; border-radius: 14px 14px 2px 14px; padding: 10px 14px; font-size: 14.5px; line-height: 1.5; font-weight: 600; box-shadow: 0 2px 6px rgba(53,127,191,0.25);";
+  userDiv.innerHTML = escapeHtml(text);
+  messagesEl.appendChild(userDiv);
   messagesEl.scrollTop = messagesEl.scrollHeight;
   
   setTimeout(() => {
     const response = getRenosurChatResponse(text);
-    const aiHtml = `<div style="align-self: flex-start; max-width: 85%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px 14px 14px 2px; padding: 10px 14px; font-size: 14.5px; line-height: 1.5; color: var(--text); font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">${response}</div>`;
-    messagesEl.insertAdjacentHTML('beforeend', aiHtml);
-    messagesEl.scrollTop = messagesEl.scrollHeight;
+    const aiDiv = document.createElement('div');
+    aiDiv.className = 'renosur-ai-msg';
+    aiDiv.style.cssText = "align-self: flex-start; max-width: 85%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px 14px 14px 2px; padding: 12px 16px; font-size: 14.5px; line-height: 1.5; color: var(--text); font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.02);";
+    aiDiv.innerHTML = response;
+    messagesEl.appendChild(aiDiv);
+    
+    // Posicionar la vista al inicio de la pregunta / respuesta para lectura continua desde el principio
+    setTimeout(() => {
+      const topOffset = userDiv ? userDiv.offsetTop - 8 : (aiDiv.offsetTop - 12);
+      messagesEl.scrollTo({
+        top: Math.max(0, topOffset),
+        behavior: 'smooth'
+      });
+    }, 50);
   }, 350);
 }
 
@@ -14586,7 +14599,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   </div>
 
   <!-- Messages Area -->
-  <div id="renosur-chat-messages" style="flex: 1; padding: 18px; overflow-y: auto; background: var(--bg); display: flex; flex-direction: column; gap: 14px;">
+  <div id="renosur-chat-messages" style="flex: 1; padding: 18px; overflow-y: auto; background: var(--bg); display: flex; flex-direction: column; gap: 14px; position: relative; scroll-behavior: smooth;">
     <!-- Welcome Message -->
     <div style="align-self: flex-start; max-width: 85%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px 14px 14px 2px; padding: 12px 16px; font-size: 14.5px; line-height: 1.5; color: var(--text); font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
       <div style="color: #ef4444; font-size: 12px; font-weight: 800; margin-bottom: 8px; display: flex; align-items: center; gap: 4px;">
