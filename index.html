@@ -3948,6 +3948,14 @@ input:focus, select:focus, textarea:focus {
   50% { transform: scale(1.4); opacity: 0.5; }
   100% { transform: scale(1); opacity: 1; }
 }
+@keyframes blinkCursor {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes bounceDot {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.4; }
+  40% { transform: translateY(-4px); opacity: 1; }
+}
 @media (max-width: 768px) {
   .topbar-search-wrapper {
     display: none !important;
@@ -10439,7 +10447,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930350;
+const CURRENT_BUILD_VERSION = 1785002930351;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13188,6 +13196,73 @@ function sendQuickChatQuery(text) {
   }
 }
 
+let activeChatTypingTimer = null;
+let activeChatTypingContainer = null;
+let activeChatTypingFullHtml = '';
+
+function finishActiveChatTyping() {
+  if (activeChatTypingTimer) {
+    clearInterval(activeChatTypingTimer);
+    activeChatTypingTimer = null;
+    if (activeChatTypingContainer && activeChatTypingFullHtml) {
+      activeChatTypingContainer.innerHTML = activeChatTypingFullHtml;
+    }
+  }
+}
+
+function typeHtmlMessage(container, html, onStart, onComplete) {
+  finishActiveChatTyping();
+  
+  let i = 0;
+  let currentHtml = '';
+  const totalLength = html.length;
+  
+  activeChatTypingContainer = container;
+  activeChatTypingFullHtml = html;
+
+  const charsPerTick = totalLength > 800 ? 6 : (totalLength > 300 ? 3 : 1);
+  const intervalTime = totalLength > 800 ? 8 : 12;
+
+  if (onStart) onStart();
+
+  activeChatTypingTimer = setInterval(() => {
+    if (i >= html.length) {
+      clearInterval(activeChatTypingTimer);
+      activeChatTypingTimer = null;
+      container.innerHTML = html;
+      if (onComplete) onComplete();
+      return;
+    }
+
+    for (let c = 0; c < charsPerTick && i < html.length; c++) {
+      if (html[i] === '<') {
+        const tagEnd = html.indexOf('>', i);
+        if (tagEnd !== -1) {
+          currentHtml += html.substring(i, tagEnd + 1);
+          i = tagEnd + 1;
+        } else {
+          currentHtml += html[i];
+          i++;
+        }
+      } else if (html[i] === '&') {
+        const entityEnd = html.indexOf(';', i);
+        if (entityEnd !== -1 && entityEnd - i < 10) {
+          currentHtml += html.substring(i, entityEnd + 1);
+          i = entityEnd + 1;
+        } else {
+          currentHtml += html[i];
+          i++;
+        }
+      } else {
+        currentHtml += html[i];
+        i++;
+      }
+    }
+
+    container.innerHTML = currentHtml + '<span class="chat-live-cursor" style="display:inline-block;width:2.5px;height:1.1em;background:var(--blue);margin-left:3px;vertical-align:text-bottom;animation:blinkCursor 0.6s infinite;"></span>';
+  }, intervalTime);
+}
+
 function sendRenosurChatMessage() {
   const inputEl = document.getElementById('renosur-chat-input');
   const messagesEl = document.getElementById('renosur-chat-messages');
@@ -13197,30 +13272,53 @@ function sendRenosurChatMessage() {
   if (!text) return;
   
   inputEl.value = '';
+  finishActiveChatTyping();
   
+  // 1. Añadir burbuja de usuario
   const userDiv = document.createElement('div');
   userDiv.style.cssText = "align-self: flex-end; max-width: 80%; background: var(--blue); color: white; border-radius: 14px 14px 2px 14px; padding: 10px 14px; font-size: 14.5px; line-height: 1.5; font-weight: 600; box-shadow: 0 2px 6px rgba(53,127,191,0.25);";
   userDiv.innerHTML = escapeHtml(text);
   messagesEl.appendChild(userDiv);
   messagesEl.scrollTop = messagesEl.scrollHeight;
+
+  // 2. Indicador animado de 'escribiendo...'
+  const typingIndicator = document.createElement('div');
+  typingIndicator.id = 'renosur-typing-indicator';
+  typingIndicator.style.cssText = "align-self: flex-start; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px 14px 14px 2px; padding: 10px 16px; display: flex; align-items: center; gap: 5px; width: fit-content; box-shadow: 0 2px 4px rgba(0,0,0,0.02);";
+  typingIndicator.innerHTML = `
+    <span style="display:inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); animation: bounceDot 1.2s infinite ease-in-out 0s;"></span>
+    <span style="display:inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); animation: bounceDot 1.2s infinite ease-in-out 0.2s;"></span>
+    <span style="display:inline-block; width: 6px; height: 6px; border-radius: 50%; background: var(--blue); animation: bounceDot 1.2s infinite ease-in-out 0.4s;"></span>
+  `;
+  messagesEl.appendChild(typingIndicator);
+  messagesEl.scrollTop = messagesEl.scrollHeight;
   
   setTimeout(() => {
+    if (typingIndicator && typingIndicator.parentNode) {
+      typingIndicator.parentNode.removeChild(typingIndicator);
+    }
+
     const response = getRenosurChatResponse(text);
     const aiDiv = document.createElement('div');
     aiDiv.className = 'renosur-ai-msg';
     aiDiv.style.cssText = "align-self: flex-start; max-width: 85%; background: var(--surface); border: 1.5px solid var(--border); border-radius: 14px 14px 14px 2px; padding: 12px 16px; font-size: 14.5px; line-height: 1.5; color: var(--text); font-weight: 600; box-shadow: 0 2px 4px rgba(0,0,0,0.02);";
-    aiDiv.innerHTML = response;
     messagesEl.appendChild(aiDiv);
     
-    // Posicionar la vista al inicio de la pregunta / respuesta para lectura continua desde el principio
-    setTimeout(() => {
-      const topOffset = userDiv ? userDiv.offsetTop - 8 : (aiDiv.offsetTop - 12);
+    // Posicionar vista al inicio de la pregunta / respuesta para lectura continua desde el principio
+    const topOffset = userDiv ? userDiv.offsetTop - 8 : (aiDiv.offsetTop - 12);
+    messagesEl.scrollTo({
+      top: Math.max(0, topOffset),
+      behavior: 'smooth'
+    });
+
+    // Iniciar efecto de escritura en vivo progresiva
+    typeHtmlMessage(aiDiv, response, null, () => {
       messagesEl.scrollTo({
         top: Math.max(0, topOffset),
         behavior: 'smooth'
       });
-    }, 50);
-  }, 350);
+    });
+  }, 400);
 }
 
 function escapeHtml(str) {
