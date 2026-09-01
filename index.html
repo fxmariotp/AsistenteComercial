@@ -10447,7 +10447,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930354;
+const CURRENT_BUILD_VERSION = 1785002930355;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13220,8 +13220,9 @@ function typeHtmlMessage(container, html, onStart, onComplete) {
   activeChatTypingContainer = container;
   activeChatTypingFullHtml = html;
 
-  const charsPerTick = totalLength > 800 ? 6 : (totalLength > 300 ? 3 : 1);
-  const intervalTime = totalLength > 800 ? 8 : 12;
+  // Ritmo de mecanografía natural y visible en tiempo real
+  const charsPerTick = totalLength > 900 ? 3 : (totalLength > 400 ? 2 : 1);
+  const intervalTime = totalLength > 900 ? 20 : (totalLength > 400 ? 22 : 24);
 
   if (onStart) onStart();
 
