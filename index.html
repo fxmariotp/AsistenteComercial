@@ -9283,8 +9283,8 @@ const PROCEDIMIENTOS = {
       ]
     },
     requisitos: [
-      'No se permite añadir SVA (Servicios de Valor Añadido) en las provincias de Ceuta y Melilla.',
-      'Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA.',
+      'No se permite añadir SVA (Servicio de Asistencia de la Comercializadora) en las provincias de Ceuta y Melilla.',
+      'Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA (Servicio de Asistencia de la Comercializadora).',
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
       'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).',
       'Grabación / Guión legal: El texto de verificación Cosmos Mobile para Endesa NO es de uso general; es de uso exclusivo para la gestora Hostezadis al realizar un cambio de titularidad.',
@@ -10439,7 +10439,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930348;
+const CURRENT_BUILD_VERSION = 1785002930349;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13353,13 +13353,19 @@ const KNOWLEDGE_BASE = [
       - <strong>Documentos:</strong> DNI/NIE del representante legal, factura actual completa, CIF de la empresa/sociedad, escritura de constitución o recibo de autónomo.<br>
       - <strong>Firma:</strong> SMS o email con enlace → acceder al portal, verificar datos fiscales de la empresa y realizar firma digital del contrato.<br><br>
     • <strong>Requisitos Críticos:</strong><br>
-      - No se permite añadir SVA (Servicios de Valor Añadido) en Ceuta y Melilla.<br>
-      - Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA.<br>
+      - No se permite añadir SVA (Servicio de Asistencia de la Comercializadora) en Ceuta y Melilla.<br>
+      - Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA (Servicio de Asistencia de la Comercializadora).<br>
       - Si el cliente tiene más de 75 años: introducir año ficticio de nacimiento y aclarar edad real en Observaciones.<br>
       - Cambio de titularidad: obligatorio justo título (no sirve el empadronamiento).<br>
       - Grabación/Guión legal: el texto de verificación "Cosmos Mobile" para Endesa NO es de uso general; es exclusivo de la gestora Hostezadis para cambios de titularidad.<br>
       - Altas nuevas: obligatorio el CIE.<br>
       - Cambios de potencia: en Endesa NO se puede hacer cambio de potencia (en las demás compañías sí). [Nota: subir/bajar potencia con los mismos importes aplica solo a las otras compañías, no a Endesa].`
+  },
+  {
+    keywords: ["sva", "que es sva", "que significa sva", "servicio de asistencia", "servicios de asistencia", "asistencia comercializadora"],
+    answer: `<strong>SVA — Servicio de Asistencia de la Comercializadora:</strong><br><br>
+    • <strong>SVA</strong> significa <strong>Servicio de Asistencia de la Comercializadora</strong> (servicios de mantenimiento, urgencias eléctricas/gas, reparaciones y asistencia en el hogar).<br>
+    • <strong>Restricción importante en Endesa:</strong> No se permite añadir SVA en las provincias de Ceuta y Melilla, ni en suministros cuya potencia contratada sea inferior a 3 kW.`
   },
   {
     keywords: ["gana", "gana energia", "requisitos gana", "documentos gana", "firma gana", "contratar gana", "que se necesita para gana", "que piden en gana", "que se necesita para gana energia", "procedimiento gana"],
@@ -13578,7 +13584,7 @@ function getRenosurChatResponse(query) {
              `  - <strong>Documentación necesaria:</strong> DNI/NIE del representante legal, factura actual completa, CIF de la empresa/sociedad, escritura de constitución o recibo de autónomo.<br>` +
              `  - <strong>Procedimiento de Firma:</strong> SMS o email con enlace → acceder al portal, verificar datos fiscales de la empresa y realizar la firma digital.<br><br>` +
              `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
-             `  - <strong>Servicios de Mantenimiento (SVA):</strong> Prohibido añadir SVA en Ceuta y Melilla, o si la potencia contratada es inferior a 3 kW.<br>` +
+             `  - <strong>Servicio de Asistencia de la Comercializadora (SVA):</strong> Prohibido añadir SVA (Servicio de Asistencia de la Comercializadora) en Ceuta y Melilla, o si la potencia contratada es inferior a 3 kW.<br>` +
              `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y aclarar la edad real en Observaciones.<br>` +
              `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
              `  - <strong>Grabación / Guión legal:</strong> El texto de verificación "Cosmos Mobile" es exclusivo de la gestora Hostezadis para cambios de titularidad (no es de uso general).<br>` +
@@ -13609,7 +13615,7 @@ function getRenosurChatResponse(query) {
       return `<strong>Requisitos y Procedimientos de Contratación por Compañía:</strong><br><br>` +
              `• <strong>Iberdrola:</strong> Lectura legal + DNI/NIE ambas caras (obligatorio). Firma por doble SMS (Protección de Datos + Contrato) + llamada de bienvenida. Límite estricto 75 años.<br><br>` +
              `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones.<br><br>` +
-             `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
+             `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA (Servicio de Asistencia de la Comercializadora) en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
              `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
              `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Naturgy?") para ver el desglose completo de particulares, empresas y requisitos críticos.*</em>`;
     }
