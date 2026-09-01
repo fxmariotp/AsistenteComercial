@@ -10447,7 +10447,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930355;
+const CURRENT_BUILD_VERSION = 1785002930356;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13677,83 +13677,179 @@ function getRenosurChatResponse(query) {
     const hasEndesa = cleanQ.includes('endesa') || cleanQ.includes('hostezadis');
     const hasGana = cleanQ.includes('gana');
 
+    const isResidencial = cleanQ.includes('residencial') || cleanQ.includes('particular') || cleanQ.includes('particulares') || cleanQ.includes('hogar');
+    const isCIF = cleanQ.includes('cif') || cleanQ.includes('pyme') || cleanQ.includes('pymes') || cleanQ.includes('empresa') || cleanQ.includes('empresas') || cleanQ.includes('autonomo') || cleanQ.includes('autonomos') || cleanQ.includes('sociedad');
+
+    // ── 1.1 IBERDROLA ──
     if (hasIberdrola) {
-      return `<strong>Iberdrola — Requisitos, Documentación y Procedimiento de Contratación:</strong><br><br>` +
-             `• <strong>Residencial (Particulares):</strong><br>` +
-             `  - <strong>Documentación necesaria:</strong> Lectura de texto legal. DNI/NIE en vigor, ambas caras legibles (obligatorio a partir del 1 de septiembre).<br>` +
-             `  - <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
-             `    1) SMS de protección de datos (aceptación obligatoria del cliente).<br>` +
-             `    2) SMS con enlace de firma digital del contrato.<br>` +
-             `    3) Llamada breve de bienvenida para verificar datos de control.<br><br>` +
-             `• <strong>Autónomos / Pymes (CIF):</strong><br>` +
-             `  - <strong>Documentación necesaria:</strong> Lectura de texto legal, DNI/NIE del representante legal, factura actual completa, CIF de la empresa, escritura de constitución o recibo de autónomo (recomendable adjuntarlo).<br>` +
-             `  - <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
-             `    1) SMS o email de protección de datos (aceptación obligatoria).<br>` +
-             `    2) SMS/email con enlace de firma del contrato corporativo.<br>` +
-             `    3) Llamada breve de bienvenida para confirmar datos de control.<br><br>` +
-             `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
-             `  - <strong>Límite de edad:</strong> No se permite contratar a personas mayores de 75 años.<br>` +
-             `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
-             `  - <strong>Promociones (tarjetas regalo):</strong> Válidas únicamente en contratos Iberdrola. CIF/Pymes reciben máximo 30€ (no optan a 50€). Comunidades de Propietarios (CCPP) prohibidas.<br>` +
-             `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE (Certificado de Instalación Eléctrica).<br>` +
-             `  - <strong>Cambios de potencia:</strong> Permitido. Subir potencia ≈50€ por cada kW incrementado. Bajar potencia ≈9€ en total, independientemente de los kW.`;
+      if (!isResidencial && !isCIF) {
+        return `<strong>¿Qué tipo de cliente deseas consultar para Iberdrola?</strong><br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Iberdrola Residencial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">👤 Residencial (Particulares)</button>` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Iberdrola CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🏢 Autónomos / Pymes (CIF)</button>` +
+          `</div>`;
+      }
+      if (isResidencial) {
+        return `<strong>Iberdrola — Requisitos y Procedimiento Residencial (Particulares):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - Lectura de texto legal obligatorio.<br>` +
+               `  - DNI/NIE en vigor, ambas caras legibles (obligatorio a partir del 1 de septiembre).<br><br>` +
+               `• <strong>Procedimiento de Firma (3 pasos obligatorios):</strong><br>` +
+               `  1) <strong>SMS de protección de datos:</strong> Aceptación obligatoria del cliente para iniciar.<br>` +
+               `  2) <strong>SMS de firma digital:</strong> Enlace con el contrato para firma online.<br>` +
+               `  3) <strong>Llamada breve de bienvenida:</strong> Verificación de datos de control con el cliente.<br><br>` +
+               `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+               `  - <strong>Límite de edad:</strong> Prohibido contratar a mayores de 75 años.<br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
+               `  - <strong>Promociones (tarjetas regalo):</strong> Válidas únicamente en contratos Iberdrola. Prohibidas en Comunidades de Propietarios (CCPP).<br>` +
+               `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE (Certificado de Instalación Eléctrica o Boletín).<br>` +
+               `  - <strong>Cambios de potencia:</strong> Permitido (Subir ≈50€/kW incrementado; Bajar ≈9€ en total sin límite de kW).`;
+      }
+      if (isCIF) {
+        return `<strong>Iberdrola — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - Lectura de texto legal obligatorio.<br>` +
+               `  - DNI/NIE en vigor del representante legal o administrador.<br>` +
+               `  - Factura actual completa del suministro.<br>` +
+               `  - CIF de la empresa/sociedad.<br>` +
+               `  - Escritura de constitución o recibo de autónomo (recomendable adjuntarlo).<br><br>` +
+               `• <strong>Procedimiento de Firma (3 pasos corporativos):</strong><br>` +
+               `  1) <strong>SMS o email de protección de datos:</strong> Aceptación obligatoria de la empresa.<br>` +
+               `  2) <strong>SMS o email de firma:</strong> Enlace para la firma digital del contrato corporativo.<br>` +
+               `  3) <strong>Llamada breve de bienvenida:</strong> Verificación de datos con el administrador.<br><br>` +
+               `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+               `  - <strong>Promociones (tarjetas regalo):</strong> En CIF/Pymes se entrega un importe máximo de 30€ (no optan a 50€). Prohibido en Comunidades de Propietarios (CCPP).<br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras o IBI).<br>` +
+               `  - <strong>Altas nuevas:</strong> Obligatorio el CIE.<br>` +
+               `  - <strong>Cambios de potencia:</strong> Permitido (Subir ≈50€/kW; Bajar ≈9€ en total).`;
+      }
     }
 
+    // ── 1.2 NATURGY ──
     if (hasNaturgy) {
-      return `<strong>Naturgy — Requisitos, Documentación y Procedimiento de Contratación:</strong><br><br>` +
-             `• <strong>Residencial (Particulares):</strong><br>` +
-             `  - <strong>Documentación necesaria:</strong> Lectura de texto legal (no se exige DNI adjunto si la lectura es conforme).<br>` +
-             `  - <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
-             `    1) SMS o WhatsApp con enlace directo de firma.<br>` +
-             `    2) Introducir el DNI del titular y aceptar condiciones.<br>` +
-             `    3) Llamada breve de verificación y bienvenida.<br><br>` +
-             `• <strong>Autónomos / Pymes (CIF):</strong><br>` +
-             `  - <strong>Documentación necesaria:</strong> Lectura de texto legal, DNI/NIE del representante legal, factura actual completa, escritura de constitución o recibo de autónomo.<br>` +
-             `  - <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
-             `    1) SMS o WhatsApp con enlace de firma corporativa.<br>` +
-             `    2) Introducir DNI del apoderado y aceptar condiciones corporativas.<br>` +
-             `    3) Llamada breve de verificación y bienvenida.<br><br>` +
-             `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
-             `  - <strong>Mayores de 75 años:</strong> Se debe introducir un año ficticio de nacimiento en la ficha y especificar la edad real en el campo de Observaciones.<br>` +
-             `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
-             `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE (Certificado de Instalación Eléctrica).<br>` +
-             `  - <strong>Cambios de potencia:</strong> Permitido. Subir potencia ≈50€ por cada kW incrementado. Bajar potencia ≈9€ en total (sin límite de kW).`;
+      if (!isResidencial && !isCIF) {
+        return `<strong>¿Qué tipo de cliente deseas consultar para Naturgy?</strong><br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Naturgy Residencial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">👤 Residencial (Particulares)</button>` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Naturgy CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🏢 Autónomos / Pymes (CIF)</button>` +
+          `</div>`;
+      }
+      if (isResidencial) {
+        return `<strong>Naturgy — Requisitos y Procedimiento Residencial (Particulares):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - Lectura de texto legal obligatorio (no se exige DNI adjunto si la lectura es conforme).<br><br>` +
+               `• <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
+               `  1) SMS o WhatsApp con enlace directo de firma.<br>` +
+               `  2) El titular introduce su DNI/NIE y acepta condiciones.<br>` +
+               `  3) Llamada breve de verificación y bienvenida.<br><br>` +
+               `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+               `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y especificar edad real en Observaciones.<br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
+               `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
+               `  - <strong>Cambios de potencia:</strong> Permitido (Subir ≈50€/kW; Bajar ≈9€ en total).`;
+      }
+      if (isCIF) {
+        return `<strong>Naturgy — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - Lectura de texto legal obligatorio.<br>` +
+               `  - DNI/NIE en vigor del representante legal.<br>` +
+               `  - Factura actual completa del suministro.<br>` +
+               `  - CIF de la empresa, escritura de constitución o recibo de autónomo.<br><br>` +
+               `• <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
+               `  1) SMS o WhatsApp con enlace de firma corporativa.<br>` +
+               `  2) Introducir DNI del apoderado y aceptar condiciones corporativas.<br>` +
+               `  3) Llamada breve de verificación y bienvenida.<br><br>` +
+               `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras, IBI o certificado de empadronamiento).<br>` +
+               `  - <strong>Altas nuevas:</strong> Obligatorio el CIE.<br>` +
+               `  - <strong>Cambios de potencia:</strong> Permitido (Subir ≈50€/kW; Bajar ≈9€ en total).`;
+      }
     }
 
+    // ── 1.3 ENDESA ──
     if (hasEndesa) {
-      return `<strong>Endesa — Requisitos, Documentación y Procedimiento de Contratación:</strong><br><br>` +
-             `• <strong>Residencial (Particulares):</strong><br>` +
-             `  - <strong>Documentación necesaria:</strong> DNI o NIE vigente del titular y factura actual completa.<br>` +
-             `  - <strong>Procedimiento de Firma:</strong> SMS con enlace de firma segura → clic en el enlace, validar PIN temporal recibido y firmar digitalmente. (En campañas específicas autorizadas, el proceso puede realizarse mediante grabación de voz telefónica directa).<br><br>` +
-             `• <strong>Autónomos / Pymes (CIF):</strong><br>` +
-             `  - <strong>Documentación necesaria:</strong> DNI/NIE del representante legal, factura actual completa, CIF de la empresa/sociedad, escritura de constitución o recibo de autónomo.<br>` +
-             `  - <strong>Procedimiento de Firma:</strong> SMS o email con enlace → acceder al portal, verificar datos fiscales de la empresa y realizar la firma digital.<br><br>` +
-             `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
-             `  - <strong>Servicio de Asistencia de la Comercializadora (SVA):</strong> Prohibido añadir SVA (Servicio de Asistencia de la Comercializadora) en Ceuta y Melilla, o si la potencia contratada es inferior a 3 kW.<br>` +
-             `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y aclarar la edad real en Observaciones.<br>` +
-             `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
-             `  - <strong>Grabación / Guión legal:</strong> El texto de verificación "Cosmos Mobile" es exclusivo de la gestora Hostezadis para cambios de titularidad (no es de uso general).<br>` +
-             `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
-             `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Endesa</strong> (se debe contratar con la potencia actual).`;
+      if (!isResidencial && !isCIF) {
+        return `<strong>¿Qué tipo de cliente deseas consultar para Endesa?</strong><br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Endesa Residencial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">👤 Residencial (Particulares)</button>` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Endesa CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🏢 Autónomos / Pymes (CIF)</button>` +
+          `</div>`;
+      }
+      if (isResidencial) {
+        return `<strong>Endesa — Requisitos y Procedimiento Residencial (Particulares):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - DNI o NIE vigente del titular.<br>` +
+               `  - Factura actual completa del suministro.<br><br>` +
+               `• <strong>Procedimiento de Firma:</strong><br>` +
+               `  - SMS con enlace de firma digital segura → validar PIN temporal recibido y firmar online.<br>` +
+               `  - (En campañas específicas autorizadas, el proceso puede realizarse mediante grabación de voz telefónica directa).<br><br>` +
+               `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+               `  - <strong>Servicio de Asistencia de la Comercializadora (SVA):</strong> Prohibido añadir SVA en Ceuta y Melilla o con potencias inferiores a 3 kW.<br>` +
+               `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y especificar la edad real en Observaciones.<br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
+               `  - <strong>Grabación / Guión legal:</strong> El texto de verificación "Cosmos Mobile" es exclusivo de la gestora Hostezadis para cambios de titularidad.<br>` +
+               `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
+               `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Endesa</strong> (contratar con potencia actual).`;
+      }
+      if (isCIF) {
+        return `<strong>Endesa — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - DNI/NIE del representante legal o administrador.<br>` +
+               `  - Factura actual completa del suministro.<br>` +
+               `  - CIF de la empresa/sociedad.<br>` +
+               `  - Escritura de constitución o recibo de autónomo.<br><br>` +
+               `• <strong>Procedimiento de Firma:</strong><br>` +
+               `  - SMS o email con enlace al portal de firma corporativa → verificar datos fiscales y firmar digitalmente.<br><br>` +
+               `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+               `  - <strong>Servicio de Asistencia de la Comercializadora (SVA):</strong> Prohibido en Ceuta y Melilla o potencia &lt; 3 kW.<br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras o IBI). <strong>NO sirve empadronamiento</strong>.<br>` +
+               `  - <strong>Altas nuevas:</strong> Obligatorio aportar el CIE.<br>` +
+               `  - <strong>Cambios de potencia:</strong> <strong>NO permitidos en Endesa</strong>.`;
+      }
     }
 
+    // ── 1.4 GANA ENERGÍA ──
     if (hasGana) {
-      return `<strong>Gana Energía — Requisitos, Documentación y Procedimiento de Contratación:</strong><br><br>` +
-             `• <strong>Residencial (Particulares):</strong><br>` +
-             `  - <strong>Documentación necesaria:</strong> DNI o NIE vigente del titular y factura actual completa.<br>` +
-             `  - <strong>Procedimiento de Firma (4 pasos obligatorios):</strong><br>` +
-             `    1) El cliente recibe SMS con enlace de acceso a la web de firma de Gana Energía.<br>` +
-             `    2) Descargar obligatoriamente los 2 PDFs con las condiciones del contrato.<br>` +
-             `    3) Marcar la casilla de confirmación de lectura del contrato.<br>` +
-             `    4) Solicitar y recibir SMS con código PIN de validación, introducirlo y pulsar firmar.<br><br>` +
-             `• <strong>Autónomos / Pymes (CIF):</strong><br>` +
-             `  - <strong>Documentación necesaria:</strong> DNI/NIE del representante legal, factura actual completa, CIF de la empresa/sociedad, escritura de constitución o recibo de autónomo.<br>` +
-             `  - <strong>Procedimiento de Firma (4 pasos corporativos):</strong> Mismo proceso en 4 pasos (descargar PDFs corporativos, marcar leído, solicitar PIN por SMS y firmar).<br><br>` +
-             `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
-             `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y aclarar la edad real en Observaciones.<br>` +
-             `  - <strong>Cambio de titularidad:</strong> Obligatorio justo título (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
-             `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
-             `  - <strong>Cambios de potencia:</strong> Permitido. Subir potencia ≈50€ por kW incrementado. Bajar potencia ≈9€ en total (sin límite de kW).`;
+      if (!isResidencial && !isCIF) {
+        return `<strong>¿Qué tipo de cliente deseas consultar para Gana Energía?</strong><br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Gana Energia Residencial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">👤 Residencial (Particulares)</button>` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Gana Energia CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🏢 Autónomos / Pymes (CIF)</button>` +
+          `</div>`;
+      }
+      if (isResidencial) {
+        return `<strong>Gana Energía — Requisitos y Procedimiento Residencial (Particulares):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - DNI o NIE vigente del titular.<br>` +
+               `  - Factura actual completa del suministro.<br><br>` +
+               `• <strong>Procedimiento de Firma (4 pasos obligatorios):</strong><br>` +
+               `  1) El cliente recibe SMS con enlace de acceso a la web de firma.<br>` +
+               `  2) <strong>Descargar obligatoriamente los 2 PDFs</strong> con las condiciones del contrato.<br>` +
+               `  3) Marcar la casilla de confirmación de lectura del contrato.<br>` +
+               `  4) Solicitar y recibir SMS con código PIN de validación, introducirlo y pulsar firmar.<br><br>` +
+               `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+               `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y especificar la edad real en Observaciones.<br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
+               `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
+               `  - <strong>Cambios de potencia:</strong> Permitido (Subir ≈50€/kW; Bajar ≈9€ en total).`;
+      }
+      if (isCIF) {
+        return `<strong>Gana Energía — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - DNI/NIE del representante legal.<br>` +
+               `  - Factura actual completa del suministro.<br>` +
+               `  - CIF de la empresa/sociedad.<br>` +
+               `  - Escritura de constitución o recibo de autónomo.<br><br>` +
+               `• <strong>Procedimiento de Firma (4 pasos corporativos):</strong><br>` +
+               `  1) Enlace de firma recibido por SMS o email corporativo.<br>` +
+               `  2) Descargar obligatoriamente los 2 PDFs corporativos.<br>` +
+               `  3) Marcar la casilla de contrato corporativo leído.<br>` +
+               `  4) Solicitar código PIN por SMS, introducirlo y pulsar firmar.<br><br>` +
+               `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
+               `  - <strong>Altas nuevas:</strong> Obligatorio aportar el CIE.<br>` +
+               `  - <strong>Cambios de potencia:</strong> Permitido (Subir ≈50€/kW; Bajar ≈9€ en total).`;
+      }
     }
 
     if (!hasIberdrola && !hasNaturgy && !hasEndesa && !hasGana) {
@@ -13762,7 +13858,7 @@ function getRenosurChatResponse(query) {
              `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones.<br><br>` +
              `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA (Servicio de Asistencia de la Comercializadora) en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
              `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
-             `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Naturgy?") para ver el desglose completo de particulares, empresas y requisitos críticos.*</em>`;
+             `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Naturgy?") para elegir entre Particular o CIF.*</em>`;
     }
   }
 
