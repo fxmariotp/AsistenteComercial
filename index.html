@@ -9724,9 +9724,37 @@ function calcComp(){
       total = total - appliedBateriaVirtual;
     }
 
+    let tariffName = '';
+    if (compMode === 'luz') {
+      if (cia === 'iberdrola') {
+        if (off.type === 'impulsa') {
+          tariffName = isCif ? 'Impulsa 24h (CIF)' : 'Impulsa 24h';
+        } else {
+          const maxPot = Math.max(pot1, pot2);
+          if (maxPot > 10) {
+            tariffName = isCif ? 'Plan Ahora 10-15 kW (CIF)' : 'Plan Ahora (10-15 kW)';
+          } else {
+            tariffName = isCif ? 'Plan Ahora (CIF)' : 'Plan Ahora (0-10 kW)';
+          }
+        }
+      } else if (cia === 'naturgy') {
+        tariffName = isCif ? 'Por Uso Luz (CIF)' : 'Por Uso Luz';
+      } else if (cia === 'endesa') {
+        tariffName = (excedente > 0 ? 'Solar Plus' : 'Luz 24H') + (isCif ? ' (CIF)' : '');
+      } else if (cia === 'gana') {
+        tariffName = (off.type === 'gana_mercado' ? 'Precio de Mercado' : 'Plan 24 Horas') + (isCif ? ' (CIF)' : '');
+      }
+    } else {
+      const rlName = band.toUpperCase();
+      if (cia === 'iberdrola') tariffName = `Iberdrola Gas ${rlName}`;
+      else if (cia === 'naturgy') tariffName = `Gas Por Uso ${rlName}`;
+      else if (cia === 'endesa') tariffName = `Gas Endesa ${rlName}`;
+      else if (cia === 'gana') tariffName = `Gana Gas ${rlName}`;
+    }
+
     const ahorro = actual > 0 ? actual - total : null;
     return {
-      key, cia, type: off.type, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
+      key, cia, type: off.type, r, tariffName, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
       dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
       costeGestion, bateriaVirtual, appliedBateriaVirtual
@@ -9854,7 +9882,7 @@ function clearComparisonInputs() {
 function renderInvCards(results, useSva){
   const isLuz = compMode === 'luz';
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
-    const{cia,r,total,ahorro,actual}=res;
+    const{cia,r,total,ahorro,actual,tariffName}=res;
     const best=idx===0, aPos=ahorro>0, aNeg=ahorro<0;
     const pct=(actual>0 && ahorro!==null)?(ahorro/actual)*100:null;
     
@@ -9873,10 +9901,16 @@ function renderInvCards(results, useSva){
 
     return `<div class="inv-card${best?' best':''}">
       <!-- Header -->
-      <div class="inv-hdr-minimal">
-        <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;height:46px;">
-          <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height:44px;max-width:160px;object-fit:contain;display:block;">
-          ${best?'<span class="best-badge">✓ Mejor opcion</span>':''}
+      <div class="inv-hdr-minimal" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+        <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+          <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height:44px;max-width:150px;object-fit:contain;display:block;">
+          <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            <span style="font-size:12.5px;font-weight:800;color:var(--text);background:rgba(0,0,0,0.05);padding:3px 9px;border-radius:6px;border:1px solid rgba(0,0,0,0.1);display:inline-flex;align-items:center;gap:4px;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+              ${tariffName || r.name}
+            </span>
+            ${best?'<span class="best-badge">✓ Mejor opcion</span>':''}
+          </div>
         </div>
         <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
           ${isLuz ? `<div>Excedentes: <strong style="color:var(--text);">${res.excPrice.toFixed(2)} €/kWh</strong></div>` : ''}
@@ -9932,7 +9966,7 @@ function renderSummary(results, actual){
     ${actual>0?`<div style="font-size:14px;color:var(--t2);margin-bottom:14px">Factura actual: <strong>${f2(actual)} €/mes</strong></div>`:''}
     <div class="table-responsive">
     <table class="sum-table"><thead><tr>
-      <th>Compañia</th>
+      <th>Compañia / Tarifa</th>
       ${isLuz ? `<th style="text-align:right">Exc. (€/kWh)</th>` : ''}
       <th style="text-align:right">Total/mes</th>
       <th style="text-align:right">Ahorro/mes</th><th style="text-align:right">Ahorro/año</th>
@@ -9941,7 +9975,13 @@ function renderSummary(results, actual){
       const ah=r.ahorro, pos=ah>0;
       const logoHtml = `<span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>`;
       return`<tr class="${i===0?'brow':''}">
-        <td><div style="display:inline-flex;align-items:center;">${logoHtml}<span>${r.r.name}</span></div>${i===0?'<span class="badge-best">✓ mejor</span>':''}</td>
+        <td>
+          <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
+            ${logoHtml}
+            <span><strong>${r.r.name.split(' (')[0]}</strong> <span style="font-size:11.5px;color:var(--blue);font-weight:700;background:rgba(13,92,158,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(13,92,158,0.15);">${r.tariffName || r.r.name}</span></span>
+          </div>
+          ${i===0?'<span class="badge-best" style="margin-left:6px;">✓ mejor</span>':''}
+        </td>
         ${isLuz ? `<td style="text-align:right;color:var(--t2)">${r.excPrice.toFixed(2)} €</td>` : ''}
         <td style="text-align:right;font-weight:700">${f2(r.total)} €</td>
         <td style="text-align:right;font-weight:700;color:${ah!==null?(pos?'var(--green)':'var(--red)'):'inherit'}">${ah!==null?(pos?'−':'+')+f2(Math.abs(ah))+' €':'—'}</td>
@@ -10183,7 +10223,11 @@ function printCompanyOffer(key) {
         <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${clientNameVal || '—'}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa</span>
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa aplicada</span>
+        <span style="font-size: 12px; font-weight: 800; color: var(--blue); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${targetRes.tariffName || r.name}</span>
+      </div>
+      <div style="display: flex; flex-direction: column; gap: 4px;">
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Peaje de acceso / Segmento</span>
         <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${compMode === 'luz' ? (pot1 > 10 && pot1 <= 15 ? '2.1TD' : (pot1 > 15 ? '3.0TD' : '2.0TD')) : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
       </div>
       <div style="display: flex; flex-direction: column; gap: 4px;">
@@ -10265,11 +10309,15 @@ function printCompanyOffer(key) {
 
   html += `
     <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
-      3. Compañia seleccionada
+      3. Compañia y Tarifa seleccionada
     </div>
-    <div style="margin-top: 10px; margin-bottom: 12px;">
+    <div style="margin-top: 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; background: #fff;">
       <div class="print-brand-badge" style="display: inline-flex; align-items: center; padding: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height: 60px; max-width: 240px; object-fit: contain; display: block;" />
+        <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height: 52px; max-width: 200px; object-fit: contain; display: block;" />
+      </div>
+      <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
+        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa aplicada</span>
+        <span style="font-size: 14px; font-weight: 800; color: ${printColor}; background: #f8fafc; padding: 4px 10px; border-radius: 6px; border: 1.5px solid #e2e8f0;">${targetRes.tariffName || r.name}</span>
       </div>
     </div>
     
@@ -10285,9 +10333,10 @@ function printCompanyOffer(key) {
   if (typeof html2pdf !== 'undefined') {
     const cleanClientName = clientNameVal.replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
     const cleanCompanyName = r.name.replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
+    const cleanTariffName = (targetRes.tariffName || r.name).replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
     const pdfFilename = cleanClientName 
-      ? `COMPARATIVA ${cleanClientName} ${cleanCompanyName}.pdf` 
-      : `COMPARATIVA ${cleanCompanyName}.pdf`;
+      ? `COMPARATIVA ${cleanClientName} ${cleanCompanyName} ${cleanTariffName}.pdf` 
+      : `COMPARATIVA ${cleanCompanyName} ${cleanTariffName}.pdf`;
 
     const opt = {
       margin:       [8, 8, 8, 8],
@@ -10492,7 +10541,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930360;
+const CURRENT_BUILD_VERSION = 1785002930361;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
