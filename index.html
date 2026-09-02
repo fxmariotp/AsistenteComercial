@@ -10557,7 +10557,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930364;
+const CURRENT_BUILD_VERSION = 1785002930365;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13700,14 +13700,81 @@ function getRenosurChatResponse(query) {
   }
 
   // ── ROUTER INTERACTIVO 3: PROCEDIMIENTO Y REQUISITOS GENÉRICOS (SELECCIÓN DE COMPAÑÍA) ──
-  if (cleanQ === 'procedimiento de' || cleanQ === 'procedimiento' || cleanQ === 'procedimientos' || cleanQ === 'requisitos' || cleanQ === 'documentacion' || cleanQ === 'documentos' || cleanQ === 'como contratar' || cleanQ === 'que se necesita' || cleanQ === 'que necesito' || cleanQ === 'que hace falta' || cleanQ === 'como firmar') {
-    return `<strong>Selecciona la compañía para ver sus requisitos, documentos y proceso de firma:</strong><br><br>` +
+  if (cleanQ === 'procedimiento de' || cleanQ === 'procedimiento' || cleanQ === 'procedimientos' || cleanQ === 'requisitos' || cleanQ === 'documentacion' || cleanQ === 'documentos' || cleanQ === 'como contratar' || cleanQ === 'que se necesita' || cleanQ === 'que necesito' || cleanQ === 'que hace falta') {
+    return `<strong>Selecciona la compañía para ver sus requisitos, documentos y proceso completo:</strong><br><br>` +
       `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
       `  <button onclick="sendQuickChatQuery('Procedimiento Iberdrola')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">📋 Iberdrola</button>` +
       `  <button onclick="sendQuickChatQuery('Procedimiento Naturgy')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">📋 Naturgy</button>` +
       `  <button onclick="sendQuickChatQuery('Procedimiento Endesa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">📋 Endesa</button>` +
       `  <button onclick="sendQuickChatQuery('Procedimiento Gana Energia')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">📋 Gana Energía</button>` +
       `</div>`;
+  }
+
+  // ── ROUTER INTERACTIVO 4: PROCESO DE FIRMA POR COMPAÑÍA ──
+  const isFirmaSpecific = (
+    cleanQ.includes('proceso de firma') ||
+    cleanQ.includes('proceso firma') ||
+    cleanQ.includes('como se firma') ||
+    cleanQ.includes('como firmar') ||
+    cleanQ.includes('pasos de firma') ||
+    cleanQ.includes('pasos para firmar') ||
+    cleanQ.includes('tipo de firma') ||
+    cleanQ.includes('forma de firma') ||
+    cleanQ.includes('forma de firmar') ||
+    cleanQ === 'firma' ||
+    cleanQ === 'firmas' ||
+    cleanQ === 'firmar' ||
+    cleanQ.startsWith('firma ') ||
+    cleanQ.startsWith('firmar ')
+  );
+
+  if (isFirmaSpecific) {
+    const hasIberdrola = cleanQ.includes('iberdrola');
+    const hasNaturgy = cleanQ.includes('naturgy');
+    const hasEndesa = cleanQ.includes('endesa') || cleanQ.includes('hostezadis');
+    const hasGana = cleanQ.includes('gana');
+
+    if (!hasIberdrola && !hasNaturgy && !hasEndesa && !hasGana) {
+      return `<strong>Selecciona la compañía para ver su proceso de firma digital:</strong><br><br>` +
+        `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+        `  <button onclick="sendQuickChatQuery('Firma Iberdrola')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Iberdrola (Doble SMS + Bienvenida)</button>` +
+        `  <button onclick="sendQuickChatQuery('Firma Naturgy')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Naturgy (SMS / WhatsApp + DNI)</button>` +
+        `  <button onclick="sendQuickChatQuery('Firma Endesa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Endesa (SMS con PIN Temporal)</button>` +
+        `  <button onclick="sendQuickChatQuery('Firma Gana Energia')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Gana Energía (2 PDFs + PIN SMS)</button>` +
+        `</div>`;
+    }
+
+    if (hasIberdrola) {
+      return `<strong>Iberdrola — Proceso de Firma Digital (3 Pasos Obligatorios):</strong><br><br>` +
+             `1. <strong>1º SMS (Protección de Datos):</strong> El cliente recibe un primer SMS y debe acceder para aceptar obligatoriamente la cláusula de protección de datos.<br>` +
+             `2. <strong>2º SMS (Firma Digital del Contrato):</strong> Una vez aceptada la protección de datos, el cliente recibe un segundo SMS con el enlace directo al contrato para revisarlo y firmarlo online.<br>` +
+             `3. <strong>Llamada de Bienvenida y Verificación:</strong> Iberdrola realiza una llamada breve de control con el cliente para verificar y confirmar los datos.<br><br>` +
+             `<em>*Requisito clave:* DNI/NIE en vigor (ambas caras legibles) y lectura de texto legal obligatorio.</em>`;
+    }
+
+    if (hasNaturgy) {
+      return `<strong>Naturgy — Proceso de Firma Digital (3 Pasos):</strong><br><br>` +
+             `1. <strong>SMS o WhatsApp de Firma:</strong> El cliente recibe un mensaje directo (por SMS o WhatsApp) con el enlace oficial de firma de Naturgy.<br>` +
+             `2. <strong>Validación y Aceptación:</strong> El titular accede al enlace, introduce su número de DNI/NIE y acepta las condiciones del contrato.<br>` +
+             `3. <strong>Llamada de Verificación y Bienvenida:</strong> Llamada breve de confirmación de datos con el titular del suministro.<br><br>` +
+             `<em>*Requisito clave:* Lectura de texto legal obligatorio.</em>`;
+    }
+
+    if (hasEndesa) {
+      return `<strong>Endesa — Proceso de Firma Digital:</strong><br><br>` +
+             `1. <strong>SMS con Enlace de Firma Segura:</strong> El cliente recibe un SMS con el enlace al portal de contratación digital de Endesa.<br>` +
+             `2. <strong>Validación por PIN Temporal:</strong> El titular recibe un código PIN de un solo uso por SMS, lo introduce en la pantalla para verificar su identidad y pulsa firmar.<br><br>` +
+             `<em>*Nota operativa:* En campañas telefónicas específicas autorizadas, el proceso puede realizarse alternativamente mediante grabación de voz legal directa.</em>`;
+    }
+
+    if (hasGana) {
+      return `<strong>Gana Energía — Proceso de Firma Digital (4 Pasos Obligatorios):</strong><br><br>` +
+             `1. <strong>SMS con Enlace de Acceso:</strong> El cliente recibe un SMS con el enlace directo a la plataforma de firma de Gana Energía.<br>` +
+             `2. <strong>Descarga Obligatoria de 2 PDFs:</strong> El cliente <strong>debe descargar obligatoriamente los 2 documentos PDF</strong> de condiciones para habilitar la casilla de confirmación.<br>` +
+             `3. <strong>Casilla de Confirmación:</strong> Marcar la casilla confirmando la lectura de los documentos.<br>` +
+             `4. <strong>PIN por SMS y Confirmación:</strong> Solicitar el código PIN por SMS, introducir el código recibido y pulsar el botón <strong>"Firmar"</strong>.<br><br>` +
+             `<em>*Nota clave:* Es obligatorio descargar siempre los dos PDFs antes de introducir el código PIN.</em>`;
+    }
   }
 
   // ── 1. CONSULTAS DE REQUISITOS, DOCUMENTACIÓN, PROCEDIMIENTO Y FIRMA POR COMPAÑÍA ──
@@ -14942,9 +15009,10 @@ document.addEventListener('DOMContentLoaded',()=>{
       </div>
       ¡Hola! Soy tu asistente de Renosur. Pregúntame lo que necesites, por ejemplo:
       <div style="margin-top: 12px; display: flex; flex-direction: column; gap: 8px;">
-        <button onclick="sendQuickChatQuery('Precios')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 12px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Precios</button>
-        <button onclick="sendQuickChatQuery('Servicios')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 12px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🛠️ Servicios</button>
-        <button onclick="sendQuickChatQuery('Procedimiento de')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 12px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">📋 Procedimiento de</button>
+        <button onclick="sendQuickChatQuery('Precios')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 12px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Precios y Tarifas</button>
+        <button onclick="sendQuickChatQuery('Servicios')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 12px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🛠️ Servicios de Mantenimiento</button>
+        <button onclick="sendQuickChatQuery('Procedimiento de')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 12px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">📋 Requisitos y Documentación</button>
+        <button onclick="sendQuickChatQuery('Proceso de firma')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 12px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Proceso de Firma</button>
       </div>
     </div>
   </div>
