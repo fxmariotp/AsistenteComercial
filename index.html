@@ -10474,7 +10474,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930358;
+const CURRENT_BUILD_VERSION = 1785002930359;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -14413,51 +14413,6 @@ function getRenosurChatResponse(query) {
                  `  - Potencia: TP1: 0,1160 €/kW-día | TP2: 0,1010 €/kW-día<br><br>` +
                  `• <strong>Excedentes Solar:</strong> 0,05 €/kWh<br>` +
                  `• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>` +
-                 `• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%<br><br>` +
-                 `<strong>2. TARIFA DE GAS: Iberdrola Gas</strong><br>` +
-                 `• <strong>RL.1 (Consumo &lt; 5.000 kWh/año):</strong> Variable: 0,1024 €/kWh | Fijo: 0,2112 €/día (Equiv: 6,34 €/mes)<br>` +
-                 `• <strong>RL.2 (Consumo 5.000 - 15.000 kWh/año):</strong> Variable: 0,1013 €/kWh | Fijo: 0,3608 €/día (Equiv: 10,82 €/mes)<br>` +
-                 `• <strong>RL.3 (Consumo 15.000 - 50.000 kWh/año):</strong> Variable: 0,1013 €/kWh | Fijo: 0,6945 €/día (Equiv: 20,84 €/mes)<br>` +
-                 `• <strong>Mantenimiento Gas:</strong> 9,95 €/mes`;
-        }s barata:</strong> Variable: Endesa (0,0697 €/kWh) | Fijo: Gana Energía (0,2703 €/día).<br>` +
-               `• <strong>RL3 más barata:</strong> Variable: Endesa (0,0643 €/kWh) | Fijo: Gana Energía (0,6273 €/día).<br><br>` +
-               `<em>*Nota:* El precio final dependerá del consumo total mensual. No se puede afirmar que una compañía es globalmente la más barata sin realizar la estimación correspondiente.</em>`;
-    }
-      
-      // Luz más barata
-      if (q.includes('mas barata') || q.includes('más barata') || q.includes('mas barato') || q.includes('más barato') || q.includes('barat')) {
-        return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h sin mantenimiento):</strong><br><br>` +
-               `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
-               `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1190 €/kWh<br>` +
-               `• <strong>Iberdrola Impulsa 24h:</strong> 0,1240 €/kWh<br>` +
-               `• <strong>Endesa Luz 24H:</strong> 0,1240 €/kWh<br>` +
-               `• <strong>Endesa Solar Plus:</strong> 0,1407 €/kWh<br><br>` +
-               `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos no incluidos en esta comparativa rápida.</em>`;
-      }
-    }
-
-    // Identificar compañía
-    let company = null;
-    if (q.includes('iberdrola') || q.includes('impulsa')) company = 'iberdrola';
-    else if (q.includes('naturgy') || q.includes('por uso')) company = 'naturgy';
-    else if (q.includes('endesa') || q.includes('solar')) company = 'endesa';
-    else if (q.includes('gana')) company = 'gana';
-
-    if (company) {
-      // Si la consulta es general de tarifas/precios de la compañía (o incluye kw/kwh de forma genérica)
-      const isSpecific = q.includes('excedent') || q.includes('mantenimiento') || q.includes('retro') || q.includes('permanencia') || q.includes('gestion') || q.includes('sva') || q.includes('cif') || q.includes('solar') || q.includes('potencia') || q.includes('kw-dia') || q.includes('kw-día') || q.includes('fijo');
-      
-      if (!isSpecific && (q.includes('tarifa') || q.includes('tarifas') || q.includes('precio') || q.includes('precios') || q.includes('cuesta') || q.includes('kw') || q.includes('kwh') || q.includes('de la luz') || q.includes('del gas'))) {
-        if (company === 'iberdrola') {
-          return `<strong>Tarifas y Precios de Iberdrola:</strong><br><br>` +
-                 `<strong>1. TARIFA DE LUZ: Impulsa 24h</strong> (Precio único 24h sin permanencia)<br>` +
-                 `• <strong>Término de Energía:</strong><br>` +
-                 `  - Precio Base: 0,1561 €/kWh<br>` +
-                 `  - Sin Mantenimiento (20% dto): 0,1240 €/kWh<br>` +
-                 `  - Con Mantenimiento (25% dto): 0,1170 €/kWh<br>` +
-                 `• <strong>Término de Potencia:</strong> TP1: 0,1240 €/kW-día | TP2: 0,0620 €/kW-día<br>` +
-                 `• <strong>Excedentes Solar:</strong> 0,05 €/kWh<br>` +
-                 `• <strong>Mantenimiento Luz:</strong> 4,48 €/mes<br>` +
                  `• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%<br><br>` +
                  `<strong>2. TARIFA DE GAS: Iberdrola Gas</strong><br>` +
                  `• <strong>RL.1 (Consumo &lt; 5.000 kWh/año):</strong> Variable: 0,1024 €/kWh | Fijo: 0,2112 €/día (Equiv: 6,34 €/mes)<br>` +
