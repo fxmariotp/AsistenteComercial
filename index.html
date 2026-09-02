@@ -4368,24 +4368,24 @@ input:focus, select:focus, textarea:focus {
     <div class="panel" id="panel-scripts">
       <div class="cia-tabs" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
         <button class="ctab active" id="ctab-naturgy" onclick="switchCia('naturgy')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid #E85D3A;background:rgba(232, 93, 58, 0.08);color:#E85D3A;border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Naturgy%20Logo.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="img-companias/naturgy.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
         <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia('naturgy-cif')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Naturgy%20Logo.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="img-companias/naturgy.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
           <span style="font-weight: 800; font-size: 13px; color: var(--text);">(CIF)</span>
         </button>
         <button class="ctab" id="ctab-iberdrola" onclick="switchCia('iberdrola')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Iberdrola%20Logo.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="img-companias/iberdrola.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
         <button class="ctab" id="ctab-iberdrola-cif" onclick="switchCia('iberdrola-cif')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Iberdrola%20Logo.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="img-companias/iberdrola.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
           <span style="font-weight: 800; font-size: 13px; color: var(--text);">(CIF)</span>
         </button>
         <button class="ctab" id="ctab-endesa" onclick="switchCia('endesa')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Endesa%20Logo.png" onerror="handleLogoError(this, 'endesa')" alt="Endesa" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="img-companias/endesa.png" onerror="handleLogoError(this, 'endesa')" alt="Endesa" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
         <button class="ctab" id="ctab-gana" onclick="switchCia('gana')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="Imagenes%20Compa%C3%B1%C3%ADa/GanaEnergia%20Logo.png" onerror="handleLogoError(this, 'gana')" alt="Gana Energia" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <img src="img-companias/gana.png" onerror="handleLogoError(this, 'gana')" alt="Gana Energia" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
       </div>
 
@@ -6382,7 +6382,7 @@ const BASE = {
   iberdrola:{
     name:'Iberdrola', color:'#008B3C',
     tp1:0.1160, tp2:0.1010,
-    te_sin:0.0949, te_con:0.0941,
+    te_sin:0.1000, te_con:0.0941,
     precio_excedente:0.05,
     sva_luz:4.48, sva_gas:9.95,
     gas_rl1:{tf:0.2112, tv:0.1024},
@@ -6391,7 +6391,7 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
-      {n:'Plan Ahora (0-10 kW)', te:0.111646, tp1:0.1160, tp2:0.1010, te_sin:0.0949, te_con:0.0941, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'},
+      {n:'Plan Ahora (0-10 kW)', te:0.117646, tp1:0.1160, tp2:0.1010, te_sin:0.1000, te_con:0.0941, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'},
       {n:'Plan Ahora (10-15 kW)', te:0.132646, tp1:0.1160, tp2:0.1010, te_sin:0.1127, te_con:0.1061, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'},
       {n:'Impulsa 24h', te:0.1561, tp1:0.1240, tp2:0.0620, te_sin:0.1240, te_con:0.1170, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia'}
     ],
@@ -9585,12 +9585,12 @@ function calcComp(){
           r.name = isCif ? 'Iberdrola Plan Ahora (Precio CIF)' : 'Iberdrola Plan Ahora';
           r.tp1 = 0.1160;
           r.tp2 = 0.1010;
-          r.te_sin = 0.0949;
+          r.te_sin = 0.1000;
           r.te_con = 0.0941;
           r.desc_sin = 0.15;
           r.desc_con = 0.20;
           r.tarifas_luz = [
-            {n:'Plan Ahora (0-10 kW)', te:0.111646, tp1:0.1160, tp2:0.1010, te_sin:0.0949, te_con:0.0941, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'}
+            {n:'Plan Ahora (0-10 kW)', te:0.117646, tp1:0.1160, tp2:0.1010, te_sin:0.1000, te_con:0.0941, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'}
           ];
         }
       }
@@ -10471,31 +10471,47 @@ function getShortName(fullName) {
 function getCompanyLogoUrl(ciaKey) {
   if (!ciaKey) return '';
   const key = ciaKey.toLowerCase();
-  const folder = 'Imagenes%20Compa%C3%B1%C3%ADa';
-  if (key.includes('iberdrola')) return `${folder}/Iberdrola%20Logo.png`;
-  if (key.includes('naturgy')) return `${folder}/Naturgy%20Logo.png`;
-  if (key.includes('endesa')) return `${folder}/Endesa%20Logo.png`;
-  if (key.includes('gana')) return `${folder}/GanaEnergia%20Logo.png`;
+  if (key.includes('iberdrola')) return 'img-companias/iberdrola.png';
+  if (key.includes('naturgy')) return 'img-companias/naturgy.png';
+  if (key.includes('endesa')) return 'img-companias/endesa.png';
+  if (key.includes('gana')) return 'img-companias/gana.png';
   return '';
 }
 
 function handleLogoError(img, cia) {
-  if (img.getAttribute('data-tried-fallback') === 'true') {
+  if (!img) return;
+  const step = parseInt(img.getAttribute('data-err-step') || '0', 10);
+  const key = (cia || '').toLowerCase();
+  
+  if (step === 0) {
+    img.setAttribute('data-err-step', '1');
+    if (key.includes('iberdrola')) img.src = 'img-companias/iberdrola.png';
+    else if (key.includes('naturgy')) img.src = 'img-companias/naturgy.png';
+    else if (key.includes('endesa')) img.src = 'img-companias/endesa.png';
+    else if (key.includes('gana')) img.src = 'img-companias/gana.png';
     return;
   }
-  img.setAttribute('data-tried-fallback', 'true');
   
-  const folderCorrect = 'Imagenes%20Compa%C3%B1%C3%ADa';
-  const key = cia.toLowerCase();
-  let filename = '';
-  if (key.includes('iberdrola')) filename = 'Iberdrola%20Logo.png';
-  else if (key.includes('naturgy')) filename = 'Naturgy%20Logo.png';
-  else if (key.includes('endesa')) filename = 'Endesa%20Logo.png';
-  else if (key.includes('gana')) filename = 'GanaEnergia%20Logo.png';
-  
-  if (filename) {
-    img.src = `${folderCorrect}/${filename}`;
+  if (step === 1) {
+    img.setAttribute('data-err-step', '2');
+    if (key.includes('iberdrola')) img.src = 'Imagenes%20Compa%C3%B1%C3%ADa/Iberdrola%20Logo.png';
+    else if (key.includes('naturgy')) img.src = 'Imagenes%20Compa%C3%B1%C3%ADa/Naturgy%20Logo.png';
+    else if (key.includes('endesa')) img.src = 'Imagenes%20Compa%C3%B1%C3%ADa/Endesa%20Logo.png';
+    else if (key.includes('gana')) img.src = 'Imagenes%20Compa%C3%B1%C3%ADa/GanaEnergia%20Logo.png';
+    return;
   }
+  
+  // Fallback definitivo mediante SVG vectorial elegante
+  img.onerror = null;
+  let color = '#202854';
+  let name = cia ? cia.toUpperCase() : 'COMERCIALIZADORA';
+  if (key.includes('iberdrola')) { color = '#008B3C'; name = 'IBERDROLA'; }
+  else if (key.includes('naturgy')) { color = '#E85D3A'; name = 'NATURGY'; }
+  else if (key.includes('endesa')) { color = '#005CA9'; name = 'ENDESA'; }
+  else if (key.includes('gana')) { color = '#00A859'; name = 'GANA ENERGÍA'; }
+  
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="38" viewBox="0 0 130 38"><rect width="130" height="38" rx="6" fill="${color}"/><text x="65" y="23" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="800" text-anchor="middle">${name}</text></svg>`;
+  img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
 }
 
 // ── LOCAL STORAGE MIGRATION FOR ONLY VACATIONS ──
@@ -10541,7 +10557,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930361;
+const CURRENT_BUILD_VERSION = 1785002930362;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -14236,8 +14252,8 @@ function getRenosurChatResponse(query) {
       luz: {
         plan_ahora_10: {
           name: "Iberdrola Plan Ahora (0-10 kW)",
-          base: "0,111646 €/kWh",
-          sin_mantenimiento: "0,0949 €/kWh (15% dto)",
+          base: "0,117646 €/kWh",
+          sin_mantenimiento: "0,1000 €/kWh (15% dto)",
           con_mantenimiento: "0,0941 €/kWh (15% dto + 5% SVA)",
           descuento_sin_mantenimiento: "15%",
           descuento_con_mantenimiento: "20% (15% contratación + 5% SVA)",
@@ -14405,8 +14421,8 @@ function getRenosurChatResponse(query) {
   if (q.includes('cuanto cuesta iberdrola plan ahora') || q.includes('cuánto cuesta iberdrola plan ahora') || q.includes('cuesta iberdrola plan ahora') || q.includes('iberdrola plan ahora') || q.includes('plan ahora')) {
     return "El <strong>Plan Ahora de Iberdrola</strong> tiene dos tramos de potencia (PVP 2026):<br><br>" +
       "• <strong>Potencias 0 a 10 kW:</strong><br>" +
-      "  - Precio base energía: 0,111646 €/kWh<br>" +
-      "  - Con 15% dto. por contratar: <strong>0,0949 €/kWh</strong><br>" +
+      "  - Precio base energía: 0,117646 €/kWh<br>" +
+      "  - Con 15% dto. por contratar: <strong>0,1000 €/kWh</strong><br>" +
       "  - Con 15% dto. + 5% por SVA: <strong>0,0941 €/kWh</strong><br>" +
       "  - Potencia: TP1: 0,1160 €/kW·día | TP2: 0,1010 €/kW·día<br><br>" +
       "• <strong>Potencias 10 a 15 kW:</strong><br>" +
@@ -14460,7 +14476,7 @@ function getRenosurChatResponse(query) {
       // Luz más barata
       if (q.includes('mas barata') || q.includes('más barata') || q.includes('mas barato') || q.includes('más barato') || q.includes('barat')) {
         return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
-               `• <strong>Iberdrola Plan Ahora (0-10 kW):</strong> 0,0949 €/kWh (0,0941 €/kWh con SVA)<br>` +
+               `• <strong>Iberdrola Plan Ahora (0-10 kW):</strong> 0,1000 €/kWh (0,0941 €/kWh con SVA)<br>` +
                `• <strong>Iberdrola Plan Ahora (10-15 kW):</strong> 0,1127 €/kWh (0,1061 €/kWh con SVA)<br>` +
                `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
                `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1190 €/kWh<br>` +
@@ -14487,8 +14503,8 @@ function getRenosurChatResponse(query) {
           return `<strong>Tarifas y Precios de Iberdrola:</strong><br><br>` +
                  `<strong>1. TARIFA DE LUZ: Plan Ahora</strong> (Recomendada 24h)<br>` +
                  `• <strong>Tramo 0 a 10 kW:</strong><br>` +
-                 `  - Precio Base: 0,111646 €/kWh<br>` +
-                 `  - Sin Mantenimiento (15% dto): 0,0949 €/kWh<br>` +
+                 `  - Precio Base: 0,117646 €/kWh<br>` +
+                 `  - Sin Mantenimiento (15% dto): 0,1000 €/kWh<br>` +
                  `  - Con Mantenimiento (15% dto + 5% SVA): 0,0941 €/kWh<br>` +
                  `  - Potencia: TP1: 0,1160 €/kW-día | TP2: 0,1010 €/kW-día<br><br>` +
                  `• <strong>Tramo 10 a 15 kW:</strong><br>` +
@@ -14891,7 +14907,7 @@ document.addEventListener('DOMContentLoaded',()=>{
 <!-- ══════════ CHATBOT VIRTUAL RENOSUR AI ══════════ -->
 <!-- Botón flotante del Chatbot -->
 <div id="renosur-chat-bubble" onclick="toggleRenosurChat()" style="position: fixed; bottom: 24px; right: 24px; width: 68px; height: 68px; border-radius: 50%; background: #ffffff; border: 1.5px solid var(--border); cursor: pointer; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15); z-index: 999999; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: flex; align-items: center; justify-content: center; overflow: visible; padding: 4px;" onmouseover="this.style.transform='scale(1.08)'" onmouseout="this.style.transform='scale(1)'">
-  <img src="Imagenes%20Compa%C3%B1%C3%ADa/Imagen%20ChatBot.png" style="width: 100%; height: 100%; border-radius: 50%; object-fit: contain; display: block;">
+  <img src="img-companias/chatbot.png" onerror="this.src='Imagenes%20Compa%C3%B1%C3%ADa/Imagen%20ChatBot.png'" style="width: 100%; height: 100%; border-radius: 50%; object-fit: contain; display: block;">
   <span id="chat-notification-dot" style="position: absolute; top: -2px; right: -2px; width: 14px; height: 14px; border-radius: 50%; background: #ef4444; border: 2px solid white; display: block; animation: pulseRedDot 1.5s infinite ease-in-out;"></span>
 </div>
 
@@ -14902,7 +14918,7 @@ document.addEventListener('DOMContentLoaded',()=>{
     <div style="display: flex; align-items: center; gap: 12px;">
       <div style="position: relative;">
         <div style="width: 44px; height: 44px; border-radius: 50%; overflow: hidden; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; justify-content: center; background: white; padding: 2px;">
-          <img src="Imagenes%20Compa%C3%B1%C3%ADa/Imagen%20ChatBot.png" style="width: 100%; height: 100%; object-fit: contain;">
+          <img src="img-companias/chatbot.png" onerror="this.src='Imagenes%20Compa%C3%B1%C3%ADa/Imagen%20ChatBot.png'" style="width: 100%; height: 100%; object-fit: contain;">
         </div>
         <span style="position: absolute; bottom: 0; right: 0; width: 10px; height: 10px; border-radius: 50%; background: #10b981; border: 2px solid #0f172a;"></span>
       </div>
