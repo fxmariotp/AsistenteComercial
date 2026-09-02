@@ -10557,7 +10557,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930362;
+const CURRENT_BUILD_VERSION = 1785002930363;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -14417,7 +14417,38 @@ function getRenosurChatResponse(query) {
     }
   };
 
-  // Triggers exactos para los ejemplos provistos en la base
+  // ── RESPUESTAS EXACTAS PARA TARIFAS Y PRECIOS ──
+  // 1. Iberdrola Plan Ahora 0-10 kW
+  if (q.includes('plan ahora 0-10') || q.includes('plan ahora 0 a 10') || q.includes('ahora 0-10') || (q.includes('plan ahora') && (q.includes('0-10') || q.includes('0 a 10') || q.includes('hasta 10') || q.includes('menos de 10')))) {
+    return "<strong>Iberdrola — Plan Ahora (0 a 10 kW) (PVP 2026):</strong><br><br>" +
+      "• <strong>Término de Energía:</strong><br>" +
+      "  - Precio base energía: 0,117646 €/kWh<br>" +
+      "  - Sin Mantenimiento (15% dto. contratación): <strong>0,1000 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (15% dto. + 5% extra SVA): <strong>0,0941 €/kWh</strong><br><br>" +
+      "• <strong>Término de Potencia:</strong><br>" +
+      "  - TP1 (Punta): <strong>0,1160 €/kW·día</strong> | TP2 (Valle): <strong>0,1010 €/kW·día</strong><br><br>" +
+      "• <strong>Compensación de Excedentes:</strong> 0,05 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
+  }
+
+  // 2. Iberdrola Plan Ahora 10-15 kW
+  if (q.includes('plan ahora 10-15') || q.includes('plan ahora 10 a 15') || q.includes('ahora 10-15') || (q.includes('plan ahora') && (q.includes('10-15') || q.includes('10 a 15') || q.includes('mas de 10') || q.includes('mayor de 10')))) {
+    return "<strong>Iberdrola — Plan Ahora (10 a 15 kW) (PVP 2026):</strong><br><br>" +
+      "• <strong>Término de Energía:</strong><br>" +
+      "  - Precio base energía: 0,132646 €/kWh<br>" +
+      "  - Sin Mantenimiento (15% dto. contratación): <strong>0,1127 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (15% dto. + 5% extra SVA): <strong>0,1061 €/kWh</strong><br><br>" +
+      "• <strong>Término de Potencia:</strong><br>" +
+      "  - TP1 (Punta): <strong>0,1160 €/kW·día</strong> | TP2 (Valle): <strong>0,1010 €/kW·día</strong><br><br>" +
+      "• <strong>Compensación de Excedentes:</strong> 0,05 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
+  }
+
+  // 3. Iberdrola Plan Ahora (ambos tramos)
   if (q.includes('cuanto cuesta iberdrola plan ahora') || q.includes('cuánto cuesta iberdrola plan ahora') || q.includes('cuesta iberdrola plan ahora') || q.includes('iberdrola plan ahora') || q.includes('plan ahora')) {
     return "El <strong>Plan Ahora de Iberdrola</strong> tiene dos tramos de potencia (PVP 2026):<br><br>" +
       "• <strong>Potencias 0 a 10 kW:</strong><br>" +
@@ -14432,31 +14463,105 @@ function getRenosurChatResponse(query) {
       "  - Potencia: TP1: 0,1160 €/kW·día | TP2: 0,1010 €/kW·día<br><br>" +
       "• Excedentes: 0,05 €/kWh | Mantenimiento de luz: 4,48 €/mes.";
   }
+
+  // 4. Iberdrola Impulsa 24h
   if (q.includes('cuanto cuesta iberdrola impulsa') || q.includes('cuánto cuesta iberdrola impulsa') || q.includes('cuesta iberdrola impulsa') || q.includes('impulsa 24h') || q.includes('impulsa')) {
-    return "El precio base de <strong>Iberdrola Impulsa 24h</strong> es de 0,1561 €/kWh. El precio mostrado es de <strong>0,1240 €/kWh</strong> sin mantenimiento (20% dto.) y <strong>0,1170 €/kWh</strong> con mantenimiento (25% dto.). Término de potencia: TP1: 0,1240 €/kW·día | TP2: 0,0620 €/kW·día. El mantenimiento cuesta 4,48 €/mes.";
-  }
-  if (q.includes('cual es la tarifa de naturgy de luz') || q.includes('cuál es la tarifa de naturgy de luz') || (q.includes('tarifa') && q.includes('naturgy') && q.includes('luz'))) {
-    return "Naturgy ofrece la tarifa Por Uso Luz, con un precio de 0,1120 €/kWh. El precio aparece como igual tanto sin mantenimiento como con mantenimiento. También existe Por Uso Luz (CIF), una tarifa especial para CIF, con un precio de 0,1324 €/kWh.";
-  }
-  if (q.includes('que tarifa tiene endesa para placas solares') || q.includes('qué tarifa tiene endesa para placas solares') || q.includes('tarifa de endesa para placas solares') || q.includes('endesa para placas solares')) {
-    return "La tarifa mostrada de Endesa orientada a clientes con energía solar es Solar Plus, identificada como una tarifa solar con excedentes. Su precio base es de 0,1599 €/kWh y el precio mostrado sin y con mantenimiento es de 0,1407 €/kWh. Los excedentes se pagan a 0,06 €/kWh.";
-  }
-  if (q.includes('cuanto paga gana energia por los excedentes') || q.includes('cuánto paga gana energía por los excedentes') || q.includes('gana energia por los excedentes') || q.includes('gana energía por los excedentes')) {
-    return "En las tarifas de luz de Gana Energía mostradas, los excedentes están valorados en 0,06 €/kWh.";
-  }
-  if (q.includes('que precio tiene gana energia de mercado') || q.includes('qué precio tiene gana energía de mercado') || q.includes('gana energia de mercado') || q.includes('gana energía de mercado')) {
-    return "Gana Energía tiene una tarifa denominada Precio de Mercado, que es variable e indexada. Los precios mostrados son 0,1000 €/kWh en P1 (Punta), 0,1250 €/kWh en P2 (Llano) y 0,2050 €/kWh en P3 (Valle). Además, tiene un coste de gestión de 5 €/mes.";
+    return "<strong>Iberdrola — Impulsa 24h:</strong><br><br>" +
+      "• <strong>Término de Energía:</strong><br>" +
+      "  - Precio Base: 0,1561 €/kWh<br>" +
+      "  - Sin Mantenimiento (20% dto.): <strong>0,1240 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (25% dto.): <strong>0,1170 €/kWh</strong><br><br>" +
+      "• <strong>Término de Potencia:</strong><br>" +
+      "  - TP1 (Punta): <strong>0,1240 €/kW·día</strong> | TP2 (Valle): <strong>0,0620 €/kW·día</strong><br><br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
   }
 
-  // Comprobar si es consulta de tarifas de luz y gas
+  // 5. Naturgy Por Uso Luz DNI
+  if (q.includes('por uso luz dni') || (q.includes('por uso') && (q.includes('dni') || q.includes('particular') || q.includes('residencial')))) {
+    return "<strong>Naturgy — Por Uso Luz (Particulares / DNI):</strong><br><br>" +
+      "• <strong>Término de Energía:</strong> <strong>0,1120 €/kWh</strong> (Precio único 24h, igual con/sin mantenimiento)<br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,1230 €/kW·día</strong> | TP2: <strong>0,0616 €/kW·día</strong><br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Servielectric):</strong> 8,48 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
+  }
+
+  // 6. Naturgy Por Uso Luz CIF
+  if (q.includes('por uso luz cif') || (q.includes('por uso') && (q.includes('cif') || q.includes('empresa') || q.includes('pyme')))) {
+    return "<strong>Naturgy — Por Uso Luz (Autónomos y Pymes / CIF):</strong><br><br>" +
+      "• <strong>Término de Energía:</strong> <strong>0,1324 €/kWh</strong> (Tarifa especial CIF)<br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,127295 €/kW·día</strong> | TP2: <strong>0,045522 €/kW·día</strong><br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Servielectric):</strong> 8,48 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
+  }
+
+  // 7. Endesa Luz 24H
+  if (q.includes('luz 24h') || q.includes('luz 24 h') || (q.includes('endesa') && q.includes('24h'))) {
+    return "<strong>Endesa — Luz 24H:</strong><br><br>" +
+      "• <strong>Término de Energía:</strong><br>" +
+      "  - Precio Base: 0,1550 €/kWh<br>" +
+      "  - Sin Mantenimiento (20% dto.): <strong>0,1240 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (23% dto.): <strong>0,1190 €/kWh</strong><br><br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,0936 €/kW·día</strong> | TP2: <strong>0,0936 €/kW·día</strong><br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Protección Luz 360):</strong> 4,54 €/mes (4,77 €/mes sin IVA)<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 12 meses";
+  }
+
+  // 8. Endesa Solar Plus
+  if (q.includes('solar plus') || q.includes('endesa para placas') || (q.includes('endesa') && q.includes('solar'))) {
+    return "<strong>Endesa — Solar Plus (Tarifa Solar con Excedentes):</strong><br><br>" +
+      "• <strong>Término de Energía:</strong><br>" +
+      "  - Precio Base: 0,1599 €/kWh<br>" +
+      "  - Precio con 12% dto.: <strong>0,1407 €/kWh</strong> (con o sin mantenimiento)<br><br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,0910 €/kW·día</strong> | TP2: <strong>0,0910 €/kW·día</strong><br>" +
+      "• <strong>Compensación Excedentes:</strong> <strong>0,06 €/kWh</strong><br>" +
+      "• <strong>Mantenimiento Luz:</strong> 4,77 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 12 meses";
+  }
+
+  // 9. Gana Energía Plan 24 Horas
+  if (q.includes('plan 24 horas') || q.includes('gana energia plan 24') || (q.includes('gana') && q.includes('24 horas'))) {
+    return "<strong>Gana Energía — Plan 24 Horas:</strong><br><br>" +
+      "• <strong>Término de Energía:</strong> <strong>0,1190 €/kWh</strong> (Precio fijo 24h, sin dto. adicional)<br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,0894 €/kW·día</strong> | TP2: <strong>0,0894 €/kW·día</strong><br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Servicio Manitas):</strong> 4,25 €/mes (0,1374 €/día)<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 12 meses";
+  }
+
+  // 10. Gana Energía Precio de Mercado
+  if (q.includes('precio de mercado') || (q.includes('gana') && (q.includes('mercado') || q.includes('indexad')))) {
+    return "<strong>Gana Energía — Precio de Mercado (Variable / Indexada):</strong><br><br>" +
+      "• <strong>Término de Energía por Tramos:</strong><br>" +
+      "  - P1 (Punta): <strong>0,1000 €/kWh</strong><br>" +
+      "  - P2 (Llano): <strong>0,1250 €/kWh</strong><br>" +
+      "  - P3 (Valle): <strong>0,2050 €/kWh</strong><br><br>" +
+      "• <strong>Coste de Gestión del Suministro:</strong> <strong>+5,00 €/mes</strong><br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,0760 €/kW·día</strong> | TP2: <strong>0,0020 €/kW·día</strong><br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz:</strong> 4,25 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 12 meses";
+  }
+
+  // ── GESTIÓN GENERAL DE TARIFAS Y PRECIOS ──
   const isTarifasQuery = q.includes('tarifa') || q.includes('precio') || q.includes('costar') || q.includes('cuesta') || q.includes('luz') || q.includes('gas') || q.includes('energia') || q.includes('energía') || q.includes('potencia') || q.includes('excedent') || q.includes('mantenimiento') || q.includes('descuento') || q.includes('cif') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3') || q.includes('punta') || q.includes('valle') || q.includes('llano') || q.includes('barat') || q.includes('gestión') || q.includes('gestion') || q.includes('permanencia') || q.includes('retro') || q.includes('kw') || q.includes('kwh') || q.includes('tarifas') || q.includes('precios');
 
   if (isTarifasQuery) {
-    const isGas = q.includes('gas') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3');
-    
     // Comparativas de más barato
     if (q.includes('mas barata') || q.includes('más barata') || q.includes('mas barato') || q.includes('más barato') || q.includes('barato') || q.includes('barata') || q.includes('comparativa') || q.includes('comparar')) {
-      if (isGas) {
+      const isGasComp = q.includes('gas') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3');
+      if (isGasComp) {
         if (q.includes('rl1')) {
           return `Según los precios mostrados, el término variable más bajo de gas RL1 es <strong>Endesa Gas RL1</strong> (0,0736 €/kWh), pero el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,1310 €/día o 3,93 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
         }
@@ -14474,17 +14579,15 @@ function getRenosurChatResponse(query) {
       }
       
       // Luz más barata
-      if (q.includes('mas barata') || q.includes('más barata') || q.includes('mas barato') || q.includes('más barato') || q.includes('barat')) {
-        return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
-               `• <strong>Iberdrola Plan Ahora (0-10 kW):</strong> 0,1000 €/kWh (0,0941 €/kWh con SVA)<br>` +
-               `• <strong>Iberdrola Plan Ahora (10-15 kW):</strong> 0,1127 €/kWh (0,1061 €/kWh con SVA)<br>` +
-               `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
-               `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1190 €/kWh<br>` +
-               `• <strong>Iberdrola Impulsa 24h:</strong> 0,1240 €/kWh (0,1170 €/kWh con SVA)<br>` +
-               `• <strong>Endesa Luz 24H:</strong> 0,1240 €/kWh<br>` +
-               `• <strong>Endesa Solar Plus:</strong> 0,1407 €/kWh<br><br>` +
-               `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
-      }
+      return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
+             `• <strong>Iberdrola Plan Ahora (0-10 kW):</strong> 0,1000 €/kWh (0,0941 €/kWh con SVA)<br>` +
+             `• <strong>Iberdrola Plan Ahora (10-15 kW):</strong> 0,1127 €/kWh (0,1061 €/kWh con SVA)<br>` +
+             `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
+             `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1190 €/kWh<br>` +
+             `• <strong>Iberdrola Impulsa 24h:</strong> 0,1240 €/kWh (0,1170 €/kWh con SVA)<br>` +
+             `• <strong>Endesa Luz 24H:</strong> 0,1240 €/kWh<br>` +
+             `• <strong>Endesa Solar Plus:</strong> 0,1407 €/kWh<br><br>` +
+             `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
     }
 
     // Identificar compañía
@@ -14494,237 +14597,111 @@ function getRenosurChatResponse(query) {
     else if (q.includes('endesa') || q.includes('solar')) company = 'endesa';
     else if (q.includes('gana')) company = 'gana';
 
-    if (company) {
-      // Si la consulta es general de tarifas/precios de la compañía (o incluye kw/kwh de forma genérica)
-      const isSpecific = q.includes('excedent') || q.includes('mantenimiento') || q.includes('retro') || q.includes('permanencia') || q.includes('gestion') || q.includes('sva') || q.includes('cif') || q.includes('solar') || q.includes('potencia') || q.includes('kw-dia') || q.includes('kw-día') || q.includes('fijo');
-      
-      if (!isSpecific && (q.includes('tarifa') || q.includes('tarifas') || q.includes('precio') || q.includes('precios') || q.includes('cuesta') || q.includes('kw') || q.includes('kwh') || q.includes('de la luz') || q.includes('del gas'))) {
-        if (company === 'iberdrola') {
-          return `<strong>Tarifas y Precios de Iberdrola:</strong><br><br>` +
-                 `<strong>1. TARIFA DE LUZ: Plan Ahora</strong> (Recomendada 24h)<br>` +
-                 `• <strong>Tramo 0 a 10 kW:</strong><br>` +
-                 `  - Precio Base: 0,117646 €/kWh<br>` +
-                 `  - Sin Mantenimiento (15% dto): 0,1000 €/kWh<br>` +
-                 `  - Con Mantenimiento (15% dto + 5% SVA): 0,0941 €/kWh<br>` +
-                 `  - Potencia: TP1: 0,1160 €/kW-día | TP2: 0,1010 €/kW-día<br><br>` +
-                 `• <strong>Tramo 10 a 15 kW:</strong><br>` +
-                 `  - Precio Base: 0,132646 €/kWh<br>` +
-                 `  - Sin Mantenimiento (15% dto): 0,1127 €/kWh<br>` +
-                 `  - Con Mantenimiento (15% dto + 5% SVA): 0,1061 €/kWh<br>` +
-                 `  - Potencia: TP1: 0,1160 €/kW-día | TP2: 0,1010 €/kW-día<br><br>` +
-                 `<strong>2. TARIFA DE LUZ: Impulsa 24h</strong><br>` +
-                 `• <strong>Término de Energía:</strong><br>` +
-                 `  - Precio Base: 0,1561 €/kWh<br>` +
-                 `  - Sin Mantenimiento (20% dto): 0,1240 €/kWh<br>` +
-                 `  - Con Mantenimiento (25% dto): 0,1170 €/kWh<br>` +
-                 `• <strong>Término de Potencia:</strong> TP1: 0,1240 €/kW-día | TP2: 0,0620 €/kW-día<br><br>` +
-                 `• <strong>Excedentes Solar:</strong> 0,05 €/kWh<br>` +
-                 `• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>` +
-                 `• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%<br><br>` +
-                 `<strong>3. TARIFA DE GAS: Iberdrola Gas</strong><br>` +
-                 `• <strong>RL.1 (Consumo &lt; 5.000 kWh/año):</strong> Variable: 0,1024 €/kWh | Fijo: 0,2112 €/día (Equiv: 6,34 €/mes)<br>` +
-                 `• <strong>RL.2 (Consumo 5.000 - 15.000 kWh/año):</strong> Variable: 0,1013 €/kWh | Fijo: 0,3608 €/día (Equiv: 10,82 €/mes)<br>` +
-                 `• <strong>RL.3 (Consumo 15.000 - 50.000 kWh/año):</strong> Variable: 0,1013 €/kWh | Fijo: 0,6945 €/día (Equiv: 20,84 €/mes)<br>` +
-                 `• <strong>Mantenimiento Gas:</strong> 9,95 €/mes`;
+    const compNames = {
+      iberdrola: 'Iberdrola',
+      naturgy: 'Naturgy',
+      endesa: 'Endesa',
+      gana: 'Gana Energía'
+    };
+
+    // Si la consulta es genérica sin compañía ("precios", "tarifas", "cuanto cuesta")
+    if (!company) {
+      return `<strong>¿De qué comercializadora deseas consultar las tarifas y precios?</strong><br><br>` +
+        `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+        `  <button onclick="sendQuickChatQuery('Tarifas Iberdrola')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🟢 Iberdrola</button>` +
+        `  <button onclick="sendQuickChatQuery('Tarifas Naturgy')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🟠 Naturgy</button>` +
+        `  <button onclick="sendQuickChatQuery('Tarifas Endesa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔵 Endesa</button>` +
+        `  <button onclick="sendQuickChatQuery('Tarifas Gana Energia')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🟢 Gana Energía</button>` +
+        `</div>`;
+    }
+
+    const isGas = q.includes('gas') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3') || q.includes('rl.1') || q.includes('rl.2') || q.includes('rl.3');
+    const isLuz = q.includes('luz') || q.includes('electricidad') || q.includes('kwh') || q.includes('kw') || q.includes('potencia') || q.includes('excedent') || q.includes('ahora') || q.includes('impulsa') || q.includes('por uso') || q.includes('solar') || q.includes('mercado') || q.includes('24h') || q.includes('24 horas');
+
+    // ── PASO 1: Si no especifica ni luz ni gas -> Preguntar si Luz o Gas
+    if (!isLuz && !isGas) {
+      return `<strong>¿Qué suministro deseas consultar para ${compNames[company]}?</strong><br><br>` +
+        `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+        `  <button onclick="sendQuickChatQuery('Tarifas Luz ${compNames[company]}')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tarifas de Luz</button>` +
+        `  <button onclick="sendQuickChatQuery('Tarifas Gas ${compNames[company]}')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Tarifas de Gas</button>` +
+        `</div>`;
+    }
+
+    // ── PASO 2: Si especifica LUZ pero no especifica qué tarifa concreta
+    if (isLuz && !isGas) {
+      if (company === 'iberdrola') {
+        return `<strong>Tarifas de Luz de Iberdrola disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora 0-10 kW')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Ahora (0 a 10 kW) — Desde 0,0941 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora 10-15 kW')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Ahora (10 a 15 kW) — Desde 0,1061 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Iberdrola Impulsa 24h')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Impulsa 24h — Desde 0,1170 €/kWh</button>` +
+          `</div>`;
+      }
+      if (company === 'naturgy') {
+        return `<strong>Tarifas de Luz de Naturgy disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Naturgy Por Uso Luz DNI')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Por Uso Luz (Particulares / DNI) — 0,1120 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Naturgy Por Uso Luz CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Por Uso Luz (Autónomos y Pymes / CIF) — 0,1324 €/kWh</button>` +
+          `</div>`;
+      }
+      if (company === 'endesa') {
+        return `<strong>Tarifas de Luz de Endesa disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Endesa Luz 24H')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Luz 24H (Estándar 24 Horas) — Desde 0,1190 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Endesa Solar Plus')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Solar Plus (Con placas / Excedentes) — 0,1407 €/kWh</button>` +
+          `</div>`;
+      }
+      if (company === 'gana') {
+        return `<strong>Tarifas de Luz de Gana Energía disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Gana Energia Plan 24 Horas')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan 24 Horas (Precio Fijo) — 0,1190 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Gana Energia Precio de Mercado')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Precio de Mercado (Variable Indexada / 3 tramos)</button>` +
+          `</div>`;
+      }
+    }
+
+    // ── PASO 3: Si especifica GAS
+    if (isGas) {
+      let rl = null;
+      if (q.includes('rl1') || q.includes('rl.1')) rl = 'rl1';
+      else if (q.includes('rl2') || q.includes('rl.2')) rl = 'rl2';
+      else if (q.includes('rl3') || q.includes('rl.3')) rl = 'rl3';
+
+      const data = TARIFFS_DATA[company].gas;
+
+      if (q.includes('mantenimiento')) {
+        if (data.mantenimiento === "Ese dato no aparece en la información disponible de esta tarifa." || data.mantenimiento === "no disponible") {
+          return `El coste de mantenimiento de gas de ${compNames[company]} no está disponible en la información.`;
         }
-        if (company === 'naturgy') {
-          return `<strong>Tarifas y Precios de Naturgy:</strong><br><br>` +
-                 `<strong>1. TARIFAS DE LUZ: Por Uso Luz</strong> (Precio único 24h sin permanencia)<br>` +
-                 `• <strong>Por Uso Luz (Particulares/DNI):</strong><br>` +
-                 `  - Término Energía: 0,1120 €/kWh (Igual con/sin mantenimiento)<br>` +
-                 `  - Término Potencia: TP1: 0,1230 €/kW-día | TP2: 0,0616 €/kW-día<br>` +
-                 `• <strong>Por Uso Luz (CIF/Empresas):</strong><br>` +
-                 `  - Término Energía: 0,1324 €/kWh<br>` +
-                 `  - Término Potencia: TP1: 0,127295 €/kW-día | TP2: 0,045522 €/kW-día<br>` +
-                 `• <strong>Excedentes Solar:</strong> 0,06 €/kWh<br>` +
-                 `• <strong>Mantenimiento Luz:</strong> 8,48 €/mes<br>` +
-                 `• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%<br><br>` +
-                 `<strong>2. TARIFA DE GAS: Gas Por Uso</strong><br>` +
-                 `• <strong>RL.1:</strong> Variable: 0,0795 €/kWh | Fijo: 0,1693 €/día (Equiv: 5,08 €/mes)<br>` +
-                 `• <strong>RL.2:</strong> Variable: 0,0774 €/kWh | Fijo: 0,3008 €/día (Equiv: 9,02 €/mes)<br>` +
-                 `• <strong>RL.3:</strong> Variable: 0,0740 €/kWh | Fijo: 0,6496 €/día (Equiv: 19,49 €/mes)<br>` +
-                 `• <strong>Mantenimiento Gas:</strong> 11,81 €/mes`;
-        }
-        if (company === 'endesa') {
-          return `<strong>Tarifas y Precios de Endesa:</strong><br><br>` +
-                 `<strong>1. TARIFAS DE LUZ:</strong><br>` +
-                 `• <strong>Luz 24H</strong> (Precio único 24h sin permanencia):<br>` +
-                 `  - Precio Base: 0,1550 €/kWh<br>` +
-                 `  - Sin Mantenimiento (20% dto): 0,1240 €/kWh<br>` +
-                 `  - Con Mantenimiento (23% dto): 0,1190 €/kWh<br>` +
-                 `  - Término Potencia: TP1: 0,0936 €/kW-día | TP2: 0,0936 €/kW-día<br>` +
-                 `• <strong>Solar Plus</strong> (Tarifa solar con excedentes):<br>` +
-                 `  - Precio Base: 0,1599 €/kWh<br>` +
-                 `  - Precio con/sin Mantenimiento (12% dto): 0,1407 €/kWh<br>` +
-                 `  - Término Potencia: TP1: 0,0910 €/kW-día | TP2: 0,0910 €/kW-día<br>` +
-                 `• <strong>Excedentes Solar:</strong> 0,06 €/kWh<br>` +
-                 `• <strong>Mantenimiento Luz:</strong> 4,77 €/mes<br>` +
-                 `• <strong>Retrocomisión:</strong> 12 meses<br><br>` +
-                 `<strong>2. TARIFA DE GAS: Gas Endesa</strong><br>` +
-                 `• <strong>RL.1:</strong> Variable: 0,0736 €/kWh | Fijo: 0,2316 €/día (Equiv: 6,95 €/mes)<br>` +
-                 `• <strong>RL.2:</strong> Variable: 0,0697 €/kWh | Fijo: 0,4709 €/día (Equiv: 14,13 €/mes)<br>` +
-                 `• <strong>RL.3:</strong> Variable: 0,0643 €/kWh | Fijo: 0,9894 €/día (Equiv: 29,68 €/mes)<br>` +
-                 `• <strong>Mantenimiento Gas:</strong> 9,09 €/mes`;
-        }
-        if (company === 'gana') {
-          return `<strong>Tarifas y Precios de Gana Energía:</strong><br><br>` +
-                 `<strong>1. TARIFAS DE LUZ:</strong><br>` +
-                 `• <strong>Plan 24 Horas</strong> (Precio único 24h sin permanencia):<br>` +
-                 `  - Término Energía: 0,1190 €/kWh (Igual con/sin mantenimiento)<br>` +
-                 `  - Término Potencia: TP1: 0,0894 €/kW-día | TP2: 0,0894 €/kW-día<br>` +
-                 `• <strong>Precio de Mercado</strong> (Variable indexada a precio de mercado):<br>` +
-                 `  - P1 (Punta): 0,1000 €/kWh | P2 (Llano): 0,1250 €/kWh | P3 (Valle): 0,2050 €/kWh<br>` +
-                 `  - Coste de gestión: +5,00 €/mes<br>` +
-                 `  - Término Potencia: TP1: 0,0760 €/kW-día | TP2: 0,0020 €/kW-día<br>` +
-                 `• <strong>Excedentes Solar:</strong> 0,06 €/kWh<br>` +
-                 `• <strong>Mantenimiento Luz:</strong> 4,25 €/mes (0,1374 €/día)<br>` +
-                 `• <strong>Retrocomisión:</strong> 12 meses<br><br>` +
-                 `<strong>2. TARIFA DE GAS: Gana Gas</strong><br>` +
-                 `• <strong>RL.1:</strong> Variable: 0,0829 €/kWh | Fijo: 0,1310 €/día (Equiv: 3,93 €/mes)<br>` +
-                 `• <strong>RL.2:</strong> Variable: 0,0803 €/kWh | Fijo: 0,2703 €/día (Equiv: 8,11 €/mes)<br>` +
-                 `• <strong>RL.3:</strong> Variable: 0,0762 €/kWh | Fijo: 0,6273 €/día (Equiv: 18,82 €/mes)<br>` +
-                 `• <strong>Mantenimiento Gas:</strong> 9,38 €/mes (0,3027 €/día)`;
-        }
+        return `El coste de mantenimiento del gas de ${compNames[company]} es de <strong>${data.mantenimiento}</strong>.`;
+      }
+      if (q.includes('retro')) {
+        return `La retrocomisión del gas de ${compNames[company]} es de <strong>${data.retrocomision}</strong>.`;
       }
 
-      if (isGas) {
-        let rl = null;
-        if (q.includes('rl1')) rl = 'rl1';
-        else if (q.includes('rl2')) rl = 'rl2';
-        else if (q.includes('rl3')) rl = 'rl3';
-
-        const data = TARIFFS_DATA[company].gas;
-        
-        if (q.includes('mantenimiento')) {
-          if (data.mantenimiento === "Ese dato no aparece en la información disponible de esta tarifa.") {
-            return `Ese dato no aparece en la información disponible de esta tarifa.`;
-          }
-          return `El coste de mantenimiento del gas de ${company.charAt(0).toUpperCase() + company.slice(1)} es de <strong>${data.mantenimiento}</strong>.`;
-        }
-        if (q.includes('retro')) {
-          return `La retrocomisión del gas de ${company.charAt(0).toUpperCase() + company.slice(1)} es de <strong>${data.retrocomision}</strong>.`;
-        }
-
-        if (rl) {
-          return `<strong>Tarifa de Gas de ${company.charAt(0).toUpperCase() + company.slice(1)} (${rl.toUpperCase()}):</strong><br><br>` +
-                 `• Consumo: ${data[rl]}<br>` +
-                 `• Mantenimiento: ${data.mantenimiento}<br>` +
-                 `• Retrocomisión: ${data.retrocomision}`;
-        }
-        
-        return `<strong>Tarifas de Gas de ${company.charAt(0).toUpperCase() + company.slice(1)}:</strong><br><br>` +
-               `• <strong>RL1:</strong> ${data.rl1}<br>` +
-               `• <strong>RL2:</strong> ${data.rl2}<br>` +
-               `• <strong>RL3:</strong> ${data.rl3}<br>` +
+      if (rl) {
+        return `<strong>Tarifa de Gas de ${compNames[company]} (${rl.toUpperCase()}):</strong><br><br>` +
+               `• <strong>Consumo y Términos:</strong> ${data[rl]}<br>` +
                `• <strong>Mantenimiento:</strong> ${data.mantenimiento}<br>` +
                `• <strong>Retrocomisión:</strong> ${data.retrocomision}`;
       }
 
-      // Luz
-      let isCif = q.includes('cif');
-      let isSolar = q.includes('solar') || q.includes('placa') || q.includes('excedent');
-      let isMercado = q.includes('mercado') || q.includes('indexad') || q.includes('variable') || q.includes('punta') || q.includes('llano') || q.includes('valle');
-      let isImpulsa = q.includes('impulsa');
-      let is15 = q.includes('15') || q.includes('10-15') || q.includes('mayor de 10') || q.includes('>10');
-
-      let tariffKey = 'luz';
-      if (company === 'iberdrola') {
-        tariffKey = isImpulsa ? 'impulsa_24h' : (is15 ? 'plan_ahora_15' : 'plan_ahora_10');
-      } else if (company === 'naturgy') {
-        tariffKey = isCif ? 'cif' : 'por_uso';
-      } else if (company === 'endesa') {
-        tariffKey = isSolar ? 'solar_plus' : 'luz_24h';
-      } else if (company === 'gana') {
-        tariffKey = isMercado ? 'mercado' : 'plan_24h';
+      if (q.includes('completo') || q.includes('todas') || q.includes('desglose')) {
+        return `<strong>Tarifas de Gas de ${compNames[company]} (Desglose Completo):</strong><br><br>` +
+               `• <strong>RL.1 (&lt; 5.000 kWh/año):</strong> ${data.rl1}<br>` +
+               `• <strong>RL.2 (5.000 - 15.000 kWh/año):</strong> ${data.rl2}<br>` +
+               `• <strong>RL.3 (15.000 - 50.000 kWh/año):</strong> ${data.rl3}<br>` +
+               `• <strong>Mantenimiento Gas:</strong> ${data.mantenimiento}<br>` +
+               `• <strong>Retrocomisión:</strong> ${data.retrocomision}`;
       }
 
-      const t = (TARIFFS_DATA[company] && TARIFFS_DATA[company].luz && TARIFFS_DATA[company].luz[tariffKey]) 
-        ? TARIFFS_DATA[company].luz[tariffKey] 
-        : (TARIFFS_DATA[company] ? TARIFFS_DATA[company].luz : {});
-
-      // Consultas específicas
-      if (q.includes('energia') || q.includes('energía') || q.includes('kwh') || q.includes('consumo') || q.includes('precio de la luz') || q.includes('cuesta la luz') || q.includes('cuánto cuesta') || q.includes('cuanto cuesta')) {
-        let prefix = `<strong>Precio de Energía - ${t.name}:</strong><br><br>`;
-        if (company === 'gana' && tariffKey === 'mercado') {
-          return prefix + `Es una tarifa variable indexada a precio de mercado:<br>` +
-                 `• P1 (Punta): 0,1000 €/kWh<br>` +
-                 `• P2 (Llano): 0,1250 €/kWh<br>` +
-                 `• P3 (Valle): 0,2050 €/kWh<br>` +
-                 `• Coste de gestión: +5,00 €/mes`;
-        }
-        
-        let details = `• Precio Base: ${t.base}<br>`;
-        if (t.sin_mantenimiento.includes('Igual')) {
-          details += `• Sin Mantenimiento: ${t.base} (Igual que el precio base)<br>`;
-        } else {
-          details += `• Sin Mantenimiento: ${t.sin_mantenimiento}<br>`;
-        }
-        
-        if (t.con_mantenimiento.includes('Igual')) {
-          details += `• Con Mantenimiento: ${t.base} (Igual que el precio base)<br>`;
-        } else {
-          details += `• Con Mantenimiento: ${t.con_mantenimiento}<br>`;
-        }
-        
-        return prefix + details;
-      }
-
-      if (q.includes('potencia') || q.includes('kw-dia') || q.includes('kw-día') || q.includes('término fijo') || q.includes('termino fijo') || q.includes('potencias')) {
-        return `<strong>Precio de Potencia - ${t.name}:</strong><br><br>${t.potencia}`;
-      }
-
-      if (q.includes('excedente') || q.includes('compensacion') || q.includes('compensación')) {
-        return `<strong>Precio de Excedentes - ${t.name}:</strong><br><br>${t.excedentes}`;
-      }
-
-      if (q.includes('mantenimiento') || q.includes('gestion') || q.includes('gestión')) {
-        let reply = `<strong>Coste de Mantenimiento / Gestión - ${t.name}:</strong><br><br>`;
-        if (t.gestion) {
-          reply += `• Coste de gestión: <strong>${t.gestion}</strong><br>`;
-        }
-        if (t.mantenimiento === "Ese dato no aparece en la información disponible de esta tarifa.") {
-          reply += `• Coste de mantenimiento: Ese dato no aparece en la información disponible de esta tarifa.`;
-        } else {
-          reply += `• Coste de mantenimiento: <strong>${t.mantenimiento}</strong>`;
-        }
-        return reply;
-      }
-
-      if (q.includes('descuento') || q.includes('dto')) {
-        let reply = `<strong>Descuentos en Energía - ${t.name}:</strong><br><br>`;
-        if (t.descuento_general) {
-          reply += `• ${t.descuento_general}`;
-        } else {
-          reply += `• Sin Mantenimiento: ${t.descuento_sin_mantenimiento}<br>` +
-                   `• Con Mantenimiento: ${t.descuento_con_mantenimiento}`;
-        }
-        return reply;
-      }
-
-      if (q.includes('permanencia') || q.includes('penalizacion') || q.includes('penalización')) {
-        return `<strong>Permanencia - ${t.name}:</strong><br><br>${t.permanencia}`;
-      }
-
-      if (q.includes('retrocomisión') || q.includes('retrocomision') || q.includes('retro') || q.includes('descomision') || q.includes('descomisión')) {
-        return `<strong>Retrocomisión - ${t.name}:</strong><br><br>${t.retrocomision}`;
-      }
-
-      // Ficha completa
-      let fullInfo = `<strong>Ficha de Tarifa: ${t.name}</strong><br><br>` +
-                     `• <strong>Precio Energía:</strong> Base: ${t.base} | Sin Mant: ${t.sin_mantenimiento} | Con Mant: ${t.con_mantenimiento}<br>` +
-                     `• <strong>Descuentos:</strong> ${t.descuento_general || ('Sin Mant: ' + t.descuento_sin_mantenimiento + ' / Con Mant: ' + t.descuento_con_mantenimiento)}<br>` +
-                     `• <strong>Potencia:</strong> ${t.potencia}<br>` +
-                     `• <strong>Excedentes:</strong> ${t.excedentes}<br>` +
-                     `• <strong>Mantenimiento:</strong> ${t.mantenimiento}<br>` +
-                     `• <strong>Permanencia:</strong> ${t.permanencia}<br>` +
-                     `• <strong>Retrocomisión:</strong> ${t.retrocomision}`;
-      if (t.gestion) {
-        fullInfo += `<br>• <strong>Gestión:</strong> ${t.gestion}`;
-      }
-      if (t.nota) {
-        fullInfo += `<br><br><em>*Nota:* ${t.nota}`;
-      }
-      return fullInfo;
+      return `<strong>Tarifas de Gas de ${compNames[company]}:</strong><br>Selecciona el tramo de consumo o tarifa que deseas consultar:<br><br>` +
+        `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+        `  <button onclick="sendQuickChatQuery('${compNames[company]} Gas RL1')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Tarifa RL.1 (&lt; 5.000 kWh/año - Cocina / Agua Caliente)</button>` +
+        `  <button onclick="sendQuickChatQuery('${compNames[company]} Gas RL2')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Tarifa RL.2 (5.000 a 15.000 kWh/año - Con Calefacción)</button>` +
+        `  <button onclick="sendQuickChatQuery('${compNames[company]} Gas RL3')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Tarifa RL.3 (15.000 a 50.000 kWh/año - Alto Consumo / Pymes)</button>` +
+        `  <button onclick="sendQuickChatQuery('${compNames[company]} Gas Completo')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">📋 Ver desglose completo de Gas</button>` +
+        `</div>`;
     }
   }
 
