@@ -6392,7 +6392,8 @@ const BASE = {
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
       {n:'Plan Ahora (0-10 kW)', te:0.111646, tp1:0.1160, tp2:0.1010, te_sin:0.0949, te_con:0.0941, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'},
-      {n:'Plan Ahora (10-15 kW)', te:0.132646, tp1:0.1160, tp2:0.1010, te_sin:0.1127, te_con:0.1061, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'}
+      {n:'Plan Ahora (10-15 kW)', te:0.132646, tp1:0.1160, tp2:0.1010, te_sin:0.1127, te_con:0.1061, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'},
+      {n:'Impulsa 24h', te:0.1561, tp1:0.1240, tp2:0.0620, te_sin:0.1240, te_con:0.1170, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia'}
     ],
     tarifas_gas:[
       {n:'Iberdrola Gas RL1', tv:0.1024, tf:0.2112},
@@ -9009,7 +9010,10 @@ function renderCondiciones(){
       }
     });
     let potHtml = '';
-    if (r.tarifas_luz.length > 1 && id === 'naturgy') {
+    if (id === 'iberdrola') {
+      potHtml = `<span>Potencia Plan Ahora: TP1 0.1160 · TP2 0.1010 €/kW·dia</span>
+                 <br><span style="margin-top:2px;display:inline-block">Potencia Impulsa 24h: TP1 0.1240 · TP2 0.0620 €/kW·dia</span>`;
+    } else if (r.tarifas_luz.length > 1 && id === 'naturgy') {
       potHtml = `<span>Potencia DNI: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·dia</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia CIF: TP1 ${r.tarifas_luz[1].tp1.toFixed(6)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(6)} €/kW·dia</span>`;
     } else if (r.tarifas_luz.length > 1 && id === 'gana') {
@@ -9530,6 +9534,7 @@ function calcComp(){
   if (compMode === 'luz') {
     offers = [
       { id: 'iberdrola', type: 'standard' },
+      { id: 'iberdrola', type: 'impulsa' },
       { id: 'naturgy', type: 'standard' },
       { id: 'endesa', type: 'standard' },
       { id: 'gana', type: 'gana_24h' },
@@ -9552,29 +9557,42 @@ function calcComp(){
       r.name = r.name + ' (Precio CIF)';
     }
     if (cia === 'iberdrola') {
-      const maxPot = Math.max(pot1, pot2);
-      if (maxPot > 10) {
-        r.name = isCif ? 'Iberdrola Plan Ahora 10-15 kW (Precio CIF)' : 'Iberdrola Plan Ahora (10-15 kW)';
-        r.tp1 = 0.1160;
-        r.tp2 = 0.1010;
-        r.te_sin = 0.1127;
-        r.te_con = 0.1061;
-        r.desc_sin = 0.15;
-        r.desc_con = 0.20;
+      if (off.type === 'impulsa') {
+        r.name = isCif ? 'Iberdrola Impulsa 24h (Precio CIF)' : 'Iberdrola Impulsa 24h';
+        r.tp1 = 0.1240;
+        r.tp2 = 0.0620;
+        r.te_sin = 0.1240;
+        r.te_con = 0.1170;
+        r.desc_sin = 0.20;
+        r.desc_con = 0.25;
         r.tarifas_luz = [
-          {n:'Plan Ahora (10-15 kW)', te:0.132646, tp1:0.1160, tp2:0.1010, te_sin:0.1127, te_con:0.1061, desc_sin:0.15, desc_con:0.20, nota:'Potencias de 10 a 15 kW'}
+          {n:'Impulsa 24h', te:0.1561, tp1:0.1240, tp2:0.0620, te_sin:0.1240, te_con:0.1170, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia'}
         ];
       } else {
-        r.name = isCif ? 'Iberdrola Plan Ahora (Precio CIF)' : 'Iberdrola Plan Ahora';
-        r.tp1 = 0.1160;
-        r.tp2 = 0.1010;
-        r.te_sin = 0.0949;
-        r.te_con = 0.0941;
-        r.desc_sin = 0.15;
-        r.desc_con = 0.20;
-        r.tarifas_luz = [
-          {n:'Plan Ahora (0-10 kW)', te:0.111646, tp1:0.1160, tp2:0.1010, te_sin:0.0949, te_con:0.0941, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'}
-        ];
+        const maxPot = Math.max(pot1, pot2);
+        if (maxPot > 10) {
+          r.name = isCif ? 'Iberdrola Plan Ahora 10-15 kW (Precio CIF)' : 'Iberdrola Plan Ahora (10-15 kW)';
+          r.tp1 = 0.1160;
+          r.tp2 = 0.1010;
+          r.te_sin = 0.1127;
+          r.te_con = 0.1061;
+          r.desc_sin = 0.15;
+          r.desc_con = 0.20;
+          r.tarifas_luz = [
+            {n:'Plan Ahora (10-15 kW)', te:0.132646, tp1:0.1160, tp2:0.1010, te_sin:0.1127, te_con:0.1061, desc_sin:0.15, desc_con:0.20, nota:'Potencias de 10 a 15 kW'}
+          ];
+        } else {
+          r.name = isCif ? 'Iberdrola Plan Ahora (Precio CIF)' : 'Iberdrola Plan Ahora';
+          r.tp1 = 0.1160;
+          r.tp2 = 0.1010;
+          r.te_sin = 0.0949;
+          r.te_con = 0.0941;
+          r.desc_sin = 0.15;
+          r.desc_con = 0.20;
+          r.tarifas_luz = [
+            {n:'Plan Ahora (0-10 kW)', te:0.111646, tp1:0.1160, tp2:0.1010, te_sin:0.0949, te_con:0.0941, desc_sin:0.15, desc_con:0.20, nota:'15% dto. contratación + 5% por SVA'}
+          ];
+        }
       }
     }
     if (cia === 'naturgy' && isCif) {
@@ -10474,7 +10492,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930359;
+const CURRENT_BUILD_VERSION = 1785002930360;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -14194,6 +14212,20 @@ function getRenosurChatResponse(query) {
           mantenimiento: "4,48 €/mes",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
+        },
+        impulsa_24h: {
+          name: "Iberdrola Impulsa 24h",
+          base: "0,1561 €/kWh",
+          sin_mantenimiento: "0,1240 €/kWh",
+          con_mantenimiento: "0,1170 €/kWh",
+          descuento_sin_mantenimiento: "20%",
+          descuento_con_mantenimiento: "25%",
+          descuento_general: "20% sin mantenimiento / 25% con mantenimiento",
+          potencia: "TP1: 0,1240 €/kW-día | TP2: 0,0620 €/kW-día",
+          excedentes: "0,05 €/kWh",
+          mantenimiento: "4,48 €/mes",
+          permanencia: "No tiene permanencia.",
+          retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
         }
       },
       gas: {
@@ -14335,6 +14367,9 @@ function getRenosurChatResponse(query) {
       "  - Potencia: TP1: 0,1160 €/kW·día | TP2: 0,1010 €/kW·día<br><br>" +
       "• Excedentes: 0,05 €/kWh | Mantenimiento de luz: 4,48 €/mes.";
   }
+  if (q.includes('cuanto cuesta iberdrola impulsa') || q.includes('cuánto cuesta iberdrola impulsa') || q.includes('cuesta iberdrola impulsa') || q.includes('impulsa 24h') || q.includes('impulsa')) {
+    return "El precio base de <strong>Iberdrola Impulsa 24h</strong> es de 0,1561 €/kWh. El precio mostrado es de <strong>0,1240 €/kWh</strong> sin mantenimiento (20% dto.) y <strong>0,1170 €/kWh</strong> con mantenimiento (25% dto.). Término de potencia: TP1: 0,1240 €/kW·día | TP2: 0,0620 €/kW·día. El mantenimiento cuesta 4,48 €/mes.";
+  }
   if (q.includes('cual es la tarifa de naturgy de luz') || q.includes('cuál es la tarifa de naturgy de luz') || (q.includes('tarifa') && q.includes('naturgy') && q.includes('luz'))) {
     return "Naturgy ofrece la tarifa Por Uso Luz, con un precio de 0,1120 €/kWh. El precio aparece como igual tanto sin mantenimiento como con mantenimiento. También existe Por Uso Luz (CIF), una tarifa especial para CIF, con un precio de 0,1324 €/kWh.";
   }
@@ -14380,6 +14415,7 @@ function getRenosurChatResponse(query) {
                `• <strong>Iberdrola Plan Ahora (10-15 kW):</strong> 0,1127 €/kWh (0,1061 €/kWh con SVA)<br>` +
                `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
                `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1190 €/kWh<br>` +
+               `• <strong>Iberdrola Impulsa 24h:</strong> 0,1240 €/kWh (0,1170 €/kWh con SVA)<br>` +
                `• <strong>Endesa Luz 24H:</strong> 0,1240 €/kWh<br>` +
                `• <strong>Endesa Solar Plus:</strong> 0,1407 €/kWh<br><br>` +
                `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
@@ -14400,7 +14436,7 @@ function getRenosurChatResponse(query) {
       if (!isSpecific && (q.includes('tarifa') || q.includes('tarifas') || q.includes('precio') || q.includes('precios') || q.includes('cuesta') || q.includes('kw') || q.includes('kwh') || q.includes('de la luz') || q.includes('del gas'))) {
         if (company === 'iberdrola') {
           return `<strong>Tarifas y Precios de Iberdrola:</strong><br><br>` +
-                 `<strong>1. TARIFA DE LUZ: Plan Ahora</strong> (Precio único 24h sin permanencia)<br>` +
+                 `<strong>1. TARIFA DE LUZ: Plan Ahora</strong> (Recomendada 24h)<br>` +
                  `• <strong>Tramo 0 a 10 kW:</strong><br>` +
                  `  - Precio Base: 0,111646 €/kWh<br>` +
                  `  - Sin Mantenimiento (15% dto): 0,0949 €/kWh<br>` +
@@ -14411,10 +14447,16 @@ function getRenosurChatResponse(query) {
                  `  - Sin Mantenimiento (15% dto): 0,1127 €/kWh<br>` +
                  `  - Con Mantenimiento (15% dto + 5% SVA): 0,1061 €/kWh<br>` +
                  `  - Potencia: TP1: 0,1160 €/kW-día | TP2: 0,1010 €/kW-día<br><br>` +
+                 `<strong>2. TARIFA DE LUZ: Impulsa 24h</strong><br>` +
+                 `• <strong>Término de Energía:</strong><br>` +
+                 `  - Precio Base: 0,1561 €/kWh<br>` +
+                 `  - Sin Mantenimiento (20% dto): 0,1240 €/kWh<br>` +
+                 `  - Con Mantenimiento (25% dto): 0,1170 €/kWh<br>` +
+                 `• <strong>Término de Potencia:</strong> TP1: 0,1240 €/kW-día | TP2: 0,0620 €/kW-día<br><br>` +
                  `• <strong>Excedentes Solar:</strong> 0,05 €/kWh<br>` +
                  `• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>` +
                  `• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%<br><br>` +
-                 `<strong>2. TARIFA DE GAS: Iberdrola Gas</strong><br>` +
+                 `<strong>3. TARIFA DE GAS: Iberdrola Gas</strong><br>` +
                  `• <strong>RL.1 (Consumo &lt; 5.000 kWh/año):</strong> Variable: 0,1024 €/kWh | Fijo: 0,2112 €/día (Equiv: 6,34 €/mes)<br>` +
                  `• <strong>RL.2 (Consumo 5.000 - 15.000 kWh/año):</strong> Variable: 0,1013 €/kWh | Fijo: 0,3608 €/día (Equiv: 10,82 €/mes)<br>` +
                  `• <strong>RL.3 (Consumo 15.000 - 50.000 kWh/año):</strong> Variable: 0,1013 €/kWh | Fijo: 0,6945 €/día (Equiv: 20,84 €/mes)<br>` +
@@ -14517,11 +14559,12 @@ function getRenosurChatResponse(query) {
       let isCif = q.includes('cif');
       let isSolar = q.includes('solar') || q.includes('placa') || q.includes('excedent');
       let isMercado = q.includes('mercado') || q.includes('indexad') || q.includes('variable') || q.includes('punta') || q.includes('llano') || q.includes('valle');
+      let isImpulsa = q.includes('impulsa');
       let is15 = q.includes('15') || q.includes('10-15') || q.includes('mayor de 10') || q.includes('>10');
 
       let tariffKey = 'luz';
       if (company === 'iberdrola') {
-        tariffKey = is15 ? 'plan_ahora_15' : 'plan_ahora_10';
+        tariffKey = isImpulsa ? 'impulsa_24h' : (is15 ? 'plan_ahora_15' : 'plan_ahora_10');
       } else if (company === 'naturgy') {
         tariffKey = isCif ? 'cif' : 'por_uso';
       } else if (company === 'endesa') {
