@@ -10557,7 +10557,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930363;
+const CURRENT_BUILD_VERSION = 1785002930364;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13624,15 +13624,36 @@ function matchKeyword(query, keyword) {
 
 function getRenosurChatResponse(query) {
   const q = query.toLowerCase().trim();
-  
-  if (q === 'hola' || q === 'buenas' || q === 'buenos dias' || q === 'buenas tardes') {
-    return "¡Hola! ¿En qué puedo ayudarte hoy comercial? Pregúntame sobre el comparador, las comisiones, las promociones de supermercado o cierres de mes.";
-  }
-  if (q === 'gracias' || q === 'gracia' || q === 'de lujo' || q === 'perfecto' || q === 'ok') {
-    return "¡De nada, mi rey! Si necesitas buscar cualquier otra sección, dímelo y te la encuentro volando.";
+  const cleanQ = cleanStr(q);
+
+  // ── SALUDOS, CUMPLIDOS, PIROPOS Y AGRADECIMIENTOS ──
+  if (cleanQ === 'hola' || cleanQ === 'buenas' || cleanQ === 'buenos dias' || cleanQ === 'buenas tardes' || cleanQ === 'buenas noches' || cleanQ === 'hey' || cleanQ === 'que tal') {
+    return "¡Hola! ¿En qué puedo ayudarte hoy comercial? Pregúntame sobre el comparador, precios de luz y gas, comisiones, requisitos o promociones de supermercado.";
   }
 
-  const cleanQ = cleanStr(q);
+  const isCompliment = (
+    /\b(maquina|maquinon|crack|fenomeno|titan|fiera|figura|monstruo|genio|campeon|artista|maestro|idolo|puto amo|el amo)\b/i.test(cleanQ) ||
+    /\b(el mejor|la mejor|la ostia|la hostia|numero 1|numero uno|n 1|nº 1|eres dios|eres un sol)\b/i.test(cleanQ) ||
+    /\beres (un |una )?(grande|top|bueno|buenisimo|increible|brutal|crack|maquina|genio|rey|sol|fenomeno|fiera|figura)\b/i.test(cleanQ) ||
+    /\b(vaya|menudo|menuda|que) (crack|maquina|figura|genio|grande)\b/i.test(cleanQ) ||
+    /\b(te quiero|te amo|ole tu|ole tus|grande rey)\b/i.test(cleanQ)
+  );
+
+  const isQuestion = cleanQ.includes('?') || cleanQ.includes('precio') || cleanQ.includes('tarifa') || cleanQ.includes('cuanto') || cleanQ.includes('iberdrola') || cleanQ.includes('naturgy') || cleanQ.includes('endesa') || cleanQ.includes('gana') || cleanQ.includes('cif') || cleanQ.includes('comision') || cleanQ.includes('promocion');
+
+  if (isCompliment && !isQuestion) {
+    const complimentReplies = [
+      "¡Muchas gracias, máquina! 💪 Estoy aquí siempre para ayudarte en todo lo que necesites y hacerte el día a día mucho más fácil. ¡A por todas con esas ventas! 🚀 ¿En qué más te puedo echar un cable?",
+      "¡Qué grande eres tú! 🙌 Para eso estamos, para resolverte cualquier duda al instante y que vayas siempre a tiro fijo. ¿Tienes alguna otra consulta que quieras mirar?",
+      "¡Muchas gracias, crack! 🔥 Aquí me tienes 24/7 disponible para lo que te haga falta. ¡A seguir reventándolo hoy!",
+      "¡Gracias, figura! Me alegra un montón servirte de ayuda. Cualquier duda de tarifas, comparador, comisiones o trámites, ¡aquí me tienes al pie del cañón!"
+    ];
+    return complimentReplies[Math.floor(Math.random() * complimentReplies.length)];
+  }
+
+  if ((cleanQ === 'gracias' || cleanQ === 'gracia' || cleanQ === 'muchas gracias' || cleanQ === 'de lujo' || cleanQ === 'perfecto' || cleanQ === 'ok' || cleanQ === 'top' || cleanQ === 'mil gracias') && !isQuestion) {
+    return "¡De nada, máquina! Aquí estoy siempre disponible para lo que te haga falta. Si necesitas cualquier otra consulta, ¡dispara!";
+  }
 
   // ── 0. CONSULTAS ESPECÍFICAS DE CAMBIO DE TITULAR, JUSTO TÍTULO, POTENCIA O CIE ──
   if (cleanQ.includes('justo titulo') || cleanQ.includes('cambio de titular') || cleanQ.includes('cambio titular') || cleanQ.includes('cambio de ct') || cleanQ.includes('cambio ct') || cleanQ.includes('empadronamiento')) {
