@@ -9215,7 +9215,10 @@ function showPanel(id, btn){
   }
   if(id==='ranking') loadNativeRanking();
   if(id==='telefonos') renderTelefonos();
-  if(id==='agenda') renderAgenda();
+  if(id==='agenda') {
+    renderAgenda();
+    if (typeof fetchAgendaFromCloud === 'function') fetchAgendaFromCloud();
+  }
   if(id==='controlVacaciones') initControlVacaciones();
   if(id==='promociones') renderPromociones();
   if(id==='procedimientos') renderProcedimientos();
@@ -9232,6 +9235,7 @@ function showPanel(id, btn){
   document.body.style.overflow = '';
   
   if (id === 'dashboard') {
+    if (typeof fetchAgendaFromCloud === 'function') fetchAgendaFromCloud();
     if (typeof updateDashboardAgendaWidget === 'function') updateDashboardAgendaWidget();
     if (typeof updateDashboardLaborablesWidget === 'function') updateDashboardLaborablesWidget();
     if (typeof updateDashboardRankingWidget === 'function') updateDashboardRankingWidget();
@@ -10850,7 +10854,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930369;
+const CURRENT_BUILD_VERSION = 1785002930370;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -12480,22 +12484,59 @@ async function fetchAgendaFromCloud() {
       .from('tareas')
       .select('*')
       .eq('dni', currentAgentDni);
-    if (!error && data) {
-      const formattedList = data.map(item => ({
+      
+    if (error) {
+      console.error("Error fetching agenda from cloud:", error);
+      return;
+    }
+    
+    if (data) {
+      const localList = loadAgenda();
+      const cloudList = data.map(item => ({
         id: item.id,
         type: item.type,
-        title: item.title,
+        title: item.title || '',
         phone: item.phone || '',
         date: item.date || '',
         time: item.time || '',
         notes: item.notes || '',
-        completed: item.completed,
-        notified: item.notified || false,
-        createdAt: Number(item.created_at)
+        completed: !!item.completed,
+        notified: !!item.notified,
+        createdAt: Number(item.created_at) || Date.now()
       }));
+
+      const cloudMap = new Map();
+      cloudList.forEach(item => cloudMap.set(item.id, item));
+
+      // 1. Detectar tareas locales que aún no se hayan subido a la nube
+      const pendingUploads = [];
+      localList.forEach(localItem => {
+        if (!cloudMap.has(localItem.id)) {
+          pendingUploads.push(localItem);
+        }
+      });
+
+      // 2. Fusionar lista de la nube con elementos locales pendientes (evita pérdida de datos)
+      const mergedMap = new Map();
+      cloudList.forEach(item => mergedMap.set(item.id, item));
+      localList.forEach(localItem => {
+        if (!mergedMap.has(localItem.id)) {
+          mergedMap.set(localItem.id, localItem);
+        }
+      });
+
+      const formattedList = Array.from(mergedMap.values());
       localStorage.setItem('agenda_' + currentAgentDni, JSON.stringify(formattedList));
-      renderAgenda();
+      if (typeof renderAgenda === 'function') renderAgenda();
+      if (typeof updateDashboardAgendaWidget === 'function') updateDashboardAgendaWidget();
       checkAgendaNotifications();
+
+      // 3. Subir a Supabase cualquier tarea local pendiente de sincronización
+      if (pendingUploads.length > 0) {
+        for (const item of pendingUploads) {
+          saveAgendaItemToCloud(item);
+        }
+      }
     }
   } catch (e) {
     console.error("Error fetching agenda from cloud", e);
@@ -12503,32 +12544,39 @@ async function fetchAgendaFromCloud() {
 }
 
 async function saveAgendaItemToCloud(item) {
-  if (!supabaseClient || !currentAgentDni) return;
+  if (!supabaseClient || !currentAgentDni || !item) return;
   try {
-    await supabaseClient.from('tareas').upsert({
+    const payload = {
       id: item.id.toString(),
       dni: currentAgentDni,
-      title: item.title,
-      type: item.type,
+      title: item.title || '',
+      type: item.type || 'task',
       phone: item.phone || null,
       date: item.date || null,
       time: item.time || null,
       notes: item.notes || null,
-      completed: item.completed,
-      notified: item.notified,
-      created_at: item.createdAt
-    });
+      completed: !!item.completed,
+      notified: !!item.notified,
+      created_at: item.createdAt || Date.now()
+    };
+    const { error } = await supabaseClient.from('tareas').upsert(payload);
+    if (error) {
+      console.error("Error saving agenda item to cloud:", error);
+    }
   } catch (e) {
-    console.error("Error saving agenda item to cloud", e);
+    console.error("Exception saving agenda item to cloud:", e);
   }
 }
 
 async function deleteAgendaItemFromCloud(id) {
   if (!supabaseClient || !currentAgentDni) return;
   try {
-    await supabaseClient.from('tareas').delete().eq('id', id.toString());
+    const { error } = await supabaseClient.from('tareas').delete().eq('id', id.toString());
+    if (error) {
+      console.error("Error deleting agenda item from cloud:", error);
+    }
   } catch (e) {
-    console.error("Error deleting agenda item from cloud", e);
+    console.error("Exception deleting agenda item from cloud:", e);
   }
 }
 
@@ -12950,6 +12998,18 @@ function initAgendaNotifications() {
   checkAgendaNotifications();
 }
 
+// Sincronización continua de agenda con la nube al cambiar de pestaña y cada 60s
+window.addEventListener('focus', () => {
+  if (currentAgentDni && typeof fetchAgendaFromCloud === 'function') {
+    fetchAgendaFromCloud();
+  }
+});
+setInterval(() => {
+  if (currentAgentDni && typeof fetchAgendaFromCloud === 'function') {
+    fetchAgendaFromCloud();
+  }
+}, 60000);
+
 // ── DASHBOARD WIDGETS JS ──
 function getAgentRankingInfo() {
   if (!currentAgentName || !rawRankingData || rawRankingData.length === 0) {
@@ -13130,6 +13190,7 @@ function quickAddAgendaItem(text) {
   const list = loadAgenda();
   list.push(itemData);
   saveAgenda(list);
+  saveAgendaItemToCloud(itemData);
   
   // Play sound
   playSuccessClick();
