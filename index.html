@@ -6499,6 +6499,23 @@ input:focus, select:focus, textarea:focus {
             </div>
           </a>
 
+          <!-- Card: Comunidades Solares (Iberdrola) -->
+          <a href="https://www.iberdrola.es/smart-solar/productos/comunidades-solares#header_titulo" target="_blank" class="enlace-card" style="--theme-color: #008B3C; --theme-color-bg: rgba(0, 139, 60, 0.06); --theme-color-glow: rgba(0, 139, 60, 0.12); --theme-color-ring: rgba(0, 139, 60, 0.08);">
+            <div class="enlace-card-header">
+              <div class="enlace-card-icon-box">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+              </div>
+              <div class="enlace-card-info">
+                <h4 class="enlace-card-title">Comunidades Solares</h4>
+                <p class="enlace-card-desc">Buscador y mapa de comunidades solares de Iberdrola para consultar cobertura.</p>
+              </div>
+            </div>
+            <div class="enlace-card-footer">
+              Buscar Comunidades
+              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </a>
+
         </div>
 
       </div>
@@ -10839,7 +10856,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930371;
+const CURRENT_BUILD_VERSION = 1785002930372;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13488,6 +13505,7 @@ const SEARCH_INDEX = [
 
   // Enlaces de Trabajo
   { title: "Enlaces de Trabajo (WhatsApp, CRM, Consultas)", keywords: ["enlaces", "utilidades", "whatsapp", "crm", "consultas", "ontime", "sips", "energiza", "calculadora", "owncloud"], action: () => showPanel('sips', document.getElementById('btn-nav-sips')) },
+  { title: "Buscar Comunidades Solares (Iberdrola)", keywords: ["comunidades solares", "comunidad solar", "iberdrola solar", "solar", "cobertura solar", "autoconsumo", "buscar comunidades", "buscar comunidad solar"], action: () => { window.open('https://www.iberdrola.es/smart-solar/productos/comunidades-solares#header_titulo', '_blank'); } },
 
   // Gerencia (solo si es gerente)
   { title: "Gerencia: Control de Vacaciones", keywords: ["gerencia", "vacaciones", "calendario", "comerciales"], action: () => showPanel('controlVacaciones', document.getElementById('btn-nav-gerenteHub')), requireGerente: true },
@@ -13806,9 +13824,16 @@ const KNOWLEDGE_BASE = [
     • Solo son válidos si se contratan con Iberdrola.`
   },
   {
-    keywords: ["ccpp", "comunidades", "comunidad"],
+    keywords: ["ccpp", "comunidades de propietarios", "comunidad de vecinos"],
     answer: `<strong>Condiciones para CCPP (Comunidades de Propietarios):</strong><br><br>
     • Las CCPP tienen **totalmente prohibido y excluido** recibir tarjetas de regalo o promociones comerciales en cualquiera de los supermercados asociados (Carrefour, Leroy Merlin, Caprabo).`
+  },
+  {
+    keywords: ["comunidades solares", "comunidad solar", "buscar comunidades solares", "buscar comunidad solar", "solar iberdrola", "smart solar", "mapa solar"],
+    answer: `<strong>Buscador de Comunidades Solares (Iberdrola):</strong><br><br>
+    Puedes buscar comunidades solares activas y comprobar la cobertura de tus clientes en el siguiente enlace:<br><br>
+    👉 <a href="https://www.iberdrola.es/smart-solar/productos/comunidades-solares#header_titulo" target="_blank" style="color: var(--blue); font-weight: 700; text-decoration: underline;">Buscador de Comunidades Solares Iberdrola</a><br><br>
+    <em>También tienes acceso directo en la sección <strong>Enlaces de Trabajo</strong> del menú lateral.</em>`
   },
   {
     keywords: ["sva", "que es sva", "que significa sva", "servicio de asistencia", "servicios de asistencia", "asistencia comercializadora"],
