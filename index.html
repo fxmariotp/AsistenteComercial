@@ -7125,6 +7125,34 @@ function getPeriodVacationCount(periodIndex) {
   return count;
 }
 
+function getPeriodRemainingDaysExcludingVacations(periodIndex, now) {
+  const period = PERIODS[periodIndex];
+  if (!period) return 0;
+  const start = isoToDate(period.start);
+  const end = isoToDate(period.end);
+  
+  start.setHours(0,0,0,0);
+  end.setHours(0,0,0,0);
+  
+  const current = new Date(now);
+  current.setHours(0,0,0,0);
+  
+  if (current > end) return 0;
+  
+  let iter = current < start ? new Date(start) : new Date(current);
+  let count = 0;
+  while (iter <= end) {
+    if (calIsLabor(iter)) {
+      const iso = toIso(iter);
+      if (!agentVacations.includes(iso)) {
+        count++;
+      }
+    }
+    iter.setDate(iter.getDate() + 1);
+  }
+  return count;
+}
+
 let calMonth = getPeriodIndexForDate(new Date());
 
 function changeCalMonth(delta){
@@ -7396,7 +7424,7 @@ function renderCalCounters(year){
   const monthTotal=LABORABLES[calMonth];
   const monthElapsed=getPeriodElapsedDaysExcludingVacations(calMonth, now);
   const monthVacations=getPeriodVacationCount(calMonth);
-  const monthRemaining=monthTotal-monthElapsed-monthVacations;
+  const monthRemaining=getPeriodRemainingDaysExcludingVacations(calMonth, now);
 
   document.getElementById('cal-mes-total').textContent=monthTotal;
   document.getElementById('cal-mes-transc').textContent=monthElapsed;
@@ -7413,11 +7441,12 @@ function renderCalCounters(year){
 
   const yearTotal = YEAR_LABOR_TOTAL;
   let yearElapsed = 0;
+  let yearRemaining = 0;
   for (let m = 0; m < 12; m++) {
     yearElapsed += getPeriodElapsedDaysExcludingVacations(m, now);
+    yearRemaining += getPeriodRemainingDaysExcludingVacations(m, now);
   }
   const yearVacations = agentVacations.length;
-  const yearRemaining = yearTotal - yearElapsed - yearVacations;
 
   document.getElementById('cal-ano-total').textContent=yearTotal;
   document.getElementById('cal-ano-transc').textContent=yearElapsed;
@@ -8466,7 +8495,7 @@ function renderNativeRanking(data) {
   const monthTotal = LABORABLES[currentMonthIndex] || 0;
   const monthElapsed = getPeriodElapsedDaysExcludingVacations(currentMonthIndex, now);
   const monthVacations = getPeriodVacationCount(currentMonthIndex);
-  const diasRestantes = monthTotal - monthElapsed - monthVacations;
+  const diasRestantes = currentMonthIndex !== -1 ? getPeriodRemainingDaysExcludingVacations(currentMonthIndex, now) : 0;
   
   const elTotal = document.getElementById('stat-total-headcount');
   const elRate = document.getElementById('stat-success-rate');
@@ -10856,7 +10885,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930372;
+const CURRENT_BUILD_VERSION = 1785002930373;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -11879,7 +11908,7 @@ function updateDashboardLaborablesWidget() {
   const monthTotal = LABORABLES[currentPeriodIdx];
   const monthElapsed = getPeriodElapsedDaysExcludingVacations(currentPeriodIdx, now);
   const monthVacations = getPeriodVacationCount(currentPeriodIdx);
-  const monthRemaining = monthTotal - monthElapsed - monthVacations;
+  const monthRemaining = getPeriodRemainingDaysExcludingVacations(currentPeriodIdx, now);
   
   const totalEl = document.getElementById('db-labor-total');
   const transcEl = document.getElementById('db-labor-transc');
