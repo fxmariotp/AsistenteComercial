@@ -10885,7 +10885,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930373;
+const CURRENT_BUILD_VERSION = 1785002930374;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -12549,7 +12549,13 @@ async function fetchAgendaFromCloud() {
 
       // 2. Fusionar lista de la nube con elementos locales pendientes (evita pérdida de datos)
       const mergedMap = new Map();
-      cloudList.forEach(item => mergedMap.set(item.id, item));
+      cloudList.forEach(item => {
+        const localItem = localList.find(l => l.id === item.id);
+        if (localItem && (localItem.notified || (typeof sessionFiredAlerts !== 'undefined' && sessionFiredAlerts.has(item.id)))) {
+          item.notified = true;
+        }
+        mergedMap.set(item.id, item);
+      });
       localList.forEach(localItem => {
         if (!mergedMap.has(localItem.id)) {
           mergedMap.set(localItem.id, localItem);
@@ -12932,26 +12938,15 @@ function deleteAgendaItem(id) {
 }
 
 function playAlertSound() {
-  try {
-    const ctx = new (window.AudioContext || window.webkitAudioContext)();
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    osc.type = 'sine';
-    osc.frequency.setValueAtTime(523.25, ctx.currentTime);
-    osc.frequency.setValueAtTime(659.25, ctx.currentTime + 0.15);
-    gain.gain.setValueAtTime(0.1, ctx.currentTime);
-    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.4);
-    osc.connect(gain);
-    gain.connect(ctx.destination);
-    osc.start();
-    osc.stop(ctx.currentTime + 0.4);
-  } catch (e) {
-    console.error("AudioContext not allowed or not supported", e);
-  }
+  // Silenciado completamente para evitar molestias sonoras
 }
 
+const sessionFiredAlerts = new Set();
+
 function fireAgendaAlert(item) {
-  playAlertSound();
+  if (!item || !item.id || sessionFiredAlerts.has(item.id)) return;
+  sessionFiredAlerts.add(item.id);
+  
   if (typeof Notification !== 'undefined' && Notification.permission === 'granted') {
     const title = item.type === 'call' ? `Llamar a ${item.title}` : 'Recordatorio de Tarea';
     const body = item.type === 'call' 
@@ -12983,7 +12978,7 @@ function fireAgendaAlert(item) {
     banner.style.display = 'flex';
     setTimeout(() => {
       banner.style.display = 'none';
-    }, 10000);
+    }, 7000);
   }
 }
 
@@ -12999,20 +12994,23 @@ function checkAgendaNotifications() {
   const currentMinutes = String(now.getMinutes()).padStart(2, '0');
   const currentTimeStr = `${currentHours}:${currentMinutes}`;
   
-  let updated = false;
+  const triggeredItems = [];
   list.forEach(item => {
     if (!item.completed && !item.notified && item.date && item.time) {
       if (item.date < todayStr || (item.date === todayStr && item.time <= currentTimeStr)) {
-        fireAgendaAlert(item);
         item.notified = true;
-        updated = true;
+        triggeredItems.push(item);
       }
     }
   });
-  if (updated) {
+
+  if (triggeredItems.length > 0) {
     saveAgenda(list);
-    saveAgendaItemToCloud(list[idx]);
-    renderAgenda();
+    triggeredItems.forEach(item => {
+      saveAgendaItemToCloud(item);
+      fireAgendaAlert(item);
+    });
+    if (typeof renderAgenda === 'function') renderAgenda();
   }
 }
 
@@ -13025,7 +13023,7 @@ function initAgendaNotifications() {
       Notification.requestPermission();
     }
   }
-  agendaNotifyInterval = setInterval(checkAgendaNotifications, 5000);
+  agendaNotifyInterval = setInterval(checkAgendaNotifications, 15000);
   checkAgendaNotifications();
 }
 
