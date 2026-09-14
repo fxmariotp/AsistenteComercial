@@ -10755,9 +10755,9 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930378;
+const CURRENT_BUILD_VERSION = 1785002930380;
 let agentStatusCheckInterval = null;
-let lastVersionCheckTime = 0;
+let lastVersionCheckTime = Date.now();
 
 async function checkAppVersion() {
   try {
@@ -10765,8 +10765,12 @@ async function checkAppVersion() {
     if (res.ok) {
       const data = await res.json();
       if (data && data.version && data.version !== CURRENT_BUILD_VERSION) {
-        console.log("New version detected:", data.version, "reloading...");
-        window.location.reload();
+        const lastReload = parseInt(sessionStorage.getItem('last_version_reload') || '0', 10);
+        if (Date.now() - lastReload > 30000) {
+          sessionStorage.setItem('last_version_reload', Date.now().toString());
+          console.log("New version detected:", data.version, "reloading...");
+          window.location.reload();
+        }
       }
     }
   } catch (e) {}
@@ -10776,6 +10780,7 @@ function startAgentStatusCheck() {
   if (agentStatusCheckInterval) clearInterval(agentStatusCheckInterval);
   if (!currentAgentDni) return;
   
+  lastVersionCheckTime = Date.now();
   agentStatusCheckInterval = setInterval(async () => {
     if (!currentAgentDni) return;
     
