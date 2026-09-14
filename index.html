@@ -5894,75 +5894,93 @@ input:focus, select:focus, textarea:focus {
     </div>
 
     <!-- ══════ PROMOCIONES SUPERMERCADO ══════ -->
-    <div class="panel" id="panel-promociones" style="max-width: 1350px; margin: 0 auto;">
+    <div class="panel" id="panel-promociones" style="max-width: 1400px; margin: 0 auto;">
       <style>
-        .promo-compact-banner {
-          background: rgba(239, 68, 68, 0.04);
-          border: 1.5px solid rgba(239, 68, 68, 0.15);
-          border-left: 4px solid #ef4444;
-          border-radius: var(--rs);
-          padding: 8px 14px;
-          margin-bottom: 12px;
+        .promo-rules-banner {
+          background: rgba(239, 68, 68, 0.05);
+          border: 1.5px solid rgba(239, 68, 68, 0.22);
+          border-left: 5px solid #ef4444;
+          border-radius: var(--r);
+          padding: 10px 18px;
+          margin-bottom: 14px;
           display: flex;
           align-items: center;
           justify-content: space-between;
-          gap: 12px;
+          gap: 14px;
           flex-wrap: wrap;
+          box-shadow: 0 2px 8px rgba(239, 68, 68, 0.06);
         }
-        .promo-banner-title {
+        .promo-rules-title {
           display: flex;
           align-items: center;
-          gap: 6px;
-          font-size: 12.5px;
+          gap: 8px;
+          font-size: 13.5px;
           font-weight: 800;
           color: #dc2626;
+          letter-spacing: 0.3px;
           white-space: nowrap;
         }
-        .promo-banner-items {
+        .promo-rules-items {
           display: flex;
           align-items: center;
           gap: 12px;
           flex-wrap: wrap;
-          font-size: 12px;
-          color: var(--text);
+        }
+        .promo-rule-chip {
+          display: flex;
+          align-items: center;
+          gap: 7px;
+          font-size: 13px;
           font-weight: 600;
+          color: var(--text);
+          background: var(--surface);
+          padding: 4px 10px;
+          border-radius: 6px;
+          border: 1px solid var(--border);
         }
-        .promo-banner-divider {
-          color: var(--border);
-          font-weight: 300;
+        .promo-chip-badge {
+          color: #fff;
+          font-size: 11px;
+          font-weight: 800;
+          padding: 2px 7px;
+          border-radius: 4px;
+          letter-spacing: 0.2px;
         }
+        .promo-chip-badge.ib { background: #008B3C; }
+        .promo-chip-badge.cif { background: #ea580c; }
+        .promo-chip-badge.ccpp { background: #dc2626; }
+        
         .promociones-grid {
           display: grid;
           grid-template-columns: repeat(3, 1fr);
-          gap: 12px;
+          gap: 16px;
           align-items: stretch;
           margin-bottom: 0;
         }
-        @media (max-width: 960px) {
+        @media (max-width: 980px) {
           .promociones-grid {
             grid-template-columns: 1fr;
           }
         }
       </style>
       
-      <!-- Banner de Normas e Importante sobre Promociones (Compacto) -->
-      <div class="promo-compact-banner">
-        <div class="promo-banner-title">
-          <span style="font-size: 14px;">⚠️</span> CONDICIONES OBLIGATORIAS:
+      <!-- Banner de Normas e Importante sobre Promociones -->
+      <div class="promo-rules-banner">
+        <div class="promo-rules-title">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #dc2626;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+          CONDICIONES OBLIGATORIAS:
         </div>
-        <div class="promo-banner-items">
-          <div style="display: flex; align-items: center; gap: 5px;">
-            <span style="background: #008B3C; color: #fff; font-size: 9.5px; font-weight: 800; padding: 1.5px 5px; border-radius: 3px;">IBERDROLA</span>
+        <div class="promo-rules-items">
+          <div class="promo-rule-chip">
+            <span class="promo-chip-badge ib">IBERDROLA</span>
             <span>Solo contratos con <strong>Iberdrola</strong></span>
           </div>
-          <span class="promo-banner-divider">|</span>
-          <div style="display: flex; align-items: center; gap: 5px;">
-            <span style="background: #ea580c; color: #fff; font-size: 9.5px; font-weight: 800; padding: 1.5px 5px; border-radius: 3px;">CIF / PYMES</span>
+          <div class="promo-rule-chip">
+            <span class="promo-chip-badge cif">CIF / PYMES</span>
             <span>Máximo <strong>30 €</strong> (nunca 50 €)</span>
           </div>
-          <span class="promo-banner-divider">|</span>
-          <div style="display: flex; align-items: center; gap: 5px;">
-            <span style="background: #dc2626; color: #fff; font-size: 9.5px; font-weight: 800; padding: 1.5px 5px; border-radius: 3px;">CCPP</span>
+          <div class="promo-rule-chip">
+            <span class="promo-chip-badge ccpp">CCPP</span>
             <span>Comunidades <strong>totalmente excluidas</strong></span>
           </div>
         </div>
@@ -7883,32 +7901,32 @@ function renderPromociones() {
     // Status badge representation (lectura unicamente)
     let badgeHtml = '';
     if (isPromoActive) {
-      badgeHtml = `<span style="font-size: 10px; font-weight: 800; color: ${promo.iconColor}; background: ${promo.iconBg}; padding: 2px 6px; border-radius: 4px;">ACTIVA</span>`;
+      badgeHtml = `<span style="font-size: 11px; font-weight: 800; color: ${promo.iconColor}; background: ${promo.iconBg}; border: 1px solid ${promo.iconColor}33; padding: 2.5px 7px; border-radius: 5px;">ACTIVA</span>`;
     } else {
-      badgeHtml = `<span style="font-size: 10px; font-weight: 800; color: var(--text); background: var(--border-hover); padding: 2px 6px; border-radius: 4px; opacity: 0.7;">INACTIVA</span>`;
+      badgeHtml = `<span style="font-size: 11px; font-weight: 800; color: var(--t3); background: var(--border-hover); padding: 2.5px 7px; border-radius: 5px; opacity: 0.7;">INACTIVA</span>`;
     }
     
     // Determinar metodo de entrega arriba del todo
     let deliveryBadge = '';
     let deliverySubtitle = '';
     if (promo.id === 'carrefour') {
-      deliveryBadge = `<span style="font-size: 10.5px; font-weight: 800; color: #e07b00; background: rgba(224, 123, 0, 0.12); padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;">
-        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+      deliveryBadge = `<span style="font-size: 11.5px; font-weight: 800; color: #b45309; background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.25); padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
         Correo postal
       </span>`;
-      deliverySubtitle = `<span style="font-size: 11px; color: var(--t3); font-weight: 600;">Envío a domicilio por correo postal</span>`;
+      deliverySubtitle = `<span style="font-size: 12px; color: var(--t2); font-weight: 600;">Envío directo a domicilio por correo postal</span>`;
     } else if (promo.id === 'leroy-merlin') {
-      deliveryBadge = `<span style="font-size: 10.5px; font-weight: 800; color: #1a7a3c; background: rgba(26, 122, 60, 0.12); padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;">
-        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>
+      deliveryBadge = `<span style="font-size: 11.5px; font-weight: 800; color: #15803d; background: rgba(22, 163, 74, 0.12); border: 1px solid rgba(22, 163, 74, 0.25); padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>
         Tarjeta electrónica
       </span>`;
-      deliverySubtitle = `<span style="font-size: 11px; color: var(--t3); font-weight: 600;">Envío de tarjeta digital por email</span>`;
+      deliverySubtitle = `<span style="font-size: 12px; color: var(--t2); font-weight: 600;">Envío de tarjeta digital por correo electrónico</span>`;
     } else if (promo.id === 'caprabo') {
-      deliveryBadge = `<span style="font-size: 10.5px; font-weight: 800; color: #0d5c9e; background: rgba(13, 92, 158, 0.12); padding: 2px 6px; border-radius: 4px; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap;">
-        <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
+      deliveryBadge = `<span style="font-size: 11.5px; font-weight: 800; color: #0369a1; background: rgba(2, 132, 199, 0.12); border: 1px solid rgba(2, 132, 199, 0.25); padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
         Tarjeta cliente
       </span>`;
-      deliverySubtitle = `<span style="font-size: 11px; color: var(--t3); font-weight: 600;">Ingreso directo al pasar tarjeta de cliente</span>`;
+      deliverySubtitle = `<span style="font-size: 12px; color: var(--t2); font-weight: 600;">Ingreso directo al pasar la tarjeta de cliente</span>`;
     }
     
     // Provincias y Tiendas directamente visibles
@@ -7916,20 +7934,20 @@ function renderPromociones() {
     const totalProv = promo.provinces.length;
     promo.provinces.forEach((prov, idx) => {
       const isLast = idx === totalProv - 1;
-      const borderStyle = isLast ? '' : 'border-bottom: 1px dashed var(--border);';
+      const borderStyle = isLast ? '' : 'border-bottom: 1px solid var(--border);';
       provincesHtml += `
-        <div style="padding: 4px 0; ${borderStyle} display: flex; flex-direction: column; gap: 2px;">
+        <div style="padding: 5px 0; ${borderStyle} display: flex; flex-direction: column; gap: 3px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span style="display: inline-flex; align-items: center; gap: 4px; font-weight: 800; font-size: 11.5px; color: ${promo.color};">
-              <svg viewBox="0 0 24 24" width="10" height="10" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            <span style="display: inline-flex; align-items: center; gap: 5px; font-weight: 800; font-size: 13px; color: ${promo.color};">
+              <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
               ${prov.name}
             </span>
-            <span style="font-size: 10px; font-weight: 700; color: var(--t3);">${prov.stores.length} ${prov.stores.length === 1 ? 'tienda' : 'tiendas'}</span>
+            <span style="font-size: 11px; font-weight: 700; color: var(--t3); background: var(--bg); padding: 1px 6px; border-radius: 10px; border: 1px solid var(--border);">${prov.stores.length} ${prov.stores.length === 1 ? 'tienda' : 'tiendas'}</span>
           </div>
-          <div style="display: flex; flex-wrap: wrap; gap: 3px; padding-left: 2px;">
+          <div style="display: flex; flex-wrap: wrap; gap: 4px; padding-left: 1px;">
             ${prov.stores.map(store => {
               return `
-                <span style="background: var(--bg); border: 1px solid var(--border); border-radius: 4px; padding: 1.5px 6px; font-size: 11px; font-weight: 700; color: var(--text); line-height: 1.25;">
+                <span style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 5px; padding: 2.5px 8px; font-size: 12px; font-weight: 700; color: var(--text); line-height: 1.25; display: inline-block;">
                   ${store}
                 </span>
               `;
@@ -7940,21 +7958,21 @@ function renderPromociones() {
     });
     
     if (promo.provinces.length === 0) {
-      provincesHtml = `<span style="font-size: 12px; color: var(--t3); font-style: italic;">No hay provincias disponibles</span>`;
+      provincesHtml = `<span style="font-size: 12.5px; color: var(--t3); font-style: italic; padding: 10px 0;">No hay provincias disponibles</span>`;
     }
     
     html += `
       <!-- ${promo.name} Columna -->
-      <div style="padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; border: 1.5px solid var(--border); border-radius: var(--r); background: ${cardBg}; opacity: ${cardOpacity}; box-shadow: var(--shadow); transition: all 0.2s;">
+      <div style="padding: 15px 16px; display: flex; flex-direction: column; gap: 8px; border: 1.5px solid var(--border); border-radius: var(--r); background: ${cardBg}; opacity: ${cardOpacity}; box-shadow: var(--shadow); transition: all 0.2s;">
         
         <!-- Cabecera de Columna -->
         <div style="display: flex; flex-direction: column; gap: 4px; border-bottom: 1.5px solid var(--border); padding-bottom: 8px;">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 6px;">
-              <div style="background: ${promo.iconBg}; color: ${promo.iconColor}; width: 26px; height: 26px; display: flex; align-items: center; justify-content: center; border-radius: 6px; flex-shrink: 0;">
-                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <div style="background: ${promo.iconBg}; color: ${promo.iconColor}; width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 7px; flex-shrink: 0; box-shadow: 0 2px 6px rgba(0,0,0,0.05);">
+                <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
               </div>
-              <h4 style="margin: 0; font-size: 14.5px; font-weight: 800; color: var(--text);">${promo.name}</h4>
+              <h4 style="margin: 0; font-size: 16.5px; font-weight: 800; color: var(--text); letter-spacing: -0.2px;">${promo.name}</h4>
             </div>
             <div style="display: flex; align-items: center; gap: 5px;">
               ${deliveryBadge}
@@ -7967,7 +7985,7 @@ function renderPromociones() {
         </div>
         
         <!-- Contenido Directo de Provincias y Tiendas -->
-        <div style="display: flex; flex-direction: column; gap: 2px; flex-grow: 1;">
+        <div style="display: flex; flex-direction: column; gap: 3px; flex-grow: 1;">
           ${provincesHtml}
         </div>
         
