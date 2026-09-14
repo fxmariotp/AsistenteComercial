@@ -9436,7 +9436,7 @@ const PROCEDIMIENTOS = {
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
-        'Escritura de constitución o Recibo de autónomo. (Puede entrar sin esto pero mejor añadirlo)'
+        'Escritura de constitución o Recibo de autónomo. (No suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo)'
       ],
       process: [
         'El representante legal recibe un primer SMS o e-mail de protección de datos que tiene que aceptar obligatoriamente.',
@@ -9471,7 +9471,7 @@ const PROCEDIMIENTOS = {
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
-        'Escritura de constitución o Recibo de autónomo.'
+        'Escritura de constitución o Recibo de autónomo. (No suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo)'
       ],
       process: [
         'El firmante de la empresa recibe un primer SMS o WhatsApp con un enlace de acceso a la página de firma.',
@@ -9505,7 +9505,7 @@ const PROCEDIMIENTOS = {
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
-        'Escritura de constitución o Recibo de autónomo.'
+        'Escritura de constitución o Recibo de autónomo. (No suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo)'
       ],
       process: [
         'El representante legal recibe un SMS o correo electrónico con el enlace de Endesa.',
@@ -9543,7 +9543,7 @@ const PROCEDIMIENTOS = {
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
-        'Escritura de constitución o Recibo de autónomo.'
+        'Escritura de constitución o Recibo de autónomo. (No suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo)'
       ],
       process: [
         'El administrador de la empresa recibe un SMS o correo electrónico con el enlace de acceso a la página de firma de Gana Energía, la cual consta de 4 pasos obligatorios:',
@@ -10737,7 +10737,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930377;
+const CURRENT_BUILD_VERSION = 1785002930378;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -13707,7 +13707,7 @@ function getRenosurChatResponse(query) {
                `  - DNI/NIE en vigor del representante legal o administrador.<br>` +
                `  - Factura actual completa del suministro.<br>` +
                `  - CIF de la empresa/sociedad.<br>` +
-               `  - Escritura de constitución o recibo de autónomo (recomendable adjuntarlo).<br><br>` +
+               `  - Escritura de constitución o recibo de autónomo (no suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo).<br><br>` +
                `• <strong>Procedimiento de Firma (3 pasos corporativos):</strong><br>` +
                `  1) <strong>SMS o email de protección de datos:</strong> Aceptación obligatoria de la empresa.<br>` +
                `  2) <strong>SMS o email de firma:</strong> Enlace para la firma digital del contrato corporativo.<br>` +
@@ -13749,7 +13749,8 @@ function getRenosurChatResponse(query) {
                `  - Lectura de texto legal obligatorio.<br>` +
                `  - DNI/NIE en vigor del representante legal.<br>` +
                `  - Factura actual completa del suministro.<br>` +
-               `  - CIF de la empresa, escritura de constitución o recibo de autónomo.<br><br>` +
+               `  - CIF de la empresa/sociedad.<br>` +
+               `  - Escritura de constitución o recibo de autónomo (no suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo).<br><br>` +
                `• <strong>Procedimiento de Firma (3 pasos):</strong><br>` +
                `  1) SMS o WhatsApp con enlace de firma corporativa.<br>` +
                `  2) Introducir DNI del apoderado y aceptar condiciones corporativas.<br>` +
@@ -13792,7 +13793,7 @@ function getRenosurChatResponse(query) {
                `  - DNI/NIE del representante legal o administrador.<br>` +
                `  - Factura actual completa del suministro.<br>` +
                `  - CIF de la empresa/sociedad.<br>` +
-               `  - Escritura de constitución o recibo de autónomo.<br><br>` +
+               `  - Escritura de constitución o recibo de autónomo (no suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo).<br><br>` +
                `• <strong>Procedimiento de Firma:</strong><br>` +
                `  - SMS o email con enlace al portal de firma corporativa → verificar datos fiscales y firmar digitalmente.<br><br>` +
                `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
@@ -13834,7 +13835,7 @@ function getRenosurChatResponse(query) {
                `  - DNI/NIE del representante legal.<br>` +
                `  - Factura actual completa del suministro.<br>` +
                `  - CIF de la empresa/sociedad.<br>` +
-               `  - Escritura de constitución o recibo de autónomo.<br><br>` +
+               `  - Escritura de constitución o recibo de autónomo (no suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo).<br><br>` +
                `• <strong>Procedimiento de Firma (4 pasos corporativos):</strong><br>` +
                `  1) Enlace de firma recibido por SMS o email corporativo.<br>` +
                `  2) Descargar obligatoriamente los 2 PDFs corporativos.<br>` +
