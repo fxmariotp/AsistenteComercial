@@ -7666,7 +7666,7 @@ const DEFAULT_PROMOCIONES = [
       {
         name: 'Sevilla',
         stores: ['Dos Hermanas'],
-        delivery: 'Recogida presencial en tienda'
+        delivery: 'Tarjeta electronica al correo'
       }
     ]
   },
@@ -7713,7 +7713,17 @@ function getPromocionesConfig() {
   );
 
   if (loadedConfig && !isOldFormat) {
+    // Migración: Asegurar que Leroy Merlin Dos Hermanas sea tarjeta electrónica
+    const leroy = loadedConfig.find(p => p.id === 'leroy-merlin');
+    if (leroy && leroy.provinces) {
+      leroy.provinces.forEach(prov => {
+        if (prov.name === 'Sevilla' && prov.stores.includes('Dos Hermanas')) {
+          prov.delivery = 'Tarjeta electronica al correo';
+        }
+      });
+    }
     promocionesConfig = loadedConfig;
+    localStorage.setItem('promociones_config', JSON.stringify(promocionesConfig));
     return promocionesConfig;
   }
 
@@ -7753,6 +7763,14 @@ async function fetchPromocionesFromSupabase() {
           // Verificar si las provincias cargadas usan el formato antiguo (strings)
           const isOld = parsedProvinces.some(p => typeof p === 'string');
           if (!isOld) {
+            if (promo.id === 'leroy-merlin' && parsedProvinces) {
+              parsedProvinces.forEach(prov => {
+                if (prov.name === 'Sevilla' && prov.stores.includes('Dos Hermanas') && prov.delivery !== 'Tarjeta electronica al correo') {
+                  prov.delivery = 'Tarjeta electronica al correo';
+                  savePromoToSupabase({ ...promo, provinces: parsedProvinces });
+                }
+              });
+            }
             promo.provinces = parsedProvinces;
             updated = true;
           } else {
@@ -7829,9 +7847,9 @@ function renderPromociones() {
     } else if (promo.id === 'leroy-merlin') {
       deliveryBadge = `<span style="font-size: 11.5px; font-weight: 800; color: #1a7a3c; background: rgba(26, 122, 60, 0.12); padding: 4px 8px; border-radius: var(--rs); display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
         <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="4"></circle><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"></path></svg>
-        Tarjeta electronica*
+        Tarjeta electronica
       </span>`;
-      deliverySubtitle = `<p style="margin: 4px 0 0 0; font-size: 11.5px; color: var(--t3); font-weight: 700; line-height: 1.4;">*Dos Hermanas: Recogida presencial en tienda.</p>`;
+      deliverySubtitle = `<p style="margin: 4px 0 0 0; font-size: 11.5px; color: var(--t3); font-weight: 700; line-height: 1.4;">Se envia la tarjeta regalo digital por correo electronico.</p>`;
     } else if (promo.id === 'caprabo') {
       deliveryBadge = `<span style="font-size: 11.5px; font-weight: 800; color: #0d5c9e; background: rgba(13, 92, 158, 0.12); padding: 4px 8px; border-radius: var(--rs); display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
         <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
@@ -7851,11 +7869,9 @@ function renderPromociones() {
           </div>
           <div style="display: flex; flex-wrap: wrap; gap: 6px; padding-left: 20px;">
             ${prov.stores.map(store => {
-              const isSpecial = promo.id === 'leroy-merlin' && prov.name === 'Sevilla' && store === 'Dos Hermanas';
-              const specialBadge = isSpecial ? ' <span style="font-size: 9px; font-weight: 800; color: #ef4444; background: rgba(239,68,68,0.1); padding: 1px 4px; border-radius: 3px; margin-left: 4px;">Recogida Presencial</span>' : '';
               return `
                 <span style="background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 5px 10px; font-size: 12.5px; font-weight: 700; color: var(--text); display: inline-flex; align-items: center;">
-                  ${store}${specialBadge}
+                  ${store}
                 </span>
               `;
             }).join('')}
@@ -10660,7 +10676,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930375;
+const CURRENT_BUILD_VERSION = 1785002930376;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = 0;
 
@@ -12972,7 +12988,7 @@ const SEARCH_INDEX = [
   
   // Promociones
   { title: "Promociones: Carrefour", keywords: ["carrefour", "promociones", "tarjeta", "regalo", "supermercado", "correo", "postal"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
-  { title: "Promociones: Leroy Merlin", keywords: ["leroy merlin", "promociones", "tarjeta", "regalo", "supermercado", "electronica", "presencial", "tienda", "sevilla", "huelva", "malaga", "barcelona"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
+  { title: "Promociones: Leroy Merlin", keywords: ["leroy merlin", "promociones", "tarjeta", "regalo", "supermercado", "electronica", "tienda", "sevilla", "huelva", "malaga", "barcelona"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
   { title: "Promociones: Caprabo", keywords: ["caprabo", "promociones", "tarjeta", "regalo", "supermercado", "barcelona", "cliente"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
   { title: "Promociones Supermercados (Iberdrola)", keywords: ["promociones", "tarjetas", "regalo", "supermercado", "cif", "30€", "50€", "ccpp"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
 
@@ -13286,7 +13302,6 @@ const KNOWLEDGE_BASE = [
     keywords: ["leroy", "leroy merlin"],
     answer: `<strong>Promoción de Leroy Merlin:</strong><br><br>
     • <strong>Método de entrega:</strong> Tarjeta electrónica al correo del cliente.<br>
-    • <strong>Excepción de Sevilla (Dos Hermanas):</strong> Recogida presencial en tienda.<br>
     • <strong>Provincias y Tiendas válidas:</strong><br>
       - Huelva (tiendas de Huelva y Lepe).<br>
       - Barcelona (tienda de Cabrera de Mar).<br>
