@@ -6528,7 +6528,7 @@ input:focus, select:focus, textarea:focus {
     - Plan Hogar Especial:         TE=0,1989 TP1=31,00 TP2=16,99
     - Plan Estable:                TE=0,1686 TP1=39,99 TP2=21,99
     - Plan Supertranquilidad:      TE=0,1624 TP1=33,99 TP2=33,99
-    - Impulsa 24h:                 TE=0,1561 TP1=45,49 TP2=22,99 (dto 20%)
+    - Impulsa 24h:                 TE=0,1730 TP1=45,49 TP2=22,99 (dto 20%)
     Descuento sin mantenimiento: 15% TE (5% adicional PyS)
     Descuento con mantenimiento (Pack): 20% TE
     Gas RL1: TV=0,1206 TF=6,55€/mes · RL2: TV=0,1192 TF=11,18 · RL3: TV=0,1192 TF=21,53
@@ -6557,7 +6557,7 @@ const BASE = {
   iberdrola:{
     name:'Iberdrola', color:'#008B3C',
     tp1:0.1240, tp2:0.0620,
-    te_sin:0.1240, te_con:0.1170,
+    te_sin:0.1380, te_con:0.1290,
     precio_excedente:0.05,
     sva_luz:4.48, sva_gas:9.95,
     gas_rl1:{tf:0.2112, tv:0.1024},
@@ -6566,7 +6566,7 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.20, desc_con:0.25,
     tarifas_luz:[
-      {n:'Impulsa 24h', te:0.1561, tp1:0.1240, tp2:0.0620, te_sin:0.1240, te_con:0.1170, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia'}
+      {n:'Impulsa 24h', te:0.1730, tp1:0.1240, tp2:0.0620, te_sin:0.1380, te_con:0.1290, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia'}
     ],
     tarifas_gas:[
       {n:'Iberdrola Gas RL1', tv:0.1024, tf:0.2112},
@@ -9794,12 +9794,12 @@ function calcComp(){
       r.name = isCif ? 'Iberdrola Impulsa 24h (Precio CIF)' : 'Iberdrola Impulsa 24h';
       r.tp1 = 0.1240;
       r.tp2 = 0.0620;
-      r.te_sin = 0.1240;
-      r.te_con = 0.1170;
+      r.te_sin = 0.1380;
+      r.te_con = 0.1290;
       r.desc_sin = 0.20;
       r.desc_con = 0.25;
       r.tarifas_luz = [
-        {n:'Impulsa 24h', te:0.1561, tp1:0.1240, tp2:0.0620, te_sin:0.1240, te_con:0.1170, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia'}
+        {n:'Impulsa 24h', te:0.1730, tp1:0.1240, tp2:0.0620, te_sin:0.1380, te_con:0.1290, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia'}
       ];
     }
     if (cia === 'naturgy' && isCif) {
@@ -10755,7 +10755,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930380;
+const CURRENT_BUILD_VERSION = 1785002930381;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -14226,9 +14226,9 @@ function getRenosurChatResponse(query) {
       luz: {
         impulsa_24h: {
           name: "Iberdrola Impulsa 24h",
-          base: "0,1561 €/kWh",
-          sin_mantenimiento: "0,1240 €/kWh",
-          con_mantenimiento: "0,1170 €/kWh",
+          base: "0,173 €/kWh",
+          sin_mantenimiento: "0,138 €/kWh",
+          con_mantenimiento: "0,129 €/kWh",
           descuento_sin_mantenimiento: "20%",
           descuento_con_mantenimiento: "25%",
           descuento_general: "20% sin mantenimiento / 25% con mantenimiento",
@@ -14368,9 +14368,9 @@ function getRenosurChatResponse(query) {
   if (q.includes('plan ahora') || q.includes('ahora 0-10') || q.includes('ahora 10-15') || (q.includes('ahora') && q.includes('iberdrola'))) {
     return "⚠️ <strong>El Plan Ahora de Iberdrola ha sido PARALIZADO</strong> y ya no se encuentra disponible para su comercialización ni contratación.<br><br>" +
            "La tarifa activa oficial de Iberdrola para luz es <strong>Impulsa 24h</strong>:<br>" +
-           "• <strong>Precio Base Energía:</strong> 0,1561 €/kWh<br>" +
-           "• <strong>Sin Mantenimiento (20% dto.):</strong> <strong>0,1240 €/kWh</strong><br>" +
-           "• <strong>Con Mantenimiento (25% dto.):</strong> <strong>0,1170 €/kWh</strong><br>" +
+           "• <strong>Precio Base Energía:</strong> 0,173 €/kWh<br>" +
+           "• <strong>Sin Mantenimiento (20% dto.):</strong> <strong>0,138 €/kWh</strong><br>" +
+           "• <strong>Con Mantenimiento (25% dto.):</strong> <strong>0,129 €/kWh</strong><br>" +
            "• <strong>Término de Potencia:</strong> TP1: <strong>0,1240 €/kW·día</strong> | TP2: <strong>0,0620 €/kW·día</strong><br>" +
            "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
            "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
@@ -14382,9 +14382,9 @@ function getRenosurChatResponse(query) {
   if (q.includes('cuanto cuesta iberdrola impulsa') || q.includes('cuánto cuesta iberdrola impulsa') || q.includes('cuesta iberdrola impulsa') || q.includes('impulsa 24h') || q.includes('impulsa')) {
     return "<strong>Iberdrola — Impulsa 24h:</strong><br><br>" +
       "• <strong>Término de Energía:</strong><br>" +
-      "  - Precio Base: 0,1561 €/kWh<br>" +
-      "  - Sin Mantenimiento (20% dto.): <strong>0,1240 €/kWh</strong><br>" +
-      "  - Con Mantenimiento (25% dto.): <strong>0,1170 €/kWh</strong><br><br>" +
+      "  - Precio Base: 0,173 €/kWh<br>" +
+      "  - Sin Mantenimiento (20% dto.): <strong>0,138 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (25% dto.): <strong>0,129 €/kWh</strong><br><br>" +
       "• <strong>Término de Potencia:</strong><br>" +
       "  - TP1 (Punta): <strong>0,1240 €/kW·día</strong> | TP2 (Valle): <strong>0,0620 €/kW·día</strong><br><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
@@ -14496,8 +14496,8 @@ function getRenosurChatResponse(query) {
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
              `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1190 €/kWh<br>` +
-             `• <strong>Iberdrola Impulsa 24h:</strong> 0,1240 €/kWh (0,1170 €/kWh con SVA)<br>` +
              `• <strong>Endesa Luz 24H:</strong> 0,1240 €/kWh<br>` +
+             `• <strong>Iberdrola Impulsa 24h:</strong> 0,138 €/kWh (0,129 €/kWh con SVA)<br>` +
              `• <strong>Endesa Solar Plus:</strong> 0,1407 €/kWh<br><br>` +
              `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
     }
@@ -14544,7 +14544,7 @@ function getRenosurChatResponse(query) {
       if (company === 'iberdrola') {
         return `<strong>Tarifa de Luz de Iberdrola disponible:</strong><br>Selecciona la tarifa que deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-          `  <button onclick="sendQuickChatQuery('Iberdrola Impulsa 24h')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Impulsa 24h — Desde 0,1170 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Iberdrola Impulsa 24h')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Impulsa 24h — Desde 0,129 €/kWh</button>` +
           `</div>`;
       }
       if (company === 'naturgy') {
