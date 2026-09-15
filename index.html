@@ -2998,6 +2998,7 @@ hr {
 @media (max-width: 576px) {
   .topbar-logout-text,
   .topbar-password-text,
+  .topbar-gerente-text,
   .topbar-s {
     display: none !important;
   }
@@ -3006,7 +3007,93 @@ hr {
   }
 }
 
-/* Dashboard Tools Grid */
+/* Liquid Glass Cards (Dashboard Inicio) */
+.db-liquid-glass-row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+  margin-top: 14px;
+  margin-bottom: 18px;
+}
+@media (max-width: 850px) {
+  .db-liquid-glass-row {
+    grid-template-columns: 1fr;
+  }
+}
+.db-liquid-glass-card {
+  position: relative;
+  background: rgba(255, 255, 255, 0.04);
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.01) 100%);
+  backdrop-filter: blur(16px) saturate(180%);
+  -webkit-backdrop-filter: blur(16px) saturate(180%);
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  border-radius: var(--r);
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  cursor: pointer;
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  overflow: hidden;
+  user-select: none;
+}
+.db-liquid-glass-card:hover {
+  transform: translateY(-3px);
+  border-color: var(--glass-glow);
+  box-shadow: 0 12px 28px rgba(0, 0, 0, 0.14), 0 0 18px var(--glass-glow-alpha), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.db-liquid-glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -120%;
+  width: 70%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.12), transparent);
+  transform: skewX(-25deg);
+  transition: left 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.db-liquid-glass-card:hover::before {
+  left: 170%;
+}
+.db-glass-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.25s ease;
+}
+.db-liquid-glass-card:hover .db-glass-icon {
+  transform: scale(1.08);
+}
+.db-glass-title {
+  font-size: 14.5px;
+  font-weight: 800;
+  color: var(--text);
+  margin-bottom: 2px;
+  letter-spacing: -0.01em;
+}
+.db-glass-desc {
+  font-size: 11.5px;
+  color: var(--t2);
+  font-weight: 600;
+  line-height: 1.35;
+}
+.db-glass-arrow {
+  margin-left: auto;
+  opacity: 0.5;
+  transition: all 0.2s ease;
+  color: var(--t2);
+  flex-shrink: 0;
+}
+.db-liquid-glass-card:hover .db-glass-arrow {
+  opacity: 1;
+  transform: translateX(4px);
+  color: var(--text);
+}
+
 /* Dashboard Tools Grid */
 .db-tools-grid {
   display: grid;
@@ -3861,29 +3948,8 @@ input:focus, select:focus, textarea:focus {
       Calendario
     </button>
   </div>
-  <div id="gerente-section" style="display: none; padding: 0 14px; margin-bottom: 8px;">
-    <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 8px;">
-      <div class="nav-section-label">Gerencia</div>
-      <button class="nav-btn" id="btn-nav-gerenteHub" onclick="showPanel('gerenteHub',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-        Gerencia
-      </button>
-    </div>
-  </div>
   <div style="padding: 0 14px; margin-bottom: 8px;">
     <div style="border-top: 1px solid rgba(255, 255, 255, 0.08); padding-top: 8px;">
-      <button class="nav-btn" id="btn-nav-telefonos" onclick="showPanel('telefonos',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
-        Teléfonos
-      </button>
-      <button class="nav-btn" id="btn-nav-normas" onclick="showPanel('normas',this)">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
-        Normas de sala
-      </button>
-      <button class="nav-btn" id="btn-nav-telemarketing" onclick="showPanel('telemarketing',this)" style="margin-top: 4px;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-        Condiciones Telemarketing
-      </button>
       <button class="nav-btn nav-btn-logout" onclick="logout()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
         Cerrar sesión
@@ -3911,6 +3977,10 @@ input:focus, select:focus, textarea:focus {
 
 
     <div class="topbar-right" style="display: flex; gap: 10px; align-items: center;">
+      <button class="nav-btn topbar-gerente-btn" id="btn-topbar-gerenteHub" onclick="showPanel('gerenteHub',this)" style="display: none; width: auto; margin-bottom: 0; padding: 10px 16px; font-weight: 700; font-size: 13.5px; border: 1.5px solid rgba(217, 119, 6, 0.35); border-radius: var(--rs); align-items: center; gap: 8px; color: #d97706; background: rgba(217, 119, 6, 0.08); cursor: pointer; transition: all 0.2s;">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+        <span class="topbar-gerente-text">Gerencia</span>
+      </button>
       <button class="nav-btn" onclick="openPasswordModal()" style="width: auto; margin-bottom: 0; padding: 10px 16px; font-weight: 700; font-size: 13.5px; border: 1.5px solid var(--border); border-radius: var(--rs); display: inline-flex; align-items: center; gap: 8px; color: var(--text); background: var(--surface);">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 15px; height: 15px;"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
         <span class="topbar-password-text">Cambiar contrase&ntilde;a</span>
@@ -4033,6 +4103,45 @@ input:focus, select:focus, textarea:focus {
           <div id="db-widget-ranking-content">
             <!-- Loaded dynamically with circular SVG progress wheel -->
           </div>
+        </div>
+      </div>
+
+      <!-- ── Acceso Rápido Liquid Glass (Inicio) ── -->
+      <div class="db-liquid-glass-row">
+        <!-- 1. Teléfonos -->
+        <div class="db-liquid-glass-card" onclick="showPanel('telefonos')" style="--glass-glow: #a855f7; --glass-glow-alpha: rgba(168, 85, 247, 0.22);">
+          <div class="db-glass-icon" style="background: rgba(168, 85, 247, 0.12); color: #a855f7; border: 1.5px solid rgba(168, 85, 247, 0.28); box-shadow: 0 4px 12px rgba(168, 85, 247, 0.15);">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; min-width: 0;">
+            <div class="db-glass-title">Teléfonos y Averías</div>
+            <div class="db-glass-desc">Atención de comercializadoras y distribuidoras</div>
+          </div>
+          <svg class="db-glass-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+
+        <!-- 2. Condiciones Telemarketing -->
+        <div class="db-liquid-glass-card" onclick="showPanel('telemarketing')" style="--glass-glow: #d97706; --glass-glow-alpha: rgba(217, 119, 6, 0.22);">
+          <div class="db-glass-icon" style="background: rgba(217, 119, 6, 0.12); color: #d97706; border: 1.5px solid rgba(217, 119, 6, 0.28); box-shadow: 0 4px 12px rgba(217, 119, 6, 0.15);">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; min-width: 0;">
+            <div class="db-glass-title">Condiciones Telemarketing</div>
+            <div class="db-glass-desc">Objetivos mínimos, tramos y comisiones</div>
+          </div>
+          <svg class="db-glass-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+        </div>
+
+        <!-- 3. Normas de Sala -->
+        <div class="db-liquid-glass-card" onclick="showPanel('normas')" style="--glass-glow: #10b981; --glass-glow-alpha: rgba(16, 185, 129, 0.22);">
+          <div class="db-glass-icon" style="background: rgba(16, 185, 129, 0.12); color: #10b981; border: 1.5px solid rgba(16, 185, 129, 0.28); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+          </div>
+          <div style="display: flex; flex-direction: column; min-width: 0;">
+            <div class="db-glass-title">Normas de Sala</div>
+            <div class="db-glass-desc">Entorno profesional, convivencia y pautas</div>
+          </div>
+          <svg class="db-glass-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </div>
       </div>
 
@@ -5624,7 +5733,7 @@ input:focus, select:focus, textarea:focus {
         <div class="gerente-hub-grid">
           
           <!-- Card 1: Control de Vacaciones -->
-          <div class="gerente-hub-card" onclick="showPanel('controlVacaciones', document.getElementById('btn-nav-gerenteHub'))">
+          <div class="gerente-hub-card" onclick="showPanel('controlVacaciones', document.getElementById('btn-topbar-gerenteHub'))">
             <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
               <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(37, 99, 235, 0.05); color: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
@@ -5641,7 +5750,7 @@ input:focus, select:focus, textarea:focus {
           </div>
 
           <!-- Card 2: Gestión de Usuarios -->
-          <div class="gerente-hub-card" onclick="showPanel('gruposAgentes', document.getElementById('btn-nav-gerenteHub'))">
+          <div class="gerente-hub-card" onclick="showPanel('gruposAgentes', document.getElementById('btn-topbar-gerenteHub'))">
             <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
               <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(37, 99, 235, 0.05); color: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><circle cx="17" cy="7" r="3"></circle></svg>
@@ -5658,7 +5767,7 @@ input:focus, select:focus, textarea:focus {
           </div>
 
           <!-- Card 3: Registro de Conexiones -->
-          <div class="gerente-hub-card" onclick="showPanel('registroConexiones', document.getElementById('btn-nav-gerenteHub'))">
+          <div class="gerente-hub-card" onclick="showPanel('registroConexiones', document.getElementById('btn-topbar-gerenteHub'))">
             <div style="display: flex; align-items: center; gap: 16px; flex: 1; min-width: 0;">
               <div style="width: 42px; height: 42px; border-radius: 10px; background: rgba(37, 99, 235, 0.05); color: var(--blue); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                 <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
@@ -5704,7 +5813,7 @@ input:focus, select:focus, textarea:focus {
         <!-- Header & Month Navigation -->
         <div style="display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; margin-bottom: 20px; gap: 16px;">
           <div>
-            <button onclick="showPanel('gerenteHub', document.getElementById('btn-nav-gerenteHub'))" style="background: none; border: none; color: var(--blue); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 8px; outline: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(-2px)'" onmouseout="this.style.transform='translateX(0)'">
+            <button onclick="showPanel('gerenteHub', document.getElementById('btn-topbar-gerenteHub'))" style="background: none; border: none; color: var(--blue); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 8px; outline: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(-2px)'" onmouseout="this.style.transform='translateX(0)'">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
               Volver a Gerencia
             </button>
@@ -5809,7 +5918,7 @@ input:focus, select:focus, textarea:focus {
       <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
           <div>
-            <button onclick="showPanel('gerenteHub', document.getElementById('btn-nav-gerenteHub'))" style="background: none; border: none; color: var(--blue); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 8px; outline: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(-2px)'" onmouseout="this.style.transform='translateX(0)'">
+            <button onclick="showPanel('gerenteHub', document.getElementById('btn-topbar-gerenteHub'))" style="background: none; border: none; color: var(--blue); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 8px; outline: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(-2px)'" onmouseout="this.style.transform='translateX(0)'">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
               Volver a Gerencia
             </button>
@@ -5848,7 +5957,7 @@ input:focus, select:focus, textarea:focus {
       <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px;">
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 16px;">
           <div>
-            <button onclick="showPanel('gerenteHub', document.getElementById('btn-nav-gerenteHub'))" style="background: none; border: none; color: var(--blue); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 8px; outline: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(-2px)'" onmouseout="this.style.transform='translateX(0)'">
+            <button onclick="showPanel('gerenteHub', document.getElementById('btn-topbar-gerenteHub'))" style="background: none; border: none; color: var(--blue); font-size: 13px; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 4px; padding: 0; margin-bottom: 8px; outline: none; transition: transform 0.2s;" onmouseover="this.style.transform='translateX(-2px)'" onmouseout="this.style.transform='translateX(0)'">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
               Volver a Gerencia
             </button>
@@ -10755,7 +10864,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930382;
+const CURRENT_BUILD_VERSION = 1785002930383;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -10989,10 +11098,10 @@ async function fetchAgentRolesFromCloud() {
         applyAgentPermissions();
       }
       
-      const gerenteSec = document.getElementById('gerente-section');
-      if (gerenteSec) {
+      const topbarGerenteBtn = document.getElementById('btn-topbar-gerenteHub');
+      if (topbarGerenteBtn) {
         const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
-        gerenteSec.style.display = userRole === 'gerente' ? 'block' : 'none';
+        topbarGerenteBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
       }
       
       const gerenteRankingActions = document.getElementById('gerente-ranking-actions');
@@ -11036,6 +11145,11 @@ function applyAgentPermissions() {
   const btnCalendario = document.getElementById('btn-nav-calendario');
   const cardRanking = document.querySelector('.db-tool-card[onclick*="\'ranking\'"]');
   const cardCalendario = document.querySelector('.db-tool-card[onclick*="\'calendario\'"]');
+  const topbarGerenteBtn = document.getElementById('btn-topbar-gerenteHub');
+  
+  if (topbarGerenteBtn) {
+    topbarGerenteBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
+  }
   
   if (userRole === 'evaria') {
     if (btnRanking) { btnRanking.style.opacity = '0.5'; btnRanking.title = 'Bloqueado para Trabajadores Evaria'; }
@@ -11842,11 +11956,11 @@ async function onLoginSuccess() {
   
 
   
-  // 8. Mostrar/ocultar seccion de Gerencia
+  // 8. Mostrar/ocultar seccion de Gerencia en topbar
   const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
-  const gerenteSec = document.getElementById('gerente-section');
-  if (gerenteSec) {
-    gerenteSec.style.display = userRole === 'gerente' ? 'block' : 'none';
+  const topbarGerenteBtn = document.getElementById('btn-topbar-gerenteHub');
+  if (topbarGerenteBtn) {
+    topbarGerenteBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
   }
   
   // 9. Iniciar verificacion de estado activo/inactivo en tiempo real
@@ -13082,20 +13196,23 @@ const SEARCH_INDEX = [
   // Calendario
   { title: "Calendario Laboral (Cierres e Inicio de Mes)", keywords: ["calendario", "cierre de mes", "cierre de mez", "comiendo de mes", "comienzo de mes", "cierre", "apertura", "festivos", "dias laborables"], action: () => showPanel('calendario', document.getElementById('btn-nav-calendario')) },
 
+  // Teléfonos
+  { title: "Teléfonos y Averías", keywords: ["telefonos", "averias", "distribuidoras", "comercializadoras", "atencion", "cliente", "contacto", "urgencias", "soporte"], action: () => showPanel('telefonos') },
+
   // Normas de Sala
-  { title: "Normas de Sala", keywords: ["normas", "sala", "horarios", "conducta", "movil", "silencio", "faltas", "mision", "valores"], action: () => showPanel('normas', document.getElementById('btn-nav-normas')) },
+  { title: "Normas de Sala", keywords: ["normas", "sala", "horarios", "conducta", "movil", "silencio", "faltas", "mision", "valores"], action: () => showPanel('normas') },
 
   // Condiciones Telemarketing
-  { title: "Condiciones Telemarketing y Comisiones", keywords: ["condiciones", "telemarketing", "comisiones", "descomisiones", "retro", "retrocomision", "retrocomisiones", "retrocomisión", "objetivos", "securitas", "direct", "iberdrola", "endesa", "gana", "naturgy"], action: () => showPanel('telemarketing', document.getElementById('btn-nav-telemarketing')) },
+  { title: "Condiciones Telemarketing y Comisiones", keywords: ["condiciones", "telemarketing", "comisiones", "descomisiones", "retro", "retrocomision", "retrocomisiones", "retrocomisión", "objetivos", "securitas", "direct", "iberdrola", "endesa", "gana", "naturgy"], action: () => showPanel('telemarketing') },
 
   // Enlaces de Trabajo
   { title: "Enlaces de Trabajo (WhatsApp, CRM, Consultas)", keywords: ["enlaces", "utilidades", "whatsapp", "crm", "consultas", "ontime", "sips", "energiza", "calculadora", "owncloud"], action: () => showPanel('sips', document.getElementById('btn-nav-sips')) },
   { title: "Buscar Comunidades Solares (Iberdrola)", keywords: ["comunidades solares", "comunidad solar", "iberdrola solar", "solar", "cobertura solar", "autoconsumo", "buscar comunidades", "buscar comunidad solar"], action: () => { window.open('https://www.iberdrola.es/smart-solar/productos/comunidades-solares#header_titulo', '_blank'); } },
 
   // Gerencia (solo si es gerente)
-  { title: "Gerencia: Control de Vacaciones", keywords: ["gerencia", "vacaciones", "calendario", "comerciales"], action: () => showPanel('controlVacaciones', document.getElementById('btn-nav-gerenteHub')), requireGerente: true },
-  { title: "Gerencia: Gestión de Usuarios", keywords: ["gerencia", "usuarios", "contraseñas", "roles", "personal"], action: () => showPanel('gruposAgentes', document.getElementById('btn-nav-gerenteHub')), requireGerente: true },
-  { title: "Gerencia: Registro de Conexiones (IPs)", keywords: ["gerencia", "conexiones", "ips", "auditoria", "accesos"], action: () => showPanel('registroConexiones', document.getElementById('btn-nav-gerenteHub')), requireGerente: true }
+  { title: "Gerencia: Control de Vacaciones", keywords: ["gerencia", "vacaciones", "calendario", "comerciales"], action: () => showPanel('controlVacaciones', document.getElementById('btn-topbar-gerenteHub')), requireGerente: true },
+  { title: "Gerencia: Gestión de Usuarios", keywords: ["gerencia", "usuarios", "contraseñas", "roles", "personal"], action: () => showPanel('gruposAgentes', document.getElementById('btn-topbar-gerenteHub')), requireGerente: true },
+  { title: "Gerencia: Registro de Conexiones (IPs)", keywords: ["gerencia", "conexiones", "ips", "auditoria", "accesos"], action: () => showPanel('registroConexiones', document.getElementById('btn-topbar-gerenteHub')), requireGerente: true }
 ];
 
 function handleGlobalSearch() {
