@@ -260,7 +260,7 @@ async function writeLoginLogToSupabase(dni, name) {
 
   try {
     const now = new Date();
-    const dateStr = now.toISOString().split('T')[0];
+    const dateStr = now.toLocaleDateString('en-CA');
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + dni + '_' + Date.now();
     

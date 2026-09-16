@@ -5962,9 +5962,13 @@ input:focus, select:focus, textarea:focus {
               Volver a Gerencia
             </button>
             <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 4px;">Registro de Conexiones</h3>
-            <p style="font-size: 13.5px; color: var(--t3); margin: 0;">
+            <p style="font-size: 13.5px; color: var(--t3); margin: 0 0 6px 0;">
               Historial de accesos de los agentes a la plataforma con fecha, hora y dirección IP de conexión.
             </p>
+            <div style="display: inline-flex; align-items: center; gap: 6px; font-size: 11.5px; color: #dc2626; font-weight: 700; background: rgba(239, 68, 68, 0.08); padding: 3px 9px; border-radius: 6px; border: 1px solid rgba(239, 68, 68, 0.2);">
+              <span style="font-size: 11px;">⚠️</span>
+              <span>Las IPs resaltadas en rojo indican 2 o más inicios de sesión desde ubicaciones o IPs distintas en el mismo día.</span>
+            </div>
           </div>
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <div style="position: relative; display: inline-block;">
@@ -10868,7 +10872,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930386;
+const CURRENT_BUILD_VERSION = 1785002930387;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11185,7 +11189,9 @@ async function registerSessionConnectionLog() {
   
   const todayStr = new Date().toLocaleDateString('en-CA');
   const sessionKey = 'session_logged_date_' + currentAgentDni;
-  if (sessionStorage.getItem(sessionKey) === todayStr) return;
+  const sessionIpKey = 'session_logged_ip_' + currentAgentDni;
+  const lastLoggedDate = sessionStorage.getItem(sessionKey);
+  const lastLoggedIp = sessionStorage.getItem(sessionIpKey);
 
   let ip = 'Desconocida';
   let userAgent = navigator.userAgent || 'Desconocido';
@@ -11206,9 +11212,13 @@ async function registerSessionConnectionLog() {
     console.warn("Could not fetch login IP address:", e);
   }
 
+  if (lastLoggedDate === todayStr && lastLoggedIp === ip && ip !== 'Desconocida') {
+    return;
+  }
+
   try {
     const now = new Date();
-    const dateStr = now.toISOString().split('T')[0];
+    const dateStr = now.toLocaleDateString('en-CA');
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + currentAgentDni + '_' + Date.now();
 
@@ -11227,6 +11237,7 @@ async function registerSessionConnectionLog() {
     });
     if (!error) {
       sessionStorage.setItem(sessionKey, todayStr);
+      sessionStorage.setItem(sessionIpKey, ip);
     }
   } catch (e) {
     console.error("Error writing connection log to Supabase:", e);
@@ -11323,11 +11334,11 @@ function renderLoginLogs(logs) {
 
   const uniqueIpsByUserAndDate = {};
   cachedLoginLogs.forEach(log => {
-    const dni = log.title || '';
-    const date = log.date || '';
-    const ip = log.phone || '';
-    if (dni && date && ip && ip !== 'Desconocida') {
-      const key = dni + '_' + date;
+    const userKey = (log.title || log.type || '').trim().toUpperCase();
+    const dateKey = (log.date || '').trim();
+    const ip = (log.phone || '').trim();
+    if (userKey && dateKey && ip && ip !== 'Desconocida' && ip !== '—') {
+      const key = userKey + '_' + dateKey;
       if (!uniqueIpsByUserAndDate[key]) {
         uniqueIpsByUserAndDate[key] = new Set();
       }
@@ -11338,13 +11349,15 @@ function renderLoginLogs(logs) {
   tbody.innerHTML = logs.map(log => {
     const name = log.type || 'Desconocido';
     const dni = log.title || '—';
-    const date = log.date ? log.date.split('-').reverse().join('/') : '—';
+    const userKey = (log.title || log.type || '').trim().toUpperCase();
+    const dateKey = (log.date || '').trim();
+    const dateFormatted = dateKey ? dateKey.split('-').reverse().join('/') : '—';
     const time = log.time || '—';
-    const ip = log.phone || 'Desconocida';
+    const ip = (log.phone || 'Desconocida').trim();
     
     // Censurar la IP si no se ha activado ver IPs completas
     let displayIp = ip;
-    if (!showFullIpsInLogs && ip && ip !== 'Desconocida') {
+    if (!showFullIpsInLogs && ip && ip !== 'Desconocida' && ip !== '—') {
       if (ip.length > 4) {
         displayIp = '••••' + ip.substring(ip.length - 4);
       }
@@ -11361,23 +11374,34 @@ function renderLoginLogs(logs) {
       ua = 'Ordenador / Otro';
     }
 
-    const key = dni + '_' + (log.date || '');
-    const uniqueIpsCount = uniqueIpsByUserAndDate[key] ? uniqueIpsByUserAndDate[key].size : 1;
-    const isSuspicious = uniqueIpsCount > 1;
+    const key = userKey + '_' + dateKey;
+    const ipSet = uniqueIpsByUserAndDate[key];
+    const uniqueIpsCount = ipSet ? ipSet.size : 1;
+    const isSuspicious = uniqueIpsCount >= 2;
     
-    const ipColor = isSuspicious ? '#ef4444' : 'var(--blue)';
-    const ipWeight = isSuspicious ? '800' : '600';
-    const ipTitle = isSuspicious ? `Alerta: Este agente se ha conectado desde ${uniqueIpsCount} IPs distintas hoy` : '';
-    const warningIcon = isSuspicious ? `<span style="color:#ef4444; margin-right:4px;" title="${ipTitle}">⚠️</span>` : '';
+    const allIpsList = (isSuspicious && ipSet) ? Array.from(ipSet).join(', ') : '';
+    const alertTooltip = isSuspicious 
+      ? `ALERTA DE SEGURIDAD: Este agente ha iniciado sesión desde ${uniqueIpsCount} IPs / ubicaciones distintas en el mismo día (${dateFormatted}). IPs detectadas: ${allIpsList}` 
+      : 'Conexión habitual';
 
-    return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); background: ${isSuspicious ? 'rgba(239, 68, 68, 0.02)' : 'transparent'};">
+    const rowBg = isSuspicious ? 'rgba(239, 68, 68, 0.05)' : 'transparent';
+
+    return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); background: ${rowBg}; transition: background 0.15s;">
       <td style="padding: 10px 14px; font-weight: 600;">${name}</td>
       <td style="padding: 10px 14px; font-family: monospace;">${dni}</td>
-      <td style="padding: 10px 14px;">${date}</td>
+      <td style="padding: 10px 14px;">${dateFormatted}</td>
       <td style="padding: 10px 14px;">${time}</td>
-      <td style="padding: 10px 14px; font-weight: ${ipWeight}; color: ${ipColor}; display: flex; align-items: center;" title="${ipTitle}">
-        ${warningIcon}
-        <span>${displayIp}</span>
+      <td style="padding: 10px 14px;">
+        ${isSuspicious ? `
+          <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.35); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-family: monospace; font-size: 13px; cursor: help;" title="${alertTooltip}">
+            <span style="font-size: 13px; line-height: 1;">⚠️</span>
+            <span style="color: #dc2626; letter-spacing: 0.3px;">${displayIp}</span>
+          </span>
+        ` : `
+          <span style="display: inline-flex; align-items: center; color: var(--blue); font-weight: 600; font-family: monospace; font-size: 13px;" title="${alertTooltip}">
+            <span>${displayIp}</span>
+          </span>
+        `}
       </td>
       <td style="padding: 10px 14px; color: var(--t3); font-size: 12.5px;">${ua}</td>
     </tr>`;
