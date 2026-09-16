@@ -5971,6 +5971,18 @@ input:focus, select:focus, textarea:focus {
             </div>
           </div>
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
+            <!-- Selector de Fecha: Hoy / Ver Todos -->
+            <div style="display: inline-flex; background: var(--bg); padding: 3px; border-radius: var(--rs); border: 1.5px solid var(--border);">
+              <button id="btn-login-logs-today" onclick="setLoginLogsDateFilter('today')" style="padding: 6px 14px; border: none; border-radius: 6px; font-weight: 700; font-size: 12.5px; cursor: pointer; transition: all 0.2s; background: var(--blue); color: white; display: inline-flex; align-items: center; gap: 5px;">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                <span>Hoy</span>
+              </button>
+              <button id="btn-login-logs-all" onclick="setLoginLogsDateFilter('all')" style="padding: 6px 14px; border: none; border-radius: 6px; font-weight: 700; font-size: 12.5px; cursor: pointer; transition: all 0.2s; background: transparent; color: var(--t2); display: inline-flex; align-items: center; gap: 5px;">
+                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                <span>Ver todos</span>
+              </button>
+            </div>
+
             <div style="position: relative; display: inline-block;">
               <input type="text" id="input-search-login-logs" placeholder="Buscar agente, IP, dispositivo, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 250px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
@@ -5987,7 +5999,7 @@ input:focus, select:focus, textarea:focus {
         </div>
         
         <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
+          <table style="width: 100%; border-collapse: collapse; min-width: 750px;">
             <thead>
               <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 12px; color: var(--t3); text-transform: uppercase;">
                 <th style="padding: 10px 14px; font-weight: 700;">Agente</th>
@@ -5995,11 +6007,12 @@ input:focus, select:focus, textarea:focus {
                 <th style="padding: 10px 14px; font-weight: 700;">Hora</th>
                 <th style="padding: 10px 14px; font-weight: 700;">IP Conexión (Pública)</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Dispositivo / SO</th>
+                <th style="padding: 10px 14px; font-weight: 700; text-align: center; width: 60px;">Acción</th>
               </tr>
             </thead>
             <tbody id="tbl-login-logs-body">
               <tr>
-                <td colspan="5" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">
+                <td colspan="6" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">
                   Cargando registros de conexión...
                 </td>
               </tr>
@@ -9241,6 +9254,8 @@ function showPanel(id, btn){
   if(id==='procedimientos') renderProcedimientos();
   if(id==='gruposAgentes') initGruposAgentes();
   if(id==='registroConexiones') {
+    loginLogsViewMode = 'today';
+    if (typeof updateLoginLogsFilterUI === 'function') updateLoginLogsFilterUI();
     if (typeof loadLoginLogs === 'function') loadLoginLogs();
   }
   
@@ -10871,7 +10886,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930393;
+const CURRENT_BUILD_VERSION = 1785002930394;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11273,6 +11288,56 @@ async function registerSessionConnectionLog() {
 
 let cachedLoginLogs = [];
 let showFullIpsInLogs = false;
+let loginLogsViewMode = 'today'; // 'today' | 'all'
+
+function setLoginLogsDateFilter(mode) {
+  loginLogsViewMode = mode;
+  updateLoginLogsFilterUI();
+  filterLoginLogs();
+}
+
+function updateLoginLogsFilterUI() {
+  const btnToday = document.getElementById('btn-login-logs-today');
+  const btnAll = document.getElementById('btn-login-logs-all');
+  if (!btnToday || !btnAll) return;
+  
+  if (loginLogsViewMode === 'today') {
+    btnToday.style.background = 'var(--blue)';
+    btnToday.style.color = '#fff';
+    btnAll.style.background = 'transparent';
+    btnAll.style.color = 'var(--t2)';
+  } else {
+    btnAll.style.background = 'var(--blue)';
+    btnAll.style.color = '#fff';
+    btnToday.style.background = 'transparent';
+    btnToday.style.color = 'var(--t2)';
+  }
+}
+
+async function deleteLoginLog(logId, event) {
+  if (event) event.stopPropagation();
+  if (!confirm("¿Deseas eliminar este registro de conexión?")) return;
+  
+  try {
+    if (supabaseClient) {
+      const { error } = await supabaseClient
+        .from('tareas')
+        .delete()
+        .eq('id', logId);
+      if (error) {
+        console.error("Error deleting login log:", error);
+        alert("Error al eliminar el registro: " + (error.message || ''));
+        return;
+      }
+    }
+    
+    cachedLoginLogs = cachedLoginLogs.filter(item => item.id !== logId);
+    filterLoginLogs();
+  } catch (err) {
+    console.error("Exception deleting login log:", err);
+    alert("Ocurrió un error al eliminar el registro.");
+  }
+}
 
 function toggleIpVisibility() {
   showFullIpsInLogs = !showFullIpsInLogs;
@@ -11300,12 +11365,7 @@ function toggleIpVisibility() {
     }
   }
   
-  const searchInput = document.getElementById('input-search-login-logs');
-  if (searchInput && searchInput.value) {
-    filterLoginLogs();
-  } else {
-    renderLoginLogs(cachedLoginLogs);
-  }
+  filterLoginLogs();
 }
 
 async function loadLoginLogs() {
@@ -11313,7 +11373,7 @@ async function loadLoginLogs() {
   if (!tbody) return;
   
   if (!supabaseClient) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--red);">Error: Cliente de Base de Datos no inicializado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Error: Cliente de Base de Datos no inicializado.</td></tr>`;
     return;
   }
 
@@ -11325,12 +11385,12 @@ async function loadLoginLogs() {
       
     if (error) {
       console.error("Error fetching login logs:", error);
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
       return;
     }
 
     if (!data || data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
       cachedLoginLogs = [];
       return;
     }
@@ -11338,15 +11398,10 @@ async function loadLoginLogs() {
     data.sort((a, b) => Number(b.created_at) - Number(a.created_at));
     cachedLoginLogs = data;
 
-    const searchInput = document.getElementById('input-search-login-logs');
-    if (searchInput && searchInput.value) {
-      filterLoginLogs();
-    } else {
-      renderLoginLogs(cachedLoginLogs);
-    }
+    filterLoginLogs();
   } catch (e) {
     console.error("Exception loading login logs:", e);
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
   }
 }
 
@@ -11395,7 +11450,10 @@ function renderLoginLogs(logs) {
   if (!tbody) return;
 
   if (logs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros que coincidan con la búsqueda.</td></tr>`;
+    const emptyMsg = loginLogsViewMode === 'today' 
+      ? 'No hay registros de conexión para el día de hoy.' 
+      : 'No hay registros que coincidan con la búsqueda.';
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">${emptyMsg}</td></tr>`;
     return;
   }
 
@@ -11470,18 +11528,33 @@ function renderLoginLogs(logs) {
           <span>${devInfo.label}</span>
         </span>
       </td>
+      <td style="padding: 10px 14px; text-align: center;">
+        <button onclick="deleteLoginLog('${log.id}', event)" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); color: #dc2626; border-radius: 6px; padding: 5px 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Eliminar este registro de conexión" onmouseover="this.style.background='#dc2626';this.style.color='#fff';" onmouseout="this.style.background='rgba(239, 68, 68, 0.08)';this.style.color='#dc2626';">
+          <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
+        </button>
+      </td>
     </tr>`;
   }).join('');
 }
 
 function filterLoginLogs() {
-  const query = document.getElementById('input-search-login-logs').value.toLowerCase().trim();
+  const todayStr = new Date().toLocaleDateString('en-CA');
+  
+  // 1. Filtrar por fecha según loginLogsViewMode ('today' vs 'all')
+  let dateFilteredLogs = cachedLoginLogs;
+  if (loginLogsViewMode === 'today') {
+    dateFilteredLogs = cachedLoginLogs.filter(log => (log.date || '') === todayStr);
+  }
+
+  const searchInput = document.getElementById('input-search-login-logs');
+  const query = searchInput ? searchInput.value.toLowerCase().trim() : '';
+  
   if (!query) {
-    renderLoginLogs(cachedLoginLogs);
+    renderLoginLogs(dateFilteredLogs);
     return;
   }
 
-  const filtered = cachedLoginLogs.filter(log => {
+  const searchFiltered = dateFilteredLogs.filter(log => {
     const name = (log.type || 'desconocido').toLowerCase();
     const dni = (log.title || '').toLowerCase();
     const rawDate = log.date || '';
@@ -11502,7 +11575,7 @@ function filterLoginLogs() {
            devLabel.includes(query);
   });
 
-  renderLoginLogs(filtered);
+  renderLoginLogs(searchFiltered);
 }
 
 function initGruposAgentes() {
