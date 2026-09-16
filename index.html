@@ -6726,8 +6726,8 @@ const BASE = {
   },
   gana:{
     name:'Gana Energia', color:'#E30613',
-    tp1:0.0894, tp2:0.0894,
-    te_sin:0.1190, te_con:0.1190,
+    tp1:0.0890, tp2:0.0890,
+    te_sin:0.1290, te_con:0.1290,
     precio_excedente:0.06,
     sva_luz:4.13, sva_gas:0.00,
     gas_rl1:{tf:0.1310, tv:0.082885},
@@ -6735,8 +6735,8 @@ const BASE = {
     gas_rl3:{tf:0.627333, tv:0.076230},
     imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Plan 24 Horas', te:0.1190, tp1:0.0894, tp2:0.0894, nota:'Precio unico 24h sin permanencia'},
-      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.1000}, {p:'P2 (Llano)', te:0.1250}, {p:'P3 (Valle)', te:0.2050}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestion (+5.00 €/mes)'}
+      {n:'Plan 24 Horas', te:0.1290, tp1:0.0890, tp2:0.0890, nota:'Precio unico 24h sin permanencia'},
+      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.2300}, {p:'P2 (Llano)', te:0.1570}, {p:'P3 (Valle)', te:0.1420}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestion (+5.00 €/mes)'}
     ],
     tarifas_gas:[
       {n:'Gana Gas RL1', tv:0.082885, tf:0.1310},
@@ -9361,7 +9361,7 @@ function renderCondiciones(){
       potHtml = `<span>Potencia DNI: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·dia</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia CIF: TP1 ${r.tarifas_luz[1].tp1.toFixed(6)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(6)} €/kW·dia</span>`;
     } else if (r.tarifas_luz.length > 1 && id === 'gana') {
-      potHtml = `<span>Potencia Plan Online: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·dia</span>
+      potHtml = `<span>Potencia Plan 24 Horas: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·dia</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia Mercado: TP1 ${r.tarifas_luz[1].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(4)} €/kW·dia</span>`;
     } else if (r.tarifas_luz.length > 1 && id === 'endesa') {
       potHtml = `<span>Potencia Luz 24H: TP1 ${r.tarifas_luz[0].tp1.toFixed(4)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(4)} €/kW·dia</span>
@@ -9948,9 +9948,9 @@ function calcComp(){
       r.name = isCif ? 'Gana Energia Precio de Mercado (Precio CIF)' : 'Gana Energia Precio de Mercado';
       // Usar tarifa indexada "Precio de Mercado" para Gana Energia
       luzPot = (pot1 * 0.0760 + pot2 * 0.0020) * dias;
-      luzP1 = kwh1 * 0.1000;
-      luzP2 = kwh2 * 0.1250;
-      luzP3 = kwh3 * 0.2050;
+      luzP1 = kwh1 * 0.2300;
+      luzP2 = kwh2 * 0.1570;
+      luzP3 = kwh3 * 0.1420;
       costeGestion = (5.00 / 30) * dias;
     } else if (cia === 'gana' && off.type === 'gana_24h') {
       // Usar tarifa plana estandar "Plan Online 24h" para Gana Energia
@@ -10359,20 +10359,20 @@ function printCompanyOffer(key) {
       // Indexada Gana Energia
       rows.push({
         concept: 'Consumo P1 (Punta)',
-        calc: `${kwh1.toFixed(2)} kWh × 0.1000 €/kWh`,
+        calc: `${kwh1.toFixed(2)} kWh × 0.2300 €/kWh`,
         val: `${f2(luzP1)} €`
       });
       if (kwh2 > 0) {
         rows.push({
           concept: 'Consumo P2 (Llano)',
-          calc: `${kwh2.toFixed(2)} kWh × 0.1250 €/kWh`,
+          calc: `${kwh2.toFixed(2)} kWh × 0.1570 €/kWh`,
           val: `${f2(luzP2)} €`
         });
       }
       if (kwh3 > 0) {
         rows.push({
           concept: 'Consumo P3 (Valle)',
-          calc: `${kwh3.toFixed(2)} kWh × 0.2050 €/kWh`,
+          calc: `${kwh3.toFixed(2)} kWh × 0.1420 €/kWh`,
           val: `${f2(luzP3)} €`
         });
       }
@@ -10864,7 +10864,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930384;
+const CURRENT_BUILD_VERSION = 1785002930385;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -14443,12 +14443,12 @@ function getRenosurChatResponse(query) {
       luz: {
         plan_24h: {
           name: "Plan 24 Horas",
-          base: "0,1190 €/kWh",
-          sin_mantenimiento: "0,1190 €/kWh (Igual que el precio base)",
-          con_mantenimiento: "0,1190 €/kWh (Igual que el precio base)",
+          base: "0,1290 €/kWh",
+          sin_mantenimiento: "0,1290 €/kWh (Igual que el precio base)",
+          con_mantenimiento: "0,1290 €/kWh (Igual que el precio base)",
           descuento_sin_mantenimiento: "0%",
           descuento_con_mantenimiento: "No se muestra descuento adicional con mantenimiento.",
-          potencia: "TP1: 0,0894 €/kW-día | TP2: 0,0894 €/kW-día",
+          potencia: "TP1: 0,0890 €/kW-día | TP2: 0,0890 €/kW-día",
           excedentes: "0,06 €/kWh",
           mantenimiento: "No se indica un coste de mantenimiento específico en esta tarjeta.",
           permanencia: "No tiene permanencia.",
@@ -14456,12 +14456,12 @@ function getRenosurChatResponse(query) {
         },
         mercado: {
           name: "Precio de Mercado",
-          base: "Tarifa variable indexada. P1 (Punta): 0,1000 €/kWh | P2 (Llano): 0,1250 €/kWh | P3 (Valle): 0,2050 €/kWh",
+          base: "Tarifa variable indexada. P1 (Punta): 0,2300 €/kWh | P2 (Llano): 0,1570 €/kWh | P3 (Valle): 0,1420 €/kWh",
           sin_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
           con_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
           descuento_sin_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
           descuento_con_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
-          potencia: "TP1: 0,0760 €/kW-día | TP2: 0,0200 €/kW-día",
+          potencia: "TP1: 0,0760 €/kW-día | TP2: 0,0020 €/kW-día",
           excedentes: "0,06 €/kWh",
           gestion: "5,00 €/mes",
           mantenimiento: "no disponible",
@@ -14562,8 +14562,8 @@ function getRenosurChatResponse(query) {
   // 9. Gana Energía Plan 24 Horas
   if (q.includes('plan 24 horas') || q.includes('gana energia plan 24') || (q.includes('gana') && q.includes('24 horas'))) {
     return "<strong>Gana Energía — Plan 24 Horas:</strong><br><br>" +
-      "• <strong>Término de Energía:</strong> <strong>0,1190 €/kWh</strong> (Precio fijo 24h, sin dto. adicional)<br>" +
-      "• <strong>Término de Potencia:</strong> TP1: <strong>0,0894 €/kW·día</strong> | TP2: <strong>0,0894 €/kW·día</strong><br>" +
+      "• <strong>Término de Energía:</strong> <strong>0,1290 €/kWh</strong> (Precio fijo 24h, sin dto. adicional)<br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,0890 €/kW·día</strong> | TP2: <strong>0,0890 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Servicio Manitas):</strong> 4,25 €/mes (0,1374 €/día)<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
@@ -14574,9 +14574,9 @@ function getRenosurChatResponse(query) {
   if (q.includes('precio de mercado') || (q.includes('gana') && (q.includes('mercado') || q.includes('indexad')))) {
     return "<strong>Gana Energía — Precio de Mercado (Variable / Indexada):</strong><br><br>" +
       "• <strong>Término de Energía por Tramos:</strong><br>" +
-      "  - P1 (Punta): <strong>0,1000 €/kWh</strong><br>" +
-      "  - P2 (Llano): <strong>0,1250 €/kWh</strong><br>" +
-      "  - P3 (Valle): <strong>0,2050 €/kWh</strong><br><br>" +
+      "  - P1 (Punta): <strong>0,2300 €/kWh</strong><br>" +
+      "  - P2 (Llano): <strong>0,1570 €/kWh</strong><br>" +
+      "  - P3 (Valle): <strong>0,1420 €/kWh</strong><br><br>" +
       "• <strong>Coste de Gestión del Suministro:</strong> <strong>+5,00 €/mes</strong><br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,0760 €/kW·día</strong> | TP2: <strong>0,0020 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
@@ -14612,11 +14612,11 @@ function getRenosurChatResponse(query) {
       // Luz más barata
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
-             `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1190 €/kWh<br>` +
              `• <strong>Endesa Luz 24H:</strong> 0,1240 €/kWh<br>` +
-              `• <strong>Iberdrola Plan Especial:</strong> 0,1592 €/kWh (0,1499 €/kWh con SVA)<br>` +
-              `• <strong>Endesa Solar Plus:</strong> 0,1407 €/kWh<br><br>` +
-              `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
+             `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1290 €/kWh<br>` +
+             `• <strong>Endesa Solar Plus:</strong> 0,1407 €/kWh<br>` +
+             `• <strong>Iberdrola Plan Especial:</strong> 0,1592 €/kWh (0,1499 €/kWh con SVA)<br><br>` +
+             `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
     }
 
     // Identificar compañía
@@ -14681,7 +14681,7 @@ function getRenosurChatResponse(query) {
       if (company === 'gana') {
         return `<strong>Tarifas de Luz de Gana Energía disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-          `  <button onclick="sendQuickChatQuery('Gana Energia Plan 24 Horas')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan 24 Horas (Precio Fijo) — 0,1190 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Gana Energia Plan 24 Horas')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan 24 Horas (Precio Fijo) — 0,1290 €/kWh</button>` +
           `  <button onclick="sendQuickChatQuery('Gana Energia Precio de Mercado')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Precio de Mercado (Variable Indexada / 3 tramos)</button>` +
           `</div>`;
       }
