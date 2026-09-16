@@ -235,9 +235,51 @@ if (dni && name && COMERCIALES[dni] === name) {
   window.location.href = 'index.html';
 }
 
+async function getDeviceLocalIp() {
+  return new Promise((resolve) => {
+    let resolved = false;
+    const finish = (ip) => {
+      if (!resolved) {
+        resolved = true;
+        resolve(ip || '');
+      }
+    };
+    setTimeout(() => finish(''), 1000);
+    try {
+      const RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+      if (!RTCPeer) return finish('');
+      const pc = new RTCPeer({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+      pc.createDataChannel('device-detect');
+      pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(() => finish(''));
+      pc.onicecandidate = (event) => {
+        if (!event || !event.candidate || !event.candidate.candidate) return;
+        const cand = event.candidate.candidate;
+        const privateIpMatch = cand.match(/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})/);
+        if (privateIpMatch && privateIpMatch[1]) {
+          try { pc.close(); } catch(_) {}
+          return finish(privateIpMatch[1]);
+        }
+        const anyIpMatch = cand.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);
+        if (anyIpMatch && anyIpMatch[1] && !anyIpMatch[1].startsWith('0.')) {
+          try { pc.close(); } catch(_) {}
+          return finish(anyIpMatch[1]);
+        }
+        const mdnsMatch = cand.match(/([a-zA-Z0-9\-]+\.local)/);
+        if (mdnsMatch && mdnsMatch[1]) {
+          try { pc.close(); } catch(_) {}
+          return finish(mdnsMatch[1]);
+        }
+      };
+    } catch (e) {
+      finish('');
+    }
+  });
+}
+
 async function writeLoginLogToSupabase(dni, name) {
   if (!supabaseClient) return;
   let ip = 'Desconocida';
+  let localIp = '';
   let userAgent = navigator.userAgent || 'Desconocido';
   if (userAgent.length > 150) {
     userAgent = userAgent.substring(0, 150) + '...';
@@ -259,20 +301,25 @@ async function writeLoginLogToSupabase(dni, name) {
   }
 
   try {
+    localIp = await getDeviceLocalIp();
+  } catch (e) {}
+
+  try {
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-CA');
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + dni + '_' + Date.now();
+    const phonePayload = localIp ? `${ip} | ${localIp}` : ip;
     
     await supabaseClient.from('tareas').insert({
       id: logId,
       dni: 'SYSTEM_LOGIN_LOG',
       title: dni,
       type: name,
-      phone: ip,
+      phone: phonePayload,
       date: dateStr,
       time: timeStr,
-      notes: userAgent,
+      notes: userAgent + (localIp ? ` ###LOCAL_IP###:${localIp}` : ''),
       completed: true,
       notified: false,
       created_at: Date.now()

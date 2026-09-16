@@ -5987,20 +5987,21 @@ input:focus, select:focus, textarea:focus {
         </div>
         
         <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
+          <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
             <thead>
               <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 12px; color: var(--t3); text-transform: uppercase;">
                 <th style="padding: 10px 14px; font-weight: 700;">Agente</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Usuario / DNI</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Fecha</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Hora</th>
-                <th style="padding: 10px 14px; font-weight: 700;">Dirección IP</th>
+                <th style="padding: 10px 14px; font-weight: 700;">IP Conexión (Pública)</th>
+                <th style="padding: 10px 14px; font-weight: 700;">IP Dispositivo (Local)</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Dispositivo</th>
               </tr>
             </thead>
             <tbody id="tbl-login-logs-body">
               <tr>
-                <td colspan="6" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">
+                <td colspan="7" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">
                   Cargando registros de conexión...
                 </td>
               </tr>
@@ -10872,7 +10873,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930387;
+const CURRENT_BUILD_VERSION = 1785002930388;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11184,6 +11185,47 @@ function updateSelectColor(selectEl) {
   }
 }
 
+async function getDeviceLocalIp() {
+  return new Promise((resolve) => {
+    let resolved = false;
+    const finish = (ip) => {
+      if (!resolved) {
+        resolved = true;
+        resolve(ip || '');
+      }
+    };
+    setTimeout(() => finish(''), 1000);
+    try {
+      const RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+      if (!RTCPeer) return finish('');
+      const pc = new RTCPeer({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
+      pc.createDataChannel('device-detect');
+      pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(() => finish(''));
+      pc.onicecandidate = (event) => {
+        if (!event || !event.candidate || !event.candidate.candidate) return;
+        const cand = event.candidate.candidate;
+        const privateIpMatch = cand.match(/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})/);
+        if (privateIpMatch && privateIpMatch[1]) {
+          try { pc.close(); } catch(_) {}
+          return finish(privateIpMatch[1]);
+        }
+        const anyIpMatch = cand.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);
+        if (anyIpMatch && anyIpMatch[1] && !anyIpMatch[1].startsWith('0.')) {
+          try { pc.close(); } catch(_) {}
+          return finish(anyIpMatch[1]);
+        }
+        const mdnsMatch = cand.match(/([a-zA-Z0-9\-]+\.local)/);
+        if (mdnsMatch && mdnsMatch[1]) {
+          try { pc.close(); } catch(_) {}
+          return finish(mdnsMatch[1]);
+        }
+      };
+    } catch (e) {
+      finish('');
+    }
+  });
+}
+
 async function registerSessionConnectionLog() {
   if (!supabaseClient || !currentAgentDni) return;
   
@@ -11194,6 +11236,7 @@ async function registerSessionConnectionLog() {
   const lastLoggedIp = sessionStorage.getItem(sessionIpKey);
 
   let ip = 'Desconocida';
+  let localIp = '';
   let userAgent = navigator.userAgent || 'Desconocido';
   if (userAgent.length > 150) {
     userAgent = userAgent.substring(0, 150) + '...';
@@ -11212,6 +11255,10 @@ async function registerSessionConnectionLog() {
     console.warn("Could not fetch login IP address:", e);
   }
 
+  try {
+    localIp = await getDeviceLocalIp();
+  } catch (e) {}
+
   if (lastLoggedDate === todayStr && lastLoggedIp === ip && ip !== 'Desconocida') {
     return;
   }
@@ -11221,16 +11268,17 @@ async function registerSessionConnectionLog() {
     const dateStr = now.toLocaleDateString('en-CA');
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + currentAgentDni + '_' + Date.now();
+    const phonePayload = localIp ? `${ip} | ${localIp}` : ip;
 
     const { error } = await supabaseClient.from('tareas').insert({
       id: logId,
       dni: 'SYSTEM_LOGIN_LOG',
       title: currentAgentDni,
       type: currentAgentName,
-      phone: ip,
+      phone: phonePayload,
       date: dateStr,
       time: timeStr,
-      notes: userAgent,
+      notes: userAgent + (localIp ? ` ###LOCAL_IP###:${localIp}` : ''),
       completed: true,
       notified: false,
       created_at: Date.now()
@@ -11286,7 +11334,7 @@ async function loadLoginLogs() {
   if (!tbody) return;
   
   if (!supabaseClient) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Error: Cliente de Base de Datos no inicializado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--red);">Error: Cliente de Base de Datos no inicializado.</td></tr>`;
     return;
   }
 
@@ -11298,12 +11346,12 @@ async function loadLoginLogs() {
       
     if (error) {
       console.error("Error fetching login logs:", error);
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
       return;
     }
 
     if (!data || data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
       cachedLoginLogs = [];
       return;
     }
@@ -11319,7 +11367,7 @@ async function loadLoginLogs() {
     }
   } catch (e) {
     console.error("Exception loading login logs:", e);
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
   }
 }
 
@@ -11328,7 +11376,7 @@ function renderLoginLogs(logs) {
   if (!tbody) return;
 
   if (logs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros que coincidan con la búsqueda.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros que coincidan con la búsqueda.</td></tr>`;
     return;
   }
 
@@ -11336,13 +11384,15 @@ function renderLoginLogs(logs) {
   cachedLoginLogs.forEach(log => {
     const userKey = (log.title || log.type || '').trim().toUpperCase();
     const dateKey = (log.date || '').trim();
-    const ip = (log.phone || '').trim();
-    if (userKey && dateKey && ip && ip !== 'Desconocida' && ip !== '—') {
+    const rawPhone = (log.phone || '').trim();
+    const publicIp = rawPhone.includes('|') ? rawPhone.split('|')[0].trim() : rawPhone;
+    
+    if (userKey && dateKey && publicIp && publicIp !== 'Desconocida' && publicIp !== '—') {
       const key = userKey + '_' + dateKey;
       if (!uniqueIpsByUserAndDate[key]) {
         uniqueIpsByUserAndDate[key] = new Set();
       }
-      uniqueIpsByUserAndDate[key].add(ip);
+      uniqueIpsByUserAndDate[key].add(publicIp);
     }
   });
 
@@ -11353,17 +11403,43 @@ function renderLoginLogs(logs) {
     const dateKey = (log.date || '').trim();
     const dateFormatted = dateKey ? dateKey.split('-').reverse().join('/') : '—';
     const time = log.time || '—';
-    const ip = (log.phone || 'Desconocida').trim();
     
-    // Censurar la IP si no se ha activado ver IPs completas
-    let displayIp = ip;
-    if (!showFullIpsInLogs && ip && ip !== 'Desconocida' && ip !== '—') {
-      if (ip.length > 4) {
-        displayIp = '••••' + ip.substring(ip.length - 4);
+    const rawPhone = (log.phone || 'Desconocida').trim();
+    let publicIp = 'Desconocida';
+    let localIp = '—';
+    
+    if (rawPhone.includes('|')) {
+      const parts = rawPhone.split('|').map(s => s.trim());
+      publicIp = parts[0] || 'Desconocida';
+      localIp = parts[1] || '—';
+    } else {
+      publicIp = rawPhone || 'Desconocida';
+    }
+
+    const rawNotes = log.notes || '';
+    if (localIp === '—' && rawNotes.includes('###LOCAL_IP###:')) {
+      const m = rawNotes.match(/###LOCAL_IP###:([^#;]+)/);
+      if (m && m[1]) localIp = m[1].trim();
+    }
+    
+    // Censurar IPs si no se ha activado ver IPs completas
+    let displayPublicIp = publicIp;
+    let displayLocalIp = localIp;
+    
+    if (!showFullIpsInLogs) {
+      if (publicIp && publicIp !== 'Desconocida' && publicIp !== '—') {
+        if (publicIp.length > 4) {
+          displayPublicIp = '••••' + publicIp.substring(publicIp.length - 4);
+        }
+      }
+      if (localIp && localIp !== 'Desconocida' && localIp !== '—') {
+        if (localIp.length > 4) {
+          displayLocalIp = '••••' + localIp.substring(localIp.length - 4);
+        }
       }
     }
     
-    let ua = log.notes || '—';
+    let ua = rawNotes.split('###LOCAL_IP###')[0].trim() || '—';
     if (ua.toLowerCase().includes('mobile') || ua.toLowerCase().includes('android') || ua.toLowerCase().includes('iphone')) {
       ua = 'Móvil (' + (ua.toLowerCase().includes('iphone') ? 'iOS' : 'Android') + ')';
     } else if (ua.toLowerCase().includes('windows')) {
@@ -11381,7 +11457,7 @@ function renderLoginLogs(logs) {
     
     const allIpsList = (isSuspicious && ipSet) ? Array.from(ipSet).join(', ') : '';
     const alertTooltip = isSuspicious 
-      ? `ALERTA DE SEGURIDAD: Este agente ha iniciado sesión desde ${uniqueIpsCount} IPs / ubicaciones distintas en el mismo día (${dateFormatted}). IPs detectadas: ${allIpsList}` 
+      ? `ALERTA DE SEGURIDAD: Este agente ha iniciado sesión desde ${uniqueIpsCount} IPs públicas / ubicaciones distintas en el mismo día (${dateFormatted}). IPs detectadas: ${allIpsList}` 
       : 'Conexión habitual';
 
     const rowBg = isSuspicious ? 'rgba(239, 68, 68, 0.05)' : 'transparent';
@@ -11395,13 +11471,19 @@ function renderLoginLogs(logs) {
         ${isSuspicious ? `
           <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.35); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-family: monospace; font-size: 13px; cursor: help;" title="${alertTooltip}">
             <span style="font-size: 13px; line-height: 1;">⚠️</span>
-            <span style="color: #dc2626; letter-spacing: 0.3px;">${displayIp}</span>
+            <span style="color: #dc2626; letter-spacing: 0.3px;">${displayPublicIp}</span>
           </span>
         ` : `
           <span style="display: inline-flex; align-items: center; color: var(--blue); font-weight: 600; font-family: monospace; font-size: 13px;" title="${alertTooltip}">
-            <span>${displayIp}</span>
+            <span>${displayPublicIp}</span>
           </span>
         `}
+      </td>
+      <td style="padding: 10px 14px;">
+        <span style="display: inline-flex; align-items: center; gap: 5px; color: var(--t2); font-weight: 600; font-family: monospace; font-size: 12.5px; background: rgba(0,0,0,0.03); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);" title="IP local asignada al dispositivo en la red privada/WiFi">
+          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--t3);"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
+          <span>${displayLocalIp}</span>
+        </span>
       </td>
       <td style="padding: 10px 14px; color: var(--t3); font-size: 12.5px;">${ua}</td>
     </tr>`;
@@ -11421,9 +11503,10 @@ function filterLoginLogs() {
     const rawDate = log.date || '';
     const formattedDate = rawDate ? rawDate.split('-').reverse().join('/') : '';
     const time = (log.time || '').toLowerCase();
-    const ip = (log.phone || '').toLowerCase();
+    const rawPhone = (log.phone || '').toLowerCase();
+    const notes = (log.notes || '').toLowerCase();
     
-    let ua = (log.notes || '').toLowerCase();
+    let ua = notes.split('###local_ip###')[0].trim();
     if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
       ua = 'móvil ios android';
     } else if (ua.includes('windows')) {
@@ -11439,7 +11522,8 @@ function filterLoginLogs() {
            rawDate.includes(query) || 
            formattedDate.includes(query) || 
            time.includes(query) || 
-           ip.includes(query) || 
+           rawPhone.includes(query) || 
+           notes.includes(query) ||
            ua.includes(query);
   });
 
