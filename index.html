@@ -10886,7 +10886,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930394;
+const CURRENT_BUILD_VERSION = 1785002930396;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -10895,13 +10895,24 @@ async function checkAppVersion() {
     const res = await fetch('version.json?t=' + Date.now());
     if (res.ok) {
       const data = await res.json();
-      if (data && data.version && data.version !== CURRENT_BUILD_VERSION) {
-        const lastReload = parseInt(sessionStorage.getItem('last_version_reload') || '0', 10);
-        if (Date.now() - lastReload > 30000) {
-          sessionStorage.setItem('last_version_reload', Date.now().toString());
-          console.log("New version detected:", data.version, "reloading...");
-          window.location.reload();
+      const serverVersion = Number(data && data.version);
+      if (serverVersion && serverVersion > CURRENT_BUILD_VERSION) {
+        const attemptedVer = sessionStorage.getItem('attempted_reload_ver');
+        if (attemptedVer === String(serverVersion)) {
+          // Already attempted reload once for this version; avoid infinite reload loop
+          return;
         }
+
+        // Don't interrupt if user is actively typing in a form or input
+        const activeEl = document.activeElement;
+        const isUserTyping = activeEl && (['INPUT', 'TEXTAREA', 'SELECT'].includes(activeEl.tagName) || activeEl.isContentEditable);
+        if (isUserTyping) {
+          return;
+        }
+
+        sessionStorage.setItem('attempted_reload_ver', String(serverVersion));
+        console.log("New version detected:", serverVersion, "Reloading cleanly...");
+        window.location.reload();
       }
     }
   } catch (e) {}
