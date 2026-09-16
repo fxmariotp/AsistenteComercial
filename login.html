@@ -276,41 +276,102 @@ async function getDeviceLocalIp() {
   });
 }
 
-async function writeLoginLogToSupabase(dni, name) {
-  if (!supabaseClient) return;
-  let ip = 'Desconocida';
+async function detectClientDeviceInfo() {
+  let publicIp = 'Desconocida';
   let localIp = '';
-  let userAgent = navigator.userAgent || 'Desconocido';
-  if (userAgent.length > 150) {
-    userAgent = userAgent.substring(0, 150) + '...';
-  }
+  let hostname = '';
+  let detectedOs = '';
   
+  // 1. Intentar conectar con el agente local de Windows en http://127.0.0.1:9876/ (timeout de 350ms)
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 1500);
+    const timeoutId = setTimeout(() => controller.abort(), 350);
+    const agentRes = await fetch('http://127.0.0.1:9876/info', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (agentRes.ok) {
+      const agentData = await agentRes.json();
+      if (agentData) {
+        if (agentData.hostname) hostname = agentData.hostname;
+        if (agentData.localIp && agentData.localIp !== 'Desconocida') localIp = agentData.localIp;
+        if (agentData.os) detectedOs = agentData.os;
+      }
+    }
+  } catch (_) {}
+
+  // 2. Fallback de IP local vía WebRTC si no la aportó el agente
+  if (!localIp) {
+    try {
+      localIp = await getDeviceLocalIp();
+    } catch (_) {}
+  }
+
+  // 3. Fallback de Hostname/Puesto desde LocalStorage si estuviera configurado
+  if (!hostname) {
+    try {
+      hostname = localStorage.getItem('renosur_device_station_name') || '';
+    } catch (_) {}
+  }
+
+  // 4. Obtener IP pública real consultando desde el navegador del cliente
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1800);
     const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
     clearTimeout(timeoutId);
     if (ipRes.ok) {
       const ipData = await ipRes.json();
-      if (ipData && ipData.ip) {
-        ip = ipData.ip;
-      }
+      if (ipData && ipData.ip) publicIp = ipData.ip;
     }
   } catch (e) {
-    console.warn("Could not fetch login IP address:", e);
+    try {
+      const controller2 = new AbortController();
+      const timeoutId2 = setTimeout(() => controller2.abort(), 1800);
+      const ipRes2 = await fetch('https://api64.ipify.org?format=json', { signal: controller2.signal });
+      clearTimeout(timeoutId2);
+      if (ipRes2.ok) {
+        const ipData2 = await ipRes2.json();
+        if (ipData2 && ipData2.ip) publicIp = ipData2.ip;
+      }
+    } catch (_) {}
   }
 
-  try {
-    localIp = await getDeviceLocalIp();
-  } catch (e) {}
+  let userAgent = navigator.userAgent || 'Desconocido';
+  if (userAgent.length > 150) {
+    userAgent = userAgent.substring(0, 150) + '...';
+  }
 
+  const screenRes = (window.screen && window.screen.width && window.screen.height) 
+    ? `${window.screen.width}x${window.screen.height}` 
+    : '';
+
+  return {
+    publicIp: publicIp || 'Desconocida',
+    localIp: localIp || '',
+    hostname: hostname || '',
+    detectedOs: detectedOs || '',
+    userAgent: userAgent,
+    screenRes: screenRes
+  };
+}
+
+async function writeLoginLogToSupabase(dni, name) {
+  if (!supabaseClient) return;
+  
+  const clientInfo = await detectClientDeviceInfo();
+  
   try {
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-CA');
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + dni + '_' + Date.now();
-    const phonePayload = localIp ? `${ip} | ${localIp}` : ip;
+    const phonePayload = clientInfo.localIp ? `${clientInfo.publicIp} | ${clientInfo.localIp}` : clientInfo.publicIp;
     
+    let notesStr = clientInfo.userAgent;
+    if (clientInfo.localIp) notesStr += ` ###LOCAL_IP###:${clientInfo.localIp}`;
+    if (clientInfo.hostname) notesStr += ` ###HOSTNAME###:${clientInfo.hostname}`;
+    if (clientInfo.detectedOs) notesStr += ` ###OS###:${clientInfo.detectedOs}`;
+    if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
+
     await supabaseClient.from('tareas').insert({
       id: logId,
       dni: 'SYSTEM_LOGIN_LOG',
@@ -319,7 +380,7 @@ async function writeLoginLogToSupabase(dni, name) {
       phone: phonePayload,
       date: dateStr,
       time: timeStr,
-      notes: userAgent + (localIp ? ` ###LOCAL_IP###:${localIp}` : ''),
+      notes: notesStr,
       completed: true,
       notified: false,
       created_at: Date.now()

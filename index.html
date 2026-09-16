@@ -5972,9 +5972,13 @@ input:focus, select:focus, textarea:focus {
           </div>
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <div style="position: relative; display: inline-block;">
-              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 240px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
+              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, Hostname, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 250px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
+            <a href="renosur_agent.ps1" download="renosur_agent.ps1" style="background: rgba(53, 127, 191, 0.08); color: var(--blue); border: 1.5px solid rgba(53, 127, 191, 0.25); padding: 8px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; text-decoration: none; transition: all 0.2s;" title="Descargar conector local para detectar automáticamente el Hostname e IP privada en PCs Windows de la oficina">
+              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Conector Windows</span>
+            </a>
             <button id="btn-toggle-ips-visibility" onclick="toggleIpVisibility()" style="background: var(--surface); color: var(--text); border: 1.5px solid var(--border); padding: 8px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;" title="Mostrar u ocultar las direcciones IP completas">
               <svg id="icon-eye-ips" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               <span id="text-toggle-ips">Mostrar IPs completas</span>
@@ -5987,7 +5991,7 @@ input:focus, select:focus, textarea:focus {
         </div>
         
         <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 800px;">
+          <table style="width: 100%; border-collapse: collapse; min-width: 900px;">
             <thead>
               <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 12px; color: var(--t3); text-transform: uppercase;">
                 <th style="padding: 10px 14px; font-weight: 700;">Agente</th>
@@ -5996,12 +6000,13 @@ input:focus, select:focus, textarea:focus {
                 <th style="padding: 10px 14px; font-weight: 700;">Hora</th>
                 <th style="padding: 10px 14px; font-weight: 700;">IP Conexión (Pública)</th>
                 <th style="padding: 10px 14px; font-weight: 700;">IP Dispositivo (Local)</th>
-                <th style="padding: 10px 14px; font-weight: 700;">Dispositivo</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Equipo / Hostname</th>
+                <th style="padding: 10px 14px; font-weight: 700;">Dispositivo / SO</th>
               </tr>
             </thead>
             <tbody id="tbl-login-logs-body">
               <tr>
-                <td colspan="7" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">
+                <td colspan="8" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">
                   Cargando registros de conexión...
                 </td>
               </tr>
@@ -10873,7 +10878,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930388;
+const CURRENT_BUILD_VERSION = 1785002930389;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11204,7 +11209,7 @@ async function getDeviceLocalIp() {
       pc.onicecandidate = (event) => {
         if (!event || !event.candidate || !event.candidate.candidate) return;
         const cand = event.candidate.candidate;
-        const privateIpMatch = cand.match(/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})/);
+        const privateIpMatch = cand.match(/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})/);
         if (privateIpMatch && privateIpMatch[1]) {
           try { pc.close(); } catch(_) {}
           return finish(privateIpMatch[1]);
@@ -11226,6 +11231,84 @@ async function getDeviceLocalIp() {
   });
 }
 
+async function detectClientDeviceInfo() {
+  let publicIp = 'Desconocida';
+  let localIp = '';
+  let hostname = '';
+  let detectedOs = '';
+  
+  // 1. Intentar conectar con el agente local de Windows en http://127.0.0.1:9876/ (timeout de 350ms)
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 350);
+    const agentRes = await fetch('http://127.0.0.1:9876/info', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (agentRes.ok) {
+      const agentData = await agentRes.json();
+      if (agentData) {
+        if (agentData.hostname) hostname = agentData.hostname;
+        if (agentData.localIp && agentData.localIp !== 'Desconocida') localIp = agentData.localIp;
+        if (agentData.os) detectedOs = agentData.os;
+      }
+    }
+  } catch (_) {}
+
+  // 2. Fallback de IP local vía WebRTC si no la aportó el agente
+  if (!localIp) {
+    try {
+      localIp = await getDeviceLocalIp();
+    } catch (_) {}
+  }
+
+  // 3. Fallback de Hostname/Puesto desde LocalStorage si estuviera configurado
+  if (!hostname) {
+    try {
+      hostname = localStorage.getItem('renosur_device_station_name') || '';
+    } catch (_) {}
+  }
+
+  // 4. Obtener IP pública real consultando desde el navegador del cliente
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 1800);
+    const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (ipRes.ok) {
+      const ipData = await ipRes.json();
+      if (ipData && ipData.ip) publicIp = ipData.ip;
+    }
+  } catch (e) {
+    try {
+      const controller2 = new AbortController();
+      const timeoutId2 = setTimeout(() => controller2.abort(), 1800);
+      const ipRes2 = await fetch('https://api64.ipify.org?format=json', { signal: controller2.signal });
+      clearTimeout(timeoutId2);
+      if (ipRes2.ok) {
+        const ipData2 = await ipRes2.json();
+        if (ipData2 && ipData2.ip) publicIp = ipData2.ip;
+      }
+    } catch (_) {}
+  }
+
+  let userAgent = navigator.userAgent || 'Desconocido';
+  if (userAgent.length > 150) {
+    userAgent = userAgent.substring(0, 150) + '...';
+  }
+
+  const screenRes = (window.screen && window.screen.width && window.screen.height) 
+    ? `${window.screen.width}x${window.screen.height}` 
+    : '';
+
+  return {
+    publicIp: publicIp || 'Desconocida',
+    localIp: localIp || '',
+    hostname: hostname || '',
+    detectedOs: detectedOs || '',
+    userAgent: userAgent,
+    screenRes: screenRes
+  };
+}
+
 async function registerSessionConnectionLog() {
   if (!supabaseClient || !currentAgentDni) return;
   
@@ -11235,31 +11318,9 @@ async function registerSessionConnectionLog() {
   const lastLoggedDate = sessionStorage.getItem(sessionKey);
   const lastLoggedIp = sessionStorage.getItem(sessionIpKey);
 
-  let ip = 'Desconocida';
-  let localIp = '';
-  let userAgent = navigator.userAgent || 'Desconocido';
-  if (userAgent.length > 150) {
-    userAgent = userAgent.substring(0, 150) + '...';
-  }
+  const clientInfo = await detectClientDeviceInfo();
 
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 1500);
-    const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (ipRes.ok) {
-      const ipData = await ipRes.json();
-      if (ipData && ipData.ip) ip = ipData.ip;
-    }
-  } catch (e) {
-    console.warn("Could not fetch login IP address:", e);
-  }
-
-  try {
-    localIp = await getDeviceLocalIp();
-  } catch (e) {}
-
-  if (lastLoggedDate === todayStr && lastLoggedIp === ip && ip !== 'Desconocida') {
+  if (lastLoggedDate === todayStr && lastLoggedIp === clientInfo.publicIp && clientInfo.publicIp !== 'Desconocida') {
     return;
   }
 
@@ -11268,7 +11329,13 @@ async function registerSessionConnectionLog() {
     const dateStr = now.toLocaleDateString('en-CA');
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + currentAgentDni + '_' + Date.now();
-    const phonePayload = localIp ? `${ip} | ${localIp}` : ip;
+    const phonePayload = clientInfo.localIp ? `${clientInfo.publicIp} | ${clientInfo.localIp}` : clientInfo.publicIp;
+
+    let notesStr = clientInfo.userAgent;
+    if (clientInfo.localIp) notesStr += ` ###LOCAL_IP###:${clientInfo.localIp}`;
+    if (clientInfo.hostname) notesStr += ` ###HOSTNAME###:${clientInfo.hostname}`;
+    if (clientInfo.detectedOs) notesStr += ` ###OS###:${clientInfo.detectedOs}`;
+    if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
 
     const { error } = await supabaseClient.from('tareas').insert({
       id: logId,
@@ -11278,14 +11345,14 @@ async function registerSessionConnectionLog() {
       phone: phonePayload,
       date: dateStr,
       time: timeStr,
-      notes: userAgent + (localIp ? ` ###LOCAL_IP###:${localIp}` : ''),
+      notes: notesStr,
       completed: true,
       notified: false,
       created_at: Date.now()
     });
     if (!error) {
       sessionStorage.setItem(sessionKey, todayStr);
-      sessionStorage.setItem(sessionIpKey, ip);
+      sessionStorage.setItem(sessionIpKey, clientInfo.publicIp);
     }
   } catch (e) {
     console.error("Error writing connection log to Supabase:", e);
@@ -11334,7 +11401,7 @@ async function loadLoginLogs() {
   if (!tbody) return;
   
   if (!supabaseClient) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--red);">Error: Cliente de Base de Datos no inicializado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--red);">Error: Cliente de Base de Datos no inicializado.</td></tr>`;
     return;
   }
 
@@ -11346,12 +11413,12 @@ async function loadLoginLogs() {
       
     if (error) {
       console.error("Error fetching login logs:", error);
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
       return;
     }
 
     if (!data || data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
       cachedLoginLogs = [];
       return;
     }
@@ -11367,7 +11434,7 @@ async function loadLoginLogs() {
     }
   } catch (e) {
     console.error("Exception loading login logs:", e);
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
   }
 }
 
@@ -11376,7 +11443,7 @@ function renderLoginLogs(logs) {
   if (!tbody) return;
 
   if (logs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="7" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros que coincidan con la búsqueda.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros que coincidan con la búsqueda.</td></tr>`;
     return;
   }
 
@@ -11421,6 +11488,24 @@ function renderLoginLogs(logs) {
       const m = rawNotes.match(/###LOCAL_IP###:([^#;]+)/);
       if (m && m[1]) localIp = m[1].trim();
     }
+
+    let hostname = '—';
+    if (rawNotes.includes('###HOSTNAME###:')) {
+      const m = rawNotes.match(/###HOSTNAME###:([^#;]+)/);
+      if (m && m[1]) hostname = m[1].trim();
+    }
+
+    let detectedOs = '';
+    if (rawNotes.includes('###OS###:')) {
+      const m = rawNotes.match(/###OS###:([^#;]+)/);
+      if (m && m[1]) detectedOs = m[1].trim();
+    }
+
+    let screenRes = '';
+    if (rawNotes.includes('###SCREEN###:')) {
+      const m = rawNotes.match(/###SCREEN###:([^#;]+)/);
+      if (m && m[1]) screenRes = m[1].trim();
+    }
     
     // Censurar IPs si no se ha activado ver IPs completas
     let displayPublicIp = publicIp;
@@ -11439,8 +11524,10 @@ function renderLoginLogs(logs) {
       }
     }
     
-    let ua = rawNotes.split('###LOCAL_IP###')[0].trim() || '—';
-    if (ua.toLowerCase().includes('mobile') || ua.toLowerCase().includes('android') || ua.toLowerCase().includes('iphone')) {
+    let ua = rawNotes.split('###')[0].trim() || '—';
+    if (detectedOs) {
+      ua = detectedOs;
+    } else if (ua.toLowerCase().includes('mobile') || ua.toLowerCase().includes('android') || ua.toLowerCase().includes('iphone')) {
       ua = 'Móvil (' + (ua.toLowerCase().includes('iphone') ? 'iOS' : 'Android') + ')';
     } else if (ua.toLowerCase().includes('windows')) {
       ua = 'Ordenador (Windows)';
@@ -11448,6 +11535,10 @@ function renderLoginLogs(logs) {
       ua = 'Ordenador (macOS)';
     } else {
       ua = 'Ordenador / Otro';
+    }
+
+    if (screenRes) {
+      ua += ` · ${screenRes}`;
     }
 
     const key = userKey + '_' + dateKey;
@@ -11485,6 +11576,16 @@ function renderLoginLogs(logs) {
           <span>${displayLocalIp}</span>
         </span>
       </td>
+      <td style="padding: 10px 14px;">
+        ${hostname !== '—' ? `
+          <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(53, 127, 191, 0.08); color: var(--blue); border: 1px solid rgba(53, 127, 191, 0.25); padding: 3px 8px; border-radius: 6px; font-weight: 700; font-family: monospace; font-size: 12.5px;" title="Nombre de equipo o puesto cliente (Hostname Windows)">
+            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+            <span>${hostname}</span>
+          </span>
+        ` : `
+          <span style="color: var(--t3); font-size: 13px;">—</span>
+        `}
+      </td>
       <td style="padding: 10px 14px; color: var(--t3); font-size: 12.5px;">${ua}</td>
     </tr>`;
   }).join('');
@@ -11506,7 +11607,7 @@ function filterLoginLogs() {
     const rawPhone = (log.phone || '').toLowerCase();
     const notes = (log.notes || '').toLowerCase();
     
-    let ua = notes.split('###local_ip###')[0].trim();
+    let ua = notes.split('###')[0].trim();
     if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
       ua = 'móvil ios android';
     } else if (ua.includes('windows')) {
