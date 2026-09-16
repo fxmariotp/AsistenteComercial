@@ -8432,13 +8432,20 @@ let showTargetOnly = false;
 // Helpers for string formatting
 function formatName(name) {
   if (!name) return "";
-  const parts = name.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase());
-  return parts.slice(0, 3).join(" ");
+  const lowercaseWords = new Set(['de', 'del', 'la', 'las', 'los', 'y', 'e', 'en']);
+  const parts = name.trim().split(/\s+/).filter(Boolean);
+  return parts.map((w, index) => {
+    const lower = w.toLowerCase();
+    if (index > 0 && lowercaseWords.has(lower)) {
+      return lower;
+    }
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  }).join(" ");
 }
 
 function getInitials(name) {
   if (!name) return "??";
-  const parts = name.trim().split(/\s+/);
+  const parts = name.trim().split(/\s+/).filter(Boolean);
   if (parts.length >= 2) {
     return (parts[0].charAt(0) + parts[1].charAt(0)).toUpperCase();
   }
@@ -8976,7 +8983,7 @@ async function copyShiftReport() {
   const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
   
   const reportDiv = document.createElement('div');
-  reportDiv.style.width = '480px';
+  reportDiv.style.width = '520px';
   reportDiv.style.padding = '24px 20px';
   reportDiv.style.borderRadius = '20px';
   reportDiv.style.background = '#ffffff';
@@ -9021,7 +9028,7 @@ async function copyShiftReport() {
           </span>
           <div style="display: flex; flex-direction: column; min-width: 0;">
             <div style="display: flex; align-items: center; gap: 6px;">
-              <span style="font-size: 13.5px; font-weight: 700; color: ${cumple ? '#064e3b' : '#0f172a'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 200px;">${shortName}</span>
+              <span style="font-size: 13.5px; font-weight: 700; color: ${cumple ? '#064e3b' : '#0f172a'}; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 250px;">${shortName}</span>
               ${cumple ? '<span style="font-size: 9.5px; font-weight: 700; background: #dcfce7; color: #15803d; border: 1px solid #86efac; padding: 1.5px 6px; border-radius: 6px; flex-shrink: 0;">✓ Cumplido</span>' : ''}
             </div>
             <span style="font-size: 10.5px; color: #64748b; font-weight: 500; margin-top: 1px;">Objetivo diario: <b>${obj.toFixed(1)} pts</b> (${pct}%)</span>
@@ -11186,7 +11193,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930400;
+const CURRENT_BUILD_VERSION = 1785002930401;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
