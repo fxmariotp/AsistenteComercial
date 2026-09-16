@@ -5966,11 +5966,15 @@ input:focus, select:focus, textarea:focus {
               Historial de accesos de los agentes a la plataforma con fecha, hora y dirección IP de conexión.
             </p>
           </div>
-          <div style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+          <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <div style="position: relative; display: inline-block;">
-              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 260px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
+              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 240px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
+            <button id="btn-toggle-ips-visibility" onclick="toggleIpVisibility()" style="background: var(--surface); color: var(--text); border: 1.5px solid var(--border); padding: 8px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;" title="Mostrar u ocultar las direcciones IP completas">
+              <svg id="icon-eye-ips" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <span id="text-toggle-ips">Mostrar IPs completas</span>
+            </button>
             <button onclick="loadLoginLogs()" style="background: var(--border); color: var(--text); border: 1.5px solid var(--border); padding: 8px 16px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/></svg>
               Actualizar Registro
@@ -10864,7 +10868,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930385;
+const CURRENT_BUILD_VERSION = 1785002930386;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11230,6 +11234,41 @@ async function registerSessionConnectionLog() {
 }
 
 let cachedLoginLogs = [];
+let showFullIpsInLogs = false;
+
+function toggleIpVisibility() {
+  showFullIpsInLogs = !showFullIpsInLogs;
+  const btnText = document.getElementById('text-toggle-ips');
+  const btnIcon = document.getElementById('icon-eye-ips');
+  const btn = document.getElementById('btn-toggle-ips-visibility');
+  
+  if (btnText && btnIcon) {
+    if (showFullIpsInLogs) {
+      btnText.textContent = 'Ocultar IPs';
+      btnIcon.innerHTML = '<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>';
+      if (btn) {
+        btn.style.background = 'rgba(217, 119, 6, 0.1)';
+        btn.style.borderColor = 'rgba(217, 119, 6, 0.3)';
+        btn.style.color = '#d97706';
+      }
+    } else {
+      btnText.textContent = 'Mostrar IPs completas';
+      btnIcon.innerHTML = '<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>';
+      if (btn) {
+        btn.style.background = 'var(--surface)';
+        btn.style.borderColor = 'var(--border)';
+        btn.style.color = 'var(--text)';
+      }
+    }
+  }
+  
+  const searchInput = document.getElementById('input-search-login-logs');
+  if (searchInput && searchInput.value) {
+    filterLoginLogs();
+  } else {
+    renderLoginLogs(cachedLoginLogs);
+  }
+}
 
 async function loadLoginLogs() {
   const tbody = document.getElementById('tbl-login-logs-body');
@@ -11303,9 +11342,9 @@ function renderLoginLogs(logs) {
     const time = log.time || '—';
     const ip = log.phone || 'Desconocida';
     
-    // Censurar la IP dejando visibles solo los últimos 4 dígitos
+    // Censurar la IP si no se ha activado ver IPs completas
     let displayIp = ip;
-    if (ip && ip !== 'Desconocida') {
+    if (!showFullIpsInLogs && ip && ip !== 'Desconocida') {
       if (ip.length > 4) {
         displayIp = '••••' + ip.substring(ip.length - 4);
       }
