@@ -5972,13 +5972,9 @@ input:focus, select:focus, textarea:focus {
           </div>
           <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;">
             <div style="position: relative; display: inline-block;">
-              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, Hostname, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 250px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
+              <input type="text" id="input-search-login-logs" placeholder="Buscar agente, IP, dispositivo, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 250px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
-            <button onclick="document.getElementById('modal-conector-windows').style.display='flex'" style="background: rgba(53, 127, 191, 0.08); color: var(--blue); border: 1.5px solid rgba(53, 127, 191, 0.25); padding: 8px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;" title="Instalar conector local para detectar automáticamente el Hostname e IP privada de por vida">
-              <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              <span>Instalar Conector Permanente</span>
-            </button>
             <button id="btn-toggle-ips-visibility" onclick="toggleIpVisibility()" style="background: var(--surface); color: var(--text); border: 1.5px solid var(--border); padding: 8px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;" title="Mostrar u ocultar las direcciones IP completas">
               <svg id="icon-eye-ips" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               <span id="text-toggle-ips">Mostrar IPs completas</span>
@@ -5991,71 +5987,24 @@ input:focus, select:focus, textarea:focus {
         </div>
         
         <div style="overflow-x: auto; max-height: 500px; overflow-y: auto;">
-          <table style="width: 100%; border-collapse: collapse; min-width: 900px;">
+          <table style="width: 100%; border-collapse: collapse; min-width: 700px;">
             <thead>
               <tr style="border-bottom: 1.5px solid var(--border); text-align: left; font-size: 12px; color: var(--t3); text-transform: uppercase;">
                 <th style="padding: 10px 14px; font-weight: 700;">Agente</th>
-                <th style="padding: 10px 14px; font-weight: 700;">Usuario / DNI</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Fecha</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Hora</th>
                 <th style="padding: 10px 14px; font-weight: 700;">IP Conexión (Pública)</th>
-                <th style="padding: 10px 14px; font-weight: 700;">IP Dispositivo (Local)</th>
-                <th style="padding: 10px 14px; font-weight: 700;">Equipo / Hostname</th>
                 <th style="padding: 10px 14px; font-weight: 700;">Dispositivo / SO</th>
               </tr>
             </thead>
             <tbody id="tbl-login-logs-body">
               <tr>
-                <td colspan="8" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">
+                <td colspan="5" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">
                   Cargando registros de conexión...
                 </td>
               </tr>
             </tbody>
           </table>
-        </div>
-      </div>
-    </div>
-
-    <!-- Modal Instalador Conector Windows Permanente -->
-    <div id="modal-conector-windows" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 999999; align-items: center; justify-content: center; padding: 20px;">
-      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); width: 100%; max-width: 560px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; animation: popIn 0.25s ease;">
-        <div style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
-          <div style="display: flex; align-items: center; gap: 10px;">
-            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#38bdf8" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
-            <span style="font-weight: 800; font-size: 16px;">Conector Permanente Windows (Hostname e IP Local)</span>
-          </div>
-          <button onclick="document.getElementById('modal-conector-windows').style.display='none'" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 20px; font-weight: 700;">✕</button>
-        </div>
-        
-        <div style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
-          <p style="font-size: 13.5px; color: var(--t2); margin: 0; line-height: 1.5;">
-            Ejecuta este instalador <strong>una sola vez</strong> en cada PC Windows de la oficina (ej. <code>129-VENTEL</code>). El conector se configurará automáticamente para iniciarse siempre en segundo plano cada vez que se encienda el equipo, permitiendo al Asistente identificarlo de por vida.
-          </p>
-          
-          <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 16px;">
-            <div style="font-weight: 800; font-size: 13.5px; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
-              <span>⚡ Opción 1: Descargar Instalador (Recomendado)</span>
-            </div>
-            <p style="font-size: 12.5px; color: var(--t3); margin-bottom: 12px;">Descarga el archivo y haz doble clic sobre él:</p>
-            <a href="INSTALAR_PERMANENTE.bat" download="INSTALAR_PERMANENTE.bat" style="background: var(--blue); color: white; padding: 10px 18px; border-radius: var(--rs); font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
-              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              <span>Descargar INSTALAR_PERMANENTE.bat</span>
-            </a>
-          </div>
-
-          <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 16px;">
-            <div style="font-weight: 800; font-size: 13.5px; color: var(--text); margin-bottom: 8px;">
-              <span>💻 Opción 2: Comando directo en PowerShell</span>
-            </div>
-            <p style="font-size: 12.5px; color: var(--t3); margin-bottom: 8px;">Copia y pega esto en PowerShell en el equipo:</p>
-            <div style="background: #0f172a; color: #38bdf8; padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; user-select: all; display: flex; justify-content: space-between; align-items: center;">
-              <span>irm https://asistente-comercial.vercel.app/instalar_agente_permanente.ps1 | iex</span>
-            </div>
-          </div>
-        </div>
-        
-        <div style="padding: 16px 24px; background: var(--bg); border-top: 1px solid var(--border); text-align: right;">
-          <button onclick="document.getElementById('modal-conector-windows').style.display='none'" style="background: var(--surface); border: 1.5px solid var(--border); color: var(--text); padding: 8px 18px; border-radius: var(--rs); font-weight: 700; font-size: 13px; cursor: pointer;">Cerrar</button>
         </div>
       </div>
     </div>
@@ -10922,7 +10871,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930391;
+const CURRENT_BUILD_VERSION = 1785002930392;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11234,87 +11183,13 @@ function updateSelectColor(selectEl) {
   }
 }
 
-async function getDeviceLocalIp() {
-  return new Promise((resolve) => {
-    let resolved = false;
-    const finish = (ip) => {
-      if (!resolved) {
-        resolved = true;
-        resolve(ip || '');
-      }
-    };
-    setTimeout(() => finish(''), 1000);
-    try {
-      const RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
-      if (!RTCPeer) return finish('');
-      const pc = new RTCPeer({ iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] });
-      pc.createDataChannel('device-detect');
-      pc.createOffer().then(offer => pc.setLocalDescription(offer)).catch(() => finish(''));
-      pc.onicecandidate = (event) => {
-        if (!event || !event.candidate || !event.candidate.candidate) return;
-        const cand = event.candidate.candidate;
-        const privateIpMatch = cand.match(/(192\.168\.\d{1,3}\.\d{1,3}|10\.\d{1,3}\.\d{1,3}|172\.(1[6-9]|2\d|3[01])\.\d{1,3}\.\d{1,3})/);
-        if (privateIpMatch && privateIpMatch[1]) {
-          try { pc.close(); } catch(_) {}
-          return finish(privateIpMatch[1]);
-        }
-        const anyIpMatch = cand.match(/([0-9]{1,3}(\.[0-9]{1,3}){3})/);
-        if (anyIpMatch && anyIpMatch[1] && !anyIpMatch[1].startsWith('0.')) {
-          try { pc.close(); } catch(_) {}
-          return finish(anyIpMatch[1]);
-        }
-        const mdnsMatch = cand.match(/([a-zA-Z0-9\-]+\.local)/);
-        if (mdnsMatch && mdnsMatch[1]) {
-          try { pc.close(); } catch(_) {}
-          return finish(mdnsMatch[1]);
-        }
-      };
-    } catch (e) {
-      finish('');
-    }
-  });
-}
-
 async function detectClientDeviceInfo() {
   let publicIp = 'Desconocida';
-  let localIp = '';
-  let hostname = '';
-  let detectedOs = '';
   
-  // 1. Intentar conectar con el agente local de Windows en http://127.0.0.1:9876/ (timeout de 350ms)
+  // 1. Obtener IP pública real consultando desde el navegador del cliente
   try {
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 350);
-    const agentRes = await fetch('http://127.0.0.1:9876/info', { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (agentRes.ok) {
-      const agentData = await agentRes.json();
-      if (agentData) {
-        if (agentData.hostname) hostname = agentData.hostname;
-        if (agentData.localIp && agentData.localIp !== 'Desconocida') localIp = agentData.localIp;
-        if (agentData.os) detectedOs = agentData.os;
-      }
-    }
-  } catch (_) {}
-
-  // 2. Fallback de IP local vía WebRTC si no la aportó el agente
-  if (!localIp) {
-    try {
-      localIp = await getDeviceLocalIp();
-    } catch (_) {}
-  }
-
-  // 3. Fallback de Hostname/Puesto desde LocalStorage si estuviera configurado
-  if (!hostname) {
-    try {
-      hostname = localStorage.getItem('renosur_device_station_name') || '';
-    } catch (_) {}
-  }
-
-  // 4. Obtener IP pública real consultando desde el navegador del cliente
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 1800);
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
     const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
     clearTimeout(timeoutId);
     if (ipRes.ok) {
@@ -11324,7 +11199,7 @@ async function detectClientDeviceInfo() {
   } catch (e) {
     try {
       const controller2 = new AbortController();
-      const timeoutId2 = setTimeout(() => controller2.abort(), 1800);
+      const timeoutId2 = setTimeout(() => controller2.abort(), 2000);
       const ipRes2 = await fetch('https://api64.ipify.org?format=json', { signal: controller2.signal });
       clearTimeout(timeoutId2);
       if (ipRes2.ok) {
@@ -11345,9 +11220,6 @@ async function detectClientDeviceInfo() {
 
   return {
     publicIp: publicIp || 'Desconocida',
-    localIp: localIp || '',
-    hostname: hostname || '',
-    detectedOs: detectedOs || '',
     userAgent: userAgent,
     screenRes: screenRes
   };
@@ -11373,12 +11245,8 @@ async function registerSessionConnectionLog() {
     const dateStr = now.toLocaleDateString('en-CA');
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + currentAgentDni + '_' + Date.now();
-    const phonePayload = clientInfo.localIp ? `${clientInfo.publicIp} | ${clientInfo.localIp}` : clientInfo.publicIp;
 
     let notesStr = clientInfo.userAgent;
-    if (clientInfo.localIp) notesStr += ` ###LOCAL_IP###:${clientInfo.localIp}`;
-    if (clientInfo.hostname) notesStr += ` ###HOSTNAME###:${clientInfo.hostname}`;
-    if (clientInfo.detectedOs) notesStr += ` ###OS###:${clientInfo.detectedOs}`;
     if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
 
     const { error } = await supabaseClient.from('tareas').insert({
@@ -11386,7 +11254,7 @@ async function registerSessionConnectionLog() {
       dni: 'SYSTEM_LOGIN_LOG',
       title: currentAgentDni,
       type: currentAgentName,
-      phone: phonePayload,
+      phone: clientInfo.publicIp,
       date: dateStr,
       time: timeStr,
       notes: notesStr,
@@ -11445,7 +11313,7 @@ async function loadLoginLogs() {
   if (!tbody) return;
   
   if (!supabaseClient) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--red);">Error: Cliente de Base de Datos no inicializado.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--red);">Error: Cliente de Base de Datos no inicializado.</td></tr>`;
     return;
   }
 
@@ -11457,12 +11325,12 @@ async function loadLoginLogs() {
       
     if (error) {
       console.error("Error fetching login logs:", error);
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
       return;
     }
 
     if (!data || data.length === 0) {
-      tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros de conexión guardados.</td></tr>`;
       cachedLoginLogs = [];
       return;
     }
@@ -11478,8 +11346,48 @@ async function loadLoginLogs() {
     }
   } catch (e) {
     console.error("Exception loading login logs:", e);
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
   }
+}
+
+function formatDeviceAndOs(notesStr) {
+  const raw = notesStr || '';
+  const ua = raw.split('###')[0].trim();
+  const uaLower = ua.toLowerCase();
+  
+  let screenRes = '';
+  if (raw.includes('###SCREEN###:')) {
+    const m = raw.match(/###SCREEN###:([^#;]+)/);
+    if (m && m[1]) screenRes = m[1].trim();
+  }
+
+  let osType = 'Ordenador / Otro';
+  let iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
+
+  if (uaLower.includes('iphone') || uaLower.includes('ipod')) {
+    osType = 'Móvil (iOS)';
+    iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+  } else if (uaLower.includes('ipad')) {
+    osType = 'Tablet (iPadOS)';
+    iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+  } else if (uaLower.includes('android')) {
+    osType = uaLower.includes('tablet') ? 'Tablet (Android)' : 'Móvil (Android)';
+    iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+  } else if (uaLower.includes('windows phone')) {
+    osType = 'Móvil (Windows)';
+    iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+  } else if (uaLower.includes('windows')) {
+    osType = 'Ordenador (Windows)';
+  } else if (uaLower.includes('macintosh') || uaLower.includes('mac os')) {
+    osType = 'Ordenador (macOS)';
+  } else if (uaLower.includes('linux')) {
+    osType = 'Ordenador (Linux)';
+  } else if (uaLower.includes('cros')) {
+    osType = 'Ordenador (ChromeOS)';
+  }
+
+  const label = screenRes ? `${osType} · ${screenRes}` : osType;
+  return { label, iconSvg, osType, screenRes };
 }
 
 function renderLoginLogs(logs) {
@@ -11487,7 +11395,7 @@ function renderLoginLogs(logs) {
   if (!tbody) return;
 
   if (logs.length === 0) {
-    tbody.innerHTML = `<tr><td colspan="8" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros que coincidan con la búsqueda.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="5" style="text-align: center; padding: 30px; color: var(--t3); font-style: italic;">No hay registros que coincidan con la búsqueda.</td></tr>`;
     return;
   }
 
@@ -11509,81 +11417,24 @@ function renderLoginLogs(logs) {
 
   tbody.innerHTML = logs.map(log => {
     const name = log.type || 'Desconocido';
-    const dni = log.title || '—';
     const userKey = (log.title || log.type || '').trim().toUpperCase();
     const dateKey = (log.date || '').trim();
     const dateFormatted = dateKey ? dateKey.split('-').reverse().join('/') : '—';
     const time = log.time || '—';
     
     const rawPhone = (log.phone || 'Desconocida').trim();
-    let publicIp = 'Desconocida';
-    let localIp = '—';
-    
-    if (rawPhone.includes('|')) {
-      const parts = rawPhone.split('|').map(s => s.trim());
-      publicIp = parts[0] || 'Desconocida';
-      localIp = parts[1] || '—';
-    } else {
-      publicIp = rawPhone || 'Desconocida';
-    }
+    let publicIp = rawPhone.includes('|') ? rawPhone.split('|')[0].trim() : rawPhone;
+    if (!publicIp) publicIp = 'Desconocida';
 
-    const rawNotes = log.notes || '';
-    if (localIp === '—' && rawNotes.includes('###LOCAL_IP###:')) {
-      const m = rawNotes.match(/###LOCAL_IP###:([^#;]+)/);
-      if (m && m[1]) localIp = m[1].trim();
-    }
-
-    let hostname = '—';
-    if (rawNotes.includes('###HOSTNAME###:')) {
-      const m = rawNotes.match(/###HOSTNAME###:([^#;]+)/);
-      if (m && m[1]) hostname = m[1].trim();
-    }
-
-    let detectedOs = '';
-    if (rawNotes.includes('###OS###:')) {
-      const m = rawNotes.match(/###OS###:([^#;]+)/);
-      if (m && m[1]) detectedOs = m[1].trim();
-    }
-
-    let screenRes = '';
-    if (rawNotes.includes('###SCREEN###:')) {
-      const m = rawNotes.match(/###SCREEN###:([^#;]+)/);
-      if (m && m[1]) screenRes = m[1].trim();
-    }
-    
     // Censurar IPs si no se ha activado ver IPs completas
     let displayPublicIp = publicIp;
-    let displayLocalIp = localIp;
-    
-    if (!showFullIpsInLogs) {
-      if (publicIp && publicIp !== 'Desconocida' && publicIp !== '—') {
-        if (publicIp.length > 4) {
-          displayPublicIp = '••••' + publicIp.substring(publicIp.length - 4);
-        }
-      }
-      if (localIp && localIp !== 'Desconocida' && localIp !== '—') {
-        if (localIp.length > 4) {
-          displayLocalIp = '••••' + localIp.substring(localIp.length - 4);
-        }
+    if (!showFullIpsInLogs && publicIp && publicIp !== 'Desconocida' && publicIp !== '—') {
+      if (publicIp.length > 4) {
+        displayPublicIp = '••••' + publicIp.substring(publicIp.length - 4);
       }
     }
     
-    let ua = rawNotes.split('###')[0].trim() || '—';
-    if (detectedOs) {
-      ua = detectedOs;
-    } else if (ua.toLowerCase().includes('mobile') || ua.toLowerCase().includes('android') || ua.toLowerCase().includes('iphone')) {
-      ua = 'Móvil (' + (ua.toLowerCase().includes('iphone') ? 'iOS' : 'Android') + ')';
-    } else if (ua.toLowerCase().includes('windows')) {
-      ua = 'Ordenador (Windows)';
-    } else if (ua.toLowerCase().includes('macintosh')) {
-      ua = 'Ordenador (macOS)';
-    } else {
-      ua = 'Ordenador / Otro';
-    }
-
-    if (screenRes) {
-      ua += ` · ${screenRes}`;
-    }
+    const devInfo = formatDeviceAndOs(log.notes || '');
 
     const key = userKey + '_' + dateKey;
     const ipSet = uniqueIpsByUserAndDate[key];
@@ -11599,7 +11450,6 @@ function renderLoginLogs(logs) {
 
     return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); background: ${rowBg}; transition: background 0.15s;">
       <td style="padding: 10px 14px; font-weight: 600;">${name}</td>
-      <td style="padding: 10px 14px; font-family: monospace;">${dni}</td>
       <td style="padding: 10px 14px;">${dateFormatted}</td>
       <td style="padding: 10px 14px;">${time}</td>
       <td style="padding: 10px 14px;">
@@ -11615,22 +11465,11 @@ function renderLoginLogs(logs) {
         `}
       </td>
       <td style="padding: 10px 14px;">
-        <span style="display: inline-flex; align-items: center; gap: 5px; color: var(--t2); font-weight: 600; font-family: monospace; font-size: 12.5px; background: rgba(0,0,0,0.03); padding: 3px 8px; border-radius: 6px; border: 1px solid var(--border);" title="IP local asignada al dispositivo en la red privada/WiFi">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" style="color: var(--t3);"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>
-          <span>${displayLocalIp}</span>
+        <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.03); color: var(--text); padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border); font-size: 12.5px; font-weight: 500;">
+          ${devInfo.iconSvg}
+          <span>${devInfo.label}</span>
         </span>
       </td>
-      <td style="padding: 10px 14px;">
-        ${hostname !== '—' ? `
-          <span style="display: inline-flex; align-items: center; gap: 5px; background: rgba(53, 127, 191, 0.08); color: var(--blue); border: 1px solid rgba(53, 127, 191, 0.25); padding: 3px 8px; border-radius: 6px; font-weight: 700; font-family: monospace; font-size: 12.5px;" title="Nombre de equipo o puesto cliente (Hostname Windows)">
-            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
-            <span>${hostname}</span>
-          </span>
-        ` : `
-          <span style="color: var(--t3); font-size: 13px;">—</span>
-        `}
-      </td>
-      <td style="padding: 10px 14px; color: var(--t3); font-size: 12.5px;">${ua}</td>
     </tr>`;
   }).join('');
 }
@@ -11650,17 +11489,8 @@ function filterLoginLogs() {
     const time = (log.time || '').toLowerCase();
     const rawPhone = (log.phone || '').toLowerCase();
     const notes = (log.notes || '').toLowerCase();
-    
-    let ua = notes.split('###')[0].trim();
-    if (ua.includes('mobile') || ua.includes('android') || ua.includes('iphone')) {
-      ua = 'móvil ios android';
-    } else if (ua.includes('windows')) {
-      ua = 'ordenador windows pc';
-    } else if (ua.includes('macintosh')) {
-      ua = 'ordenador macos mac apple';
-    } else {
-      ua = 'ordenador pc';
-    }
+    const devInfo = formatDeviceAndOs(log.notes || '');
+    const devLabel = devInfo.label.toLowerCase();
 
     return name.includes(query) || 
            dni.includes(query) || 
@@ -11669,7 +11499,7 @@ function filterLoginLogs() {
            time.includes(query) || 
            rawPhone.includes(query) || 
            notes.includes(query) ||
-           ua.includes(query);
+           devLabel.includes(query);
   });
 
   renderLoginLogs(filtered);
