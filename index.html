@@ -10886,7 +10886,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930396;
+const CURRENT_BUILD_VERSION = 1785002930397;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -10931,10 +10931,6 @@ function startAgentStatusCheck() {
     if (nowTime - lastVersionCheckTime > 60000) {
       lastVersionCheckTime = nowTime;
       checkAppVersion();
-    }
-    
-    if (typeof registerSessionConnectionLog === 'function') {
-      registerSessionConnectionLog();
     }
 
     // Auto-refresh connection logs table if Gerente is currently looking at connection registry panel
@@ -11249,52 +11245,6 @@ async function detectClientDeviceInfo() {
     userAgent: userAgent,
     screenRes: screenRes
   };
-}
-
-async function registerSessionConnectionLog() {
-  if (!supabaseClient || !currentAgentDni) return;
-  
-  const todayStr = new Date().toLocaleDateString('en-CA');
-  const sessionKey = 'session_logged_date_' + currentAgentDni;
-  const sessionIpKey = 'session_logged_ip_' + currentAgentDni;
-  const lastLoggedDate = sessionStorage.getItem(sessionKey);
-  const lastLoggedIp = sessionStorage.getItem(sessionIpKey);
-
-  const clientInfo = await detectClientDeviceInfo();
-
-  if (lastLoggedDate === todayStr && lastLoggedIp === clientInfo.publicIp && clientInfo.publicIp !== 'Desconocida') {
-    return;
-  }
-
-  try {
-    const now = new Date();
-    const dateStr = now.toLocaleDateString('en-CA');
-    const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
-    const logId = 'login_log_' + currentAgentDni + '_' + Date.now();
-
-    let notesStr = clientInfo.userAgent;
-    if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
-
-    const { error } = await supabaseClient.from('tareas').insert({
-      id: logId,
-      dni: 'SYSTEM_LOGIN_LOG',
-      title: currentAgentDni,
-      type: currentAgentName,
-      phone: clientInfo.publicIp,
-      date: dateStr,
-      time: timeStr,
-      notes: notesStr,
-      completed: true,
-      notified: false,
-      created_at: Date.now()
-    });
-    if (!error) {
-      sessionStorage.setItem(sessionKey, todayStr);
-      sessionStorage.setItem(sessionIpKey, clientInfo.publicIp);
-    }
-  } catch (e) {
-    console.error("Error writing connection log to Supabase:", e);
-  }
 }
 
 let cachedLoginLogs = [];
@@ -12171,11 +12121,6 @@ async function onLoginSuccess() {
   
   // 9. Iniciar verificacion de estado activo/inactivo en tiempo real
   startAgentStatusCheck();
-  
-  // 10. Registrar conexion de sesion
-  if (typeof registerSessionConnectionLog === 'function') {
-    registerSessionConnectionLog();
-  }
 }
 
 function updateGreeting() {
