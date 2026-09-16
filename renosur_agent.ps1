@@ -1,17 +1,10 @@
 # ═════════════════════════════════════════════════════════════════════
 # RENOSUR - Agente Local de Identificación de Dispositivo (Windows)
 # ═════════════════════════════════════════════════════════════════════
-# Este script escucha únicamente en 127.0.0.1:9876 y permite a la aplicación
-# web Asistente Comercial identificar de forma segura el Hostname y la IP local.
-#
-# Para ejecutar en segundo plano al iniciar Windows:
-# powershell -WindowStyle Hidden -ExecutionPolicy Bypass -File .\renosur_agent.ps1
-# ═════════════════════════════════════════════════════════════════════
 
 $Port = 9876
 $Listener = New-Object System.Net.HttpListener
 $Listener.Prefixes.Add("http://127.0.0.1:$Port/")
-$Listener.Prefixes.Add("http://localhost:$Port/")
 
 try {
     $Listener.Start()
@@ -20,9 +13,8 @@ try {
     Write-Host "  Hostname Detectado : $env:COMPUTERNAME" -ForegroundColor Yellow
     Write-Host "  Usuario Windows    : $env:USERNAME" -ForegroundColor Yellow
     Write-Host "========================================================" -ForegroundColor Cyan
-    Write-Host "Presiona Ctrl+C para detener."
 } catch {
-    Write-Warning "No se pudo iniciar el listener en el puerto $Port. ¿Ya se esta ejecutando otra instancia?"
+    Write-Warning "No se pudo iniciar el listener en 127.0.0.1:$Port ($($_.Exception.Message))"
     Exit
 }
 
@@ -30,24 +22,28 @@ function Get-ClientInfoJson {
     $hostname = $env:COMPUTERNAME
     $username = $env:USERNAME
     
-    # Obtener la IP local IPv4 preferente (excluyendo loopback y 169.254)
-    $localIp = (Get-NetIPAddress -AddressFamily IPv4 | Where-Object { 
+    $localIp = (Get-NetIPAddress -AddressFamily IPv4 -ErrorAction SilentlyContinue | Where-Object { 
         $_.IPAddress -notlike "127.*" -and $_.IPAddress -notlike "169.254.*" 
     } | Select-Object -ExpandProperty IPAddress -First 1)
 
     if (-not $localIp) {
-        $localIp = [System.Net.Dns]::GetHostAddresses($hostname) | Where-Object { 
-            $_.AddressFamily -eq 'InterNetwork' -and $_.IPAddressToString -notlike "127.*" 
-        } | Select-Object -ExpandProperty IPAddressToString -First 1
+        try {
+            $localIp = [System.Net.Dns]::GetHostAddresses($hostname) | Where-Object { 
+                $_.AddressFamily -eq 'InterNetwork' -and $_.IPAddressToString -notlike "127.*" 
+            } | Select-Object -ExpandProperty IPAddressToString -First 1
+        } catch {}
     }
 
-    $osName = (Get-CimInstance Win32_OperatingSystem).Caption
+    $osCaption = "Windows"
+    try {
+        $osCaption = (Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue).Caption
+    } catch {}
 
     $data = @{
         ok = $true
         hostname = $hostname
         localIp = if ($localIp) { $localIp } else { "Desconocida" }
-        os = $osName
+        os = $osCaption
         user = $username
         timestamp = [DateTimeOffset]::UtcNow.ToUnixTimeMilliseconds()
     }
@@ -61,7 +57,6 @@ while ($Listener.IsListening) {
         $Request = $Context.Request
         $Response = $Context.Response
 
-        # Cabeceras CORS para permitir la lectura desde https://asistente-comercial.vercel.app
         $Response.AddHeader("Access-Control-Allow-Origin", "*")
         $Response.AddHeader("Access-Control-Allow-Methods", "GET, OPTIONS")
         $Response.AddHeader("Access-Control-Allow-Headers", "Content-Type")
@@ -80,6 +75,6 @@ while ($Listener.IsListening) {
         $Response.OutputStream.Write($Buffer, 0, $Buffer.Length)
         $Response.Close()
     } catch {
-        # Continuar escuchando ante desconexiones de cliente
+        # Continuar ante desconexiones
     }
 }
