@@ -5975,10 +5975,10 @@ input:focus, select:focus, textarea:focus {
               <input type="text" id="input-search-login-logs" placeholder="Buscar agente, DNI, IP, Hostname, fecha..." oninput="filterLoginLogs()" style="padding: 8px 14px 8px 36px !important; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; width: 250px; outline: none; background: var(--surface); color: var(--text); transition: all 0.2s; box-shadow: 0 1px 2px rgba(0,0,0,0.01);" onfocus="this.style.borderColor='var(--blue)'" onblur="this.style.borderColor='var(--border)'" />
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--t3); pointer-events: none;"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
             </div>
-            <a href="renosur_agent.ps1" download="renosur_agent.ps1" style="background: rgba(53, 127, 191, 0.08); color: var(--blue); border: 1.5px solid rgba(53, 127, 191, 0.25); padding: 8px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; text-decoration: none; transition: all 0.2s;" title="Descargar conector local para detectar automáticamente el Hostname e IP privada en PCs Windows de la oficina">
+            <button onclick="document.getElementById('modal-conector-windows').style.display='flex'" style="background: rgba(53, 127, 191, 0.08); color: var(--blue); border: 1.5px solid rgba(53, 127, 191, 0.25); padding: 8px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;" title="Instalar conector local para detectar automáticamente el Hostname e IP privada de por vida">
               <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
-              <span>Conector Windows</span>
-            </a>
+              <span>Instalar Conector Permanente</span>
+            </button>
             <button id="btn-toggle-ips-visibility" onclick="toggleIpVisibility()" style="background: var(--surface); color: var(--text); border: 1.5px solid var(--border); padding: 8px 14px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;" title="Mostrar u ocultar las direcciones IP completas">
               <svg id="icon-eye-ips" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
               <span id="text-toggle-ips">Mostrar IPs completas</span>
@@ -6012,6 +6012,50 @@ input:focus, select:focus, textarea:focus {
               </tr>
             </tbody>
           </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal Instalador Conector Windows Permanente -->
+    <div id="modal-conector-windows" style="display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(4px); z-index: 999999; align-items: center; justify-content: center; padding: 20px;">
+      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); width: 100%; max-width: 560px; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; animation: popIn 0.25s ease;">
+        <div style="background: linear-gradient(135deg, #1e293b, #0f172a); color: white; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#38bdf8" stroke-width="2.2"><rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect><rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect><line x1="6" y1="6" x2="6.01" y2="6"></line><line x1="6" y1="18" x2="6.01" y2="18"></line></svg>
+            <span style="font-weight: 800; font-size: 16px;">Conector Permanente Windows (Hostname e IP Local)</span>
+          </div>
+          <button onclick="document.getElementById('modal-conector-windows').style.display='none'" style="background: none; border: none; color: #94a3b8; cursor: pointer; font-size: 20px; font-weight: 700;">✕</button>
+        </div>
+        
+        <div style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+          <p style="font-size: 13.5px; color: var(--t2); margin: 0; line-height: 1.5;">
+            Ejecuta este instalador <strong>una sola vez</strong> en cada PC Windows de la oficina (ej. <code>129-VENTEL</code>). El conector se configurará automáticamente para iniciarse siempre en segundo plano cada vez que se encienda el equipo, permitiendo al Asistente identificarlo de por vida.
+          </p>
+          
+          <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 16px;">
+            <div style="font-weight: 800; font-size: 13.5px; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 6px;">
+              <span>⚡ Opción 1: Descargar Instalador (Recomendado)</span>
+            </div>
+            <p style="font-size: 12.5px; color: var(--t3); margin-bottom: 12px;">Descarga el archivo y haz doble clic sobre él:</p>
+            <a href="INSTALAR_PERMANENTE.bat" download="INSTALAR_PERMANENTE.bat" style="background: var(--blue); color: white; padding: 10px 18px; border-radius: var(--rs); font-weight: 700; font-size: 13px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span>Descargar INSTALAR_PERMANENTE.bat</span>
+            </a>
+          </div>
+
+          <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: var(--rs); padding: 16px;">
+            <div style="font-weight: 800; font-size: 13.5px; color: var(--text); margin-bottom: 8px;">
+              <span>💻 Opción 2: Comando directo en PowerShell</span>
+            </div>
+            <p style="font-size: 12.5px; color: var(--t3); margin-bottom: 8px;">Copia y pega esto en PowerShell en el equipo:</p>
+            <div style="background: #0f172a; color: #38bdf8; padding: 10px 14px; border-radius: 6px; font-family: monospace; font-size: 12px; word-break: break-all; user-select: all; display: flex; justify-content: space-between; align-items: center;">
+              <span>irm https://asistente-comercial.vercel.app/instalar_agente_permanente.ps1 | iex</span>
+            </div>
+          </div>
+        </div>
+        
+        <div style="padding: 16px 24px; background: var(--bg); border-top: 1px solid var(--border); text-align: right;">
+          <button onclick="document.getElementById('modal-conector-windows').style.display='none'" style="background: var(--surface); border: 1.5px solid var(--border); color: var(--text); padding: 8px 18px; border-radius: var(--rs); font-weight: 700; font-size: 13px; cursor: pointer;">Cerrar</button>
         </div>
       </div>
     </div>
@@ -10878,7 +10922,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930389;
+const CURRENT_BUILD_VERSION = 1785002930390;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
