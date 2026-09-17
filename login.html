@@ -288,10 +288,39 @@ async function detectClientDeviceInfo() {
     ? `${window.screen.width}x${window.screen.height}` 
     : '';
 
+  const dpr = window.devicePixelRatio ? Math.round(window.devicePixelRatio * 10) / 10 : 1;
+  const touchPoints = navigator.maxTouchPoints || 0;
+
+  let gpuRenderer = '';
+  try {
+    const canvas = document.createElement('canvas');
+    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
+    if (gl) {
+      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
+      if (debugInfo) {
+        gpuRenderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '';
+      }
+    }
+  } catch (_) {}
+
+  let clientModel = '';
+  if (navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {
+    try {
+      const entropy = await navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion']);
+      if (entropy && entropy.model) {
+        clientModel = entropy.model;
+      }
+    } catch (_) {}
+  }
+
   return {
     publicIp: publicIp || 'Desconocida',
     userAgent: userAgent,
-    screenRes: screenRes
+    screenRes: screenRes,
+    dpr: dpr,
+    touchPoints: touchPoints,
+    gpuRenderer: gpuRenderer,
+    clientModel: clientModel
   };
 }
 
@@ -307,6 +336,10 @@ async function writeLoginLogToSupabase(dni, name) {
     
     let notesStr = clientInfo.userAgent;
     if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
+    if (clientInfo.dpr) notesStr += ` ###DPR###:${clientInfo.dpr}`;
+    if (clientInfo.clientModel) notesStr += ` ###MODEL###:${clientInfo.clientModel}`;
+    if (clientInfo.gpuRenderer) notesStr += ` ###GPU###:${clientInfo.gpuRenderer}`;
+    if (clientInfo.touchPoints > 0) notesStr += ` ###TOUCH###:${clientInfo.touchPoints}`;
 
     const { error } = await supabaseClient.from('tareas').insert({
       id: logId,
