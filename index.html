@@ -11332,7 +11332,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930415;
+const CURRENT_BUILD_VERSION = 1785002930416;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11995,206 +11995,222 @@ async function loadLoginLogs() {
       return;
     }
 
-    data.sort((a, b) => Number(b.created_at) - Number(a.created_at));
+    data.sort((a, b) => Number(b.created_at || 0) - Number(a.created_at || 0));
     cachedLoginLogs = data;
 
     filterLoginLogs();
   } catch (e) {
     console.error("Exception loading login logs:", e);
-    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros.</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Excepción al cargar los registros: ${e && e.message ? e.message : 'Error inesperado'}</td></tr>`;
   }
 }
 
 function formatDeviceAndOs(notesStr) {
-  const raw = notesStr || '';
-  const ua = raw.split('###')[0].trim();
-  const uaLower = ua.toLowerCase();
-  
-  let screenRes = '';
-  if (raw.includes('###SCREEN###:')) {
-    const m = raw.match(/###SCREEN###:([^#;]+)/);
-    if (m && m[1]) screenRes = m[1].trim();
-  }
-  let dpr = 0;
-  if (raw.includes('###DPR###:')) {
-    const m = raw.match(/###DPR###:([^#;]+)/);
-    if (m && m[1]) dpr = parseFloat(m[1].trim()) || 0;
-  }
-  let explicitModel = '';
-  if (raw.includes('###MODEL###:')) {
-    const m = raw.match(/###MODEL###:([^#;]+)/);
-    if (m && m[1]) explicitModel = m[1].trim();
-  }
-  let gpu = '';
-  if (raw.includes('###GPU###:')) {
-    const m = raw.match(/###GPU###:([^#;]+)/);
-    if (m && m[1]) gpu = m[1].trim();
-  }
-
-  let w = 0, h = 0, minDim = 0, maxDim = 0;
-  if (screenRes && screenRes.includes('x')) {
-    const parts = screenRes.split('x').map(n => parseInt(n.trim(), 10));
-    if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
-      w = parts[0];
-      h = parts[1];
-      minDim = Math.min(w, h);
-      maxDim = Math.max(w, h);
-    }
-  }
-
-  const isIosPhone = uaLower.includes('iphone') || uaLower.includes('ipod');
-  const isIpad = uaLower.includes('ipad') || (uaLower.includes('macintosh') && (raw.includes('###TOUCH###') || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 1 && screenRes && minDim < 1050)));
-  const isAndroid = uaLower.includes('android');
-
-  let deviceName = '';
-  let osType = 'Ordenador / Otro';
-  let iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
-
-  if (isIosPhone) {
-    osType = 'iOS';
-    iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+  try {
+    const raw = (typeof notesStr === 'string') ? notesStr : (notesStr ? String(notesStr) : '');
+    const ua = raw.split('###')[0].trim();
+    const uaLower = ua.toLowerCase();
     
-    const iosVerMatch = ua.match(/iPhone OS (\d+)[_\.]?(\d+)?/i);
-    const iosMajor = iosVerMatch ? parseInt(iosVerMatch[1], 10) : 0;
-    const hasDynamicIsland = safeAreaTop >= 54;
+    let screenRes = '';
+    if (raw.includes('###SCREEN###:')) {
+      const m = raw.match(/###SCREEN###:([^#;]+)/);
+      if (m && m[1]) screenRes = m[1].trim();
+    }
+    let dpr = 0;
+    if (raw.includes('###DPR###:')) {
+      const m = raw.match(/###DPR###:([^#;]+)/);
+      if (m && m[1]) dpr = parseFloat(m[1].trim()) || 0;
+    }
+    let safeAreaTop = 0;
+    if (raw.includes('###INSET###:')) {
+      const m = raw.match(/###INSET###:([^#;]+)/);
+      if (m && m[1]) safeAreaTop = parseInt(m[1].trim(), 10) || 0;
+    }
+    let explicitModel = '';
+    if (raw.includes('###MODEL###:')) {
+      const m = raw.match(/###MODEL###:([^#;]+)/);
+      if (m && m[1]) explicitModel = m[1].trim();
+    }
+    let gpu = '';
+    if (raw.includes('###GPU###:')) {
+      const m = raw.match(/###GPU###:([^#;]+)/);
+      if (m && m[1]) gpu = m[1].trim();
+    }
 
-    if (minDim === 440 && maxDim === 956) {
-      deviceName = 'iPhone 16 Pro Max';
-    } else if (minDim === 402 && maxDim === 874) {
-      deviceName = 'iPhone 16 Pro';
-    } else if (minDim === 430 && maxDim === 932) {
-      deviceName = hasDynamicIsland ? 'iPhone 16 Plus · 15/16 Pro Max' : 'iPhone 14/15/16 Pro Max · Plus';
-    } else if (minDim === 393 && maxDim === 852) {
-      deviceName = 'iPhone 16 · 15/16 Pro · 14 Pro';
-    } else if (minDim === 428 && maxDim === 926) {
-      deviceName = 'iPhone 14 Plus · 12/13 Pro Max';
-    } else if (minDim === 390 && maxDim === 844) {
-      deviceName = 'iPhone 12 / 13 / 14';
-    } else if (minDim === 414 && maxDim === 896) {
-      if (hasDynamicIsland || (dpr === 3 && iosMajor >= 18)) {
-        deviceName = 'iPhone 16 Pro / 15 Pro Max (Zoom)';
-      } else if (dpr === 3) {
-        deviceName = 'iPhone 11 Pro Max / XS Max';
-      } else if (dpr === 2) {
-        deviceName = 'iPhone 11 / XR';
-      } else if (iosMajor >= 18) {
-        deviceName = 'iPhone 16 Pro / 15 / 11 / XR';
+    let w = 0, h = 0, minDim = 0, maxDim = 0;
+    if (screenRes && screenRes.includes('x')) {
+      const parts = screenRes.split('x').map(n => parseInt(n.trim(), 10));
+      if (parts.length === 2 && !isNaN(parts[0]) && !isNaN(parts[1])) {
+        w = parts[0];
+        h = parts[1];
+        minDim = Math.min(w, h);
+        maxDim = Math.max(w, h);
+      }
+    }
+
+    const isIosPhone = uaLower.includes('iphone') || uaLower.includes('ipod');
+    const isIpad = uaLower.includes('ipad') || (uaLower.includes('macintosh') && (raw.includes('###TOUCH###') || (typeof navigator !== 'undefined' && navigator.maxTouchPoints > 1 && screenRes && minDim < 1050)));
+    const isAndroid = uaLower.includes('android');
+
+    let deviceName = '';
+    let osType = 'Ordenador / Otro';
+    let iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>';
+
+    if (isIosPhone) {
+      osType = 'iOS';
+      iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+      
+      const iosVerMatch = ua.match(/iPhone OS (\d+)[_\.]?(\d+)?/i);
+      const iosMajor = iosVerMatch ? parseInt(iosVerMatch[1], 10) : 0;
+      const hasDynamicIsland = safeAreaTop >= 54;
+
+      if (minDim === 440 && maxDim === 956) {
+        deviceName = 'iPhone 16 Pro Max';
+      } else if (minDim === 402 && maxDim === 874) {
+        deviceName = 'iPhone 16 Pro';
+      } else if (minDim === 430 && maxDim === 932) {
+        deviceName = hasDynamicIsland ? 'iPhone 16 Plus · 15/16 Pro Max' : 'iPhone 14/15/16 Pro Max · Plus';
+      } else if (minDim === 393 && maxDim === 852) {
+        deviceName = 'iPhone 16 · 15/16 Pro · 14 Pro';
+      } else if (minDim === 428 && maxDim === 926) {
+        deviceName = 'iPhone 14 Plus · 12/13 Pro Max';
+      } else if (minDim === 390 && maxDim === 844) {
+        deviceName = 'iPhone 12 / 13 / 14';
+      } else if (minDim === 414 && maxDim === 896) {
+        if (hasDynamicIsland || (dpr === 3 && iosMajor >= 18)) {
+          deviceName = 'iPhone 16 Pro / 15 Pro Max (Zoom)';
+        } else if (dpr === 3) {
+          deviceName = 'iPhone 11 Pro Max / XS Max';
+        } else if (dpr === 2) {
+          deviceName = 'iPhone 11 / XR';
+        } else if (iosMajor >= 18) {
+          deviceName = 'iPhone 16 Pro / 15 / 11 / XR';
+        } else {
+          deviceName = 'iPhone 11 / XR / XS Max';
+        }
+      } else if (minDim === 375 && maxDim === 812) {
+        if (hasDynamicIsland) {
+          deviceName = 'iPhone 16 / 15 Pro (Zoom)';
+        } else if (dpr === 3) {
+          deviceName = 'iPhone 12/13 mini · X/XS/11 Pro';
+        } else {
+          deviceName = 'iPhone X / XS / 11 Pro / mini';
+        }
+      } else if (minDim === 360 && maxDim === 780) {
+        deviceName = 'iPhone 16 Pro / 15 Pro (Zoom)';
+      } else if (minDim === 414 && maxDim === 736) {
+        deviceName = 'iPhone 6 / 7 / 8 Plus';
+      } else if (minDim === 375 && maxDim === 667) {
+        deviceName = 'iPhone SE (2ª/3ª gen) / 8 / 7';
+      } else if (minDim === 320 && maxDim === 568) {
+        deviceName = 'iPhone SE (1ª gen) / 5s';
       } else {
-        deviceName = 'iPhone 11 / XR / XS Max';
+        deviceName = screenRes ? `iPhone (${minDim}x${maxDim})` : 'iPhone (iOS)';
       }
-    } else if (minDim === 375 && maxDim === 812) {
-      if (hasDynamicIsland) {
-        deviceName = 'iPhone 16 / 15 Pro (Zoom)';
-      } else if (dpr === 3) {
-        deviceName = 'iPhone 12/13 mini · X/XS/11 Pro';
+    } else if (isIpad) {
+      osType = 'iPadOS';
+      iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+      
+      if (minDim === 1024 && maxDim === 1366) {
+        deviceName = 'iPad Pro 12.9"';
+      } else if (minDim === 834 && maxDim === 1194) {
+        deviceName = 'iPad Pro 11"';
+      } else if (minDim === 820 && maxDim === 1180) {
+        deviceName = 'iPad Air / iPad 10ª gen';
+      } else if (minDim === 810 && maxDim === 1080) {
+        deviceName = 'iPad 7ª/8ª/9ª gen';
+      } else if (minDim === 834 && maxDim === 1112) {
+        deviceName = 'iPad Air 3 / Pro 10.5"';
+      } else if (minDim === 768 && maxDim === 1024) {
+        deviceName = 'iPad / iPad mini';
+      } else if (minDim === 744 && maxDim === 1133) {
+        deviceName = 'iPad mini 6';
       } else {
-        deviceName = 'iPhone X / XS / 11 Pro / mini';
+        deviceName = screenRes ? `iPad (${minDim}x${maxDim})` : 'iPad (iPadOS)';
       }
-    } else if (minDim === 360 && maxDim === 780) {
-      deviceName = 'iPhone 16 Pro / 15 Pro (Zoom)';
-    } else if (minDim === 414 && maxDim === 736) {
-      deviceName = 'iPhone 6 / 7 / 8 Plus';
-    } else if (minDim === 375 && maxDim === 667) {
-      deviceName = 'iPhone SE (2ª/3ª gen) / 8 / 7';
-    } else if (minDim === 320 && maxDim === 568) {
-      deviceName = 'iPhone SE (1ª gen) / 5s';
-    } else {
-      deviceName = screenRes ? `iPhone (${minDim}x${maxDim})` : 'iPhone (iOS)';
-    }
-  } else if (isIpad) {
-    osType = 'iPadOS';
-    iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
-    
-    if (minDim === 1024 && maxDim === 1366) {
-      deviceName = 'iPad Pro 12.9"';
-    } else if (minDim === 834 && maxDim === 1194) {
-      deviceName = 'iPad Pro 11"';
-    } else if (minDim === 820 && maxDim === 1180) {
-      deviceName = 'iPad Air / iPad 10ª gen';
-    } else if (minDim === 810 && maxDim === 1080) {
-      deviceName = 'iPad 7ª/8ª/9ª gen';
-    } else if (minDim === 834 && maxDim === 1112) {
-      deviceName = 'iPad Air 3 / Pro 10.5"';
-    } else if (minDim === 768 && maxDim === 1024) {
-      deviceName = 'iPad / iPad mini';
-    } else if (minDim === 744 && maxDim === 1133) {
-      deviceName = 'iPad mini 6';
-    } else {
-      deviceName = screenRes ? `iPad (${minDim}x${maxDim})` : 'iPad (iPadOS)';
-    }
-  } else if (isAndroid) {
-    osType = 'Android';
-    const isTablet = uaLower.includes('tablet');
-    iconSvg = isTablet 
-      ? '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>'
-      : '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
-    
-    let model = explicitModel;
-    if (!model) {
-      const match = ua.match(/Android\s+[0-9\.]+;\s*([^;]+?)(?:\s+Build|\)|;)/i);
-      if (match && match[1] && !match[1].toLowerCase().includes('k')) {
-        model = match[1].trim();
+    } else if (isAndroid) {
+      osType = 'Android';
+      const isTablet = uaLower.includes('tablet');
+      iconSvg = isTablet 
+        ? '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>'
+        : '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+      
+      let model = explicitModel;
+      if (!model) {
+        const match = ua.match(/Android\s+[0-9\.]+;\s*([^;]+?)(?:\s+Build|\)|;)/i);
+        if (match && match[1] && !match[1].toLowerCase().includes('k')) {
+          model = match[1].trim();
+        }
       }
-    }
-    
-    if (model) {
-      const mUp = model.toUpperCase();
-      if (mUp.startsWith('SM-S928')) deviceName = 'Samsung Galaxy S24 Ultra';
-      else if (mUp.startsWith('SM-S926')) deviceName = 'Samsung Galaxy S24+';
-      else if (mUp.startsWith('SM-S921')) deviceName = 'Samsung Galaxy S24';
-      else if (mUp.startsWith('SM-S918')) deviceName = 'Samsung Galaxy S23 Ultra';
-      else if (mUp.startsWith('SM-S916')) deviceName = 'Samsung Galaxy S23+';
-      else if (mUp.startsWith('SM-S911')) deviceName = 'Samsung Galaxy S23';
-      else if (mUp.startsWith('SM-S908')) deviceName = 'Samsung Galaxy S22 Ultra';
-      else if (mUp.startsWith('SM-S901') || mUp.startsWith('SM-S906')) deviceName = 'Samsung Galaxy S22';
-      else if (mUp.startsWith('SM-G998')) deviceName = 'Samsung Galaxy S21 Ultra';
-      else if (mUp.startsWith('SM-G991') || mUp.startsWith('SM-G996')) deviceName = 'Samsung Galaxy S21';
-      else if (mUp.startsWith('SM-A546')) deviceName = 'Samsung Galaxy A54';
-      else if (mUp.startsWith('SM-A536')) deviceName = 'Samsung Galaxy A53';
-      else if (mUp.startsWith('SM-A528') || mUp.startsWith('SM-A525') || mUp.startsWith('SM-A526')) deviceName = 'Samsung Galaxy A52';
-      else if (mUp.startsWith('SM-A346')) deviceName = 'Samsung Galaxy A34';
-      else if (mUp.startsWith('SM-A556')) deviceName = 'Samsung Galaxy A55';
-      else if (mUp.startsWith('SM-A356')) deviceName = 'Samsung Galaxy A35';
-      else if (mUp.startsWith('SM-A145') || mUp.startsWith('SM-A146')) deviceName = 'Samsung Galaxy A14';
-      else if (mUp.startsWith('SM-A155') || mUp.startsWith('SM-A156')) deviceName = 'Samsung Galaxy A15';
-      else if (mUp.startsWith('SM-')) deviceName = `Samsung (${model})`;
-      else if (mUp.startsWith('PIXEL')) deviceName = `Google ${model}`;
-      else if (mUp === '2201117PG') deviceName = 'Xiaomi Redmi Note 11 Pro';
-      else if (mUp === '2312DRA50G') deviceName = 'Xiaomi Redmi Note 13 Pro';
-      else if (mUp === 'M2102J20SG') deviceName = 'POCO X3 Pro';
-      else deviceName = `${model} (Android)`;
+      
+      if (model) {
+        const mUp = model.toUpperCase();
+        if (mUp.startsWith('SM-S928')) deviceName = 'Samsung Galaxy S24 Ultra';
+        else if (mUp.startsWith('SM-S926')) deviceName = 'Samsung Galaxy S24+';
+        else if (mUp.startsWith('SM-S921')) deviceName = 'Samsung Galaxy S24';
+        else if (mUp.startsWith('SM-S918')) deviceName = 'Samsung Galaxy S23 Ultra';
+        else if (mUp.startsWith('SM-S916')) deviceName = 'Samsung Galaxy S23+';
+        else if (mUp.startsWith('SM-S911')) deviceName = 'Samsung Galaxy S23';
+        else if (mUp.startsWith('SM-S908')) deviceName = 'Samsung Galaxy S22 Ultra';
+        else if (mUp.startsWith('SM-S901') || mUp.startsWith('SM-S906')) deviceName = 'Samsung Galaxy S22';
+        else if (mUp.startsWith('SM-G998')) deviceName = 'Samsung Galaxy S21 Ultra';
+        else if (mUp.startsWith('SM-G991') || mUp.startsWith('SM-G996')) deviceName = 'Samsung Galaxy S21';
+        else if (mUp.startsWith('SM-A546')) deviceName = 'Samsung Galaxy A54';
+        else if (mUp.startsWith('SM-A536')) deviceName = 'Samsung Galaxy A53';
+        else if (mUp.startsWith('SM-A528') || mUp.startsWith('SM-A525') || mUp.startsWith('SM-A526')) deviceName = 'Samsung Galaxy A52';
+        else if (mUp.startsWith('SM-A346')) deviceName = 'Samsung Galaxy A34';
+        else if (mUp.startsWith('SM-A556')) deviceName = 'Samsung Galaxy A55';
+        else if (mUp.startsWith('SM-A356')) deviceName = 'Samsung Galaxy A35';
+        else if (mUp.startsWith('SM-A145') || mUp.startsWith('SM-A146')) deviceName = 'Samsung Galaxy A14';
+        else if (mUp.startsWith('SM-A155') || mUp.startsWith('SM-A156')) deviceName = 'Samsung Galaxy A15';
+        else if (mUp.startsWith('SM-')) deviceName = `Samsung (${model})`;
+        else if (mUp.startsWith('PIXEL')) deviceName = `Google ${model}`;
+        else if (mUp === '2201117PG') deviceName = 'Xiaomi Redmi Note 11 Pro';
+        else if (mUp === '2312DRA50G') deviceName = 'Xiaomi Redmi Note 13 Pro';
+        else if (mUp === 'M2102J20SG') deviceName = 'POCO X3 Pro';
+        else deviceName = `${model} (Android)`;
+      } else {
+        deviceName = isTablet ? 'Tablet (Android)' : 'Móvil (Android)';
+      }
+    } else if (uaLower.includes('windows phone')) {
+      osType = 'Windows Phone';
+      deviceName = 'Móvil (Windows)';
+      iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
+    } else if (uaLower.includes('windows')) {
+      osType = 'Windows';
+      deviceName = uaLower.includes('windows nt 10.0') ? 'PC (Windows 10/11)' : 'PC (Windows)';
+    } else if (uaLower.includes('macintosh') || uaLower.includes('mac os')) {
+      osType = 'macOS';
+      deviceName = 'MacBook / Mac (macOS)';
+    } else if (uaLower.includes('linux')) {
+      osType = 'Linux';
+      deviceName = 'PC (Linux)';
+    } else if (uaLower.includes('cros')) {
+      osType = 'ChromeOS';
+      deviceName = 'Chromebook (ChromeOS)';
     } else {
-      deviceName = isTablet ? 'Tablet (Android)' : 'Móvil (Android)';
+      deviceName = 'Dispositivo';
     }
-  } else if (uaLower.includes('windows phone')) {
-    osType = 'Windows Phone';
-    deviceName = 'Móvil (Windows)';
-    iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
-  } else if (uaLower.includes('windows')) {
-    osType = 'Windows';
-    deviceName = uaLower.includes('windows nt 10.0') ? 'PC (Windows 10/11)' : 'PC (Windows)';
-  } else if (uaLower.includes('macintosh') || uaLower.includes('mac os')) {
-    osType = 'macOS';
-    deviceName = 'MacBook / Mac (macOS)';
-  } else if (uaLower.includes('linux')) {
-    osType = 'Linux';
-    deviceName = 'PC (Linux)';
-  } else if (uaLower.includes('cros')) {
-    osType = 'ChromeOS';
-    deviceName = 'Chromebook (ChromeOS)';
-  } else {
-    deviceName = 'Dispositivo';
-  }
 
-  const label = screenRes ? `${deviceName} · ${screenRes}` : deviceName;
-  return { label, iconSvg, deviceName, osType, screenRes };
+    const label = screenRes ? `${deviceName} · ${screenRes}` : deviceName;
+    return { label, iconSvg, deviceName, osType, screenRes };
+  } catch (err) {
+    console.warn("Error in formatDeviceAndOs:", err);
+    return {
+      label: notesStr ? String(notesStr).substring(0, 30) : 'Dispositivo',
+      iconSvg: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect></svg>',
+      deviceName: 'Dispositivo',
+      osType: 'Desconocido',
+      screenRes: ''
+    };
+  }
 }
 
 function renderLoginLogs(logs) {
   const tbody = document.getElementById('tbl-login-logs-body');
   if (!tbody) return;
 
-  if (logs.length === 0) {
+  if (!logs || logs.length === 0) {
     const emptyMsg = loginLogsViewMode === 'today' 
       ? 'No hay registros de conexión para el día de hoy.' 
       : 'No hay registros que coincidan con la búsqueda.';
@@ -12203,7 +12219,8 @@ function renderLoginLogs(logs) {
   }
 
   const uniqueIpsByUserAndDate = {};
-  cachedLoginLogs.forEach(log => {
+  (cachedLoginLogs || []).forEach(log => {
+    if (!log) return;
     const userKey = (log.title || log.type || '').trim().toUpperCase();
     const dateKey = (log.date || '').trim();
     const rawPhone = (log.phone || '').trim();
@@ -12219,6 +12236,7 @@ function renderLoginLogs(logs) {
   });
 
   tbody.innerHTML = logs.map(log => {
+    if (!log) return '';
     const name = log.type || 'Desconocido';
     const userKey = (log.title || log.type || '').trim().toUpperCase();
     const dateKey = (log.date || '').trim();
@@ -12237,7 +12255,10 @@ function renderLoginLogs(logs) {
       }
     }
     
-    const devInfo = formatDeviceAndOs(log.notes || '');
+    let devInfo = { label: 'Dispositivo', iconSvg: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect></svg>', osType: 'Desconocido', screenRes: '' };
+    try {
+      devInfo = formatDeviceAndOs(log.notes || '');
+    } catch (_) {}
 
     const key = userKey + '_' + dateKey;
     const ipSet = uniqueIpsByUserAndDate[key];
@@ -12294,9 +12315,9 @@ function filterLoginLogs() {
   const todayStr = new Date().toLocaleDateString('en-CA');
   
   // 1. Filtrar por fecha según loginLogsViewMode ('today' vs 'all')
-  let dateFilteredLogs = cachedLoginLogs;
+  let dateFilteredLogs = cachedLoginLogs || [];
   if (loginLogsViewMode === 'today') {
-    dateFilteredLogs = cachedLoginLogs.filter(log => (log.date || '') === todayStr);
+    dateFilteredLogs = (cachedLoginLogs || []).filter(log => log && (log.date || '') === todayStr);
   }
 
   const searchInput = document.getElementById('input-search-login-logs');
@@ -12308,6 +12329,7 @@ function filterLoginLogs() {
   }
 
   const searchFiltered = dateFilteredLogs.filter(log => {
+    if (!log) return false;
     const name = (log.type || 'desconocido').toLowerCase();
     const dni = (log.title || '').toLowerCase();
     const rawDate = log.date || '';
@@ -12315,8 +12337,11 @@ function filterLoginLogs() {
     const time = (log.time || '').toLowerCase();
     const rawPhone = (log.phone || '').toLowerCase();
     const notes = (log.notes || '').toLowerCase();
-    const devInfo = formatDeviceAndOs(log.notes || '');
-    const devLabel = devInfo.label.toLowerCase();
+    let devLabel = '';
+    try {
+      const devInfo = formatDeviceAndOs(log.notes || '');
+      devLabel = (devInfo && devInfo.label) ? devInfo.label.toLowerCase() : '';
+    } catch (_) {}
 
     return name.includes(query) || 
            dni.includes(query) || 
