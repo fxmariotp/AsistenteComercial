@@ -238,28 +238,49 @@ if (dni && name && COMERCIALES[dni] === name) {
 async function detectClientDeviceInfo() {
   let publicIp = 'Desconocida';
   
-  // 1. Obtener IP pública real consultando desde el navegador del cliente
+  // 1. Consultar múltiples proveedores de IP pública en paralelo con fallback inmediato y seguro
+  const fetchIpHelper = (url, parseJson = true) => {
+    return new Promise(resolve => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      fetch(url, { signal: controller.signal })
+        .then(res => {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return parseJson ? res.json() : res.text();
+        })
+        .then(data => {
+          clearTimeout(timeoutId);
+          if (parseJson) {
+            const ip = data && (data.ip || data.query);
+            if (ip && typeof ip === 'string') resolve(ip.trim());
+            else resolve(null);
+          } else {
+            if (data && typeof data === 'string' && data.trim()) resolve(data.trim());
+            else resolve(null);
+          }
+        })
+        .catch(() => {
+          clearTimeout(timeoutId);
+          resolve(null);
+        });
+    });
+  };
+
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (ipRes.ok) {
-      const ipData = await ipRes.json();
-      if (ipData && ipData.ip) publicIp = ipData.ip;
-    }
-  } catch (e) {
-    try {
-      const controller2 = new AbortController();
-      const timeoutId2 = setTimeout(() => controller2.abort(), 2000);
-      const ipRes2 = await fetch('https://api64.ipify.org?format=json', { signal: controller2.signal });
-      clearTimeout(timeoutId2);
-      if (ipRes2.ok) {
-        const ipData2 = await ipRes2.json();
-        if (ipData2 && ipData2.ip) publicIp = ipData2.ip;
+    const results = await Promise.allSettled([
+      fetchIpHelper('https://api.ipify.org?format=json', true),
+      fetchIpHelper('https://api64.ipify.org?format=json', true),
+      fetchIpHelper('https://api.my-ip.io/v2/ip.json', true),
+      fetchIpHelper('https://icanhazip.com', false)
+    ]);
+
+    for (const r of results) {
+      if (r.status === 'fulfilled' && r.value) {
+        publicIp = r.value;
+        break;
       }
-    } catch (_) {}
-  }
+    }
+  } catch (_) {}
 
   let userAgent = navigator.userAgent || 'Desconocido';
   if (userAgent.length > 150) {
@@ -280,9 +301,8 @@ async function detectClientDeviceInfo() {
 async function writeLoginLogToSupabase(dni, name) {
   if (!supabaseClient) return;
   
-  const clientInfo = await detectClientDeviceInfo();
-  
   try {
+    const clientInfo = await detectClientDeviceInfo();
     const now = new Date();
     const dateStr = now.toLocaleDateString('en-CA');
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
@@ -291,7 +311,7 @@ async function writeLoginLogToSupabase(dni, name) {
     let notesStr = clientInfo.userAgent;
     if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
 
-    await supabaseClient.from('tareas').insert({
+    const { error } = await supabaseClient.from('tareas').insert({
       id: logId,
       dni: 'SYSTEM_LOGIN_LOG',
       title: dni,
@@ -304,8 +324,9 @@ async function writeLoginLogToSupabase(dni, name) {
       notified: false,
       created_at: Date.now()
     });
+    if (error) console.error("Error writing login log to Supabase:", error);
   } catch (e) {
-    console.error("Error writing login log to Supabase:", e);
+    console.error("Exception writing login log to Supabase:", e);
   }
 }
 
@@ -368,9 +389,13 @@ async function attemptLogin() {
   }
   
   if (inputPass === validPassword) {
+    const now = Date.now();
+    const todayStr = new Date().toLocaleDateString('en-CA');
     localStorage.setItem('comercial_dni', inputDni);
     localStorage.setItem('comercial_nombre', matchedName);
-    localStorage.setItem('last_user_activity_' + inputDni, String(Date.now()));
+    localStorage.setItem('last_user_activity_' + inputDni, String(now));
+    localStorage.setItem('last_connection_date_' + inputDni, todayStr);
+    sessionStorage.setItem('session_logged_' + inputDni, String(now));
     errorMsg.textContent = "";
     
     writeLoginLogToSupabase(inputDni, matchedName).finally(() => {

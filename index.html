@@ -14,17 +14,20 @@
 <script>
   (function() {
     const COMERCIALES = {
+      "20102738W": "ADRIAN ROJAS ROMERO",
       "47539234M": "ANA ROCIO GALERA MORILLO",
       "28727453Q": "BEGOÑA CABANILLAS PIQUERO",
       "47269867Z": "CHRISTIAN CABRERA MARQUEZ",
       "77976681B": "CLARA TORREÑO RUIZ",
       "28818524F": "CRISTINA SANTOS LARIOS",
       "77860623B": "FRANCISCO MORENTE",
+      "45812286N": "ISMAEL MILLAN GALLARDO",
       "47269866J": "JOSE MIGUEL CABRERA MARQUEZ",
       "51997096F": "MANUELA SALAZAR CORTES",
       "29537747C": "MARINA MARTINEZ DE LA ROSA",
       "77822813J": "MARIO TIBURCIO PORRAS",
       "30369873Y": "MERCEDES TERRON DIEZ",
+      "77843286Q": "MIGUEL HERNANDEZ JIMÉNEZ",
       "53283415M": "MÓNICA CEJUDO HIDALGO",
       "MIGUELR": "MIGUEL RODRIGUEZ FLORES",
       "MARIAC": "MARIA CABRERA",
@@ -11171,17 +11174,20 @@ function openNaturgy() {
 
 // ── BASE DE DATOS DE COMERCIALES (DNI -> NOMBRE) ──
 const COMERCIALES = {
+  "20102738W": "ADRIAN ROJAS ROMERO",
   "47539234M": "ANA ROCIO GALERA MORILLO",
   "28727453Q": "BEGOÑA CABANILLAS PIQUERO",
   "47269867Z": "CHRISTIAN CABRERA MARQUEZ",
   "77976681B": "CLARA TORREÑO RUIZ",
   "28818524F": "CRISTINA SANTOS LARIOS",
   "77860623B": "FRANCISCO MORENTE",
+  "45812286N": "ISMAEL MILLAN GALLARDO",
   "47269866J": "JOSE MIGUEL CABRERA MARQUEZ",
   "51997096F": "MANUELA SALAZAR CORTES",
   "29537747C": "MARINA MARTINEZ DE LA ROSA",
   "77822813J": "MARIO TIBURCIO PORRAS",
   "30369873Y": "MERCEDES TERRON DIEZ",
+  "77843286Q": "MIGUEL HERNANDEZ JIMÉNEZ",
   "53283415M": "MÓNICA CEJUDO HIDALGO",
   "MIGUELR": "MIGUEL RODRIGUEZ FLORES",
   "MARIAC": "MARIA CABRERA",
@@ -11191,21 +11197,26 @@ const COMERCIALES = {
 };
 
 const DEFAULT_VACATIONS = {
+  "20102738W": [],
   "47539234M": ["2026-03-02", "2026-04-01", "2026-06-05", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-17", "2026-08-18", "2026-08-19", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09"],
   "28727453Q": ["2026-03-20", "2026-03-30", "2026-03-31", "2026-05-05", "2026-06-05"],
   "47269867Z": ["2026-02-05", "2026-02-06", "2026-02-25", "2026-02-26", "2026-03-02", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-20", "2026-04-21", "2026-04-23", "2026-04-24", "2026-05-05", "2026-05-06", "2026-06-05"],
   "77976681B": [],
   "28818524F": ["2026-03-04", "2026-03-05", "2026-03-06", "2026-03-31", "2026-04-01", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-06-05", "2026-07-13", "2026-07-14", "2026-07-15", "2026-07-16", "2026-07-17"],
   "77860623B": ["2026-02-11", "2026-02-12", "2026-02-13", "2026-03-05", "2026-03-06", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-20", "2026-04-21", "2026-04-23", "2026-04-24", "2026-05-22", "2026-06-05"],
+  "45812286N": [],
   "47269866J": ["2026-03-30", "2026-03-31", "2026-04-01", "2026-04-20", "2026-04-21", "2026-04-23", "2026-04-24", "2026-06-05", "2026-07-27", "2026-07-28", "2026-07-29", "2026-07-30", "2026-07-31"],
   "51997096F": ["2026-03-02", "2026-03-27", "2026-04-23", "2026-04-24", "2026-06-05", "2026-07-22", "2026-07-23", "2026-07-24"],
   "29537747C": ["2026-02-19", "2026-02-20", "2026-02-25", "2026-02-26", "2026-02-27", "2026-04-21", "2026-04-23", "2026-04-24", "2026-06-05", "2026-06-29", "2026-07-10"],
   "77822813J": ["2026-04-20", "2026-04-21", "2026-04-23", "2026-04-24", "2026-06-05", "2026-06-22", "2026-06-23", "2026-07-10", "2026-08-05", "2026-08-06", "2026-08-07"],
   "30369873Y": ["2026-02-05", "2026-02-06", "2026-04-21", "2026-04-23", "2026-04-24", "2026-06-05", "2026-07-10", "2026-07-14", "2026-07-15", "2026-07-22", "2026-07-23", "2026-07-24"],
+  "77843286Q": [],
   "53283415M": ["2026-02-13", "2026-03-27", "2026-04-01", "2026-05-05", "2026-05-11", "2026-05-12", "2026-05-13", "2026-05-14", "2026-05-15", "2026-06-05", "2026-06-08", "2026-07-24", "2026-07-27"],
   "MIGUELR": [],
   "MARIAC": [],
-  "53343101Y": [],
+  "28750523V": [],
+  "29502580C": [],
+  "53343101Y": []
 };
 
 const DEFAULT_VACATION_MOTIVES = {};
@@ -11330,7 +11341,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930411;
+const CURRENT_BUILD_VERSION = 1785002930412;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11423,14 +11434,25 @@ function loadSession() {
     currentAgentDni = dni;
     currentAgentName = name;
     
-    // Inactividad y reconexión (> 2 horas = 7.200.000 ms)
-    const activityKey = 'last_user_activity_' + currentAgentDni;
-    const storedLastActivity = Number(localStorage.getItem(activityKey) || 0);
+    // ── GESTIÓN DE REGISTRO DE CONEXIÓN Y RECONEXIÓN ──
     const now = Date.now();
-    if (storedLastActivity > 0 && (now - storedLastActivity) >= INACTIVITY_RECONNECTION_THRESHOLD_MS) {
-      console.log(`[Reconexión en sesión] Agente ${name} (${dni}) inactivo durante más de 2 horas. Registrando reconexión...`);
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    const sessionKey = 'session_logged_' + currentAgentDni;
+    const dateKey = 'last_connection_date_' + currentAgentDni;
+    const activityKey = 'last_user_activity_' + currentAgentDni;
+    
+    const isNewTabSession = !sessionStorage.getItem(sessionKey);
+    const isNewDay = localStorage.getItem(dateKey) !== todayStr;
+    const storedLastActivity = Number(localStorage.getItem(activityKey) || 0);
+    const isLongInactivity = storedLastActivity > 0 && (now - storedLastActivity) >= INACTIVITY_RECONNECTION_THRESHOLD_MS;
+    
+    if (isNewTabSession || isNewDay || isLongInactivity) {
+      const isReconnection = isLongInactivity && !isNewTabSession && !isNewDay;
+      sessionStorage.setItem(sessionKey, String(now));
+      localStorage.setItem(dateKey, todayStr);
       localStorage.setItem(activityKey, String(now));
-      writeConnectionLog(currentAgentDni, currentAgentName, true);
+      console.log(`[Registro de conexión] Agente: ${name} (${dni}) | Nueva sesión: ${isNewTabSession} | Nuevo día: ${isNewDay} | Reconexión: ${isReconnection}`);
+      writeConnectionLog(currentAgentDni, currentAgentName, isReconnection);
     } else {
       localStorage.setItem(activityKey, String(now));
     }
@@ -11664,28 +11686,49 @@ function updateSelectColor(selectEl) {
 async function detectClientDeviceInfo() {
   let publicIp = 'Desconocida';
   
-  // 1. Obtener IP pública real consultando desde el navegador del cliente
+  // 1. Consultar múltiples proveedores de IP pública en paralelo con fallback inmediato y seguro
+  const fetchIpHelper = (url, parseJson = true) => {
+    return new Promise(resolve => {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      fetch(url, { signal: controller.signal })
+        .then(res => {
+          if (!res.ok) throw new Error('HTTP ' + res.status);
+          return parseJson ? res.json() : res.text();
+        })
+        .then(data => {
+          clearTimeout(timeoutId);
+          if (parseJson) {
+            const ip = data && (data.ip || data.query);
+            if (ip && typeof ip === 'string') resolve(ip.trim());
+            else resolve(null);
+          } else {
+            if (data && typeof data === 'string' && data.trim()) resolve(data.trim());
+            else resolve(null);
+          }
+        })
+        .catch(() => {
+          clearTimeout(timeoutId);
+          resolve(null);
+        });
+    });
+  };
+
   try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2000);
-    const ipRes = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (ipRes.ok) {
-      const ipData = await ipRes.json();
-      if (ipData && ipData.ip) publicIp = ipData.ip;
-    }
-  } catch (e) {
-    try {
-      const controller2 = new AbortController();
-      const timeoutId2 = setTimeout(() => controller2.abort(), 2000);
-      const ipRes2 = await fetch('https://api64.ipify.org?format=json', { signal: controller2.signal });
-      clearTimeout(timeoutId2);
-      if (ipRes2.ok) {
-        const ipData2 = await ipRes2.json();
-        if (ipData2 && ipData2.ip) publicIp = ipData2.ip;
+    const results = await Promise.allSettled([
+      fetchIpHelper('https://api.ipify.org?format=json', true),
+      fetchIpHelper('https://api64.ipify.org?format=json', true),
+      fetchIpHelper('https://api.my-ip.io/v2/ip.json', true),
+      fetchIpHelper('https://icanhazip.com', false)
+    ]);
+
+    for (const r of results) {
+      if (r.status === 'fulfilled' && r.value) {
+        publicIp = r.value;
+        break;
       }
-    } catch (_) {}
-  }
+    }
+  } catch (_) {}
 
   let userAgent = navigator.userAgent || 'Desconocido';
   if (userAgent.length > 150) {
@@ -11706,7 +11749,8 @@ async function detectClientDeviceInfo() {
 let isLoggingConnectionInProgress = false;
 
 async function writeConnectionLog(dni, name, isReconnection = false) {
-  if (!supabaseClient || !dni || isLoggingConnectionInProgress) return;
+  if (!supabaseClient || !dni) return;
+  if (isLoggingConnectionInProgress) return;
   isLoggingConnectionInProgress = true;
   
   try {
@@ -11720,7 +11764,7 @@ async function writeConnectionLog(dni, name, isReconnection = false) {
     if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
     if (isReconnection) notesStr += ` ###RECONEXION###:true`;
 
-    await supabaseClient.from('tareas').insert({
+    const { error } = await supabaseClient.from('tareas').insert({
       id: logId,
       dni: 'SYSTEM_LOGIN_LOG',
       title: dni,
@@ -11733,6 +11777,12 @@ async function writeConnectionLog(dni, name, isReconnection = false) {
       notified: false,
       created_at: Date.now()
     });
+    
+    if (error) {
+      console.error("Error al registrar conexión en Supabase:", error);
+    } else {
+      console.log(`[Conexión registrada en Supabase] Agente: ${name} (${dni}) | IP: ${clientInfo.publicIp} | Reconexión: ${isReconnection}`);
+    }
     
     // Si el panel de registro de conexiones está visible, refrescar la tabla
     const activePanel = document.querySelector('.panel.active');
@@ -11760,8 +11810,21 @@ function checkAndRecordUserActivity() {
   if (now - lastActivityCheckTime < 10000) return;
   lastActivityCheckTime = now;
   
+  const todayStr = new Date().toLocaleDateString('en-CA');
+  const dateKey = 'last_connection_date_' + currentAgentDni;
   const activityKey = 'last_user_activity_' + currentAgentDni;
+  const sessionKey = 'session_logged_' + currentAgentDni;
   const storedLastActivity = Number(localStorage.getItem(activityKey) || 0);
+  
+  // Si cruzamos la medianoche y es un nuevo día mientras la pestaña sigue abierta
+  if (localStorage.getItem(dateKey) !== todayStr) {
+    console.log(`[Nuevo día detectado] Agente ${currentAgentName} (${currentAgentDni}). Registrando conexión del día...`);
+    localStorage.setItem(dateKey, todayStr);
+    localStorage.setItem(activityKey, String(now));
+    sessionStorage.setItem(sessionKey, String(now));
+    writeConnectionLog(currentAgentDni, currentAgentName, false);
+    return;
+  }
   
   if (storedLastActivity > 0 && (now - storedLastActivity) >= INACTIVITY_RECONNECTION_THRESHOLD_MS) {
     console.log(`[Reconexión detectada] Agente ${currentAgentName} (${currentAgentDni}) inactivo durante más de 2 horas. Registrando reconexión...`);
