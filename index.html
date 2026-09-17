@@ -11318,7 +11318,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930408;
+const CURRENT_BUILD_VERSION = 1785002930409;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -12658,12 +12658,20 @@ async function onLoginSuccess() {
 
 function updateGreeting() {
   const hour = new Date().getHours();
-  let saludo = "Buenos dias";
-  if (hour >= 12 && hour < 20) saludo = "Buenas tardes";
-  else if (hour >= 20 || hour < 6) saludo = "Buenas noches";
+  let saludo = "Buenos días";
+  if (hour >= 6 && hour < 12) {
+    saludo = "Buenos días";
+  } else if (hour >= 12 && hour < 20) {
+    saludo = "Buenas tardes";
+  } else {
+    saludo = "Buenas noches";
+  }
   
-  const shortName = getShortName(currentAgentName);
-  document.getElementById('db-welcome-greeting').textContent = `${saludo}, ${shortName}`;
+  const shortName = (typeof getShortName === 'function' && typeof currentAgentName !== 'undefined') ? getShortName(currentAgentName) : '';
+  const el = document.getElementById('db-welcome-greeting');
+  if (el) {
+    el.textContent = shortName ? `${saludo}, ${shortName}` : `${saludo},`;
+  }
 }
 
 // Hub navigation lines removed
@@ -12709,6 +12717,7 @@ function updateClock(){
   const elDbDate = document.getElementById('db-clock-date');
   if(elDbTime) elDbTime.textContent = now.toLocaleTimeString('es-ES', {hour:'2-digit', minute:'2-digit', second:'2-digit'});
   if(elDbDate) elDbDate.textContent = now.toLocaleDateString('es-ES', {weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  updateGreeting();
 }
 updateClock();
 setInterval(updateClock, 1000);
