@@ -327,6 +327,34 @@ body {
   height: 20px;
 }
 
+.topbar-logo-wrap {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 2px 4px;
+  border-radius: 8px;
+  transition: opacity 0.15s ease;
+  user-select: none;
+}
+.topbar-logo-wrap:hover {
+  opacity: 0.82;
+}
+#topbar-logo-img {
+  height: 32px;
+  width: auto;
+  max-width: 140px;
+  object-fit: contain;
+  display: block;
+}
+.topbar-divider {
+  width: 1.5px;
+  height: 28px;
+  background: var(--border);
+  opacity: 0.8;
+  margin: 0 2px;
+  flex-shrink: 0;
+}
+
 .topbar-t {
   font-size: 19px;
   font-weight: 700;
@@ -3170,6 +3198,14 @@ hr {
 
 /* Header Logout responsive */
 @media (max-width: 576px) {
+  #topbar-logo-img {
+    height: 26px !important;
+    max-width: 100px !important;
+  }
+  .topbar-divider {
+    height: 20px !important;
+    margin: 0 1px !important;
+  }
   .topbar-logout-text,
   .topbar-password-text,
   .topbar-gerente-text,
@@ -4093,9 +4129,10 @@ input:focus, select:focus, textarea:focus {
       <button class="menu-toggle-btn" onclick="toggleMobileSidebar()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:20px;height:20px;display:block;"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
       </button>
-      <div class="topbar-icon" id="topbar-icon-wrap">
-        <svg id="topbar-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path></svg>
+      <div class="topbar-logo-wrap" onclick="showPanel('dashboard')" title="Ir a Inicio">
+        <img src="logo-renosur-black.png" alt="Renosur Grupo" id="topbar-logo-img" onerror="this.src='logo-renosur.png'" />
       </div>
+      <div class="topbar-divider"></div>
       <div>
         <div class="topbar-t" id="ptitle">Textos legales</div>
         <div class="topbar-s" id="psub">Selecciona la compañia y sigue el guion</div>
@@ -9535,9 +9572,12 @@ function showPanel(id, btn){
   document.getElementById('ptitle').textContent=p.title;
   document.getElementById('psub').textContent=p.sub;
   const wrap=document.getElementById('topbar-icon-wrap');
-  wrap.style.background=p.color+'22';
-  document.getElementById('topbar-icon').style.color=p.color;
-  document.getElementById('topbar-icon').innerHTML=p.icon;
+  if (wrap) wrap.style.background=p.color+'22';
+  const iconEl=document.getElementById('topbar-icon');
+  if (iconEl) {
+    iconEl.style.color=p.color;
+    iconEl.innerHTML=p.icon;
+  }
   if(id==='comparativa') calcComp();
   if(id==='condiciones') renderCondiciones();
   if(id==='archivos') renderAdmin();
@@ -11216,7 +11256,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930405;
+const CURRENT_BUILD_VERSION = 1785002930406;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
