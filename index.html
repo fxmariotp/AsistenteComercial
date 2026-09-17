@@ -1847,49 +1847,49 @@ hr {
 
 
 /* ── DASHBOARD VIEW ── */
-/* ── DASHBOARD VIEW (LIQUID GLASS) ── */
+/* ── DASHBOARD VIEW (LIQUID GLASS COMPACT) ── */
 .db-header {
   background: rgba(255, 255, 255, 0.75) !important;
   background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.92) 0%, rgba(255, 255, 255, 0.6) 100%) !important;
   backdrop-filter: blur(20px) saturate(180%) !important;
   -webkit-backdrop-filter: blur(20px) saturate(180%) !important;
   border: 1.5px solid rgba(255, 255, 255, 0.9) !important;
-  border-radius: var(--r) !important;
-  padding: 10px 20px !important;
-  margin-bottom: 12px !important;
-  box-shadow: 0 8px 30px rgba(32, 40, 84, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  border-radius: 12px !important;
+  padding: 6px 16px !important;
+  margin-bottom: 8px !important;
+  box-shadow: 0 4px 20px rgba(32, 40, 84, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: space-between !important;
   flex-wrap: wrap !important;
-  gap: 12px !important;
+  gap: 8px !important;
 }
 .db-header::after {
   display: none !important;
 }
 .db-welcome {
   flex: 1;
-  min-width: 280px;
+  min-width: 240px;
 }
 .db-welcome h1 {
-  font-size: 20px !important;
+  font-size: 17px !important;
   font-weight: 700 !important;
   color: var(--text) !important;
   letter-spacing: -0.03em !important;
-  margin-bottom: 2px !important;
+  margin-bottom: 1px !important;
   text-shadow: none !important;
 }
 .db-kpis {
   display: flex !important;
   align-items: center !important;
-  gap: 12px !important;
+  gap: 10px !important;
   background: rgba(255, 255, 255, 0.6) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
   border: 1px solid rgba(255, 255, 255, 0.9) !important;
-  border-radius: 10px !important;
-  padding: 5px 14px !important;
-  margin-top: 6px !important;
+  border-radius: 8px !important;
+  padding: 2px 10px !important;
+  margin-top: 3px !important;
   box-shadow: 0 2px 8px rgba(32, 40, 84, 0.02) !important;
   width: max-content !important;
   max-width: 100% !important;
@@ -1897,15 +1897,15 @@ hr {
 .db-kpi-item {
   display: flex !important;
   flex-direction: column !important;
-  gap: 2px !important;
+  gap: 1px !important;
 }
 .db-kpi-val {
-  font-size: 15px !important;
+  font-size: 13.5px !important;
   font-weight: 700 !important;
   color: var(--blue) !important;
 }
 .db-kpi-lbl {
-  font-size: 10px !important;
+  font-size: 9px !important;
   color: var(--t3) !important;
   font-weight: 600 !important;
   text-transform: uppercase !important;
@@ -1913,7 +1913,7 @@ hr {
 }
 .db-kpi-divider {
   width: 1px !important;
-  height: 20px !important;
+  height: 16px !important;
   background: rgba(200, 205, 215, 0.45) !important;
 }
 .db-clock {
@@ -1921,14 +1921,14 @@ hr {
   background: rgba(255, 255, 255, 0.6) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border-radius: 10px !important;
-  padding: 6px 14px !important;
+  border-radius: 8px !important;
+  padding: 4px 12px !important;
   border: 1px solid rgba(255, 255, 255, 0.9) !important;
   box-shadow: 0 2px 8px rgba(32, 40, 84, 0.02) !important;
-  min-width: 190px !important;
+  min-width: 160px !important;
 }
 .db-clock-time {
-  font-size: 22px !important;
+  font-size: 18px !important;
   font-weight: 700 !important;
   color: var(--text) !important;
   font-family: inherit !important;
@@ -1936,11 +1936,11 @@ hr {
   text-shadow: none !important;
 }
 .db-clock-date {
-  font-size: 11px !important;
+  font-size: 10.5px !important;
   font-weight: 500 !important;
   color: var(--t2) !important;
   text-transform: capitalize !important;
-  margin-top: 2px !important;
+  margin-top: 1px !important;
 }
 .db-logout-btn {
   background: none;
@@ -1959,25 +1959,25 @@ hr {
   opacity: 0.8;
 }
 
-/* ── INTERACTIVE AGENDA FILTER PILLS (LIQUID GLASS) ── */
+/* ── INTERACTIVE AGENDA FILTER PILLS (LIQUID GLASS COMPACT) ── */
 .db-agenda-filters {
   display: flex;
-  gap: 6px;
-  margin-bottom: 10px;
+  gap: 4px;
+  margin-bottom: 6px;
 }
 .db-filter-pill {
   background: rgba(255, 255, 255, 0.65);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.85);
-  border-radius: 20px;
-  padding: 4px 12px;
-  font-size: 11px;
+  border-radius: 14px;
+  padding: 2px 8px;
+  font-size: 10px;
   font-weight: 700;
   color: var(--t2);
   cursor: pointer;
   transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.02);
 }
 .db-filter-pill:hover {
   border-color: var(--blue);
@@ -1988,7 +1988,7 @@ hr {
   background: var(--blue);
   border-color: var(--blue);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(53, 127, 191, 0.35);
+  box-shadow: 0 3px 8px rgba(53, 127, 191, 0.3);
 }
 
 
@@ -2039,6 +2039,13 @@ hr {
   .app.dashboard-active .menu-toggle-btn {
     display: inline-flex !important;
   }
+}
+
+.app.dashboard-active .topbar {
+  height: 58px;
+}
+.app.dashboard-active .content {
+  padding: 10px 20px !important;
 }
 
 .table-responsive {
@@ -3041,13 +3048,13 @@ hr {
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* Dashboard Widget Preview Styles (Liquid Glass) */
+/* Dashboard Widget Preview Styles (Liquid Glass Compact) */
 .db-widgets-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: 10px;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-top: 4px;
+  margin-bottom: 8px;
   position: relative;
   z-index: 10;
 }
@@ -3058,12 +3065,12 @@ hr {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-radius: var(--r);
-  padding: 14px 18px;
-  box-shadow: 0 8px 30px rgba(32, 40, 84, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 10px 14px;
+  box-shadow: 0 6px 20px rgba(32, 40, 84, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 6px;
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
   overflow: hidden;
   user-select: none;
@@ -3087,30 +3094,32 @@ hr {
 .db-widget-card:hover {
   transform: translateY(-2px);
   border-color: rgba(53, 127, 191, 0.4);
-  box-shadow: 0 14px 35px rgba(32, 40, 84, 0.08), 0 0 20px rgba(53, 127, 191, 0.12), inset 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: 0 10px 25px rgba(32, 40, 84, 0.07), 0 0 16px rgba(53, 127, 191, 0.1), inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 .db-widget-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-bottom: 1px solid rgba(200, 205, 215, 0.35);
-  padding-bottom: 8px;
-  margin-bottom: 2px;
+  border-bottom: 1px solid rgba(200, 205, 215, 0.3);
+  padding-bottom: 4px;
+  margin-bottom: 0px;
 }
 .db-widget-title {
-  font-size: 14.5px;
+  font-size: 13px;
   font-weight: 800;
   color: var(--text);
   margin: 0;
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
 }
 .db-widget-title svg {
+  width: 14px;
+  height: 14px;
   color: var(--blue);
 }
 .db-widget-link {
-  font-size: 12px;
+  font-size: 11px;
   color: var(--blue);
   font-weight: 700;
   cursor: pointer;
@@ -3127,7 +3136,7 @@ hr {
 @media (max-width: 900px) {
   .db-widgets-row {
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 10px;
   }
 }
 
@@ -3252,13 +3261,13 @@ hr {
   }
 }
 
-/* Liquid Glass Cards (Dashboard Inicio) */
+/* Liquid Glass Cards (Dashboard Inicio Compact) */
 .db-liquid-glass-row {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-top: 14px;
-  margin-bottom: 18px;
+  gap: 10px;
+  margin-top: 6px;
+  margin-bottom: 8px;
 }
 @media (max-width: 850px) {
   .db-liquid-glass-row {
@@ -3272,21 +3281,21 @@ hr {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-radius: var(--r);
-  padding: 16px 20px;
+  border-radius: 12px;
+  padding: 9px 14px;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
   cursor: pointer;
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 30px rgba(32, 40, 84, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 20px rgba(32, 40, 84, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   overflow: hidden;
   user-select: none;
 }
 .db-liquid-glass-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   border-color: var(--glass-glow);
-  box-shadow: 0 14px 35px rgba(32, 40, 84, 0.1), 0 0 22px var(--glass-glow-alpha), inset 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: 0 10px 25px rgba(32, 40, 84, 0.08), 0 0 18px var(--glass-glow-alpha), inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 .db-liquid-glass-card::before {
   content: '';
@@ -3303,30 +3312,34 @@ hr {
   left: 170%;
 }
 .db-glass-icon {
-  width: 44px;
-  height: 44px;
-  border-radius: 12px;
+  width: 34px;
+  height: 34px;
+  border-radius: 9px;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
   transition: transform 0.25s ease;
 }
+.db-glass-icon svg {
+  width: 18px;
+  height: 18px;
+}
 .db-liquid-glass-card:hover .db-glass-icon {
   transform: scale(1.08) rotate(3deg);
 }
 .db-glass-title {
-  font-size: 14.5px;
+  font-size: 13px;
   font-weight: 800;
   color: var(--text);
-  margin-bottom: 2px;
+  margin-bottom: 1px;
   letter-spacing: -0.01em;
 }
 .db-glass-desc {
-  font-size: 11.5px;
+  font-size: 10.5px;
   color: var(--t2);
   font-weight: 600;
-  line-height: 1.35;
+  line-height: 1.25;
 }
 .db-glass-arrow {
   margin-left: auto;
@@ -3406,7 +3419,7 @@ hr {
   }
 }
 
-/* Dashboard Tools Liquid Glass Cards */
+/* Dashboard Tools Liquid Glass Compact Cards */
 .db-tool-card {
   position: relative;
   background: rgba(255, 255, 255, 0.75);
@@ -3414,16 +3427,16 @@ hr {
   backdrop-filter: blur(20px) saturate(180%);
   -webkit-backdrop-filter: blur(20px) saturate(180%);
   border: 1.5px solid rgba(255, 255, 255, 0.9);
-  border-radius: var(--r);
-  padding: 14px 16px;
+  border-radius: 12px;
+  padding: 8px 12px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 12px;
+  gap: 5px;
   cursor: pointer;
   overflow: hidden;
   transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
-  box-shadow: 0 8px 30px rgba(32, 40, 84, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.95);
+  box-shadow: 0 6px 20px rgba(32, 40, 84, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.95);
   user-select: none;
 }
 .db-tool-card::before {
@@ -3443,19 +3456,19 @@ hr {
   left: 170%;
 }
 .db-tool-card:hover {
-  transform: translateY(-3px);
+  transform: translateY(-2px);
   border-color: var(--card-color, var(--blue));
-  box-shadow: 0 14px 35px rgba(32, 40, 84, 0.09), 0 0 22px var(--card-color-alpha, rgba(37, 99, 235, 0.22)), inset 0 1px 0 rgba(255, 255, 255, 1);
+  box-shadow: 0 10px 25px rgba(32, 40, 84, 0.08), 0 0 18px var(--card-color-alpha, rgba(37, 99, 235, 0.2)), inset 0 1px 0 rgba(255, 255, 255, 1);
 }
 .db-tool-card-content {
   display: flex;
   align-items: flex-start;
-  gap: 12px;
+  gap: 10px;
 }
 .db-tool-icon-wrap {
-  width: 38px;
-  height: 38px;
-  border-radius: 11px;
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
   background: var(--card-color-bg, rgba(53, 127, 191, 0.12));
   color: var(--card-color, var(--blue));
   border: 1.5px solid var(--card-color-alpha, rgba(53, 127, 191, 0.25));
@@ -3463,12 +3476,12 @@ hr {
   align-items: center;
   justify-content: center;
   flex-shrink: 0;
-  box-shadow: 0 4px 12px var(--card-color-alpha, rgba(53, 127, 191, 0.15));
+  box-shadow: 0 3px 10px var(--card-color-alpha, rgba(53, 127, 191, 0.15));
   transition: all 0.25s ease;
 }
 .db-tool-icon-wrap svg {
-  width: 18px;
-  height: 18px;
+  width: 15px;
+  height: 15px;
 }
 .db-tool-card:hover .db-tool-icon-wrap {
   transform: scale(1.08) rotate(3deg);
@@ -3476,29 +3489,29 @@ hr {
 .db-tool-info {
   display: flex;
   flex-direction: column;
-  gap: 2px;
+  gap: 1px;
 }
 .db-tool-title {
-  font-size: 14px;
+  font-size: 12.5px;
   font-weight: 800;
   color: var(--text);
   margin: 0;
   letter-spacing: -0.01em;
 }
 .db-tool-desc {
-  font-size: 11.5px;
+  font-size: 10px;
   color: var(--t2);
-  line-height: 1.35;
+  line-height: 1.25;
   margin: 0;
   letter-spacing: -0.01em;
 }
 .db-tool-action {
-  font-size: 11px;
+  font-size: 9.5px;
   font-weight: 700;
   color: var(--card-color, var(--blue));
   display: flex;
   align-items: center;
-  gap: 5px;
+  gap: 3px;
   margin-top: auto;
   align-self: flex-start;
   transition: all 0.2s ease;
@@ -3507,11 +3520,11 @@ hr {
   opacity: 0.9;
 }
 .db-tool-action svg {
-  width: 12px;
-  height: 12px;
+  width: 10px;
+  height: 10px;
 }
 .db-tool-card:hover .db-tool-action {
-  gap: 8px;
+  gap: 6px;
   opacity: 1;
   transform: translateX(2px);
 }
@@ -4278,26 +4291,26 @@ input:focus, select:focus, textarea:focus {
               Ver Calendario →
             </a>
           </div>
-          <div style="display:flex; flex-direction:column; gap:16px; justify-content:center; flex-grow:1; padding-top:10px;">
+          <div style="display:flex; flex-direction:column; gap:8px; justify-content:center; flex-grow:1; padding-top:4px;">
             <div style="display:flex; justify-content:space-around; align-items:center; text-align:center;">
               <div>
-                <div id="db-labor-total" style="font-size:26px; font-weight:800; color:var(--text);">-</div>
-                <div style="font-size:11px; font-weight:600; color:var(--t3); margin-top:2px;">Laborables</div>
+                <div id="db-labor-total" style="font-size:20px; font-weight:800; color:var(--text);">-</div>
+                <div style="font-size:10px; font-weight:600; color:var(--t3); margin-top:1px;">Laborables</div>
               </div>
-              <div style="height:32px; border-left:1.5px dashed rgba(200, 205, 215, 0.5);"></div>
+              <div style="height:24px; border-left:1.5px dashed rgba(200, 205, 215, 0.5);"></div>
               <div>
-                <div id="db-labor-transc" style="font-size:26px; font-weight:800; color:var(--green);">-</div>
-                <div style="font-size:11px; font-weight:600; color:var(--t3); margin-top:2px;">Trabajados</div>
+                <div id="db-labor-transc" style="font-size:20px; font-weight:800; color:var(--green);">-</div>
+                <div style="font-size:10px; font-weight:600; color:var(--t3); margin-top:1px;">Trabajados</div>
               </div>
-              <div style="height:32px; border-left:1.5px dashed rgba(200, 205, 215, 0.5);"></div>
+              <div style="height:24px; border-left:1.5px dashed rgba(200, 205, 215, 0.5);"></div>
               <div>
-                <div id="db-labor-rest" style="font-size:26px; font-weight:800; color:var(--blue);">-</div>
-                <div style="font-size:11px; font-weight:600; color:var(--t3); margin-top:2px;">Restantes</div>
+                <div id="db-labor-rest" style="font-size:20px; font-weight:800; color:var(--blue);">-</div>
+                <div style="font-size:10px; font-weight:600; color:var(--t3); margin-top:1px;">Restantes</div>
               </div>
             </div>
             
-            <div style="background: rgba(255, 255, 255, 0.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: var(--rs); padding: 10px 14px; box-shadow: 0 2px 6px rgba(0,0,0,0.02);">
-              <div id="db-labor-cierre" style="font-size:12px; font-weight:600; color:var(--t2);">Cargando cierre de mes...</div>
+            <div style="background: rgba(255, 255, 255, 0.58); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 8px; padding: 6px 10px; box-shadow: 0 1px 4px rgba(0,0,0,0.02);">
+              <div id="db-labor-cierre" style="font-size:11px; font-weight:600; color:var(--t2);">Cargando cierre de mes...</div>
             </div>
           </div>
         </div>
@@ -4358,8 +4371,8 @@ input:focus, select:focus, textarea:focus {
         </div>
       </div>
 
-      <div class="db-tools-section" style="margin-top: 12px;">
-        <h3 style="font-size: 14.5px; font-weight: 700; color: var(--text); margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
+      <div class="db-tools-section" style="margin-top: 6px;">
+        <h3 style="font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
           Herramientas de Trabajo
         </h3>
@@ -11305,7 +11318,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930407;
+const CURRENT_BUILD_VERSION = 1785002930408;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -13621,29 +13634,29 @@ function updateDashboardRankingWidget() {
   
   // Render circular progress wheel HTML
   container.innerHTML = `
-    <div style="display: flex; align-items: center; justify-content: center; gap: 24px; padding: 6px 0;">
-      <div style="position: relative; width: 84px; height: 84px; flex-shrink: 0;">
-        <svg width="84" height="84" viewBox="0 0 100 100">
+    <div style="display: flex; align-items: center; justify-content: center; gap: 14px; padding: 2px 0;">
+      <div style="position: relative; width: 68px; height: 68px; flex-shrink: 0;">
+        <svg width="68" height="68" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="40" stroke="var(--border)" stroke-width="8" fill="transparent" />
           <circle id="db-ranking-circle" cx="50" cy="50" r="40" stroke="${progressColor}" stroke-width="8" fill="transparent"
             stroke-dasharray="251.2" stroke-dashoffset="251.2" stroke-linecap="round" transform="rotate(-90 50 50)" style="transition: stroke-dashoffset 0.8s ease-in-out;" />
         </svg>
         <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center;">
-          <span id="db-ranking-percent" style="font-size: 16px; font-weight: 800; color: var(--text);">${info.percent}%</span>
+          <span id="db-ranking-percent" style="font-size: 13.5px; font-weight: 800; color: var(--text);">${info.percent}%</span>
         </div>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 6px; flex: 1;">
+      <div style="display: flex; flex-direction: column; gap: 4px; flex: 1;">
         <div style="display: flex; align-items: center; justify-content: space-between;">
-          <span style="font-size: 13.5px; font-weight: 800; color: var(--text);" id="db-ranking-points">
-            ${info.points.toFixed(1)} <span style="font-size: 11px; font-weight: 400; color: var(--t3);">de ${info.objective.toFixed(1)} pts</span>
+          <span style="font-size: 12.5px; font-weight: 800; color: var(--text);" id="db-ranking-points">
+            ${info.points.toFixed(1)} <span style="font-size: 10.5px; font-weight: 400; color: var(--t3);">de ${info.objective.toFixed(1)} pts</span>
           </span>
           ${badgeHtml}
         </div>
-        <div style="font-size: 11.5px; color: var(--t2); line-height: 1.4;">
+        <div style="font-size: 10.5px; color: var(--t2); line-height: 1.3;">
           ${statusText}
         </div>
-        <div style="font-size: 10.5px; font-weight: 600; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px;">
-          <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+        <div style="font-size: 9.5px; font-weight: 600; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px;">
+          <svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           Ranking Puesto #${info.rank}
         </div>
       </div>
@@ -13792,11 +13805,11 @@ function updateDashboardAgendaWidget() {
       : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle></svg>`;
       
     return `
-      <div style="display: flex; align-items: center; justify-content: space-between; padding: 8px 10px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: var(--rs); box-shadow: 0 2px 6px rgba(0,0,0,0.02); transition: all 0.2s; opacity: ${opacityVal};">
-        <div style="display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0;">
-          <div class="agenda-status-dot ${statusColor}" style="width: 8px; height: 8px; flex-shrink: 0; border-radius: 50%;"></div>
-          <span style="font-size: 13px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: ${textDecoration};">${item.title}</span>
-          <span style="font-size: 11px; color: var(--t2); flex-shrink: 0; margin-left: 4px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 150px;">${metaText}</span>
+      <div style="display: flex; align-items: center; justify-content: space-between; padding: 4px 8px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.2s; opacity: ${opacityVal};">
+        <div style="display: flex; align-items: center; gap: 6px; flex: 1; min-width: 0;">
+          <div class="agenda-status-dot ${statusColor}" style="width: 6px; height: 6px; flex-shrink: 0; border-radius: 50%;"></div>
+          <span style="font-size: 11.5px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: ${textDecoration};">${item.title}</span>
+          <span style="font-size: 10px; color: var(--t2); flex-shrink: 0; margin-left: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;">${metaText}</span>
         </div>
         <div style="display: flex; align-items: center; gap: 4px;">
           ${item.type === 'call' && item.phone ? `
