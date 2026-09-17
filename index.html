@@ -11332,7 +11332,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930414;
+const CURRENT_BUILD_VERSION = 1785002930415;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11733,6 +11733,19 @@ async function detectClientDeviceInfo() {
   const dpr = window.devicePixelRatio ? Math.round(window.devicePixelRatio * 10) / 10 : 1;
   const touchPoints = navigator.maxTouchPoints || 0;
 
+  // Detección de Safe Area (Notch vs Isla Dinámica en iPhone 14 Pro / 15 / 16)
+  let safeAreaTop = 0;
+  try {
+    if (document.body) {
+      const testDiv = document.createElement('div');
+      testDiv.style.cssText = 'position:fixed;top:0;left:-9999px;padding-top:env(safe-area-inset-top, 0px);visibility:hidden;pointer-events:none;';
+      document.body.appendChild(testDiv);
+      const computed = window.getComputedStyle(testDiv).paddingTop;
+      safeAreaTop = parseInt(computed, 10) || 0;
+      document.body.removeChild(testDiv);
+    }
+  } catch (_) {}
+
   let gpuRenderer = '';
   try {
     const canvas = document.createElement('canvas');
@@ -11760,6 +11773,7 @@ async function detectClientDeviceInfo() {
     userAgent: userAgent,
     screenRes: screenRes,
     dpr: dpr,
+    safeAreaTop: safeAreaTop,
     touchPoints: touchPoints,
     gpuRenderer: gpuRenderer,
     clientModel: clientModel
@@ -11783,6 +11797,7 @@ async function writeConnectionLog(dni, name, isReconnection = false) {
     let notesStr = clientInfo.userAgent;
     if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
     if (clientInfo.dpr) notesStr += ` ###DPR###:${clientInfo.dpr}`;
+    if (clientInfo.safeAreaTop) notesStr += ` ###INSET###:${clientInfo.safeAreaTop}`;
     if (clientInfo.clientModel) notesStr += ` ###MODEL###:${clientInfo.clientModel}`;
     if (clientInfo.gpuRenderer) notesStr += ` ###GPU###:${clientInfo.gpuRenderer}`;
     if (clientInfo.touchPoints > 0) notesStr += ` ###TOUCH###:${clientInfo.touchPoints}`;
@@ -12039,32 +12054,44 @@ function formatDeviceAndOs(notesStr) {
     osType = 'iOS';
     iconSvg = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" style="flex-shrink:0;"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect><line x1="12" y1="18" x2="12.01" y2="18"></line></svg>';
     
+    const iosVerMatch = ua.match(/iPhone OS (\d+)[_\.]?(\d+)?/i);
+    const iosMajor = iosVerMatch ? parseInt(iosVerMatch[1], 10) : 0;
+    const hasDynamicIsland = safeAreaTop >= 54;
+
     if (minDim === 440 && maxDim === 956) {
       deviceName = 'iPhone 16 Pro Max';
     } else if (minDim === 402 && maxDim === 874) {
       deviceName = 'iPhone 16 Pro';
     } else if (minDim === 430 && maxDim === 932) {
-      deviceName = 'iPhone 14 / 15 / 16 Pro Max · Plus';
+      deviceName = hasDynamicIsland ? 'iPhone 16 Plus · 15/16 Pro Max' : 'iPhone 14/15/16 Pro Max · Plus';
     } else if (minDim === 393 && maxDim === 852) {
-      deviceName = 'iPhone 14 / 15 / 16 Pro · Base';
+      deviceName = 'iPhone 16 · 15/16 Pro · 14 Pro';
     } else if (minDim === 428 && maxDim === 926) {
-      deviceName = 'iPhone 12 / 13 Pro Max · 14 Plus';
+      deviceName = 'iPhone 14 Plus · 12/13 Pro Max';
     } else if (minDim === 390 && maxDim === 844) {
       deviceName = 'iPhone 12 / 13 / 14';
     } else if (minDim === 414 && maxDim === 896) {
-      if (dpr === 2) {
-        deviceName = 'iPhone 11 / XR';
+      if (hasDynamicIsland || (dpr === 3 && iosMajor >= 18)) {
+        deviceName = 'iPhone 16 Pro / 15 Pro Max (Zoom)';
       } else if (dpr === 3) {
         deviceName = 'iPhone 11 Pro Max / XS Max';
-      } else {
+      } else if (dpr === 2) {
         deviceName = 'iPhone 11 / XR';
+      } else if (iosMajor >= 18) {
+        deviceName = 'iPhone 16 Pro / 15 / 11 / XR';
+      } else {
+        deviceName = 'iPhone 11 / XR / XS Max';
       }
     } else if (minDim === 375 && maxDim === 812) {
-      if (dpr === 3) {
+      if (hasDynamicIsland) {
+        deviceName = 'iPhone 16 / 15 Pro (Zoom)';
+      } else if (dpr === 3) {
         deviceName = 'iPhone 12/13 mini · X/XS/11 Pro';
       } else {
         deviceName = 'iPhone X / XS / 11 Pro / mini';
       }
+    } else if (minDim === 360 && maxDim === 780) {
+      deviceName = 'iPhone 16 Pro / 15 Pro (Zoom)';
     } else if (minDim === 414 && maxDim === 736) {
       deviceName = 'iPhone 6 / 7 / 8 Plus';
     } else if (minDim === 375 && maxDim === 667) {
@@ -12160,7 +12187,7 @@ function formatDeviceAndOs(notesStr) {
   }
 
   const label = screenRes ? `${deviceName} · ${screenRes}` : deviceName;
-  return { label, deviceName, osType, screenRes };
+  return { label, iconSvg, deviceName, osType, screenRes };
 }
 
 function renderLoginLogs(logs) {

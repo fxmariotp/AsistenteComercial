@@ -291,6 +291,19 @@ async function detectClientDeviceInfo() {
   const dpr = window.devicePixelRatio ? Math.round(window.devicePixelRatio * 10) / 10 : 1;
   const touchPoints = navigator.maxTouchPoints || 0;
 
+  // Detección de Safe Area (Notch vs Isla Dinámica en iPhone 14 Pro / 15 / 16)
+  let safeAreaTop = 0;
+  try {
+    if (document.body) {
+      const testDiv = document.createElement('div');
+      testDiv.style.cssText = 'position:fixed;top:0;left:-9999px;padding-top:env(safe-area-inset-top, 0px);visibility:hidden;pointer-events:none;';
+      document.body.appendChild(testDiv);
+      const computed = window.getComputedStyle(testDiv).paddingTop;
+      safeAreaTop = parseInt(computed, 10) || 0;
+      document.body.removeChild(testDiv);
+    }
+  } catch (_) {}
+
   let gpuRenderer = '';
   try {
     const canvas = document.createElement('canvas');
@@ -318,6 +331,7 @@ async function detectClientDeviceInfo() {
     userAgent: userAgent,
     screenRes: screenRes,
     dpr: dpr,
+    safeAreaTop: safeAreaTop,
     touchPoints: touchPoints,
     gpuRenderer: gpuRenderer,
     clientModel: clientModel
@@ -337,6 +351,7 @@ async function writeLoginLogToSupabase(dni, name) {
     let notesStr = clientInfo.userAgent;
     if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
     if (clientInfo.dpr) notesStr += ` ###DPR###:${clientInfo.dpr}`;
+    if (clientInfo.safeAreaTop) notesStr += ` ###INSET###:${clientInfo.safeAreaTop}`;
     if (clientInfo.clientModel) notesStr += ` ###MODEL###:${clientInfo.clientModel}`;
     if (clientInfo.gpuRenderer) notesStr += ` ###GPU###:${clientInfo.gpuRenderer}`;
     if (clientInfo.touchPoints > 0) notesStr += ` ###TOUCH###:${clientInfo.touchPoints}`;
