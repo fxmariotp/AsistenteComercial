@@ -11216,7 +11216,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930404;
+const CURRENT_BUILD_VERSION = 1785002930405;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11308,6 +11308,18 @@ function loadSession() {
   if (dni && name && COMERCIALES[dni] === name) {
     currentAgentDni = dni;
     currentAgentName = name;
+    
+    // Inactividad y reconexión (> 2 horas = 7.200.000 ms)
+    const activityKey = 'last_user_activity_' + currentAgentDni;
+    const storedLastActivity = Number(localStorage.getItem(activityKey) || 0);
+    const now = Date.now();
+    if (storedLastActivity > 0 && (now - storedLastActivity) >= INACTIVITY_RECONNECTION_THRESHOLD_MS) {
+      console.log(`[Reconexión en sesión] Agente ${name} (${dni}) inactivo durante más de 2 horas. Registrando reconexión...`);
+      localStorage.setItem(activityKey, String(now));
+      writeConnectionLog(currentAgentDni, currentAgentName, true);
+    } else {
+      localStorage.setItem(activityKey, String(now));
+    }
     
     // Seed default vacations only once
     const initializedKey = 'vacaciones_inicializadas_' + currentAgentDni;
@@ -11577,6 +11589,87 @@ async function detectClientDeviceInfo() {
   };
 }
 
+let isLoggingConnectionInProgress = false;
+
+async function writeConnectionLog(dni, name, isReconnection = false) {
+  if (!supabaseClient || !dni || isLoggingConnectionInProgress) return;
+  isLoggingConnectionInProgress = true;
+  
+  try {
+    const clientInfo = await detectClientDeviceInfo();
+    const now = new Date();
+    const dateStr = now.toLocaleDateString('en-CA');
+    const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const logId = 'login_log_' + dni + '_' + Date.now();
+    
+    let notesStr = clientInfo.userAgent;
+    if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
+    if (isReconnection) notesStr += ` ###RECONEXION###:true`;
+
+    await supabaseClient.from('tareas').insert({
+      id: logId,
+      dni: 'SYSTEM_LOGIN_LOG',
+      title: dni,
+      type: name,
+      phone: clientInfo.publicIp,
+      date: dateStr,
+      time: timeStr,
+      notes: notesStr,
+      completed: true,
+      notified: false,
+      created_at: Date.now()
+    });
+    
+    // Si el panel de registro de conexiones está visible, refrescar la tabla
+    const activePanel = document.querySelector('.panel.active');
+    if (activePanel && activePanel.id === 'panel-registroConexiones') {
+      if (typeof loadLoginLogs === 'function') {
+        loadLoginLogs();
+      }
+    }
+  } catch (e) {
+    console.error("Error al registrar conexión en Supabase:", e);
+  } finally {
+    isLoggingConnectionInProgress = false;
+  }
+}
+
+// Inactividad y Reconexión (> 2 horas = 7.200.000 ms)
+const INACTIVITY_RECONNECTION_THRESHOLD_MS = 2 * 60 * 60 * 1000;
+let lastActivityCheckTime = Date.now();
+
+function checkAndRecordUserActivity() {
+  if (!currentAgentDni) return;
+  const now = Date.now();
+  
+  // Throttle checking to at most once every 10 seconds
+  if (now - lastActivityCheckTime < 10000) return;
+  lastActivityCheckTime = now;
+  
+  const activityKey = 'last_user_activity_' + currentAgentDni;
+  const storedLastActivity = Number(localStorage.getItem(activityKey) || 0);
+  
+  if (storedLastActivity > 0 && (now - storedLastActivity) >= INACTIVITY_RECONNECTION_THRESHOLD_MS) {
+    console.log(`[Reconexión detectada] Agente ${currentAgentName} (${currentAgentDni}) inactivo durante más de 2 horas. Registrando reconexión...`);
+    localStorage.setItem(activityKey, String(now));
+    writeConnectionLog(currentAgentDni, currentAgentName, true);
+  } else {
+    localStorage.setItem(activityKey, String(now));
+  }
+}
+
+function initUserActivityTracking() {
+  const events = ['click', 'keydown', 'mousemove', 'scroll', 'touchstart', 'focus'];
+  events.forEach(evt => {
+    window.addEventListener(evt, checkAndRecordUserActivity, { passive: true });
+  });
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) {
+      checkAndRecordUserActivity();
+    }
+  });
+}
+
 let cachedLoginLogs = [];
 let showFullIpsInLogs = false;
 let loginLogsViewMode = 'today'; // 'today' | 'all'
@@ -11797,8 +11890,16 @@ function renderLoginLogs(logs) {
 
     const rowBg = isSuspicious ? 'rgba(239, 68, 68, 0.05)' : 'transparent';
 
+    const isReconnection = (log.notes || '').includes('###RECONEXION###');
+
     return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); background: ${rowBg}; transition: background 0.15s;">
-      <td style="padding: 10px 14px; font-weight: 600;">${name}</td>
+      <td style="padding: 10px 14px; font-weight: 600;">
+        ${name}
+        ${isReconnection ? `<span style="display: inline-flex; align-items: center; gap: 3.5px; font-size: 10.5px; font-weight: 700; color: var(--blue); background: rgba(13, 92, 158, 0.08); border: 1px solid rgba(13, 92, 158, 0.22); padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle;" title="Reconexión tras más de 2 horas de inactividad">
+          <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
+          Reconexión
+        </span>` : ''}
+      </td>
       <td style="padding: 10px 14px;">${dateFormatted}</td>
       <td style="padding: 10px 14px;">${time}</td>
       <td style="padding: 10px 14px;">
@@ -15388,6 +15489,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   document.getElementById('today-date').textContent=new Date().toLocaleDateString('es-ES',{weekday:'short',day:'numeric',month:'long',year:'numeric'});
   migrateLocalStorageVacations();
   loadSession();
+  initUserActivityTracking();
 });
 </script>
 

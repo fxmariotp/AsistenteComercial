@@ -370,6 +370,7 @@ async function attemptLogin() {
   if (inputPass === validPassword) {
     localStorage.setItem('comercial_dni', inputDni);
     localStorage.setItem('comercial_nombre', matchedName);
+    localStorage.setItem('last_user_activity_' + inputDni, String(Date.now()));
     errorMsg.textContent = "";
     
     writeLoginLogToSupabase(inputDni, matchedName).finally(() => {
