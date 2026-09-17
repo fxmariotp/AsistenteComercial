@@ -6914,7 +6914,7 @@ const BASE = {
     tp1:0.0890, tp2:0.0890,
     te_sin:0.1290, te_con:0.1290,
     precio_excedente:0.06,
-    sva_luz:4.13, sva_gas:0.00,
+    sva_luz:4.13, sva_gas:9.38,
     gas_rl1:{tf:0.1310, tv:0.082885},
     gas_rl2:{tf:0.270333, tv:0.080344},
     gas_rl3:{tf:0.627333, tv:0.076230},
@@ -11216,7 +11216,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930403;
+const CURRENT_BUILD_VERSION = 1785002930404;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -14955,7 +14955,7 @@ function getRenosurChatResponse(query) {
         rl1: "TV (Término Variable): 0,0829 €/kWh | TF (Término Fijo): 0,1310 €/día (Equivalente mensual: 3,93 €/mes)",
         rl2: "TV (Término Variable): 0,0803 €/kWh | TF (Término Fijo): 0,2703 €/día (Equivalente mensual: 8,11 €/mes)",
         rl3: "TV (Término Variable): 0,0762 €/kWh | TF (Término Fijo): 0,6273 €/día (Equivalente mensual: 18,82 €/mes)",
-        mantenimiento: "no disponible",
+        mantenimiento: "9,38 €/mes",
         retrocomision: "12 meses"
       }
     }
