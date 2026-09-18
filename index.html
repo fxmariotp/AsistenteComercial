@@ -4791,9 +4791,9 @@ input:focus, select:focus, textarea:focus {
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#0d5c9e"></span>Verificacion de productos contratados</div>
             <p class="nota">Lee unicamente los apartados que apliquen segun lo contratado</p>
-            <div class="prod-block"><strong>💡 Luz sin servicio · Tarifa Luz Fijo 24h</strong>Ha realizado la contratacion de su suministro de luz con la tarifa <strong>Luz Fijo 24h</strong> <span class="ry">✓ CLIENTE: SI</span></div>
+            <div class="prod-block"><strong>💡 Luz sin servicio · Tarifa Fijo Luz 24h</strong>Ha realizado la contratacion de su suministro de luz con la tarifa <strong>Fijo Luz 24h</strong> <span class="ry">✓ CLIENTE: SI</span></div>
             <div class="prod-block"><strong>🔥 Gas sin servicio · Tarifa Plan Variable Gas</strong>Ha realizado la contratacion de su suministro de gas con la tarifa <strong>Plan Variable Gas</strong> <span class="ry">✓ CLIENTE: SI</span></div>
-            <div class="prod-block" style="border-left:3px solid var(--blue2)"><strong>💡 Luz con servicio</strong>Ha realizado la contratacion de su contrato de luz la tarifa <strong>Luz Fijo 24h</strong> y el servicio <strong style="color:var(--green)">Servielectric Xpress Pieza</strong> <span class="ry">✓ CLIENTE: SI</span></div>
+            <div class="prod-block" style="border-left:3px solid var(--blue2)"><strong>💡 Luz con servicio</strong>Ha realizado la contratacion de su contrato de luz la tarifa <strong>Fijo Luz 24h</strong> y el servicio <strong style="color:var(--green)">Servielectric Xpress Piezas</strong> <span class="ry">✓ CLIENTE: SI</span></div>
             <div class="prod-block" style="border-left:3px solid var(--blue2)"><strong>🔥 Gas con servicio</strong>Ha realizado la contratacion de su suministro de Gas con la tarifa <strong>Plan Variable Gas</strong> y el servicio <strong style="color:var(--green)">Servigas Complet</strong> <span class="ry">✓ CLIENTE: SI</span></div>
           </div>
 
@@ -7070,7 +7070,7 @@ const BASE = {
     imp_electrico:0.0511,
     tarifas_luz:[
       {n:'Por Uso Luz', te:0.1120, tp1:0.1230, tp2:0.0616, nota:'Precio unico 24h sin permanencia'},
-      {n:'Por Uso Luz (CIF)', te:0.132396, tp1:0.127295, tp2:0.045522, nota:'Tarifa especial para CIF'}
+      {n:'Fijo Luz 24h (CIF)', te:0.132396, tp1:0.127295, tp2:0.045522, nota:'Tarifa especial para CIF'}
     ],
     tarifas_gas:[
       {n:'Gas Por Uso RL1', tv:0.0795, tf:0.1693},
@@ -10447,7 +10447,7 @@ function calcComp(){
       r.te_sin = 0.132396;
       r.te_con = 0.132396;
       r.tarifas_luz = [
-        {n:'Por Uso Luz (CIF)', te:0.132396, tp1:0.127295, tp2:0.045522, nota:'Tarifa especial para CIF'}
+        {n:'Fijo Luz 24h (CIF)', te:0.132396, tp1:0.127295, tp2:0.045522, nota:'Tarifa especial para CIF'}
       ];
     }
     if (cia === 'endesa' && excedente > 0) {
@@ -10581,7 +10581,7 @@ function calcComp(){
       if (cia === 'iberdrola') {
         tariffName = isCif ? 'Plan Especial (CIF)' : 'Plan Especial';
       } else if (cia === 'naturgy') {
-        tariffName = isCif ? 'Por Uso Luz (CIF)' : 'Por Uso Luz';
+        tariffName = isCif ? 'Fijo Luz 24h (CIF)' : 'Por Uso Luz';
       } else if (cia === 'endesa') {
         tariffName = (excedente > 0 ? 'Solar Plus' : 'Luz 24H') + (isCif ? ' (CIF)' : '');
       } else if (cia === 'gana') {
@@ -11411,7 +11411,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930419;
+const CURRENT_BUILD_VERSION = 1785002930420;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -15436,7 +15436,7 @@ function getRenosurChatResponse(query) {
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
         },
         cif: {
-          name: "Por Uso Luz (CIF)",
+          name: "Fijo Luz 24h (CIF)",
           base: "0,1324 €/kWh",
           sin_mantenimiento: "0,1324 €/kWh (Igual que el precio base)",
           con_mantenimiento: "0,1324 €/kWh (Igual que el precio base)",
@@ -15577,9 +15577,9 @@ function getRenosurChatResponse(query) {
       "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
   }
 
-  // 6. Naturgy Por Uso Luz CIF
-  if (q.includes('por uso luz cif') || (q.includes('por uso') && (q.includes('cif') || q.includes('empresa') || q.includes('pyme')))) {
-    return "<strong>Naturgy — Por Uso Luz (Autónomos y Pymes / CIF):</strong><br><br>" +
+  // 6. Naturgy Fijo Luz 24h CIF
+  if (q.includes('fijo luz 24h') || q.includes('fijo luz') || q.includes('fijo luz 24h cif') || q.includes('por uso luz cif') || (q.includes('naturgy') && (q.includes('cif') || q.includes('empresa') || q.includes('pyme') || q.includes('autonomo') || q.includes('autónomo')))) {
+    return "<strong>Naturgy — Fijo Luz 24h (Autónomos y Pymes / CIF):</strong><br><br>" +
       "• <strong>Término de Energía:</strong> <strong>0,1324 €/kWh</strong> (Tarifa especial CIF)<br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,127295 €/kW·día</strong> | TP2: <strong>0,045522 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
@@ -15726,7 +15726,7 @@ function getRenosurChatResponse(query) {
         return `<strong>Tarifas de Luz de Naturgy disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
           `  <button onclick="sendQuickChatQuery('Naturgy Por Uso Luz DNI')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Por Uso Luz (Particulares / DNI) — 0,1120 €/kWh</button>` +
-          `  <button onclick="sendQuickChatQuery('Naturgy Por Uso Luz CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Por Uso Luz (Autónomos y Pymes / CIF) — 0,1324 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Naturgy Fijo Luz 24h CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Fijo Luz 24h (Autónomos y Pymes / CIF) — 0,1324 €/kWh</button>` +
           `</div>`;
       }
       if (company === 'endesa') {
