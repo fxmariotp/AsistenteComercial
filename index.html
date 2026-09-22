@@ -7020,8 +7020,8 @@ input:focus, select:focus, textarea:focus {
 
   NATURGY: PVP 2026 Peninsula
     - Por Uso Luz (2.0TD): TP1=0,1230 TP2=0,0616 €/kW·dia, TE P1=0,1120 €/kWh (precio UNICO 24h, sin discriminacion)
-    - Fijo Luz 24h (CIF): TP1=0,122 TP2=0,043 €/kW·dia, TE P1=0,142 €/kWh
-    Gas Por Uso Gas: RL1 TV=0,087 TF=0,1693€/dia · RL2 TV=0,085 TF=0,3008 · RL3 TV=0,082 TF=0,6496
+    - Fijo Luz 24h (CIF): TP1=0,122 TP2=0,043 €/kW·dia, TE P1=0,166 €/kWh
+    Gas Por Uso Gas: RL1 TV=0,079 TF=0,1693€/dia · RL2 TV=0,077 TF=0,3008 · RL3 TV=0,073 TF=0,6496
     Servielectric Complet: 8,48€/mes · Servigas Complet: 11,81€/mes
     Impuesto electrico: 5,11%
 
@@ -7062,18 +7062,18 @@ const BASE = {
     te_sin:0.1120, te_con:0.1120,
     precio_excedente:0.06,
     sva_luz:8.48, sva_gas:11.81,
-    gas_rl1:{tf:0.1693, tv:0.087},
-    gas_rl2:{tf:0.3008, tv:0.085},
-    gas_rl3:{tf:0.6496, tv:0.082},
+    gas_rl1:{tf:0.1693, tv:0.079},
+    gas_rl2:{tf:0.3008, tv:0.077},
+    gas_rl3:{tf:0.6496, tv:0.073},
     imp_electrico:0.0511,
     tarifas_luz:[
       {n:'Por Uso Luz', te:0.1120, tp1:0.1230, tp2:0.0616, nota:'Precio unico 24h sin permanencia'},
-      {n:'Fijo Luz 24h (CIF)', te:0.142, tp1:0.122, tp2:0.043, nota:'Tarifa especial para CIF'}
+      {n:'Fijo Luz 24h (CIF)', te:0.166, tp1:0.122, tp2:0.043, nota:'Tarifa especial para CIF'}
     ],
     tarifas_gas:[
-      {n:'Gas Por Uso RL1', tv:0.087, tf:0.1693},
-      {n:'Gas Por Uso RL2', tv:0.085, tf:0.3008},
-      {n:'Gas Por Uso RL3', tv:0.082, tf:0.6496}
+      {n:'Gas Por Uso RL1', tv:0.079, tf:0.1693},
+      {n:'Gas Por Uso RL2', tv:0.077, tf:0.3008},
+      {n:'Gas Por Uso RL3', tv:0.073, tf:0.6496}
     ]
   },
   endesa:{
@@ -10442,10 +10442,10 @@ function calcComp(){
     if (cia === 'naturgy' && isCif) {
       r.tp1 = 0.122;
       r.tp2 = 0.043;
-      r.te_sin = 0.142;
-      r.te_con = 0.142;
+      r.te_sin = 0.166;
+      r.te_con = 0.166;
       r.tarifas_luz = [
-        {n:'Fijo Luz 24h (CIF)', te:0.142, tp1:0.122, tp2:0.043, nota:'Tarifa especial para CIF'}
+        {n:'Fijo Luz 24h (CIF)', te:0.166, tp1:0.122, tp2:0.043, nota:'Tarifa especial para CIF'}
       ];
     }
     if (cia === 'endesa' && excedente > 0) {
@@ -11409,7 +11409,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930422;
+const CURRENT_BUILD_VERSION = 1785002930423;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -15435,9 +15435,9 @@ function getRenosurChatResponse(query) {
         },
         cif: {
           name: "Fijo Luz 24h (CIF)",
-          base: "0,142 €/kWh",
-          sin_mantenimiento: "0,142 €/kWh (Igual que el precio base)",
-          con_mantenimiento: "0,142 €/kWh (Igual que el precio base)",
+          base: "0,166 €/kWh",
+          sin_mantenimiento: "0,166 €/kWh (Igual que el precio base)",
+          con_mantenimiento: "0,166 €/kWh (Igual que el precio base)",
           descuento_sin_mantenimiento: "0%",
           descuento_con_mantenimiento: "no indicado / —",
           potencia: "TP1: 0,122 €/kW-día | TP2: 0,043 €/kW-día",
@@ -15448,9 +15448,9 @@ function getRenosurChatResponse(query) {
         }
       },
       gas: {
-        rl1: "TV (Término Variable): 0,087 €/kWh | TF (Término Fijo): 0,1693 €/día (Equivalente mensual: 5,07 €/mes)",
-        rl2: "TV (Término Variable): 0,085 €/kWh | TF (Término Fijo): 0,3008 €/día (Equivalente mensual: 9,02 €/mes)",
-        rl3: "TV (Término Variable): 0,082 €/kWh | TF (Término Fijo): 0,6496 €/día (Equivalente mensual: 19,48 €/mes)",
+        rl1: "TV (Término Variable): 0,079 €/kWh | TF (Término Fijo): 0,1693 €/día (Equivalente mensual: 5,07 €/mes)",
+        rl2: "TV (Término Variable): 0,077 €/kWh | TF (Término Fijo): 0,3008 €/día (Equivalente mensual: 9,02 €/mes)",
+        rl3: "TV (Término Variable): 0,073 €/kWh | TF (Término Fijo): 0,6496 €/día (Equivalente mensual: 19,48 €/mes)",
         mantenimiento: "11,81 €/mes",
         retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
       }
@@ -15578,7 +15578,7 @@ function getRenosurChatResponse(query) {
   // 6. Naturgy Fijo Luz 24h CIF
   if (q.includes('fijo luz 24h') || q.includes('fijo luz') || q.includes('fijo luz 24h cif') || q.includes('por uso luz cif') || (q.includes('naturgy') && (q.includes('cif') || q.includes('empresa') || q.includes('pyme') || q.includes('autonomo') || q.includes('autónomo')))) {
     return "<strong>Naturgy — Fijo Luz 24h (Autónomos y Pymes / CIF):</strong><br><br>" +
-      "• <strong>Término de Energía:</strong> <strong>0,142 €/kWh</strong> (Tarifa especial CIF)<br>" +
+      "• <strong>Término de Energía:</strong> <strong>0,166 €/kWh</strong> (Tarifa especial CIF)<br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,122 €/kW·día</strong> | TP2: <strong>0,043 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Servielectric):</strong> 8,48 €/mes<br>" +
@@ -15724,7 +15724,7 @@ function getRenosurChatResponse(query) {
         return `<strong>Tarifas de Luz de Naturgy disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
           `  <button onclick="sendQuickChatQuery('Naturgy Por Uso Luz DNI')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Por Uso Luz (Particulares / DNI) — 0,1120 €/kWh</button>` +
-          `  <button onclick="sendQuickChatQuery('Naturgy Fijo Luz 24h CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Fijo Luz 24h (Autónomos y Pymes / CIF) — 0,142 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Naturgy Fijo Luz 24h CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Fijo Luz 24h (Autónomos y Pymes / CIF) — 0,166 €/kWh</button>` +
           `</div>`;
       }
       if (company === 'endesa') {
