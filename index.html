@@ -11507,7 +11507,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930427;
+const CURRENT_BUILD_VERSION = 1785002930428;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -13361,7 +13361,7 @@ function parseComisionesCSV(text) {
   return map;
 }
 
-async function loadComisionesData() {
+async function loadComisionesData(force = false) {
   const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined') 
     ? (AGENT_ROLES[currentAgentDni] || 'comercial') 
     : 'comercial';
@@ -13369,16 +13369,23 @@ async function loadComisionesData() {
   if (userRole !== 'comercial') return;
 
   // Load from cache first if available
-  try {
-    const cached = localStorage.getItem('renosur_comisiones_cache');
-    if (cached) {
-      renosurComisionesData = JSON.parse(cached);
-    }
-  } catch (e) {}
+  if (!force) {
+    try {
+      const cached = localStorage.getItem('renosur_comisiones_cache');
+      if (cached) {
+        renosurComisionesData = JSON.parse(cached);
+      }
+    } catch (e) {}
+  }
 
-  // 1. Try Vercel Serverless API (/api/comisiones)
+  const timestamp = Date.now();
+
+  // 1. Try Vercel Serverless API (/api/comisiones) with cache-busting
   try {
-    const res = await fetch('/api/comisiones');
+    const res = await fetch(`/api/comisiones?t=${timestamp}`, {
+      cache: 'no-store',
+      headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+    });
     if (res.ok) {
       const json = await res.json();
       if (json && json.success && json.data) {
@@ -13391,9 +13398,9 @@ async function loadComisionesData() {
     console.warn("Comisiones API not reachable, trying direct fallback...", e);
   }
 
-  // 2. Direct Fallback to Google Sheets CSV / CORS proxies
+  // 2. Direct Fallback to Google Sheets CSV / CORS proxies with cache-busting
   const sheetId = "1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI";
-  const directUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+  const directUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&t=${timestamp}`;
   const proxies = [
     directUrl,
     `https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`,
@@ -13404,7 +13411,7 @@ async function loadComisionesData() {
     try {
       const controller = new AbortController();
       const id = setTimeout(() => controller.abort(), 6000);
-      const res = await fetch(pUrl, { signal: controller.signal, credentials: 'omit' });
+      const res = await fetch(pUrl, { signal: controller.signal, credentials: 'omit', cache: 'no-store' });
       clearTimeout(id);
       if (res.ok) {
         const text = await res.text();
@@ -13421,6 +13428,20 @@ async function loadComisionesData() {
       // Continue to next fallback
     }
   }
+}
+
+// Auto-sync comisiones cada 30 segundos y al enfocar la pestaña
+if (typeof window !== 'undefined') {
+  window.addEventListener('focus', () => {
+    if (typeof currentAgentDni !== 'undefined' && currentAgentDni) {
+      loadComisionesData(true);
+    }
+  });
+  setInterval(() => {
+    if (typeof currentAgentDni !== 'undefined' && currentAgentDni) {
+      loadComisionesData(true);
+    }
+  }, 30000);
 }
 
 function getAgentComisionAmount() {
@@ -13468,6 +13489,9 @@ function toggleComisionVisibility() {
   const isMasked = valEl.classList.contains('masked');
 
   if (isMasked) {
+    // Sincronizar datos en tiempo real al abrir
+    loadComisionesData(true);
+
     // Reveal commission
     const amount = getAgentComisionAmount();
     valEl.textContent = formatComisionCurrency(amount);
