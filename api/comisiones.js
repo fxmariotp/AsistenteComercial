@@ -195,50 +195,44 @@ module.exports = function (req, res) {
           }
 
           // Detectar columnas y fila de cabecera
-          let headerRowIndex = -1;
+          let headerRowIndex = 1; // Fila 2 por defecto (índice 1 en 0-indexed)
           let colAgente = 0; // Col A por defecto (0)
           let colComi = 19;  // Col T por defecto (19)
 
-          for (let i = 0; i < Math.min(rows.length, 6); i++) {
+          for (let i = 0; i < Math.min(rows.length, 5); i++) {
             const r = rows[i];
-            let foundAgente = false;
-            let foundComi = false;
             for (let j = 0; j < r.length; j++) {
               const val = cleanStr(r[j]);
               if (val === 'AGENTE' || val === 'AGENTES' || val.includes('AGENTE')) {
                 colAgente = j;
-                foundAgente = true;
+                headerRowIndex = i;
               }
               if (val === 'COMI' || val === 'COMISION' || val === 'COMISIONES' || val.includes('COMI')) {
                 colComi = j;
-                foundComi = true;
               }
-            }
-            if (foundAgente || foundComi) {
-              headerRowIndex = i;
-              if (foundAgente && foundComi) break;
             }
           }
 
-          const startRow = headerRowIndex >= 0 ? headerRowIndex + 1 : 1;
+          const startRow = headerRowIndex + 1; // Inicia en fila 3 (índice 2)
           const comisionesMap = {};
           const matchedDetails = [];
 
+          // Recorrer filas A3..A17 y vincular con T3..T17
           for (let i = startRow; i < rows.length; i++) {
             const r = rows[i];
-            if (!r || r.length <= colAgente) continue;
+            if (!r) continue;
 
-            const rawAgent = (r[colAgente] || '').trim();
+            const rawAgent = (r[colAgente] !== undefined && r[colAgente] !== '' ? r[colAgente] : (r[0] || '')).trim();
             const cleanAgent = cleanStr(rawAgent);
 
             if (!rawAgent || cleanAgent === 'AGENTES' || cleanAgent === 'AGENTE' || cleanAgent === 'TOTAL' || cleanAgent === 'TOTALES' || cleanAgent === 'MEDIA' || cleanAgent === 'PROMEDIO') {
               continue;
             }
 
-            const rawVal = r[colComi] !== undefined && r[colComi] !== '' ? r[colComi] : (r[19] || 0);
+            const rawVal = (r[colComi] !== undefined && r[colComi] !== '') ? r[colComi] : (r[19] || 0);
             const val = parseComisionValue(rawVal);
 
-            // Mapeo universal para el agente exacto
+            // Mapeo universal para el comercial de Renosur
             const matchedAgent = findMatchingAgent(rawAgent);
             if (matchedAgent) {
               comisionesMap[matchedAgent.dni] = val;
@@ -249,7 +243,9 @@ module.exports = function (req, res) {
                 nombre: matchedAgent.name,
                 rawNameInSheet: rawAgent,
                 comision: val,
-                fila: i + 1
+                filaExcel: i + 1,
+                celdaAgente: `A${i + 1}`,
+                celdaComision: `T${i + 1}`
               });
             }
 
