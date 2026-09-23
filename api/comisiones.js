@@ -158,7 +158,7 @@ module.exports = function (req, res) {
     return res.status(200).end();
   }
 
-  const sheetId = "1a-GdXo7XH0OZJD2KQAQE0UZaAajGGRWoirtbbt7Q14U";
+  const sheetId = "1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI";
   const targetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
 
   function fetchUrl(url, redirectCount = 0) {
@@ -194,10 +194,10 @@ module.exports = function (req, res) {
             return res.status(200).json({ success: false, error: "El archivo CSV está vacío", data: {} });
           }
 
-          // Detectar columnas y fila de cabecera
-          let headerRowIndex = 1; // Fila 2 por defecto (índice 1 en 0-indexed)
+          // Detectar columnas y fila de cabecera si existe
+          let startRow = 0;
           let colAgente = 0; // Col A por defecto (0)
-          let colComi = 19;  // Col T por defecto (19)
+          let colComi = 1;   // Col B por defecto (1) o Col T (19)
 
           for (let i = 0; i < Math.min(rows.length, 5); i++) {
             const r = rows[i];
@@ -205,7 +205,7 @@ module.exports = function (req, res) {
               const val = cleanStr(r[j]);
               if (val === 'AGENTE' || val === 'AGENTES' || val.includes('AGENTE')) {
                 colAgente = j;
-                headerRowIndex = i;
+                startRow = i + 1;
               }
               if (val === 'COMI' || val === 'COMISION' || val === 'COMISIONES' || val.includes('COMI')) {
                 colComi = j;
@@ -213,11 +213,9 @@ module.exports = function (req, res) {
             }
           }
 
-          const startRow = headerRowIndex + 1; // Inicia en fila 3 (índice 2)
           const comisionesMap = {};
           const matchedDetails = [];
 
-          // Recorrer filas A3..A17 y vincular con T3..T17
           for (let i = startRow; i < rows.length; i++) {
             const r = rows[i];
             if (!r) continue;
@@ -229,7 +227,16 @@ module.exports = function (req, res) {
               continue;
             }
 
-            const rawVal = (r[colComi] !== undefined && r[colComi] !== '') ? r[colComi] : (r[19] || 0);
+            // Buscar valor en colComi, Col B (índice 1) o Col T (índice 19)
+            let rawVal = 0;
+            if (r[colComi] !== undefined && r[colComi] !== '') {
+              rawVal = r[colComi];
+            } else if (r[1] !== undefined && r[1] !== '') {
+              rawVal = r[1];
+            } else if (r[19] !== undefined && r[19] !== '') {
+              rawVal = r[19];
+            }
+
             const val = parseComisionValue(rawVal);
 
             // Mapeo universal para el comercial de Renosur
@@ -243,9 +250,7 @@ module.exports = function (req, res) {
                 nombre: matchedAgent.name,
                 rawNameInSheet: rawAgent,
                 comision: val,
-                filaExcel: i + 1,
-                celdaAgente: `A${i + 1}`,
-                celdaComision: `T${i + 1}`
+                filaExcel: i + 1
               });
             }
 
