@@ -1942,6 +1942,90 @@ hr {
   text-transform: capitalize !important;
   margin-top: 1px !important;
 }
+/* ── COMISIÓN WIDGET (INICIO / DASHBOARD) ── */
+.db-comision-container {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.75);
+  background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0.65) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border: 1px solid rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 6px 14px;
+  box-shadow: 0 4px 16px rgba(32, 40, 84, 0.04), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+  gap: 12px;
+  transition: all 0.25s ease;
+  user-select: none;
+}
+.db-comision-container:hover {
+  border-color: rgba(53, 127, 191, 0.35);
+  box-shadow: 0 6px 20px rgba(53, 127, 191, 0.08);
+}
+.db-comision-info {
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+.db-comision-label {
+  font-size: 10px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  color: var(--t3);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.db-comision-val {
+  font-size: 15.5px;
+  font-weight: 800;
+  color: #059669;
+  letter-spacing: 0.3px;
+  font-family: inherit;
+  transition: all 0.2s ease;
+  min-width: 75px;
+}
+.db-comision-val.masked {
+  color: var(--t2);
+  letter-spacing: 2.5px;
+}
+.db-comision-btn {
+  background: rgba(53, 127, 191, 0.08);
+  color: var(--blue);
+  border: 1px solid rgba(53, 127, 191, 0.2);
+  border-radius: 8px;
+  padding: 6px 12px;
+  font-size: 11.5px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+  outline: none;
+}
+.db-comision-btn:hover {
+  background: var(--blue);
+  color: #ffffff;
+  border-color: var(--blue);
+  box-shadow: 0 3px 10px rgba(53, 127, 191, 0.25);
+  transform: translateY(-1px);
+}
+.db-comision-btn:active {
+  transform: translateY(0);
+}
+.db-comision-btn.active {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: rgba(220, 38, 38, 0.25);
+}
+.db-comision-btn.active:hover {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+  box-shadow: 0 3px 10px rgba(220, 38, 38, 0.25);
+}
 .db-logout-btn {
   background: none;
   border: none;
@@ -4257,6 +4341,20 @@ input:focus, select:focus, textarea:focus {
               <span class="db-kpi-lbl">Tareas Hoy</span>
             </div>
           </div>
+        </div>
+        <!-- Comisión del Comercial (Exclusivo Comerciales Renosur) -->
+        <div class="db-comision-container" id="db-comision-container" style="display: none;">
+          <div class="db-comision-info">
+            <span class="db-comision-label">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line></svg>
+              Mi Comisión
+            </span>
+            <span class="db-comision-val masked" id="db-comision-val">•••• €</span>
+          </div>
+          <button type="button" class="db-comision-btn" id="db-comision-btn" onclick="toggleComisionVisibility()">
+            <svg id="db-comision-icon-eye" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+            <span id="db-comision-btn-text">Ver comisión</span>
+          </button>
         </div>
         <div class="db-clock">
           <div class="db-clock-time" id="db-clock-time">00:00:00</div>
@@ -11409,7 +11507,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930423;
+const CURRENT_BUILD_VERSION = 1785002930424;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -11715,15 +11813,20 @@ async function saveAgentRoleToCloud(dni, rol) {
 }
 
 function applyAgentPermissions() {
-  const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+  const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined') ? (AGENT_ROLES[currentAgentDni] || 'comercial') : 'comercial';
   const btnRanking = document.getElementById('btn-nav-ranking');
   const btnCalendario = document.getElementById('btn-nav-calendario');
   const cardRanking = document.querySelector('.db-tool-card[onclick*="\'ranking\'"]');
   const cardCalendario = document.querySelector('.db-tool-card[onclick*="\'calendario\'"]');
   const topbarGerenteBtn = document.getElementById('btn-topbar-gerenteHub');
+  const comisionContainer = document.getElementById('db-comision-container');
   
   if (topbarGerenteBtn) {
     topbarGerenteBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
+  }
+
+  if (comisionContainer) {
+    comisionContainer.style.display = userRole === 'comercial' ? 'inline-flex' : 'none';
   }
   
   if (userRole === 'evaria') {
@@ -13006,15 +13109,14 @@ async function onLoginSuccess() {
   
 
   
-  // 8. Mostrar/ocultar seccion de Gerencia en topbar
-  const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
-  const topbarGerenteBtn = document.getElementById('btn-topbar-gerenteHub');
-  if (topbarGerenteBtn) {
-    topbarGerenteBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
-  }
+  // 8. Mostrar/ocultar seccion de Gerencia en topbar y permisos
+  applyAgentPermissions();
   
   // 9. Iniciar verificacion de estado activo/inactivo en tiempo real
   startAgentStatusCheck();
+
+  // 10. Cargar comisiones desde Google Sheets
+  loadComisionesData();
 }
 
 function updateGreeting() {
@@ -13032,6 +13134,270 @@ function updateGreeting() {
   const el = document.getElementById('db-welcome-greeting');
   if (el) {
     el.textContent = shortName ? `${saludo}, ${shortName}` : `${saludo},`;
+  }
+}
+
+// ── GESTIÓN DE COMISIONES (GOOGLE SHEETS) ──
+let renosurComisionesData = null;
+let comisionHideTimeout = null;
+let comisionCountdownInterval = null;
+
+function truncateDecimals(num, decimals = 2) {
+  if (isNaN(num) || num === null || num === undefined) return 0;
+  const factor = Math.pow(10, decimals);
+  return Math.trunc(Number(num) * factor) / factor;
+}
+
+function formatComisionCurrency(num) {
+  const truncated = truncateDecimals(Number(num) || 0, 2);
+  const parts = truncated.toFixed(2).split('.');
+  const integerPart = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+  const decimalPart = parts[1];
+  return `${integerPart},${decimalPart} €`;
+}
+
+function cleanAgentKey(str) {
+  return (str || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toUpperCase()
+    .trim();
+}
+
+function parseComisionValFromStr(raw) {
+  if (typeof raw === 'number') return raw;
+  if (!raw) return 0;
+  let cleaned = String(raw).replace(/[^0-9.,-]/g, '').trim();
+  if (!cleaned) return 0;
+  if (cleaned.includes('.') && cleaned.includes(',')) {
+    cleaned = cleaned.replace(/\./g, '').replace(',', '.');
+  } else if (cleaned.includes(',')) {
+    cleaned = cleaned.replace(',', '.');
+  }
+  const val = parseFloat(cleaned);
+  return isNaN(val) ? 0 : val;
+}
+
+function parseComisionesCSV(text) {
+  if (!text) return {};
+  const lines = [];
+  let row = [];
+  let inQuotes = false;
+  let currentField = '';
+  
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+    const nextChar = text[i + 1];
+    
+    if (char === '"') {
+      if (inQuotes && nextChar === '"') {
+        currentField += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (char === ',' && !inQuotes) {
+      row.push(currentField.trim());
+      currentField = '';
+    } else if ((char === '\r' || char === '\n') && !inQuotes) {
+      if (char === '\r' && nextChar === '\n') i++;
+      row.push(currentField.trim());
+      if (row.some(field => field.length > 0)) {
+        lines.push(row);
+      }
+      row = [];
+      currentField = '';
+    } else {
+      currentField += char;
+    }
+  }
+  if (currentField || row.length > 0) {
+    row.push(currentField.trim());
+    if (row.some(field => field.length > 0)) {
+      lines.push(row);
+    }
+  }
+
+  let headerRowIndex = 0;
+  let colAgente = 0; // Col A
+  let colComi = 19;  // Col T
+
+  for (let i = 0; i < Math.min(lines.length, 10); i++) {
+    const r = lines[i];
+    for (let j = 0; j < r.length; j++) {
+      const val = cleanAgentKey(r[j]);
+      if (val.includes('AGENTE')) colAgente = j;
+      if (val.includes('COMI')) colComi = j;
+    }
+    if (r.some(c => cleanAgentKey(c).includes('AGENTE')) || r.some(c => cleanAgentKey(c).includes('COMI'))) {
+      headerRowIndex = i;
+      break;
+    }
+  }
+
+  const map = {};
+  for (let i = headerRowIndex + 1; i < lines.length; i++) {
+    const r = lines[i];
+    if (!r || r.length <= colAgente) continue;
+    const rawAgent = (r[colAgente] || '').trim();
+    if (!rawAgent || cleanAgentKey(rawAgent) === 'AGENTES' || cleanAgentKey(rawAgent) === 'TOTAL') continue;
+    const rawVal = r[colComi] !== undefined ? r[colComi] : (r[19] || 0);
+    const val = parseComisionValFromStr(rawVal);
+    map[cleanAgentKey(rawAgent)] = val;
+    map[rawAgent] = val;
+  }
+  return map;
+}
+
+async function loadComisionesData() {
+  const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined') 
+    ? (AGENT_ROLES[currentAgentDni] || 'comercial') 
+    : 'comercial';
+  
+  if (userRole !== 'comercial') return;
+
+  // Load from cache first if available
+  try {
+    const cached = localStorage.getItem('renosur_comisiones_cache');
+    if (cached) {
+      renosurComisionesData = JSON.parse(cached);
+    }
+  } catch (e) {}
+
+  // 1. Try Vercel Serverless API (/api/comisiones)
+  try {
+    const res = await fetch('/api/comisiones');
+    if (res.ok) {
+      const json = await res.json();
+      if (json && json.success && json.data) {
+        renosurComisionesData = json.data;
+        localStorage.setItem('renosur_comisiones_cache', JSON.stringify(renosurComisionesData));
+        return;
+      }
+    }
+  } catch (e) {
+    console.warn("Comisiones API not reachable, trying direct fallback...", e);
+  }
+
+  // 2. Direct Fallback to Google Sheets CSV / CORS proxies
+  const sheetId = "1a-GdXo7XH0OZJD2KQAQE0UZaAajGGRWoirtbbt7Q14U";
+  const directUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv`;
+  const proxies = [
+    directUrl,
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`,
+    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(directUrl)}`
+  ];
+
+  for (const pUrl of proxies) {
+    try {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), 6000);
+      const res = await fetch(pUrl, { signal: controller.signal, credentials: 'omit' });
+      clearTimeout(id);
+      if (res.ok) {
+        const text = await res.text();
+        if (text && (text.includes('AGENTE') || text.includes('COMI') || text.includes(','))) {
+          const map = parseComisionesCSV(text);
+          if (Object.keys(map).length > 0) {
+            renosurComisionesData = map;
+            localStorage.setItem('renosur_comisiones_cache', JSON.stringify(renosurComisionesData));
+            return;
+          }
+        }
+      }
+    } catch (e) {
+      // Continue to next fallback
+    }
+  }
+}
+
+function getAgentComisionAmount() {
+  if (!renosurComisionesData || !currentAgentName) return 0;
+  const cleanCurrent = cleanAgentKey(currentAgentName);
+  
+  if (renosurComisionesData[cleanCurrent] !== undefined) {
+    return renosurComisionesData[cleanCurrent];
+  }
+  if (renosurComisionesData[currentAgentName] !== undefined) {
+    return renosurComisionesData[currentAgentName];
+  }
+
+  // Fuzzy match on words
+  const words = cleanCurrent.split(/\s+/).filter(w => w.length > 2);
+  for (const key of Object.keys(renosurComisionesData)) {
+    const cleanK = cleanAgentKey(key);
+    if (cleanK === cleanCurrent) return renosurComisionesData[key];
+    const matchAll = words.every(w => cleanK.includes(w));
+    if (matchAll) return renosurComisionesData[key];
+    const keyWords = cleanK.split(/\s+/).filter(w => w.length > 2);
+    const reverseMatch = keyWords.length > 1 && keyWords.every(w => cleanCurrent.includes(w));
+    if (reverseMatch) return renosurComisionesData[key];
+  }
+  return 0;
+}
+
+function toggleComisionVisibility() {
+  const valEl = document.getElementById('db-comision-val');
+  const btnEl = document.getElementById('db-comision-btn');
+  const btnTextEl = document.getElementById('db-comision-btn-text');
+  if (!valEl || !btnEl) return;
+
+  const isMasked = valEl.classList.contains('masked');
+
+  if (isMasked) {
+    // Reveal commission
+    const amount = getAgentComisionAmount();
+    valEl.textContent = formatComisionCurrency(amount);
+    valEl.classList.remove('masked');
+    btnEl.classList.add('active');
+
+    // 5-second countdown
+    let secondsLeft = 5;
+    if (btnTextEl) btnTextEl.textContent = `Ocultando en ${secondsLeft}s...`;
+
+    if (comisionCountdownInterval) clearInterval(comisionCountdownInterval);
+    comisionCountdownInterval = setInterval(() => {
+      secondsLeft--;
+      if (secondsLeft > 0) {
+        if (btnTextEl) btnTextEl.textContent = `Ocultando en ${secondsLeft}s...`;
+      } else {
+        hideComision();
+      }
+    }, 1000);
+
+    if (comisionHideTimeout) clearTimeout(comisionHideTimeout);
+    comisionHideTimeout = setTimeout(() => {
+      hideComision();
+    }, 5000);
+  } else {
+    // Manual re-hide
+    hideComision();
+  }
+}
+
+function hideComision() {
+  if (comisionHideTimeout) {
+    clearTimeout(comisionHideTimeout);
+    comisionHideTimeout = null;
+  }
+  if (comisionCountdownInterval) {
+    clearInterval(comisionCountdownInterval);
+    comisionCountdownInterval = null;
+  }
+
+  const valEl = document.getElementById('db-comision-val');
+  const btnEl = document.getElementById('db-comision-btn');
+  const btnTextEl = document.getElementById('db-comision-btn-text');
+
+  if (valEl) {
+    valEl.textContent = '•••• €';
+    valEl.classList.add('masked');
+  }
+  if (btnEl) {
+    btnEl.classList.remove('active');
+  }
+  if (btnTextEl) {
+    btnTextEl.textContent = 'Ver comisión';
   }
 }
 
