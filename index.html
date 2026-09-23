@@ -11507,7 +11507,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930424;
+const CURRENT_BUILD_VERSION = 1785002930425;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -13138,6 +13138,59 @@ function updateGreeting() {
 }
 
 // ── GESTIÓN DE COMISIONES (GOOGLE SHEETS) ──
+const RENOSUR_ROSTER = [
+  {
+    dni: "28727453Q",
+    name: "BEGOÑA CABANILLAS PIQUERO",
+    keywords: ["BEGOÑA", "BEGONA", "CABANILLAS", "PIQUERO", "BEGO"]
+  },
+  {
+    dni: "47269867Z",
+    name: "CHRISTIAN CABRERA MARQUEZ",
+    keywords: ["CHRISTIAN", "CRISTIAN", "CABRERA MARQUEZ"]
+  },
+  {
+    dni: "77976681B",
+    name: "CLARA TORREÑO RUIZ",
+    keywords: ["CLARA", "TORREÑO", "TORRENO", "RUIZ"]
+  },
+  {
+    dni: "28818524F",
+    name: "CRISTINA SANTOS LARIOS",
+    keywords: ["CRISTINA", "SANTOS", "LARIOS", "CRIS"]
+  },
+  {
+    dni: "47269866J",
+    name: "JOSE MIGUEL CABRERA MARQUEZ",
+    keywords: ["JOSE MIGUEL", "JOSE M", "JOSEMI", "JOSÉ MIGUEL"]
+  },
+  {
+    dni: "51997096F",
+    name: "MANUELA SALAZAR CORTES",
+    keywords: ["MANUELA", "SALAZAR", "CORTES", "MANOLI"]
+  },
+  {
+    dni: "29537747C",
+    name: "MARINA MARTINEZ DE LA ROSA",
+    keywords: ["MARINA", "MARTINEZ", "DE LA ROSA", "ROSA"]
+  },
+  {
+    dni: "77822813J",
+    name: "MARIO TIBURCIO PORRAS",
+    keywords: ["MARIO", "TIBURCIO", "PORRAS"]
+  },
+  {
+    dni: "30369873Y",
+    name: "MERCEDES TERRON DIEZ",
+    keywords: ["MERCEDES", "TERRON", "DIEZ", "MERCHE"]
+  },
+  {
+    dni: "53283415M",
+    name: "MÓNICA CEJUDO HIDALGO",
+    keywords: ["MONICA", "MÓNICA", "CEJUDO", "HIDALGO"]
+  }
+];
+
 let renosurComisionesData = null;
 let comisionHideTimeout = null;
 let comisionCountdownInterval = null;
@@ -13162,6 +13215,37 @@ function cleanAgentKey(str) {
     .replace(/[\u0300-\u036f]/g, '')
     .toUpperCase()
     .trim();
+}
+
+function findMatchingAgentRoster(rawAgent) {
+  if (!rawAgent) return null;
+  const cleanInput = cleanAgentKey(rawAgent);
+  if (!cleanInput) return null;
+
+  // 1. Exact match on full name
+  for (const agent of RENOSUR_ROSTER) {
+    if (cleanAgentKey(agent.name) === cleanInput) return agent;
+  }
+
+  // 2. Disambiguate CABRERA brothers first: "JOSE MIGUEL" vs "CHRISTIAN"
+  if (cleanInput.includes("JOSE MIGUEL") || cleanInput.includes("JOSE M") || cleanInput.includes("JOSEMI") || cleanInput.includes("JOSÉ MIGUEL")) {
+    return RENOSUR_ROSTER.find(a => a.dni === "47269866J");
+  }
+  if (cleanInput.includes("CHRISTIAN") || cleanInput.includes("CRISTIAN")) {
+    return RENOSUR_ROSTER.find(a => a.dni === "47269867Z");
+  }
+
+  // 3. Match on unique first name or keyword
+  for (const agent of RENOSUR_ROSTER) {
+    for (const kw of agent.keywords) {
+      const cleanKw = cleanAgentKey(kw);
+      if (cleanInput === cleanKw || cleanInput.startsWith(cleanKw + " ") || cleanInput.endsWith(" " + cleanKw) || cleanInput.includes(cleanKw)) {
+        return agent;
+      }
+    }
+  }
+
+  return null;
 }
 
 function parseComisionValFromStr(raw) {
@@ -13203,6 +13287,7 @@ function parseComisionesCSV(text) {
       if (char === '\r' && nextChar === '\n') i++;
       row.push(currentField.trim());
       if (row.some(field => field.length > 0)) {
+        while (row.length < 35) row.push('');
         lines.push(row);
       }
       row = [];
@@ -13214,36 +13299,62 @@ function parseComisionesCSV(text) {
   if (currentField || row.length > 0) {
     row.push(currentField.trim());
     if (row.some(field => field.length > 0)) {
+      while (row.length < 35) row.push('');
       lines.push(row);
     }
   }
 
-  let headerRowIndex = 0;
-  let colAgente = 0; // Col A
-  let colComi = 19;  // Col T
+  // Detect header row
+  let headerRowIndex = -1;
+  let colAgente = 0; // Col A por defecto
+  let colComi = 19;  // Col T por defecto
 
-  for (let i = 0; i < Math.min(lines.length, 10); i++) {
+  for (let i = 0; i < Math.min(lines.length, 6); i++) {
     const r = lines[i];
+    let foundAgente = false;
+    let foundComi = false;
     for (let j = 0; j < r.length; j++) {
       const val = cleanAgentKey(r[j]);
-      if (val.includes('AGENTE')) colAgente = j;
-      if (val.includes('COMI')) colComi = j;
+      if (val === 'AGENTE' || val === 'AGENTES' || val.includes('AGENTE')) {
+        colAgente = j;
+        foundAgente = true;
+      }
+      if (val === 'COMI' || val === 'COMISION' || val === 'COMISIONES' || val.includes('COMI')) {
+        colComi = j;
+        foundComi = true;
+      }
     }
-    if (r.some(c => cleanAgentKey(c).includes('AGENTE')) || r.some(c => cleanAgentKey(c).includes('COMI'))) {
+    if (foundAgente || foundComi) {
       headerRowIndex = i;
-      break;
+      if (foundAgente && foundComi) break;
     }
   }
 
+  const startRow = headerRowIndex >= 0 ? headerRowIndex + 1 : 1;
   const map = {};
-  for (let i = headerRowIndex + 1; i < lines.length; i++) {
+
+  for (let i = startRow; i < lines.length; i++) {
     const r = lines[i];
     if (!r || r.length <= colAgente) continue;
+
     const rawAgent = (r[colAgente] || '').trim();
-    if (!rawAgent || cleanAgentKey(rawAgent) === 'AGENTES' || cleanAgentKey(rawAgent) === 'TOTAL') continue;
-    const rawVal = r[colComi] !== undefined ? r[colComi] : (r[19] || 0);
+    const cleanAgent = cleanAgentKey(rawAgent);
+
+    if (!rawAgent || cleanAgent === 'AGENTES' || cleanAgent === 'AGENTE' || cleanAgent === 'TOTAL' || cleanAgent === 'TOTALES' || cleanAgent === 'MEDIA' || cleanAgent === 'PROMEDIO') {
+      continue;
+    }
+
+    const rawVal = r[colComi] !== undefined && r[colComi] !== '' ? r[colComi] : (r[19] || 0);
     const val = parseComisionValFromStr(rawVal);
-    map[cleanAgentKey(rawAgent)] = val;
+
+    const matched = findMatchingAgentRoster(rawAgent);
+    if (matched) {
+      map[matched.dni] = val;
+      map[matched.name] = val;
+      map[cleanAgentKey(matched.name)] = val;
+    }
+
+    map[cleanAgent] = val;
     map[rawAgent] = val;
   }
   return map;
@@ -13312,27 +13423,38 @@ async function loadComisionesData() {
 }
 
 function getAgentComisionAmount() {
-  if (!renosurComisionesData || !currentAgentName) return 0;
-  const cleanCurrent = cleanAgentKey(currentAgentName);
+  if (!renosurComisionesData) return 0;
   
-  if (renosurComisionesData[cleanCurrent] !== undefined) {
-    return renosurComisionesData[cleanCurrent];
-  }
-  if (renosurComisionesData[currentAgentName] !== undefined) {
-    return renosurComisionesData[currentAgentName];
+  // 1. Exact match by currentAgentDni
+  if (typeof currentAgentDni !== 'undefined' && currentAgentDni && renosurComisionesData[currentAgentDni] !== undefined) {
+    return renosurComisionesData[currentAgentDni];
   }
 
-  // Fuzzy match on words
-  const words = cleanCurrent.split(/\s+/).filter(w => w.length > 2);
-  for (const key of Object.keys(renosurComisionesData)) {
-    const cleanK = cleanAgentKey(key);
-    if (cleanK === cleanCurrent) return renosurComisionesData[key];
-    const matchAll = words.every(w => cleanK.includes(w));
-    if (matchAll) return renosurComisionesData[key];
-    const keyWords = cleanK.split(/\s+/).filter(w => w.length > 2);
-    const reverseMatch = keyWords.length > 1 && keyWords.every(w => cleanCurrent.includes(w));
-    if (reverseMatch) return renosurComisionesData[key];
+  // 2. Match by currentAgentName
+  if (typeof currentAgentName !== 'undefined' && currentAgentName) {
+    const cleanCurrent = cleanAgentKey(currentAgentName);
+    if (renosurComisionesData[cleanCurrent] !== undefined) {
+      return renosurComisionesData[cleanCurrent];
+    }
+    if (renosurComisionesData[currentAgentName] !== undefined) {
+      return renosurComisionesData[currentAgentName];
+    }
+    
+    // 3. Match through roster
+    const matched = findMatchingAgentRoster(currentAgentName);
+    if (matched) {
+      if (renosurComisionesData[matched.dni] !== undefined) {
+        return renosurComisionesData[matched.dni];
+      }
+      if (renosurComisionesData[matched.name] !== undefined) {
+        return renosurComisionesData[matched.name];
+      }
+      if (renosurComisionesData[cleanAgentKey(matched.name)] !== undefined) {
+        return renosurComisionesData[cleanAgentKey(matched.name)];
+      }
+    }
   }
+
   return 0;
 }
 
