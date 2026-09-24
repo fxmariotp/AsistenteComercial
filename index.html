@@ -10045,12 +10045,22 @@ function renderCondiciones(){
             </div>`;
         }
         let dtoText = `Dto: ${(dSin*100).toFixed(0)}% / ${teCon?(dCon*100).toFixed(0)+'%':'—'}`;
-        if (t.n === 'Solar Plus') {
+        if (t.solo_mantenimiento) {
+          dtoText = `Dto: ❌ / ${(dCon*100).toFixed(0)}% (Solo con mantenimiento)`;
+        } else if (t.n === 'Solar Plus') {
           dtoText = `Dto: 12% / 12% (+2€/mes Batería Virtual)`;
+        }
+        let sinMantHtml = '';
+        if (t.solo_mantenimiento) {
+          sinMantHtml = '<span style="color:#dc2626;font-size:15px;font-weight:900;display:inline-block;" title="Prohibido contratar sin mantenimiento">❌</span>';
+        } else if (teSin !== t.te) {
+          sinMantHtml = `<span class="price-sin">${teSin.toFixed(3)}</span>`;
+        } else {
+          sinMantHtml = '<span style="color:var(--t3)">igual</span>';
         }
         html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}${extraNoteHtml}${temporalBannerHtml}<br><span style="font-size:12px;color:var(--t3)">${dtoText}</span></td>
           <td class="price-base">${t.te.toFixed(3)}</td>
-          <td>${teSin !== t.te ? `<span class="price-sin">${teSin.toFixed(3)}</span>` : '<span style="color:var(--t3)">igual</span>'}</td>
+          <td>${sinMantHtml}</td>
           <td>${teCon && teCon !== t.te ? `<span class="price-con">${teCon.toFixed(3)}</span>` : '<span style="color:var(--t3)">igual</span>'}</td>
           </tr>`;
       }
@@ -11653,7 +11663,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930431;
+const CURRENT_BUILD_VERSION = 1785002930432;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -16133,14 +16143,14 @@ function getRenosurChatResponse(query) {
         plan_ahora: {
           name: "Iberdrola Plan Ahora (Campaña Temporal)",
           base: "0,1176 €/kWh",
-          sin_mantenimiento: "0,0999 €/kWh (15% dto.)",
+          sin_mantenimiento: "❌ Prohibido (solo se puede contratar con mantenimiento)",
           con_mantenimiento: "0,094 €/kWh (20% dto. - Precio final)",
-          descuento_sin_mantenimiento: "15%",
+          descuento_sin_mantenimiento: "❌ Prohibido",
           descuento_con_mantenimiento: "20%",
-          descuento_general: "15% sin mantenimiento / 20% con mantenimiento",
+          descuento_general: "❌ Prohibido sin mantenimiento / 20% con mantenimiento (precio final 0,094 €/kWh)",
           potencia: "TP1: 0,1200 €/kW-día | TP2: 0,1200 €/kW-día",
           excedentes: "0,05 €/kWh",
-          mantenimiento: "4,48 €/mes (Pack Iberdrola Hogar)",
+          mantenimiento: "4,48 €/mes (Pack Iberdrola Hogar obligatorio)",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%",
           vigencia: "Válido hasta el 30 de septiembre a las 23:59:59 (con cuenta atrás activa).",
@@ -16294,12 +16304,12 @@ function getRenosurChatResponse(query) {
            "📍 <strong>Zonas autorizadas:</strong> Solo se puede comercializar/vender en <strong>Sevilla, Huelva, Barcelona y A Coruña</strong>.<br><br>" +
            "• <strong>Término de Energía:</strong><br>" +
            "  - Precio base energía: 0,1176 €/kWh<br>" +
-           "  - Sin Mantenimiento (15% dto.): <strong>0,0999 €/kWh</strong><br>" +
+           "  - Sin Mantenimiento: <strong>❌ Prohibido</strong> (no se puede contratar sin mantenimiento)<br>" +
            "  - Con Mantenimiento (20% dto. - Precio Final): <strong>0,094 €/kWh</strong><br><br>" +
            "• <strong>Término de Potencia:</strong><br>" +
            "  - TP1 (Punta): <strong>0,1200 €/kW·día</strong> | TP2 (Valle): <strong>0,1200 €/kW·día</strong><br><br>" +
            "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
-           "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
+           "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes (obligatorio)<br>" +
            "• <strong>Permanencia:</strong> Sin permanencia<br>" +
            "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
   }
