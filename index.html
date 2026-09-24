@@ -3933,6 +3933,17 @@ input:focus, select:focus, textarea:focus {
   border-width: 1.5px !important;
 }
 
+.inv-card.locked {
+  border-color: #f59e0b !important;
+  border-style: dashed !important;
+  border-width: 2px !important;
+  background: linear-gradient(180deg, #fffdf7 0%, var(--surface) 100%) !important;
+}
+.inv-card.locked:hover {
+  transform: none !important;
+  border-color: #d97706 !important;
+}
+
 .inv-hdr-minimal {
   border-bottom: 1px solid #f1f5f9 !important;
   padding-bottom: 16px !important;
@@ -10642,6 +10653,7 @@ function calcComp(){
   const results=offers.map(off=>{
     const cia = off.id;
     const key = cia + '_' + off.type;
+    const isLocked = (compMode === 'luz' && off.type === 'ahora' && !useSva);
     let r={...RATES[cia]};
     if (isCif) {
       r.name = r.name + ' (Precio CIF)';
@@ -10845,7 +10857,7 @@ function calcComp(){
 
     const ahorro = actual > 0 ? actual - total : null;
     return {
-      key, cia, type: off.type, r, tariffName, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
+      key, cia, type: off.type, isLocked, r, tariffName, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
       dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
       costeGestion, cuotaBateriaVirtualEndesa, bateriaVirtual, appliedBateriaVirtual
@@ -10853,6 +10865,8 @@ function calcComp(){
   });
 
   results.sort((a,b)=>{
+    if (a.isLocked && !b.isLocked) return 1;
+    if (!a.isLocked && b.isLocked) return -1;
     if (a.cia === 'gana' && b.cia !== 'gana') return 1;
     if (a.cia !== 'gana' && b.cia === 'gana') return -1;
     return a.total - b.total;
@@ -10970,11 +10984,19 @@ function clearComparisonInputs() {
   document.querySelectorAll('.gas-grp').forEach(el => el.classList.add('hidden-grp'));
 }
 
+function unlockPlanAhoraSva() {
+  const svaInput = document.getElementById('f-sva');
+  if (svaInput) {
+    svaInput.checked = true;
+    calcComp();
+  }
+}
+
 function renderInvCards(results, useSva){
   const isLuz = compMode === 'luz';
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
-    const{cia,r,total,ahorro,actual,tariffName}=res;
-    const best=idx===0, aPos=ahorro>0, aNeg=ahorro<0;
+    const{cia,r,total,ahorro,actual,tariffName,isLocked}=res;
+    const best=!isLocked && idx===0, aPos=ahorro>0, aNeg=ahorro<0;
     const pct=(actual>0 && ahorro!==null)?(ahorro/actual)*100:null;
     
     let retrocomision = '';
@@ -10990,7 +11012,53 @@ function renderInvCards(results, useSva){
     
     const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
 
-    return `<div class="inv-card${best?' best':''}">
+    let cardExtraBadges = '';
+    if (res.cuotaBateriaVirtualEndesa > 0) {
+      cardExtraBadges += '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">+2€/mes Batería Virtual</span>';
+    }
+    if (res.cia === 'iberdrola' && res.type === 'ahora') {
+      if (isLocked) {
+        cardExtraBadges += '<span style="font-size:11px;color:#b91c1c;font-weight:800;background:rgba(220,38,38,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(220,38,38,0.25);display:inline-flex;align-items:center;gap:4px;">🔒 Capado (Requiere SVA)</span>';
+      } else {
+        cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:800;background:rgba(5,150,105,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);display:inline-flex;align-items:center;gap:4px;">🔓 Desbloqueado con SVA</span>';
+      }
+      cardExtraBadges += '<span style="font-size:11px;color:#dc2626;font-weight:800;background:rgba(220,38,38,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);">⏳ Hasta 30/09</span><span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">📍 Sevilla, Huelva, Barcelona y A Coruña</span>';
+    }
+
+    let lockedBannerHtml = '';
+    if (isLocked) {
+      lockedBannerHtml = `
+        <div style="background:linear-gradient(135deg, #fffbeb, #fef2f2);border:1.5px solid #fed7aa;border-radius:8px;padding:12px 16px;margin:14px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:24px;">🔒</span>
+            <div>
+              <div style="font-size:13px;color:#9a3412;font-weight:800;">Tarifa Bloqueada: Solo se puede contratar con Mantenimiento (SVA)</div>
+              <div style="font-size:11.5px;color:#c2410c;margin-top:2px;">El <strong>Plan Ahora</strong> no se puede tramitar sin mantenimiento. Activa el <strong>Pack Iberdrola Hogar (4,48 €/mes)</strong> para desbloquear la oferta a <strong>0,094 €/kWh</strong>.</div>
+            </div>
+          </div>
+          <button type="button" onclick="unlockPlanAhoraSva()" style="background:#059669;color:#fff;border:none;padding:8px 16px;border-radius:6px;font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 5px rgba(5,150,105,0.25);transition:all 0.2s;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+            Activar SVA y Desbloquear
+          </button>
+        </div>`;
+    }
+
+    let actionBtnHtml = '';
+    if (isLocked) {
+      actionBtnHtml = `
+        <button class="btn btn-pdf" style="background:#f1f5f9;color:#94a3b8;border-color:#cbd5e1;cursor:not-allowed;" onclick="alert('El Plan Ahora de Iberdrola está bloqueado porque no se puede contratar sin Mantenimiento (SVA).\\n\\nActiva la casilla de SVA para desbloquearlo y poder generar el PDF.');">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;display:inline-block;vertical-align:middle"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+          Bloqueado (Requiere SVA)
+        </button>`;
+    } else {
+      actionBtnHtml = `
+        <button class="btn btn-pdf" onclick="printCompanyOffer('${res.key}')">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;display:inline-block;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Descargar PDF Comparativa
+        </button>`;
+    }
+
+    return `<div class="inv-card${best?' best':''}${isLocked?' locked':''}">
       <!-- Header -->
       <div class="inv-hdr-minimal" style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
         <div class="inv-hdr-left" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -11001,8 +11069,7 @@ function renderInvCards(results, useSva){
               ${tariffName || r.name}
             </span>
             ${best?'<span class="best-badge">✓ Mejor opcion</span>':''}
-            ${res.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">+2€/mes Batería Virtual</span>' : ''}
-            ${res.cia === 'iberdrola' && res.type === 'ahora' ? '<span style="font-size:11px;color:#dc2626;font-weight:800;background:rgba(220,38,38,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);">⏳ Hasta 30/09</span><span style="font-size:11px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(217,119,6,0.2);">⚠️ Solo con mant.</span><span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">📍 Sevilla, Huelva, Barcelona y A Coruña</span>' : ''}
+            ${cardExtraBadges}
           </div>
         </div>
         <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
@@ -11014,39 +11081,38 @@ function renderInvCards(results, useSva){
         </div>
       </div>
       
+      ${lockedBannerHtml}
+
       <!-- Savings Grid -->
-      <div class="inv-savings-grid">
+      <div class="inv-savings-grid"${isLocked?' style="opacity:0.6;filter:grayscale(0.3);"':''}>
         <!-- Total Box -->
         <div class="saving-box">
           <span class="saving-lbl">Total mensual</span>
-          <span class="saving-val">${f2(total)} €</span>
+          <span class="saving-val">${isLocked ? '<span style="font-size:16px;color:#dc2626;font-weight:800;">🔒 Requiere SVA</span>' : f2(total) + ' €'}</span>
         </div>
         
         <!-- Monthly Savings Box -->
-        <div class="saving-box ${ahorro!==null?(aPos?'pos':'neg'):''}">
+        <div class="saving-box ${!isLocked && ahorro!==null?(aPos?'pos':'neg'):''}">
           <span class="saving-lbl">${ahorro!==null ? (aPos?'Ahorro mensual':'Diferencia mensual') : 'Ahorro mensual'}</span>
-          <span class="saving-val">${ahorro!==null ? (aPos?'−':'+')+f2(Math.abs(ahorro))+' €' : '—'}</span>
+          <span class="saving-val">${isLocked ? '—' : (ahorro!==null ? (aPos?'−':'+')+f2(Math.abs(ahorro))+' €' : '—')}</span>
         </div>
         
         <!-- Annual Savings Box -->
-        <div class="saving-box ${ahorro!==null?(aPos?'pos':'neg'):''}">
+        <div class="saving-box ${!isLocked && ahorro!==null?(aPos?'pos':'neg'):''}">
           <span class="saving-lbl">${ahorro!==null ? (aPos?'Ahorro anual':'Diferencia anual') : 'Ahorro anual'}</span>
-          <span class="saving-val">${ahorro!==null ? (aPos?'−':'+')+f2(Math.abs(ahorro*12))+' €' : '—'}</span>
+          <span class="saving-val">${isLocked ? '—' : (ahorro!==null ? (aPos?'−':'+')+f2(Math.abs(ahorro*12))+' €' : '—')}</span>
         </div>
 
         <!-- Percentage Box -->
-        <div class="saving-box ${pct!==null?(aPos?'pos':'neg'):''}">
+        <div class="saving-box ${!isLocked && pct!==null?(aPos?'pos':'neg'):''}">
           <span class="saving-lbl">% Ahorro</span>
-          <span class="saving-val">${pct!==null ? (aPos?'−':'+')+f2(Math.abs(pct))+' %' : '—'}</span>
+          <span class="saving-val">${isLocked ? '—' : (pct!==null ? (aPos?'−':'+')+f2(Math.abs(pct))+' %' : '—')}</span>
         </div>
       </div>
       
       <!-- Actions Area -->
       <div class="inv-actions">
-        <button class="btn btn-pdf" onclick="printCompanyOffer('${res.key}')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;display:inline-block;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Descargar PDF Comparativa
-        </button>
+        ${actionBtnHtml}
       </div>
     </div>`;
   }).join('');
@@ -11070,14 +11136,30 @@ function renderSummary(results, actual){
     ${results.map((r,i)=>{
       const ah=r.ahorro, pos=ah>0;
       const logoHtml = `<span class="cdot" style="background:${r.r.color};display:inline-block;margin-right:8px;vertical-align:2px"></span>`;
-      return`<tr class="${i===0?'brow':''}">
+      if (r.isLocked) {
+        return `<tr class="sum-row-locked" style="background:#fffbeb;opacity:0.85;">
+          <td>
+            <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
+              ${logoHtml}
+              <span><strong>${r.r.name.split(' (')[0]}</strong> <span style="font-size:11.5px;color:#b45309;font-weight:700;background:rgba(245,158,11,0.12);padding:2px 6px;border-radius:4px;border:1px solid rgba(245,158,11,0.25);">${r.tariffName || r.r.name}</span></span>
+              <span style="font-size:10.5px;color:#dc2626;font-weight:800;background:rgba(220,38,38,0.08);padding:1px 6px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);">🔒 Capado (Solo con SVA)</span>
+            </div>
+          </td>
+          ${isLuz ? `<td style="text-align:right;color:var(--t2)">${r.excPrice.toFixed(3)} €</td>` : ''}
+          <td style="text-align:right;font-weight:700;color:#dc2626;">🔒 Requiere SVA</td>
+          <td style="text-align:right;font-weight:700;color:#94a3b8;">—</td>
+          <td style="text-align:right;font-weight:700;color:#94a3b8;">—</td>
+        </tr>`;
+      }
+      const isBest = !r.isLocked && i===0;
+      return`<tr class="${isBest?'brow':''}">
         <td>
           <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
             ${logoHtml}
             <span><strong>${r.r.name.split(' (')[0]}</strong> <span style="font-size:11.5px;color:var(--blue);font-weight:700;background:rgba(13,92,158,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(13,92,158,0.15);">${r.tariffName || r.r.name}</span></span>
             ${r.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:10.5px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:1px 5px;border-radius:4px;">(+2€/mes BV)</span>' : ''}
           </div>
-          ${i===0?'<span class="badge-best" style="margin-left:6px;">✓ mejor</span>':''}
+          ${isBest?'<span class="badge-best" style="margin-left:6px;">✓ mejor</span>':''}
         </td>
         ${isLuz ? `<td style="text-align:right;color:var(--t2)">${r.excPrice.toFixed(3)} €</td>` : ''}
         <td style="text-align:right;font-weight:700">${f2(r.total)} €</td>
@@ -11101,6 +11183,11 @@ function printCompanyOffer(key) {
   const targetRes = results.find(r => r.key === key);
   if (!targetRes) {
     alert("No se encontro el resultado de la compañia seleccionada.");
+    return;
+  }
+
+  if (targetRes.isLocked) {
+    alert("El Plan Ahora de Iberdrola está bloqueado porque solo se puede contratar con Mantenimiento (SVA).\n\nActiva la casilla 'Activar SVA (Mantenimientos)' para desbloquearlo y poder generar el PDF.");
     return;
   }
 
@@ -11663,7 +11750,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930432;
+const CURRENT_BUILD_VERSION = 1785002930433;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
