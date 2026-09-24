@@ -5120,7 +5120,7 @@ input:focus, select:focus, textarea:focus {
             <div class="fsec">Facturacion actual</div>
             <div class="fgrp"><label>Factura actual cliente (€ con IVA)</label><input type="number" id="f-actual" placeholder="138.41" autocomplete="off" value="" step="0.01" oninput="calcComp()"></div>
             <div class="fgrp fgrp-checkbox">
-              <input type="checkbox" id="f-sva" onchange="calcComp()" style="width:20px;height:20px;cursor:pointer">
+              <input type="checkbox" id="f-sva" onchange="calcComp()" checked style="width:20px;height:20px;cursor:pointer">
               <label for="f-sva" style="margin-bottom:0;cursor:pointer;font-weight:600">Activar SVA (Mantenimientos)</label>
             </div>
             <div class="fgrp fgrp-checkbox">
@@ -10984,7 +10984,7 @@ function clearComparisonInputs() {
   if (document.getElementById('f-gas')) document.getElementById('f-gas').value = '';
   if (document.getElementById('f-gas-segmento')) document.getElementById('f-gas-segmento').value = 'auto';
   if (document.getElementById('f-actual')) document.getElementById('f-actual').value = '';
-  if (document.getElementById('f-sva')) document.getElementById('f-sva').checked = false;
+  if (document.getElementById('f-sva')) document.getElementById('f-sva').checked = true;
   if (document.getElementById('f-cif')) document.getElementById('f-cif').checked = false;
   if (document.getElementById('f-asesor-nombre')) document.getElementById('f-asesor-nombre').value = '';
   compMode = 'luz';
@@ -11797,7 +11797,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930434;
+const CURRENT_BUILD_VERSION = 1785002930435;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
