@@ -7174,8 +7174,8 @@ input:focus, select:focus, textarea:focus {
 const BASE = {
   iberdrola:{
     name:'Iberdrola', color:'#008B3C',
-    tp1:0.1090, tp2:0.0790,
-    te_sin:0.1592, te_con:0.149,
+    tp1:0.12, tp2:0.12,
+    te_sin:0.0999, te_con:0.094,
     precio_excedente:0.05,
     sva_luz:4.48, sva_gas:9.95,
     gas_rl1:{tf:0.2112, tv:0.1024},
@@ -7184,6 +7184,7 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
+      {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-09-30T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 30/09 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña'},
       {n:'Plan Especial', te:0.1873, tp1:0.1090, tp2:0.0790, te_sin:0.1592, te_con:0.149, desc_sin:0.15, desc_con:0.20, nota:'Precio único 24h sin permanencia (<10kW)'}
     ],
     tarifas_gas:[
@@ -10007,11 +10008,33 @@ function renderCondiciones(){
         if (t.nota_extra) {
           extraNoteHtml = `<br><span style="font-size:11px;color:var(--t3);font-style:italic;">${t.nota_extra}</span>`;
         }
+        let temporalBannerHtml = '';
+        if (t.temporal) {
+          temporalBannerHtml = `
+            <div style="margin-top:6px;display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span style="font-size:10.5px;font-weight:800;color:#dc2626;background:rgba(220,38,38,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);display:inline-flex;align-items:center;gap:3px;">
+                  ⏳ Campaña hasta 30/09 (23:59:59)
+                </span>
+                <span style="font-size:10.5px;font-weight:700;color:#d97706;background:rgba(217,119,6,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(217,119,6,0.2);">
+                  ⚠️ Solo con mantenimiento
+                </span>
+                <span style="font-size:10.5px;font-weight:700;color:#2563eb;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">
+                  📍 Sevilla, Huelva, Barcelona y A Coruña
+                </span>
+              </div>
+              <div style="background:linear-gradient(135deg, #0f172a, #1e293b);color:#fff;padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;width:fit-content;box-shadow:0 1px 4px rgba(0,0,0,0.18);">
+                <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
+                <span style="color:#94a3b8;">Cuenta atrás:</span>
+                <span class="plan-ahora-timer-val" style="color:#38bdf8;font-family:monospace;font-weight:800;font-size:12px;">Calculando...</span>
+              </div>
+            </div>`;
+        }
         let dtoText = `Dto: ${(dSin*100).toFixed(0)}% / ${teCon?(dCon*100).toFixed(0)+'%':'—'}`;
         if (t.n === 'Solar Plus') {
           dtoText = `Dto: 12% / 12% (+2€/mes Batería Virtual)`;
         }
-        html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}${extraNoteHtml}<br><span style="font-size:12px;color:var(--t3)">${dtoText}</span></td>
+        html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}${extraNoteHtml}${temporalBannerHtml}<br><span style="font-size:12px;color:var(--t3)">${dtoText}</span></td>
           <td class="price-base">${t.te.toFixed(3)}</td>
           <td>${teSin !== t.te ? `<span class="price-sin">${teSin.toFixed(3)}</span>` : '<span style="color:var(--t3)">igual</span>'}</td>
           <td>${teCon && teCon !== t.te ? `<span class="price-con">${teCon.toFixed(3)}</span>` : '<span style="color:var(--t3)">igual</span>'}</td>
@@ -10020,7 +10043,8 @@ function renderCondiciones(){
     });
     let potHtml = '';
     if (id === 'iberdrola') {
-      potHtml = `<span>Potencia Plan Especial: TP1 0.109 · TP2 0.079 €/kW·dia</span>`;
+      potHtml = `<span>Potencia Plan Ahora: TP1 0.120 · TP2 0.120 €/kW·dia</span>
+                 <br><span style="margin-top:2px;display:inline-block">Potencia Plan Especial: TP1 0.109 · TP2 0.079 €/kW·dia</span>`;
     } else if (r.tarifas_luz.length > 1 && id === 'naturgy') {
       potHtml = `<span>Potencia DNI: TP1 ${r.tarifas_luz[0].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(3)} €/kW·dia</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia CIF: TP1 ${r.tarifas_luz[1].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(3)} €/kW·dia</span>`;
@@ -10123,6 +10147,38 @@ function renderCondiciones(){
   html+=`</div>`;
 
   document.getElementById('cond-render').innerHTML=html;
+  if (typeof updatePlanAhoraCountdown === 'function') {
+    updatePlanAhoraCountdown();
+  }
+}
+
+function updatePlanAhoraCountdown() {
+  const targetDate = new Date('2026-09-30T23:59:59+02:00').getTime();
+  const now = new Date().getTime();
+  const diff = targetDate - now;
+  const elements = document.querySelectorAll('.plan-ahora-timer-val');
+  if (!elements || elements.length === 0) return;
+  
+  if (diff <= 0) {
+    elements.forEach(el => {
+      el.innerHTML = '<span style="color:#ef4444;font-weight:800;">¡OFERTA FINALIZADA!</span>';
+    });
+    return;
+  }
+  
+  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
+  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+  
+  const timeStr = `${days}d ${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
+  elements.forEach(el => {
+    el.textContent = timeStr;
+  });
+}
+
+if (!window.planAhoraTimerInterval) {
+  window.planAhoraTimerInterval = setInterval(updatePlanAhoraCountdown, 1000);
 }
 
 function openServiceDocumentModal(url, title) {
@@ -10541,6 +10597,7 @@ function calcComp(){
   let offers = [];
   if (compMode === 'luz') {
     offers = [
+      { id: 'iberdrola', type: 'ahora' },
       { id: 'iberdrola', type: 'especial' },
       { id: 'naturgy', type: 'standard' },
       { id: 'endesa', type: 'standard' },
@@ -10564,16 +10621,43 @@ function calcComp(){
       r.name = r.name + ' (Precio CIF)';
     }
     if (cia === 'iberdrola') {
-      r.name = isCif ? 'Iberdrola Plan Especial (Precio CIF)' : 'Iberdrola Plan Especial';
-      r.tp1 = 0.1090;
-      r.tp2 = 0.0790;
-      r.te_sin = 0.1592;
-      r.te_con = 0.149;
-      r.desc_sin = 0.15;
-      r.desc_con = 0.20;
-      r.tarifas_luz = [
-        {n:'Plan Especial', te:0.1873, tp1:0.1090, tp2:0.0790, te_sin:0.1592, te_con:0.149, desc_sin:0.15, desc_con:0.20, nota:'Precio único 24h sin permanencia (<10kW)'}
-      ];
+      if (off.type === 'ahora') {
+        r.name = isCif ? 'Iberdrola Plan Ahora (Precio CIF)' : 'Iberdrola Plan Ahora';
+        r.tp1 = 0.12;
+        r.tp2 = 0.12;
+        r.te_sin = 0.0999;
+        r.te_con = 0.094;
+        r.desc_sin = 0.15;
+        r.desc_con = 0.20;
+        r.tarifas_luz = [
+          {
+            n: 'Plan Ahora',
+            te: 0.1176,
+            tp1: 0.12,
+            tp2: 0.12,
+            te_sin: 0.0999,
+            te_con: 0.094,
+            desc_sin: 0.15,
+            desc_con: 0.20,
+            temporal: true,
+            expira: '2026-09-30T23:59:59',
+            solo_mantenimiento: true,
+            provincias: ['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'],
+            nota: 'Campaña temporal hasta 30/09 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña'
+          }
+        ];
+      } else {
+        r.name = isCif ? 'Iberdrola Plan Especial (Precio CIF)' : 'Iberdrola Plan Especial';
+        r.tp1 = 0.1090;
+        r.tp2 = 0.0790;
+        r.te_sin = 0.1592;
+        r.te_con = 0.149;
+        r.desc_sin = 0.15;
+        r.desc_con = 0.20;
+        r.tarifas_luz = [
+          {n:'Plan Especial', te:0.1873, tp1:0.1090, tp2:0.0790, te_sin:0.1592, te_con:0.149, desc_sin:0.15, desc_con:0.20, nota:'Precio único 24h sin permanencia (<10kW)'}
+        ];
+      }
     }
     if (cia === 'naturgy' && isCif) {
       r.tp1 = 0.122;
@@ -10713,7 +10797,11 @@ function calcComp(){
     let tariffName = '';
     if (compMode === 'luz') {
       if (cia === 'iberdrola') {
-        tariffName = isCif ? 'Plan Especial (CIF)' : 'Plan Especial';
+        if (off.type === 'ahora') {
+          tariffName = isCif ? 'Plan Ahora (CIF)' : 'Plan Ahora';
+        } else {
+          tariffName = isCif ? 'Plan Especial (CIF)' : 'Plan Especial';
+        }
       } else if (cia === 'naturgy') {
         tariffName = isCif ? 'Fijo Luz 24h (CIF)' : 'Por Uso Luz';
       } else if (cia === 'endesa') {
@@ -10888,6 +10976,7 @@ function renderInvCards(results, useSva){
             </span>
             ${best?'<span class="best-badge">✓ Mejor opcion</span>':''}
             ${res.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">+2€/mes Batería Virtual</span>' : ''}
+            ${res.cia === 'iberdrola' && res.type === 'ahora' ? '<span style="font-size:11px;color:#dc2626;font-weight:800;background:rgba(220,38,38,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);">⏳ Hasta 30/09</span><span style="font-size:11px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(217,119,6,0.2);">⚠️ Solo con mant.</span><span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">📍 Sevilla, Huelva, Barcelona y A Coruña</span>' : ''}
           </div>
         </div>
         <div class="inv-hdr-right" style="font-size:12.5px;color:var(--t2);font-weight:500;display:flex;flex-direction:column;align-items:flex-end;gap:4px;">
@@ -10935,6 +11024,9 @@ function renderInvCards(results, useSva){
       </div>
     </div>`;
   }).join('');
+  if (typeof updatePlanAhoraCountdown === 'function') {
+    updatePlanAhoraCountdown();
+  }
 }
 
 function renderSummary(results, actual){
@@ -11545,7 +11637,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930429;
+const CURRENT_BUILD_VERSION = 1785002930430;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -16022,6 +16114,22 @@ function getRenosurChatResponse(query) {
   const TARIFFS_DATA = {
     iberdrola: {
       luz: {
+        plan_ahora: {
+          name: "Iberdrola Plan Ahora (Campaña Temporal)",
+          base: "0,1176 €/kWh",
+          sin_mantenimiento: "0,0999 €/kWh (15% dto.)",
+          con_mantenimiento: "0,094 €/kWh (20% dto. - Precio final)",
+          descuento_sin_mantenimiento: "15%",
+          descuento_con_mantenimiento: "20%",
+          descuento_general: "15% sin mantenimiento / 20% con mantenimiento",
+          potencia: "TP1: 0,1200 €/kW-día | TP2: 0,1200 €/kW-día",
+          excedentes: "0,05 €/kWh",
+          mantenimiento: "4,48 €/mes (Pack Iberdrola Hogar)",
+          permanencia: "No tiene permanencia.",
+          retrocomision: "0-2 meses: 100% | 2-4 meses: 50%",
+          vigencia: "Válido hasta el 30 de septiembre a las 23:59:59 (con cuenta atrás activa).",
+          condiciones_especiales: "Solo se puede meter con mantenimiento. Solo se puede vender en Sevilla, Huelva, Barcelona y A Coruña."
+        },
         plan_especial: {
           name: "Iberdrola Plan Especial",
           base: "0,1873 €/kWh",
@@ -16162,14 +16270,18 @@ function getRenosurChatResponse(query) {
   };
 
   // ── RESPUESTAS EXACTAS PARA TARIFAS Y PRECIOS ──
-  // 1. Iberdrola Plan Ahora (PARALIZADO - NO SE PUEDE VENDER)
+  // 1. Iberdrola Plan Ahora (CAMPAÑA TEMPORAL ACTIVA HASTA 30/09)
   if (q.includes('plan ahora') || q.includes('ahora 0-10') || q.includes('ahora 10-15') || (q.includes('ahora') && q.includes('iberdrola'))) {
-    return "⚠️ <strong>El Plan Ahora de Iberdrola ha sido PARALIZADO</strong> y ya no se encuentra disponible para su comercialización ni contratación.<br><br>" +
-           "La tarifa activa oficial de Iberdrola para luz es <strong>Plan Especial</strong>:<br>" +
-           "• <strong>Precio Base Energía (<10kW):</strong> 0,1873 €/kWh<br>" +
-           "• <strong>Sin Mantenimiento (15% dto.):</strong> <strong>0,1592 €/kWh</strong><br>" +
-           "• <strong>Con Mantenimiento (20% dto.):</strong> <strong>0,149 €/kWh</strong><br>" +
-           "• <strong>Término de Potencia:</strong> TP1 (Punta): <strong>0,1090 €/kW·día</strong> | TP2 (Valle): <strong>0,0790 €/kW·día</strong><br>" +
+    return "⚡ <strong>Iberdrola — Plan Ahora (Campaña Temporal Activa):</strong><br><br>" +
+           "⏳ <strong>Vigencia:</strong> Hasta el <strong>30 de septiembre a las 23:59:59</strong> (con cuenta atrás en vivo en la app).<br>" +
+           "⚠️ <strong>Condición de contratación:</strong> <strong>Solo se puede meter con mantenimiento</strong>.<br>" +
+           "📍 <strong>Zonas autorizadas:</strong> Solo se puede comercializar/vender en <strong>Sevilla, Huelva, Barcelona y A Coruña</strong>.<br><br>" +
+           "• <strong>Término de Energía:</strong><br>" +
+           "  - Precio base energía: 0,1176 €/kWh<br>" +
+           "  - Sin Mantenimiento (15% dto.): <strong>0,0999 €/kWh</strong><br>" +
+           "  - Con Mantenimiento (20% dto. - Precio Final): <strong>0,094 €/kWh</strong><br><br>" +
+           "• <strong>Término de Potencia:</strong><br>" +
+           "  - TP1 (Punta): <strong>0,1200 €/kW·día</strong> | TP2 (Valle): <strong>0,1200 €/kW·día</strong><br><br>" +
            "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
            "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
            "• <strong>Permanencia:</strong> Sin permanencia<br>" +
@@ -16294,6 +16406,7 @@ function getRenosurChatResponse(query) {
       
       // Luz más barata
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
+             `• <strong>Iberdrola Plan Ahora (Temporal hasta 30/09):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>` +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1120 €/kWh<br>` +
              `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1290 €/kWh<br>` +
              `• <strong>Endesa Luz 24H:</strong> 0,137 €/kWh (0,131 €/kWh con mant.)<br>` +
@@ -16304,7 +16417,7 @@ function getRenosurChatResponse(query) {
 
     // Identificar compañía
     let company = null;
-    if (q.includes('iberdrola') || q.includes('especial') || q.includes('impulsa')) company = 'iberdrola';
+    if (q.includes('iberdrola') || q.includes('especial') || q.includes('impulsa') || q.includes('ahora')) company = 'iberdrola';
     else if (q.includes('naturgy') || q.includes('por uso')) company = 'naturgy';
     else if (q.includes('endesa') || q.includes('solar')) company = 'endesa';
     else if (q.includes('gana')) company = 'gana';
@@ -16342,8 +16455,9 @@ function getRenosurChatResponse(query) {
     // ── PASO 2: Si especifica LUZ pero no especifica qué tarifa concreta
     if (isLuz && !isGas) {
       if (company === 'iberdrola') {
-        return `<strong>Tarifa de Luz de Iberdrola disponible:</strong><br>Selecciona la tarifa que deseas consultar:<br><br>` +
+        return `<strong>Tarifas de Luz de Iberdrola disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Plan Ahora (Temporal hasta 30/09) — 0,094 €/kWh (Con Mant.)</button>` +
           `  <button onclick="sendQuickChatQuery('Iberdrola Plan Especial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Especial — Desde 0,149 €/kWh</button>` +
           `</div>`;
       }
