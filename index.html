@@ -2293,6 +2293,7 @@ hr {
 }
 .ranking-stat-card.stat-green::before { background: #10b981; }
 .ranking-stat-card.stat-orange::before { background: #f59e0b; }
+.ranking-stat-card.stat-purple::before { background: #8b5cf6; }
 
 .ranking-stat-label {
   font-size: 11.5px;
@@ -7078,6 +7079,11 @@ input:focus, select:focus, textarea:focus {
               <span class="ranking-stat-value" id="stat-leader-name" style="font-size: 18px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">-</span>
               <span class="ranking-stat-desc" id="stat-leader-points">0 puntos acumulados</span>
             </div>
+            <div class="ranking-stat-card stat-purple">
+              <span class="ranking-stat-label">Última Actualización</span>
+              <span class="ranking-stat-value" id="stat-last-update">--:--</span>
+              <span class="ranking-stat-desc" id="stat-last-update-desc">Sincronizado en tiempo real</span>
+            </div>
           </div>
 
           <!-- Personal Motivation Message Card -->
@@ -8888,6 +8894,20 @@ async function loadNativeRanking() {
     </div>`;
   }
   
+  // Mostrar hora de la última sincronización en caché mientras se carga
+  const cachedTs = parseInt(localStorage.getItem('ranking_last_update') || '0', 10);
+  const elLastUpdateInit = document.getElementById('stat-last-update');
+  const elLastUpdateDescInit = document.getElementById('stat-last-update-desc');
+  if (elLastUpdateInit && cachedTs) {
+    const d = new Date(cachedTs);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    elLastUpdateInit.textContent = `${hh}:${mm}`;
+    if (elLastUpdateDescInit) {
+      elLastUpdateDescInit.textContent = `Último recuento a las ${hh}:${mm}`;
+    }
+  }
+
   // Ensure native container is visible by default
   if (nativeContainer) nativeContainer.style.display = 'block';
   if (iframeContainer) iframeContainer.style.display = 'none';
@@ -8898,6 +8918,7 @@ async function loadNativeRanking() {
       rawRankingData = data.filter(r => r && r[0]); // Filter empty rows
       if (rawRankingData.length > 0) {
         localStorage.setItem('ranking_connected', 'true');
+        localStorage.setItem('ranking_last_update', Date.now().toString());
         
         // Reset iframe status
         const statusText = document.getElementById('ranking-iframe-status-text');
@@ -8960,12 +8981,27 @@ async function loadNativeRanking() {
     const elCount = document.getElementById('stat-success-count');
     const elLeaderName = document.getElementById('stat-leader-name');
     const elLeaderPts = document.getElementById('stat-leader-points');
+    const elLastUpdateErr = document.getElementById('stat-last-update');
+    const elLastUpdateDescErr = document.getElementById('stat-last-update-desc');
     
     if (elTotal) elTotal.textContent = '-';
     if (elRate) elRate.textContent = '-%';
     if (elCount) elCount.textContent = 'Conexion no establecida';
     if (elLeaderName) elLeaderName.textContent = '-';
     if (elLeaderPts) elLeaderPts.textContent = '0 puntos acumulados';
+    const cachedTsErr = parseInt(localStorage.getItem('ranking_last_update') || '0', 10);
+    if (elLastUpdateErr) {
+      if (cachedTsErr) {
+        const d = new Date(cachedTsErr);
+        const hh = String(d.getHours()).padStart(2, '0');
+        const mm = String(d.getMinutes()).padStart(2, '0');
+        elLastUpdateErr.textContent = `${hh}:${mm}`;
+        if (elLastUpdateDescErr) elLastUpdateDescErr.textContent = `Último recuento: ${hh}:${mm}`;
+      } else {
+        elLastUpdateErr.textContent = '--:--';
+        if (elLastUpdateDescErr) elLastUpdateDescErr.textContent = 'Sin conexión';
+      }
+    }
   }
 }
 
@@ -9014,11 +9050,32 @@ function renderNativeRanking(data) {
   const elLeaderName = document.getElementById('stat-leader-name');
   const elLeaderPts = document.getElementById('stat-leader-points');
   const elDiasRestantes = document.getElementById('stat-dias-restantes');
+  const elLastUpdate = document.getElementById('stat-last-update');
+  const elLastUpdateDesc = document.getElementById('stat-last-update-desc');
   
   if (elTotal) elTotal.textContent = totalHeadcount;
   if (elRate) elRate.textContent = successRate + '%';
   if (elCount) elCount.textContent = `${successCount} comerciales de ${totalHeadcount}`;
   if (elDiasRestantes) elDiasRestantes.textContent = diasRestantes;
+  
+  const lastUpdateTs = parseInt(localStorage.getItem('ranking_last_update') || Date.now().toString(), 10);
+  if (elLastUpdate && lastUpdateTs) {
+    const d = new Date(lastUpdateTs);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    elLastUpdate.textContent = `${hh}:${mm}`;
+    if (elLastUpdateDesc) {
+      const today = new Date();
+      const isToday = d.getDate() === today.getDate() && d.getMonth() === today.getMonth() && d.getFullYear() === today.getFullYear();
+      if (isToday) {
+        elLastUpdateDesc.textContent = `Actualizado hoy a las ${hh}:${mm}`;
+      } else {
+        const dd = String(d.getDate()).padStart(2, '0');
+        const mo = String(d.getMonth() + 1).padStart(2, '0');
+        elLastUpdateDesc.textContent = `Actualizado ${dd}/${mo} a las ${hh}:${mm}`;
+      }
+    }
+  }
   
   if (sorted.length > 0) {
     const leaderName = formatName(sorted[0][0]);
@@ -9585,6 +9642,7 @@ async function testRankingConnection() {
         statusMsg.style.color = "var(--green)";
       }
       localStorage.setItem('ranking_connected', 'true');
+      localStorage.setItem('ranking_last_update', Date.now().toString());
       
       // Auto-load and switch after a short delay
       setTimeout(() => {
@@ -11796,7 +11854,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930436;
+const CURRENT_BUILD_VERSION = 1785002930437;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -15101,6 +15159,7 @@ async function fetchRankingForDashboard() {
     if (Array.isArray(data)) {
       rawRankingData = data.filter(r => r && r[0]);
       localStorage.setItem('ranking_connected', 'true');
+      localStorage.setItem('ranking_last_update', Date.now().toString());
     }
   } catch (e) {
     console.warn("Could not fetch ranking for dashboard widget:", e);
