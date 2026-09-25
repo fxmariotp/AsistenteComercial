@@ -4369,20 +4369,6 @@ input:focus, select:focus, textarea:focus {
           </button>
         </div>
 
-        <!-- Botón Ver Comisión de Comerciales (Exclusivo Gerencia Renosur) -->
-        <div class="db-comision-container" id="db-gerente-comisiones-container" style="display: none;">
-          <div class="db-comision-info">
-            <span class="db-comision-label">
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
-              Gerencia • Sala
-            </span>
-            <span class="db-comision-val" style="font-size: 13.5px; font-weight: 800; color: #0f172a;" id="db-gerente-comisiones-kpi">Comisiones</span>
-          </div>
-          <button type="button" class="db-comision-btn" id="db-gerente-comisiones-btn" onclick="openGerenteComisionesModal()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; border: none; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25);">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line><path d="M12 14v4M10 16h4"></path></svg>
-            <span>Ver comisiones</span>
-          </button>
-        </div>
         <div class="db-clock">
           <div class="db-clock-time" id="db-clock-time">00:00:00</div>
           <div class="db-clock-date" id="db-clock-date">Cargando fecha...</div>
@@ -7129,6 +7115,11 @@ input:focus, select:focus, textarea:focus {
                 Modo TV Sala
               </button>
             </div>
+            <!-- Botón Ver Comisiones de Comerciales (Gerencia) -->
+            <button class="btn" id="btn-ranking-gerente-comisiones" onclick="openGerenteComisionesModal()" style="display: none; padding: 8px 14px; font-size: 13px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; border: none; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25); border-radius: 12px; align-items: center; gap: 6px; font-weight: 700;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line><path d="M12 14v4M10 16h4"></path></svg>
+              <span>Ver comisiones</span>
+            </button>
             <button class="btn" onclick="loadNativeRanking()" style="padding: 8px 14px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; border-radius: 12px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
               Actualizar
@@ -7139,10 +7130,14 @@ input:focus, select:focus, textarea:focus {
         <!-- Manager Shift Report Actions -->
         <div id="gerente-ranking-actions" style="display: none; background: linear-gradient(135deg, rgba(255, 255, 255, 0.75), rgba(255, 255, 255, 0.45)); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(0, 0, 0, 0.08); border-radius: 20px; padding: 16px 20px; margin-top: 15px; margin-bottom: 20px; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; box-shadow: inset 0 1px 0 rgba(255,255,255,0.8), 0 8px 24px rgba(0,0,0,0.03);">
           <div style="display: flex; flex-direction: column; gap: 2px;">
-            <div style="font-size: 13.5px; font-weight: 800; color: #0f172a;">Recuento de Sala (Gerencia)</div>
-            <div style="font-size: 11.5px; color: var(--t3);">Genera y copia una imagen formateada del recuento de la sala en tu portapapeles.</div>
+            <div style="font-size: 13.5px; font-weight: 800; color: #0f172a;">Recuento de Sala y Comisiones (Gerencia)</div>
+            <div style="font-size: 11.5px; color: var(--t3);">Consulta el ranking de comisiones del equipo o copia una imagen formateada del recuento.</div>
           </div>
-          <div style="display: flex; gap: 10px;">
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <button class="btn" onclick="openGerenteComisionesModal()" style="font-size: 12.5px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px; border-radius: 12px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; border: none; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25); font-weight: 700;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line><path d="M12 14v4M10 16h4"></path></svg>
+              Ver Comisiones Comerciales
+            </button>
             <button class="btn btn-secondary" onclick="copyShiftReport()" style="font-size: 12.5px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px; border-radius: 12px;">
               <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
               Copiar Recuento de Sala
@@ -9133,15 +9128,15 @@ function renderNativeRanking(data) {
   
   if (!listContainer || !podiumContainer) return;
 
-  // Mostrar panel de recuentos solo a Gerente
-  const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+  // Mostrar panel de recuentos y comisiones solo a Gerente
+  const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined') ? (AGENT_ROLES[currentAgentDni] || 'comercial') : 'comercial';
   const gerenteRankingActions = document.getElementById('gerente-ranking-actions');
   if (gerenteRankingActions) {
-    if (userRole === 'gerente') {
-      gerenteRankingActions.style.display = 'flex';
-    } else {
-      gerenteRankingActions.style.display = 'none';
-    }
+    gerenteRankingActions.style.display = userRole === 'gerente' ? 'flex' : 'none';
+  }
+  const rankingGerenteComisionesBtn = document.getElementById('btn-ranking-gerente-comisiones');
+  if (rankingGerenteComisionesBtn) {
+    rankingGerenteComisionesBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
   }
   
   if (!data || data.length === 0) {
@@ -11987,7 +11982,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785004000000;
+const CURRENT_BUILD_VERSION = 1785005000000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -12300,7 +12295,8 @@ function applyAgentPermissions() {
   const cardCalendario = document.querySelector('.db-tool-card[onclick*="\'calendario\'"]');
   const topbarGerenteBtn = document.getElementById('btn-topbar-gerenteHub');
   const comisionContainer = document.getElementById('db-comision-container');
-  const gerenteComisionesContainer = document.getElementById('db-gerente-comisiones-container');
+  const rankingGerenteComisionesBtn = document.getElementById('btn-ranking-gerente-comisiones');
+  const gerenteRankingActions = document.getElementById('gerente-ranking-actions');
   
   if (topbarGerenteBtn) {
     topbarGerenteBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
@@ -12310,8 +12306,12 @@ function applyAgentPermissions() {
     comisionContainer.style.display = userRole === 'comercial' ? 'inline-flex' : 'none';
   }
 
-  if (gerenteComisionesContainer) {
-    gerenteComisionesContainer.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
+  if (rankingGerenteComisionesBtn) {
+    rankingGerenteComisionesBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
+  }
+
+  if (gerenteRankingActions) {
+    gerenteRankingActions.style.display = userRole === 'gerente' ? 'flex' : 'none';
   }
   
   if (userRole === 'evaria') {
