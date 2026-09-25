@@ -8798,6 +8798,37 @@ function getInitials(name) {
   return parts[0].substring(0, 2).toUpperCase();
 }
 
+// Detectar variaciones reales en puntos (verdes) o pendientes para actualizar la marca de tiempo
+function checkAndTrackRankingChanges(newData) {
+  if (!Array.isArray(newData) || newData.length === 0) return false;
+  
+  const currentSnapshot = newData.map(row => {
+    const name = (row[0] || '').toString().trim().toUpperCase();
+    const pts = parseFloat(row[1]) || 0;
+    const obj = parseFloat(row[2]) || 0;
+    const pend = parseFloat(row[3]) || 0;
+    return `${name}:${pts.toFixed(2)}:${pend.toFixed(2)}:${obj.toFixed(2)}`;
+  }).sort().join('|');
+
+  const prevSnapshot = localStorage.getItem('ranking_data_snapshot');
+  
+  if (!prevSnapshot) {
+    localStorage.setItem('ranking_data_snapshot', currentSnapshot);
+    if (!localStorage.getItem('ranking_last_update')) {
+      localStorage.setItem('ranking_last_update', Date.now().toString());
+    }
+    return true;
+  }
+  
+  if (prevSnapshot !== currentSnapshot) {
+    localStorage.setItem('ranking_data_snapshot', currentSnapshot);
+    localStorage.setItem('ranking_last_update', Date.now().toString());
+    return true;
+  }
+  
+  return false;
+}
+
 // Helper to fetch Google Script with direct try & multiple CORS proxy fallbacks
 async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
   // 1. Try our same-origin Vercel serverless proxy first (fully bypasses CORS & adblockers)
@@ -8918,7 +8949,7 @@ async function loadNativeRanking() {
       rawRankingData = data.filter(r => r && r[0]); // Filter empty rows
       if (rawRankingData.length > 0) {
         localStorage.setItem('ranking_connected', 'true');
-        localStorage.setItem('ranking_last_update', Date.now().toString());
+        checkAndTrackRankingChanges(rawRankingData);
         
         // Reset iframe status
         const statusText = document.getElementById('ranking-iframe-status-text');
@@ -9642,7 +9673,7 @@ async function testRankingConnection() {
         statusMsg.style.color = "var(--green)";
       }
       localStorage.setItem('ranking_connected', 'true');
-      localStorage.setItem('ranking_last_update', Date.now().toString());
+      checkAndTrackRankingChanges(data.filter(r => r && r[0]));
       
       // Auto-load and switch after a short delay
       setTimeout(() => {
@@ -11854,7 +11885,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930437;
+const CURRENT_BUILD_VERSION = 1785002930438;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -15159,7 +15190,7 @@ async function fetchRankingForDashboard() {
     if (Array.isArray(data)) {
       rawRankingData = data.filter(r => r && r[0]);
       localStorage.setItem('ranking_connected', 'true');
-      localStorage.setItem('ranking_last_update', Date.now().toString());
+      checkAndTrackRankingChanges(rawRankingData);
     }
   } catch (e) {
     console.warn("Could not fetch ranking for dashboard widget:", e);
