@@ -7115,11 +7115,6 @@ input:focus, select:focus, textarea:focus {
                 Modo TV Sala
               </button>
             </div>
-            <!-- Botón Ver Comisiones de Comerciales (Gerencia) -->
-            <button class="btn" id="btn-ranking-gerente-comisiones" onclick="openGerenteComisionesModal()" style="display: none; padding: 8px 14px; font-size: 13px; background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: #ffffff; border: none; box-shadow: 0 2px 8px rgba(16, 185, 129, 0.25); border-radius: 12px; align-items: center; gap: 6px; font-weight: 700;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="2" y="4" width="20" height="16" rx="2"></rect><line x1="2" y1="10" x2="22" y2="10"></line><path d="M12 14v4M10 16h4"></path></svg>
-              <span>Ver comisiones</span>
-            </button>
             <button class="btn" onclick="loadNativeRanking()" style="padding: 8px 14px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; border-radius: 12px;">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
               Actualizar
@@ -9133,10 +9128,6 @@ function renderNativeRanking(data) {
   const gerenteRankingActions = document.getElementById('gerente-ranking-actions');
   if (gerenteRankingActions) {
     gerenteRankingActions.style.display = userRole === 'gerente' ? 'flex' : 'none';
-  }
-  const rankingGerenteComisionesBtn = document.getElementById('btn-ranking-gerente-comisiones');
-  if (rankingGerenteComisionesBtn) {
-    rankingGerenteComisionesBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
   }
   
   if (!data || data.length === 0) {
@@ -11982,7 +11973,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785005000000;
+const CURRENT_BUILD_VERSION = 1785005500000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -12295,7 +12286,6 @@ function applyAgentPermissions() {
   const cardCalendario = document.querySelector('.db-tool-card[onclick*="\'calendario\'"]');
   const topbarGerenteBtn = document.getElementById('btn-topbar-gerenteHub');
   const comisionContainer = document.getElementById('db-comision-container');
-  const rankingGerenteComisionesBtn = document.getElementById('btn-ranking-gerente-comisiones');
   const gerenteRankingActions = document.getElementById('gerente-ranking-actions');
   
   if (topbarGerenteBtn) {
@@ -12304,10 +12294,6 @@ function applyAgentPermissions() {
 
   if (comisionContainer) {
     comisionContainer.style.display = userRole === 'comercial' ? 'inline-flex' : 'none';
-  }
-
-  if (rankingGerenteComisionesBtn) {
-    rankingGerenteComisionesBtn.style.display = userRole === 'gerente' ? 'inline-flex' : 'none';
   }
 
   if (gerenteRankingActions) {
