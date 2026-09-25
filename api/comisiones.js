@@ -12,9 +12,9 @@ const RENOSUR_AGENTS = [
     keywords: ["CHRISTIAN", "CRISTIAN", "CABRERA MARQUEZ"]
   },
   {
-    dni: "77976681B",
-    name: "CLARA TORREÑO RUIZ",
-    keywords: ["CLARA", "TORREÑO", "TORRENO", "RUIZ"]
+    dni: "47539234M",
+    name: "ANA ROCIO GALERA MORILLO",
+    keywords: ["ANA ROCIO", "ANA", "GALERA", "MORILLO"]
   },
   {
     dni: "28818524F",

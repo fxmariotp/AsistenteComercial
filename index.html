@@ -11985,7 +11985,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930440;
+const CURRENT_BUILD_VERSION = 1785003550000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -12192,9 +12192,9 @@ if (AGENT_ROLES['MARIAC'] === undefined) {
   AGENT_ROLES['MARIAC'] = 'gerente';
 }
 
-// Preasignar rol a Ana Rocio Galera Morillo a Trabajadores Evaria
+// Preasignar rol a Ana Rocio Galera Morillo a Comercial
 if (AGENT_ROLES['47539234M'] === undefined) {
-  AGENT_ROLES['47539234M'] = 'evaria';
+  AGENT_ROLES['47539234M'] = 'comercial';
 }
 
 // Preasignar rol a Olga Villa a Trabajadores Evaria
@@ -13623,6 +13623,11 @@ function updateGreeting() {
 // ── GESTIÓN DE COMISIONES (GOOGLE SHEETS) ──
 const RENOSUR_ROSTER = [
   {
+    dni: "47539234M",
+    name: "ANA ROCIO GALERA MORILLO",
+    keywords: ["ANA ROCIO", "ANA", "GALERA", "MORILLO"]
+  },
+  {
     dni: "28727453Q",
     name: "BEGOÑA CABANILLAS PIQUERO",
     keywords: ["BEGOÑA", "BEGONA", "CABANILLAS", "PIQUERO", "BEGO"]
@@ -13631,11 +13636,6 @@ const RENOSUR_ROSTER = [
     dni: "47269867Z",
     name: "CHRISTIAN CABRERA MARQUEZ",
     keywords: ["CHRISTIAN", "CRISTIAN", "CABRERA MARQUEZ"]
-  },
-  {
-    dni: "77976681B",
-    name: "CLARA TORREÑO RUIZ",
-    keywords: ["CLARA", "TORREÑO", "TORRENO", "RUIZ"]
   },
   {
     dni: "28818524F",
@@ -13966,7 +13966,6 @@ function getAgentComisionAmount() {
 // ── COMISIONES DE COMERCIALES (GERENCIA) ──
 function getComisionesListForGerente() {
   const list = [];
-  const processedDnis = new Set();
 
   if (typeof RENOSUR_ROSTER !== 'undefined' && Array.isArray(RENOSUR_ROSTER)) {
     RENOSUR_ROSTER.forEach(agent => {
@@ -14001,29 +14000,6 @@ function getComisionesListForGerente() {
         name: agent.name,
         comision: Number(comision) || 0
       });
-      processedDnis.add(agent.dni);
-    });
-  }
-
-  // Incluir cualquier otro comercial registrado en AGENT_ROLES
-  if (typeof AGENT_ROLES !== 'undefined') {
-    Object.keys(AGENT_ROLES).forEach(dni => {
-      if (AGENT_ROLES[dni] === 'comercial' && !processedDnis.has(dni)) {
-        let name = dni;
-        if (typeof AGENT_NAMES !== 'undefined' && AGENT_NAMES[dni]) {
-          name = AGENT_NAMES[dni];
-        }
-        let comision = 0;
-        if (renosurComisionesData) {
-          comision = renosurComisionesData[dni] || renosurComisionesData[cleanAgentKey(name)] || renosurComisionesData[name] || 0;
-        }
-        list.push({
-          dni: dni,
-          name: name,
-          comision: Number(comision) || 0
-        });
-        processedDnis.add(dni);
-      }
     });
   }
 
