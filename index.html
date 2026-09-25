@@ -9409,6 +9409,14 @@ async function copyShiftReport() {
   
   const now = new Date();
   const dateStr = now.toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit', year: 'numeric' });
+  const lastUpdateTs = parseInt(localStorage.getItem('ranking_last_update') || '0', 10);
+  let updateTimeStr = '';
+  if (lastUpdateTs) {
+    const d = new Date(lastUpdateTs);
+    const hh = String(d.getHours()).padStart(2, '0');
+    const mm = String(d.getMinutes()).padStart(2, '0');
+    updateTimeStr = `Actualizado a las ${hh}:${mm} h`;
+  }
   
   const reportDiv = document.createElement('div');
   reportDiv.style.width = '520px';
@@ -9494,8 +9502,9 @@ async function copyShiftReport() {
     <div style="display: flex; flex-direction: column;">
       ${rowsHtml || '<div style="text-align:center; color:#64748b; padding: 20px; font-weight: 600; font-size: 13px;">No hay comerciales activos hoy.</div>'}
     </div>
-    <div style="text-align: center; margin-top: 14px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 9.5px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px;">
-      Asistente Comercial • Grupo Renosur
+    <div style="display: flex; align-items: center; justify-content: space-between; margin-top: 14px; padding-top: 10px; border-top: 1px solid #e2e8f0; font-size: 9.5px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">
+      <span>Asistente Comercial • Grupo Renosur</span>
+      ${updateTimeStr ? `<span style="color: #64748b; font-weight: 600; text-transform: none; letter-spacing: normal; font-size: 9.5px; display: inline-flex; align-items: center; gap: 4px;"><span style="width: 5px; height: 5px; border-radius: 50%; background: #8b5cf6; display: inline-block;"></span>${updateTimeStr}</span>` : ''}
     </div>
   `;
   
@@ -11885,7 +11894,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785002930438;
+const CURRENT_BUILD_VERSION = 1785002930439;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
