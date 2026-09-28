@@ -11,6 +11,9 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/whatsapp-share.js"></script>
+<script src="js/tarifario.js"></script>
+<script src="js/tramos-alert.js"></script>
 <script>
   (function() {
     const COMERCIALES = {
@@ -430,6 +433,34 @@ body {
   background: var(--surface);
   color: var(--text);
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+/* ── TARIFARIO TABS ── */
+.tarifario-tab-btn {
+  padding: 8px 16px;
+  border-radius: var(--rs);
+  font-weight: 700;
+  font-size: 13.5px;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--t2);
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease;
+}
+
+.tarifario-tab-btn:hover {
+  color: var(--text);
+  border-color: var(--border-hover);
+}
+
+.tarifario-tab-btn.active {
+  background: var(--blue-bg) !important;
+  border-color: var(--blue) !important;
+  color: var(--blue) !important;
+  box-shadow: 0 2px 6px rgba(53, 127, 191, 0.15);
 }
 
 .cdot {
@@ -4257,37 +4288,21 @@ input:focus, select:focus, textarea:focus {
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"></path><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"></path><path d="M4 22h16"></path><path d="M10 14.66V17c0 .55-.45 1-1 1H4v2h16v-2h-5c-.55 0-1-.45-1-1v-2.34"></path><path d="M12 2a6 6 0 0 1 6 6v5a6 6 0 0 1-6 6 6 6 0 0 1-6-6V8a6 6 0 0 1 6-6z"></path></svg>
       Ranking Ventas
     </button>
-    <button class="nav-btn" id="btn-nav-agenda" onclick="showPanel('agenda',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-      Agenda Personal
+    <button class="nav-btn" id="btn-nav-comparativa" onclick="showPanel('comparativa',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
+      Comparativas
+    </button>
+    <button class="nav-btn" id="btn-nav-tarifario" onclick="showPanel('tarifario',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+      Tarifario & Normativa
     </button>
     <button class="nav-btn" id="btn-nav-scripts" onclick="showPanel('scripts',this)">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" y1="19" x2="12" y2="22"></line><line x1="8" y1="22" x2="16" y2="22"></line></svg>
       Textos Legales
     </button>
-        <button class="nav-btn" id="btn-nav-sips" onclick="showPanel('sips',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-      Enlaces Trabajo
-    </button>
-    <button class="nav-btn" id="btn-nav-comparativa" onclick="showPanel('comparativa',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
-      Comparativas
-    </button>
-    <button class="nav-btn" id="btn-nav-condiciones" onclick="showPanel('condiciones',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-      Condiciones
-    </button>
-    <button class="nav-btn" id="btn-nav-promociones" onclick="showPanel('promociones',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-      Promociones
-    </button>
-    <button class="nav-btn" id="btn-nav-procedimientos" onclick="showPanel('procedimientos',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-      Procedimientos
-    </button>
-    <button class="nav-btn" id="btn-nav-calendario" onclick="showPanel('calendario',this)">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-      Calendario
+    <button class="nav-btn" id="btn-nav-agenda" onclick="showPanel('agenda',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+      Agenda Personal
     </button>
   </div>
   <div style="padding: 0 14px; margin-bottom: 8px;">
@@ -4526,23 +4541,39 @@ input:focus, select:focus, textarea:focus {
             </div>
           </div>
 
-          <!-- Card 2: Agenda Personal -->
-          <div class="db-tool-card" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
+          <!-- Card 2: Comparativas -->
+          <div class="db-tool-card" onclick="showPanel('comparativa', document.getElementById('btn-nav-comparativa'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
               </div>
               <div class="db-tool-info">
-                <h4 class="db-tool-title">Agenda Personal</h4>
-                <p class="db-tool-desc">Anota tus gestiones, llamadas de seguimiento y recordatorios para organizarte en tu agenda personal.</p>
+                <h4 class="db-tool-title">Comparativas</h4>
+                <p class="db-tool-desc">Calcula ofertas personalizadas, aplica mantenimientos y envía propuestas por WhatsApp.</p>
               </div>
             </div>
             <div class="db-tool-action">
-              Abrir agenda <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Crear comparativa <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
           </div>
 
-          <!-- Card 3: Textos Legales -->
+          <!-- Card 3: Tarifario & Normativa -->
+          <div class="db-tool-card" onclick="showPanel('tarifario', document.getElementById('btn-nav-tarifario'))">
+            <div class="db-tool-card-content">
+              <div class="db-tool-icon-wrap">
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path></svg>
+              </div>
+              <div class="db-tool-info">
+                <h4 class="db-tool-title">Tarifario & Normativa</h4>
+                <p class="db-tool-desc">Precios PVP, requisitos de contratación, promociones vigentes y enlaces de trabajo.</p>
+              </div>
+            </div>
+            <div class="db-tool-action">
+              Consultar tarifas <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+            </div>
+          </div>
+
+          <!-- Card 4: Textos Legales -->
           <div class="db-tool-card" onclick="showPanel('scripts', document.getElementById('btn-nav-scripts'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
@@ -4558,23 +4589,23 @@ input:focus, select:focus, textarea:focus {
             </div>
           </div>
 
-          <!-- Card 4: Comparativas -->
-          <div class="db-tool-card" onclick="showPanel('comparativa', document.getElementById('btn-nav-comparativa'))">
+          <!-- Card 5: Agenda Personal -->
+          <div class="db-tool-card" onclick="showPanel('agenda', document.getElementById('btn-nav-agenda'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="18" y="3" width="4" height="18"></rect><rect x="10" y="8" width="4" height="13"></rect><rect x="2" y="13" width="4" height="8"></rect></svg>
+                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
               </div>
               <div class="db-tool-info">
-                <h4 class="db-tool-title">Comparativas</h4>
-                <p class="db-tool-desc">Calcula ofertas personalizadas, aplica mantenimientos y compara tarifas de luz o gas.</p>
+                <h4 class="db-tool-title">Agenda Personal</h4>
+                <p class="db-tool-desc">Anota tus gestiones, llamadas de seguimiento y recordatorios en tu agenda personal.</p>
               </div>
             </div>
             <div class="db-tool-action">
-              Crear comparativa <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              Abrir agenda <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
           </div>
 
-          <!-- Card 5: Calendario -->
+          <!-- Card 6: Calendario -->
           <div class="db-tool-card" onclick="showPanel('calendario', document.getElementById('btn-nav-calendario'))">
             <div class="db-tool-card-content">
               <div class="db-tool-icon-wrap">
@@ -4587,70 +4618,6 @@ input:focus, select:focus, textarea:focus {
             </div>
             <div class="db-tool-action">
               Ver calendario <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </div>
-
-          <!-- Card 6: Condiciones -->
-          <div class="db-tool-card" onclick="showPanel('condiciones', document.getElementById('btn-nav-condiciones'))">
-            <div class="db-tool-card-content">
-              <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
-              </div>
-              <div class="db-tool-info">
-                <h4 class="db-tool-title">Condiciones</h4>
-                <p class="db-tool-desc">Consulta los precios de energia actualizados, tarifas reguladas, fijas e indexadas para 2026.</p>
-              </div>
-            </div>
-            <div class="db-tool-action">
-              Ver tarifas <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </div>
-
-          <!-- Card 7: Enlaces Trabajo -->
-          <div class="db-tool-card" onclick="showPanel('sips', document.getElementById('btn-nav-sips'))">
-            <div class="db-tool-card-content">
-              <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
-              </div>
-              <div class="db-tool-info">
-                <h4 class="db-tool-title">Enlaces Trabajo</h4>
-                <p class="db-tool-desc">Enlaces cosas trabajo: WhatsApp, Evaria, Renosur, Hostezadis, Energiza, OnTime, calculadora y mas.</p>
-              </div>
-            </div>
-            <div class="db-tool-action">
-              Abrir enlaces <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </div>
-          
-          <!-- Card 8: Promociones -->
-          <div class="db-tool-card" onclick="showPanel('promociones', document.getElementById('btn-nav-promociones'))">
-            <div class="db-tool-card-content">
-              <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-              </div>
-              <div class="db-tool-info">
-                <h4 class="db-tool-title">Promociones</h4>
-                <p class="db-tool-desc">Consulta las promociones vigentes y campañas activas de supermercados y grandes superficies.</p>
-              </div>
-            </div>
-            <div class="db-tool-action">
-              Ver promociones <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </div>
-
-          <!-- Card 9: Procedimientos -->
-          <div class="db-tool-card" onclick="showPanel('procedimientos', document.getElementById('btn-nav-procedimientos'))">
-            <div class="db-tool-card-content">
-              <div class="db-tool-icon-wrap">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-              </div>
-              <div class="db-tool-info">
-                <h4 class="db-tool-title">Procedimientos</h4>
-                <p class="db-tool-desc">Documentos y requisitos obligatorios para contratación residencial, PYME y CIF de cada empresa.</p>
-              </div>
-            </div>
-            <div class="db-tool-action">
-              Ver procedimientos <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </div>
           </div>
 
@@ -5056,25 +5023,290 @@ input:focus, select:focus, textarea:focus {
 
     </div>
 
-    <!-- ══════ CONDICIONES ══════ -->
-    <div class="panel" id="panel-condiciones">
-      <div class="legend" style="margin-bottom:20px">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1.5px solid var(--green2)"></div>Sin mantenimiento</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--blue-bg);border:1.5px solid var(--blue2)"></div>Con mantenimiento (+descuento extra)</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--orange-bg);border:1.5px solid var(--orange2)"></div>Discriminacion horaria</div>
+    <!-- ══════ TARIFARIO & NORMATIVA UNIFICADA ══════ -->
+    <div class="panel" id="panel-tarifario">
+      <div class="tarifario-top-bar" style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:18px; padding-bottom:14px; border-bottom:1.5px solid var(--border);">
+        <div class="tarifario-tabs" style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button type="button" class="tarifario-tab-btn active" id="btn-tab-tarifario-pvp" onclick="switchTarifarioTab('pvp')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 11l3 3L22 4"></path><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path></svg>
+            Tarifas PVP
+          </button>
+          <button type="button" class="tarifario-tab-btn" id="btn-tab-tarifario-proc" onclick="switchTarifarioTab('proc')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            Requisitos y Procedimientos
+          </button>
+          <button type="button" class="tarifario-tab-btn" id="btn-tab-tarifario-promo" onclick="switchTarifarioTab('promo')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+            Promociones
+          </button>
+          <button type="button" class="tarifario-tab-btn" id="btn-tab-tarifario-enlaces" onclick="switchTarifarioTab('enlaces')">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path><polyline points="15 3 21 3 21 9"></polyline><line x1="10" y1="14" x2="21" y2="3"></line></svg>
+            Enlaces de Trabajo
+          </button>
+        </div>
+        <div style="position:relative; min-width:240px;">
+          <input type="text" id="tarifario-search-input" placeholder="Buscar en tarifas y normativa..." oninput="filterTarifarioContent(this.value)" style="width:100%; padding:8px 12px 8px 34px; border-radius:var(--rs); border:1.5px solid var(--border); background:var(--surface); color:var(--text); font-size:13px; outline:none;">
+          <svg style="position:absolute; left:10px; top:50%; transform:translateY(-50%); color:var(--t3); pointer-events:none;" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        </div>
       </div>
-      <div id="cond-render"></div>
+
+      <!-- Tab Content 1: PVP -->
+      <div id="tab-content-pvp" class="tarifario-tab-content" style="display:block;">
+        <div class="legend" style="margin-bottom:20px">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1.5px solid var(--green2)"></div>Sin mantenimiento</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue-bg);border:1.5px solid var(--blue2)"></div>Con mantenimiento (+descuento extra)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--orange-bg);border:1.5px solid var(--orange2)"></div>Discriminacion horaria</div>
+        </div>
+        <div id="cond-render"></div>
+      </div>
+
+      <!-- Tab Content 2: Procedimientos -->
+      <div id="tab-content-proc" class="tarifario-tab-content" style="display:none;">
+        <div class="legend" style="margin-bottom:20px">
+          <div class="legend-item"><span class="cdot" style="background:#51c233;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Residencial</div>
+          <div class="legend-item"><span class="cdot" style="background:#357fbf;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Autónomos / Pymes</div>
+          <div class="legend-item"><span class="cdot" style="background:#d97706;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Requisitos Críticos</div>
+        </div>
+        <div id="proc-render"></div>
+      </div>
+
+      <!-- Tab Content 3: Promociones -->
+      <div id="tab-content-promo" class="tarifario-tab-content" style="display:none;">
+        <!-- Banner de Normas e Importante sobre Promociones -->
+        <div class="promo-rules-banner">
+          <div class="promo-rules-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #dc2626;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            CONDICIONES OBLIGATORIAS:
+          </div>
+          <div class="promo-rules-items">
+            <div class="promo-rule-chip">
+              <span class="promo-chip-badge ib">IBERDROLA</span>
+              <span>Solo contratos con <strong>Iberdrola</strong></span>
+            </div>
+            <div class="promo-rule-chip">
+              <span class="promo-chip-badge cif">CIF / PYMES</span>
+              <span>Máximo <strong>30 €</strong> (nunca 50 €)</span>
+            </div>
+            <div class="promo-rule-chip">
+              <span class="promo-chip-badge ccpp">CCPP</span>
+              <span>Comunidades <strong>totalmente excluidas</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="promociones-grid" id="promociones-container">
+          <!-- Se cargara dinamicamente -->
+        </div>
+      </div>
+
+      <!-- Tab Content 4: Enlaces -->
+      <div id="tab-content-enlaces" class="tarifario-tab-content" style="display:none;">
+        <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
+          
+          <!-- Categoría 1: Utilidades y Registro Diario -->
+          <div class="enlaces-section-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+            Utilidades Diarias
+          </div>
+          <div class="enlaces-grid">
+
+            <!-- Card: Whatsapp Web -->
+            <a href="https://web.whatsapp.com/" target="_blank" class="enlace-card" style="--theme-color: #25D366; --theme-color-bg: rgba(37, 211, 102, 0.06); --theme-color-glow: rgba(37, 211, 102, 0.12); --theme-color-ring: rgba(37, 211, 102, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Whatsapp Web</h4>
+                  <p class="enlace-card-desc">Comunicación directa con clientes y envío inmediato de enlaces de firma.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Abrir Whatsapp
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+            <!-- Card: OnTime -->
+            <a href="https://rrhh.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #3b82f6; --theme-color-bg: rgba(59, 130, 246, 0.06); --theme-color-glow: rgba(59, 130, 246, 0.12); --theme-color-ring: rgba(59, 130, 246, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">OnTime</h4>
+                  <p class="enlace-card-desc">Portal de RRHH para registro de jornada laboral y fichajes del día.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Fichar Jornada
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+          </div>
+
+          <!-- Categoría 2: CRM y Sistemas de Gestión -->
+          <div class="enlaces-section-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
+            Sistemas Internos y CRM
+          </div>
+          <div class="enlaces-grid">
+            
+            <!-- Card: Renosur -->
+            <a href="https://renosur.miga.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #0d5c9e; --theme-color-bg: rgba(13, 92, 158, 0.06); --theme-color-glow: rgba(13, 92, 158, 0.12); --theme-color-ring: rgba(13, 92, 158, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Renosur</h4>
+                  <p class="enlace-card-desc">Acceso al CRM principal y gestor de contratos de Renosur.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Abrir Renosur
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+            <!-- Card: Evaria -->
+            <a href="https://evaria.miga.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #6366f1; --theme-color-bg: rgba(99, 102, 241, 0.06); --theme-color-glow: rgba(99, 102, 241, 0.12); --theme-color-ring: rgba(99, 102, 241, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Evaria</h4>
+                  <p class="enlace-card-desc">Acceso al CRM interno y plataforma de contratación de Evaria.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Abrir Evaria
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+            <!-- Card: Hostezadis -->
+            <a href="https://hostezadis.omniasoluciones.es/" target="_blank" class="enlace-card" style="--theme-color: #f59e0b; --theme-color-bg: rgba(245, 158, 11, 0.06); --theme-color-glow: rgba(245, 158, 11, 0.12); --theme-color-ring: rgba(245, 158, 11, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Hostezadis</h4>
+                  <p class="enlace-card-desc">Acceso al portal fiscal y extranet corporativa de Hostezadis.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Abrir Hostezadis
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+            <!-- Card: Energiza -->
+            <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #10b981; --theme-color-bg: rgba(16, 185, 129, 0.06); --theme-color-glow: rgba(16, 185, 129, 0.12); --theme-color-ring: rgba(16, 185, 129, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Energiza</h4>
+                  <p class="enlace-card-desc">Acceso al portal comercial y gestión de Grupo Energiza.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Abrir Energiza
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+          </div>
+
+          <!-- Categoría 3: Herramientas de Verificación y Consultas -->
+          <div class="enlaces-section-title">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            Verificación y Consultas
+          </div>
+          <div class="enlaces-grid">
+
+            <!-- Card: Mirar Potencia (Fortuluz) -->
+            <a href="https://fortuluz.es/calculadora" target="_blank" class="enlace-card" style="--theme-color: #8b5cf6; --theme-color-bg: rgba(139, 92, 246, 0.06); --theme-color-glow: rgba(139, 92, 246, 0.12); --theme-color-ring: rgba(139, 92, 246, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="8" y1="14" x2="8" y2="18"></line></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Mirar Potencia</h4>
+                  <p class="enlace-card-desc">Calculadora de tarifas para comprobar y optimizar potencias eléctricas.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Comprobar Potencia
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+            <!-- Card: Consultar Dirección (Naturgy) -->
+            <a href="https://checkout.naturgy.es/?sel=E0001&amp;vn=907008005&amp;agv=GRWEBCOL&amp;src=hogar&amp;origen=web&amp;id=es&amp;tipo=luz&amp;idCampaign%5B%5D=019e20cb-1206-7e90-8b40-a743e214d065&amp;company=nycli" target="_blank" class="enlace-card" style="--theme-color: #f97316; --theme-color-bg: rgba(249, 115, 22, 0.06); --theme-color-glow: rgba(249, 115, 22, 0.12); --theme-color-ring: rgba(249, 115, 22, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Consultar Dirección</h4>
+                  <p class="enlace-card-desc">Verificador de direcciones y coberturas en la web oficial de Naturgy.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Verificar Cobertura
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+            <!-- Card: Consultar Facturas (Iberdrola) -->
+            <a href="https://www.iberdrola.es/gestiones/facturas/ver-y-pagar/consultar-y-pagar" target="_blank" class="enlace-card" style="--theme-color: #10b981; --theme-color-bg: rgba(16, 185, 129, 0.06); --theme-color-glow: rgba(16, 185, 129, 0.12); --theme-color-ring: rgba(16, 185, 129, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Facturas Iberdrola</h4>
+                  <p class="enlace-card-desc">Consulta rápida y pago online de facturas pendientes de clientes.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Consultar Facturas
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+            <!-- Card: Comunidades Solares (Iberdrola) -->
+            <a href="https://www.iberdrola.es/smart-solar/productos/comunidades-solares#header_titulo" target="_blank" class="enlace-card" style="--theme-color: #008B3C; --theme-color-bg: rgba(0, 139, 60, 0.06); --theme-color-glow: rgba(0, 139, 60, 0.12); --theme-color-ring: rgba(0, 139, 60, 0.08);">
+              <div class="enlace-card-header">
+                <div class="enlace-card-icon-box">
+                  <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                </div>
+                <div class="enlace-card-info">
+                  <h4 class="enlace-card-title">Comunidades Solares</h4>
+                  <p class="enlace-card-desc">Buscador y mapa de comunidades solares de Iberdrola para consultar cobertura.</p>
+                </div>
+              </div>
+              <div class="enlace-card-footer">
+                Buscar Comunidades
+                <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
+              </div>
+            </a>
+
+          </div>
+
+        </div>
+      </div>
     </div>
 
-    <!-- ══════ PROCEDIMIENTOS ══════ -->
-    <div class="panel" id="panel-procedimientos">
-      <div class="legend" style="margin-bottom:20px">
-        <div class="legend-item"><span class="cdot" style="background:#51c233;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Residencial</div>
-        <div class="legend-item"><span class="cdot" style="background:#357fbf;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Autónomos / Pymes</div>
-        <div class="legend-item"><span class="cdot" style="background:#d97706;width:10px;height:10px;border-radius:50%;display:inline-block;margin-right:6px"></span>Requisitos Críticos</div>
-      </div>
-      <div id="proc-render"></div>
-    </div>
+    <!-- Hidden compatibility anchors -->
+    <div id="panel-condiciones" style="display:none;"></div>
+    <div id="panel-procedimientos" style="display:none;"></div>
 
     <!-- ══════ COMPARATIVA ══════ -->
     <div class="panel" id="panel-comparativa">
@@ -5086,9 +5318,13 @@ input:focus, select:focus, textarea:focus {
             <button type="button" class="comp-toggle-btn" id="mode-gas" onclick="setCompMode('gas')">Gas</button>
           </div>
           <div class="comp-form-grid">
-            <div class="fgrp" style="grid-column: span 2;">
+            <div class="fgrp">
               <label>Nombre del cliente</label>
-              <input type="text" id="f-cliente-nombre" placeholder="Ej. Juan Perez" autocomplete="off" oninput="calcComp()">
+              <input type="text" id="f-cliente-nombre" placeholder="Ej. Juan Pérez" autocomplete="off" oninput="calcComp()">
+            </div>
+            <div class="fgrp">
+              <label>Teléfono (WhatsApp)</label>
+              <input type="tel" id="f-cliente-telefono" placeholder="Ej. 612345678" autocomplete="off" oninput="saveComparisonInputs()">
             </div>
 
             <div class="fsec">Periodo</div>
@@ -6563,103 +6799,8 @@ input:focus, select:focus, textarea:focus {
       </div>
     </div>
 
-    <!-- ══════ PROMOCIONES SUPERMERCADO ══════ -->
-    <div class="panel" id="panel-promociones" style="max-width: 1400px; margin: 0 auto;">
-      <style>
-        .promo-rules-banner {
-          background: rgba(239, 68, 68, 0.05);
-          border: 1.5px solid rgba(239, 68, 68, 0.22);
-          border-left: 5px solid #ef4444;
-          border-radius: var(--r);
-          padding: 10px 18px;
-          margin-bottom: 14px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-          gap: 14px;
-          flex-wrap: wrap;
-          box-shadow: 0 2px 8px rgba(239, 68, 68, 0.06);
-        }
-        .promo-rules-title {
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          font-size: 13.5px;
-          font-weight: 800;
-          color: #dc2626;
-          letter-spacing: 0.3px;
-          white-space: nowrap;
-        }
-        .promo-rules-items {
-          display: flex;
-          align-items: center;
-          gap: 12px;
-          flex-wrap: wrap;
-        }
-        .promo-rule-chip {
-          display: flex;
-          align-items: center;
-          gap: 7px;
-          font-size: 13px;
-          font-weight: 600;
-          color: var(--text);
-          background: var(--surface);
-          padding: 4px 10px;
-          border-radius: 6px;
-          border: 1px solid var(--border);
-        }
-        .promo-chip-badge {
-          color: #fff;
-          font-size: 11px;
-          font-weight: 800;
-          padding: 2px 7px;
-          border-radius: 4px;
-          letter-spacing: 0.2px;
-        }
-        .promo-chip-badge.ib { background: #008B3C; }
-        .promo-chip-badge.cif { background: #ea580c; }
-        .promo-chip-badge.ccpp { background: #dc2626; }
-        
-        .promociones-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          align-items: stretch;
-          margin-bottom: 0;
-        }
-        @media (max-width: 980px) {
-          .promociones-grid {
-            grid-template-columns: 1fr;
-          }
-        }
-      </style>
-      
-      <!-- Banner de Normas e Importante sobre Promociones -->
-      <div class="promo-rules-banner">
-        <div class="promo-rules-title">
-          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #dc2626;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-          CONDICIONES OBLIGATORIAS:
-        </div>
-        <div class="promo-rules-items">
-          <div class="promo-rule-chip">
-            <span class="promo-chip-badge ib">IBERDROLA</span>
-            <span>Solo contratos con <strong>Iberdrola</strong></span>
-          </div>
-          <div class="promo-rule-chip">
-            <span class="promo-chip-badge cif">CIF / PYMES</span>
-            <span>Máximo <strong>30 €</strong> (nunca 50 €)</span>
-          </div>
-          <div class="promo-rule-chip">
-            <span class="promo-chip-badge ccpp">CCPP</span>
-            <span>Comunidades <strong>totalmente excluidas</strong></span>
-          </div>
-        </div>
-      </div>
-
-      <div class="promociones-grid" id="promociones-container">
-        <!-- Se cargara dinamicamente -->
-      </div>
-    </div>
+    <!-- Hidden compatibility anchor -->
+    <div id="panel-promociones" style="display:none;"></div>
 
     <!-- Lightbox Modal for Promociones -->
     <div id="promo-lightbox" onclick="closePromoLightbox()" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(8px); z-index: 9999; justify-content: center; align-items: center;">
@@ -6710,332 +6851,8 @@ input:focus, select:focus, textarea:focus {
 
 
         <!-- â•â•â•â•â•â• ENLACES TRABAJO â•â•â•â•â•â• -->
-    <div class="panel" id="panel-sips">
-      <style>
-        .enlaces-section-title {
-          font-size: 13px;
-          font-weight: 800;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          color: var(--t3);
-          margin: 28px 0 14px 0;
-          padding-bottom: 6px;
-          border-bottom: 1.5px solid var(--border);
-          display: flex;
-          align-items: center;
-          gap: 8px;
-        }
-        .enlaces-section-title:first-of-type {
-          margin-top: 0;
-        }
-        .enlaces-grid {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: 16px;
-          margin-bottom: 24px;
-        }
-        @media (max-width: 1024px) {
-          .enlaces-grid {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 14px;
-          }
-        }
-        @media (max-width: 640px) {
-          .enlaces-grid {
-            grid-template-columns: 1fr;
-            gap: 12px;
-          }
-        }
-        .enlace-card {
-          background: #ffffff;
-          border: 1.5px solid var(--border);
-          border-radius: var(--r);
-          padding: 18px;
-          display: flex;
-          flex-direction: column;
-          justify-content: space-between;
-          gap: 12px;
-          cursor: pointer;
-          position: relative;
-          overflow: hidden;
-          text-decoration: none !important;
-          color: var(--text) !important;
-          transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
-          box-shadow: 0 1px 2px rgba(0,0,0,0.01);
-        }
-        .enlace-card:hover {
-          transform: translateY(-3px);
-          border-color: var(--theme-color) !important;
-          box-shadow: 0 8px 20px -6px var(--theme-color-glow), 0 0 0 3px var(--theme-color-ring);
-        }
-        .enlace-card-header {
-          display: flex;
-          align-items: flex-start;
-          gap: 12px;
-        }
-        .enlace-card-icon-box {
-          width: 38px;
-          height: 38px;
-          border-radius: 8px;
-          background: var(--theme-color-bg);
-          color: var(--theme-color);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          flex-shrink: 0;
-          transition: all 0.2s;
-        }
-        .enlace-card:hover .enlace-card-icon-box {
-          transform: scale(1.05);
-        }
-        .enlace-card-info {
-          display: flex;
-          flex-direction: column;
-          gap: 2px;
-          min-width: 0;
-        }
-        .enlace-card-title {
-          font-size: 14.5px;
-          font-weight: 800;
-          color: var(--text);
-          margin: 0;
-          letter-spacing: -0.01em;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-        }
-        .enlace-card-desc {
-          font-size: 11.5px;
-          color: var(--t2);
-          line-height: 1.45;
-          margin: 0;
-          display: -webkit-box;
-          -webkit-line-clamp: 2;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-        .enlace-card-footer {
-          font-size: 11px;
-          font-weight: 700;
-          color: var(--theme-color);
-          display: flex;
-          align-items: center;
-          gap: 4px;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          margin-top: auto;
-          padding-top: 8px;
-          transition: transform 0.2s;
-        }
-        .enlace-card-arrow {
-          transition: transform 0.2s;
-        }
-        .enlace-card:hover .enlace-card-arrow {
-          transform: translateX(3px);
-        }
-      </style>
-
-      <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: var(--r); padding: 24px; box-shadow: var(--shadow);">
-        
-        <!-- Categoría 1: Utilidades y Registro Diario -->
-        <div class="enlaces-section-title">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-          Utilidades Diarias
-        </div>
-        <div class="enlaces-grid">
-
-          <!-- Card: Whatsapp Web -->
-          <a href="https://web.whatsapp.com/" target="_blank" class="enlace-card" style="--theme-color: #25D366; --theme-color-bg: rgba(37, 211, 102, 0.06); --theme-color-glow: rgba(37, 211, 102, 0.12); --theme-color-ring: rgba(37, 211, 102, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Whatsapp Web</h4>
-                <p class="enlace-card-desc">Comunicación directa con clientes y envío inmediato de enlaces de firma.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Abrir Whatsapp
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-          <!-- Card: OnTime -->
-          <a href="https://rrhh.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #3b82f6; --theme-color-bg: rgba(59, 130, 246, 0.06); --theme-color-glow: rgba(59, 130, 246, 0.12); --theme-color-ring: rgba(59, 130, 246, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">OnTime</h4>
-                <p class="enlace-card-desc">Portal de RRHH para registro de jornada laboral y fichajes del día.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Fichar Jornada
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-        </div>
-
-        <!-- Categoría 2: CRM y Sistemas de Gestión -->
-        <div class="enlaces-section-title">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect></svg>
-          Sistemas Internos y CRM
-        </div>
-        <div class="enlaces-grid">
-          
-          <!-- Card: Renosur -->
-          <a href="https://renosur.miga.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #0d5c9e; --theme-color-bg: rgba(13, 92, 158, 0.06); --theme-color-glow: rgba(13, 92, 158, 0.12); --theme-color-ring: rgba(13, 92, 158, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Renosur</h4>
-                <p class="enlace-card-desc">Acceso al CRM principal y gestor de contratos de Renosur.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Abrir Renosur
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-          <!-- Card: Evaria -->
-          <a href="https://evaria.miga.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #6366f1; --theme-color-bg: rgba(99, 102, 241, 0.06); --theme-color-glow: rgba(99, 102, 241, 0.12); --theme-color-ring: rgba(99, 102, 241, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Evaria</h4>
-                <p class="enlace-card-desc">Acceso al CRM interno y plataforma de contratación de Evaria.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Abrir Evaria
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-          <!-- Card: Hostezadis -->
-          <a href="https://hostezadis.omniasoluciones.es/" target="_blank" class="enlace-card" style="--theme-color: #f59e0b; --theme-color-bg: rgba(245, 158, 11, 0.06); --theme-color-glow: rgba(245, 158, 11, 0.12); --theme-color-ring: rgba(245, 158, 11, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Hostezadis</h4>
-                <p class="enlace-card-desc">Acceso al portal fiscal y extranet corporativa de Hostezadis.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Abrir Hostezadis
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-          <!-- Card: Energiza -->
-          <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" class="enlace-card" style="--theme-color: #10b981; --theme-color-bg: rgba(16, 185, 129, 0.06); --theme-color-glow: rgba(16, 185, 129, 0.12); --theme-color-ring: rgba(16, 185, 129, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Energiza</h4>
-                <p class="enlace-card-desc">Acceso al portal comercial y gestión de Grupo Energiza.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Abrir Energiza
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-        </div>
-
-        <!-- Categoría 3: Herramientas de Verificación y Consultas -->
-        <div class="enlaces-section-title">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-          Verificación y Consultas
-        </div>
-        <div class="enlaces-grid">
-
-          <!-- Card: Mirar Potencia (Fortuluz) -->
-          <a href="https://fortuluz.es/calculadora" target="_blank" class="enlace-card" style="--theme-color: #8b5cf6; --theme-color-bg: rgba(139, 92, 246, 0.06); --theme-color-glow: rgba(139, 92, 246, 0.12); --theme-color-ring: rgba(139, 92, 246, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="4" y="2" width="16" height="20" rx="2" ry="2"></rect><line x1="8" y1="6" x2="16" y2="6"></line><line x1="16" y1="14" x2="16" y2="18"></line><line x1="12" y1="14" x2="12" y2="18"></line><line x1="8" y1="14" x2="8" y2="18"></line></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Mirar Potencia</h4>
-                <p class="enlace-card-desc">Calculadora de tarifas para comprobar y optimizar potencias eléctricas.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Comprobar Potencia
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-          <!-- Card: Consultar Dirección (Naturgy) -->
-          <a href="https://checkout.naturgy.es/?sel=E0001&amp;vn=907008005&amp;agv=GRWEBCOL&amp;src=hogar&amp;origen=web&amp;id=es&amp;tipo=luz&amp;idCampaign%5B%5D=019e20cb-1206-7e90-8b40-a743e214d065&amp;company=nycli" target="_blank" class="enlace-card" style="--theme-color: #f97316; --theme-color-bg: rgba(249, 115, 22, 0.06); --theme-color-glow: rgba(249, 115, 22, 0.12); --theme-color-ring: rgba(249, 115, 22, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path><circle cx="12" cy="10" r="3"></circle></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Consultar Dirección</h4>
-                <p class="enlace-card-desc">Verificador de direcciones y coberturas en la web oficial de Naturgy.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Verificar Cobertura
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-          <!-- Card: Consultar Facturas (Iberdrola) -->
-          <a href="https://www.iberdrola.es/gestiones/facturas/ver-y-pagar/consultar-y-pagar" target="_blank" class="enlace-card" style="--theme-color: #10b981; --theme-color-bg: rgba(16, 185, 129, 0.06); --theme-color-glow: rgba(16, 185, 129, 0.12); --theme-color-ring: rgba(16, 185, 129, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Facturas Iberdrola</h4>
-                <p class="enlace-card-desc">Consulta rápida y pago online de facturas pendientes de clientes.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Consultar Facturas
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-          <!-- Card: Comunidades Solares (Iberdrola) -->
-          <a href="https://www.iberdrola.es/smart-solar/productos/comunidades-solares#header_titulo" target="_blank" class="enlace-card" style="--theme-color: #008B3C; --theme-color-bg: rgba(0, 139, 60, 0.06); --theme-color-glow: rgba(0, 139, 60, 0.12); --theme-color-ring: rgba(0, 139, 60, 0.08);">
-            <div class="enlace-card-header">
-              <div class="enlace-card-icon-box">
-                <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-              </div>
-              <div class="enlace-card-info">
-                <h4 class="enlace-card-title">Comunidades Solares</h4>
-                <p class="enlace-card-desc">Buscador y mapa de comunidades solares de Iberdrola para consultar cobertura.</p>
-              </div>
-            </div>
-            <div class="enlace-card-footer">
-              Buscar Comunidades
-              <svg class="enlace-card-arrow" viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="3"><polyline points="9 18 15 12 9 6"></polyline></svg>
-            </div>
-          </a>
-
-        </div>
-
-      </div>
-    </div>
+    <!-- Hidden compatibility anchor -->
+    <div id="panel-sips" style="display:none;"></div>
     
     <div class="panel" id="panel-ranking">
       <div class="panel-restricted-message">
@@ -7389,6 +7206,7 @@ const PANELS = {
   promociones: {title:'Promociones', sub:'Promociones vigentes de supermercados y grandes superficies', color:'#0d5c9e', icon:'<path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path>'},
   procedimientos: {title:'Procedimientos de Contratación', sub:'Requisitos, documentación y proceso de firma por comercializadora', color:'#8b5cf6', icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>'},
 
+  tarifario:   {title:'Tarifario & Normativa', sub:'Tarifas oficiales, requisitos de contratación, promociones y enlaces de trabajo', color:'#0d5c9e', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>'},
   sips:        {title:'Enlaces Trabajo', sub:'Consulta de potencias, direcciones y enlaces de trabajo', color:'#1a7a3c', icon:'<ellipse cx="12" cy="5" rx="9" ry="3"></ellipse><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"></path><circle cx="18" cy="18" r="4"></circle><line x1="22" y1="22" x2="20.8" y2="20.8"></line>'},};
 
 // ── CALENDARIO LABORAL 2026 (RENOSUR-TM) — datos exactos, sin calculo ──
@@ -9223,16 +9041,28 @@ function renderNativeRanking(data) {
     const targetMet = pts >= obj;
     const percent = obj > 0 ? Math.min(100, Math.round((pts / obj) * 100)) : 0;
     
+    let tramoAlertHtml = '';
+    if (typeof getTramoBonusInfo === 'function') {
+      const tramo = getTramoBonusInfo(pts, obj);
+      tramoAlertHtml = `
+        <div style="margin-top:8px;padding:6px 12px;border-radius:6px;background:${tramo.badgeBg};border:1px solid ${tramo.badgeColor}33;font-size:12px;color:${tramo.badgeColor};display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
+          <span>${tramo.message}</span>
+          <span style="font-weight:800;white-space:nowrap;padding:2px 8px;border-radius:12px;background:${tramo.badgeColor}22;font-size:11px;">${tramo.badgeText}</span>
+        </div>
+      `;
+    }
+
     let msgHtml = '';
     if (targetMet) {
       motivationCard.className = 'ranking-motivation-card target-met';
       msgHtml = `
         <div style="font-size: 24px; flex-shrink: 0;">🏆</div>
-        <div style="display: flex; flex-direction: column; gap: 2px;">
+        <div style="display: flex; flex-direction: column; gap: 2px; flex: 1;">
           <div style="font-size: 14.5px; font-weight: 800; color: var(--text);">¡Felicidades, ${formatName(nombre)}! Puesto #${rank} en el Ranking</div>
           <div style="font-size: 13px; color: var(--t2);">
             Has acumulado <strong>${pts.toFixed(1)} pts</strong> y cumplido con exito tu objetivo diario de ${obj.toFixed(1)} pts (<strong>${percent}%</strong>). ¡Excelente trabajo, sigue sumando! 🚀🔥
           </div>
+          ${tramoAlertHtml}
         </div>
       `;
     } else {
@@ -9248,11 +9078,12 @@ function renderNativeRanking(data) {
       const motivationalPhrase = phrases[phraseIdx];
       msgHtml = `
         <div style="font-size: 24px; flex-shrink: 0;">⚡</div>
-        <div style="display: flex; flex-direction: column; gap: 2px;">
+        <div style="display: flex; flex-direction: column; gap: 2px; flex: 1;">
           <div style="font-size: 14.5px; font-weight: 800; color: var(--text);">Hola ${formatName(nombre)}, estas en el puesto #${rank}</div>
           <div style="font-size: 13px; color: var(--t2);">
             Llevas <strong>${pts.toFixed(1)} pts</strong> de un objetivo de ${obj.toFixed(1)} pts. Te quedan <strong>${remaining.toFixed(1)} pts</strong> para estar en objetivos. <span style="color: var(--blue); font-weight: 700;">${motivationalPhrase}</span>
           </div>
+          ${tramoAlertHtml}
         </div>
       `;
     }
@@ -9329,6 +9160,18 @@ function renderNativeRanking(data) {
       
       const pendText = (pendientes !== undefined && pendientes !== '' && parseFloat(pendientes) > 0) ? `<span class="pendientes-bubble">+${pendientes}</span>` : '';
       
+      let tramoTag = '';
+      if (typeof getTramoBonusInfo === 'function') {
+        const tInfo = getTramoBonusInfo(pts, obj);
+        if (tInfo.tier === 'tramo_1') {
+          tramoTag = `<span title="${tInfo.badgeText}" style="color:#b45309; font-size:9.5px; font-weight:700; background:rgba(217,119,6,0.1); border:1px solid rgba(217,119,6,0.2); padding:1.5px 6px; border-radius:6px; margin-left:4px; flex-shrink:0;">🔥 +10€</span>`;
+        } else if (tInfo.tier === 'tramo_max') {
+          tramoTag = `<span title="${tInfo.badgeText}" style="color:#7c3aed; font-size:9.5px; font-weight:700; background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.2); padding:1.5px 6px; border-radius:6px; margin-left:4px; flex-shrink:0;">👑 +15€</span>`;
+        } else if (tInfo.tier === 'base_met') {
+          tramoTag = `<span title="${tInfo.badgeText}" style="color:#059669; font-size:9.5px; font-weight:700; background:rgba(5,150,105,0.1); border:1px solid rgba(5,150,105,0.2); padding:1.5px 6px; border-radius:6px; margin-left:4px; flex-shrink:0;">🎯 Base</span>`;
+        }
+      }
+
       return `
         <div class="ranking-list-row ${cumple ? 'target-met' : ''}" style="animation-delay: ${delay}s;">
           <div class="row-rank">${rank}</div>
@@ -9336,6 +9179,7 @@ function renderNativeRanking(data) {
             <span style="width: 28px; height: 28px; border-radius: 50%; background: ${cumple ? 'rgba(16,185,129,0.1)' : '#f1f5f9'}; color: ${cumple ? '#059669' : '#334155'}; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; border: 1px solid ${cumple ? 'rgba(16,185,129,0.2)' : '#e2e8f0'};">${initials}</span>
             <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${shortName}</span>
             ${cumple ? '<span style="color:#15803d; font-size:9.5px; font-weight:700; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2); padding:1.5px 6px; border-radius:6px; margin-left:4px; flex-shrink:0;">✓ Cumplido</span>' : ''}
+            ${tramoTag}
           </div>
           <div class="row-progress-container">
             <div class="row-pct" style="font-variant-numeric: tabular-nums;">${pct}% del objetivo diario (${obj.toFixed(1)} pts)</div>
@@ -10023,6 +9867,19 @@ function showPanel(id, btn){
     return;
   }
 
+  let targetTab = null;
+  if (['condiciones', 'procedimientos', 'promociones', 'sips'].includes(id)) {
+    const tabMap = {
+      'condiciones': 'pvp',
+      'procedimientos': 'proc',
+      'promociones': 'promo',
+      'sips': 'enlaces'
+    };
+    targetTab = tabMap[id];
+    id = 'tarifario';
+    btn = document.getElementById('btn-nav-tarifario');
+  }
+
   const activePanel = document.querySelector('.panel.active');
   if (activePanel && activePanel.id === 'panel-comparativa' && id !== 'comparativa') {
     if (typeof clearComparisonInputs === 'function') {
@@ -10033,7 +9890,8 @@ function showPanel(id, btn){
   
   document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  document.getElementById('panel-'+id).classList.add('active');
+  const targetPanelEl = document.getElementById('panel-'+id);
+  if (targetPanelEl) targetPanelEl.classList.add('active');
   if(btn) btn.classList.add('active');
   
   // Fullscreen Dashboard sidebar hiding
@@ -10047,16 +9905,29 @@ function showPanel(id, btn){
   }
   
   const p=PANELS[id];
-  document.getElementById('ptitle').textContent=p.title;
-  document.getElementById('psub').textContent=p.sub;
-  const wrap=document.getElementById('topbar-icon-wrap');
-  if (wrap) wrap.style.background=p.color+'22';
-  const iconEl=document.getElementById('topbar-icon');
-  if (iconEl) {
-    iconEl.style.color=p.color;
-    iconEl.innerHTML=p.icon;
+  if (p) {
+    document.getElementById('ptitle').textContent=p.title;
+    document.getElementById('psub').textContent=p.sub;
+    const wrap=document.getElementById('topbar-icon-wrap');
+    if (wrap) wrap.style.background=p.color+'22';
+    const iconEl=document.getElementById('topbar-icon');
+    if (iconEl) {
+      iconEl.style.color=p.color;
+      iconEl.innerHTML=p.icon;
+    }
   }
   if(id==='comparativa') calcComp();
+  if(id==='tarifario') {
+    if (targetTab && typeof switchTarifarioTab === 'function') {
+      switchTarifarioTab(targetTab);
+    } else if (typeof switchTarifarioTab === 'function') {
+      const activeTabBtn = document.querySelector('.tarifario-tab-btn.active');
+      if (!activeTabBtn) switchTarifarioTab('pvp');
+    }
+    if (typeof renderCondiciones === 'function') renderCondiciones();
+    if (typeof renderProcedimientos === 'function') renderProcedimientos();
+    if (typeof renderPromociones === 'function') renderPromociones();
+  }
   if(id==='condiciones') renderCondiciones();
   if(id==='archivos') renderAdmin();
   if(id==='calendario') {
@@ -11076,6 +10947,7 @@ function saveComparisonInputs() {
   if (!currentAgentDni || isRestoringInputs) return;
   const inputs = {
     clienteNombre: document.getElementById('f-cliente-nombre') ? document.getElementById('f-cliente-nombre').value : '',
+    clienteTelefono: document.getElementById('f-cliente-telefono') ? document.getElementById('f-cliente-telefono').value : '',
     dias: document.getElementById('f-dias') ? document.getElementById('f-dias').value : '',
     iva: document.getElementById('f-iva') ? document.getElementById('f-iva').value : '0.21',
     pot1: document.getElementById('f-pot1') ? document.getElementById('f-pot1').value : '',
@@ -11108,6 +10980,7 @@ function loadComparisonInputs() {
     isRestoringInputs = true;
     const inputs = JSON.parse(raw);
     if (document.getElementById('f-cliente-nombre')) document.getElementById('f-cliente-nombre').value = inputs.clienteNombre || '';
+    if (document.getElementById('f-cliente-telefono')) document.getElementById('f-cliente-telefono').value = inputs.clienteTelefono || '';
     if (document.getElementById('f-dias')) document.getElementById('f-dias').value = inputs.dias || '';
     if (document.getElementById('f-iva')) document.getElementById('f-iva').value = inputs.iva || '0.21';
     if (document.getElementById('f-pot1')) document.getElementById('f-pot1').value = inputs.pot1 || '';
@@ -11147,6 +11020,7 @@ function loadComparisonInputs() {
 
 function clearComparisonInputs() {
   if (document.getElementById('f-cliente-nombre')) document.getElementById('f-cliente-nombre').value = '';
+  if (document.getElementById('f-cliente-telefono')) document.getElementById('f-cliente-telefono').value = '';
   if (document.getElementById('f-dias')) document.getElementById('f-dias').value = '';
   if (document.getElementById('f-iva')) document.getElementById('f-iva').value = '0.21';
   if (document.getElementById('f-pot1')) document.getElementById('f-pot1').value = '';
@@ -11209,7 +11083,7 @@ function renderInvCards(results, useSva){
         cardExtraBadges += '<span style="font-size:11px;color:#b45309;font-weight:800;background:rgba(245,158,11,0.15);padding:2px 8px;border-radius:4px;border:1px solid rgba(245,158,11,0.3);display:inline-flex;align-items:center;gap:4px;">⭐ 1ª Opción Campaña</span>';
         cardExtraBadges += '<span style="font-size:11px;color:#b91c1c;font-weight:800;background:rgba(220,38,38,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(220,38,38,0.25);display:inline-flex;align-items:center;gap:4px;">🔒 Capado (Requiere SVA)</span>';
       } else {
-        cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:800;background:rgba(5,150,105,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);display:inline-flex;align-items:center;gap:4px;">⭐ 1ª Opción Desbloqueada</span>';
+        cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:800;background:rgba(5,150,105,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);display:inline-flex;align-items:center;gap:4px;">⭐ Opción Recomendada</span>';
       }
       // Live Countdown Timer Badge in header
       cardExtraBadges += `
@@ -11272,10 +11146,20 @@ function renderInvCards(results, useSva){
         </button>`;
     } else {
       actionBtnHtml = `
-        <button class="btn btn-pdf" onclick="printCompanyOffer('${res.key}')">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;display:inline-block;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Descargar PDF Comparativa
-        </button>`;
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+          <button class="btn btn-pdf" onclick="printCompanyOffer('${res.key}')" title="Descargar PDF">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;display:inline-block;vertical-align:middle"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+            Descargar PDF
+          </button>
+          <button type="button" class="btn" style="background:#25D366;color:#fff;border:none;padding:10px 16px;border-radius:var(--rs);font-weight:700;font-size:13.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 2px 6px rgba(37,211,102,0.3);transition:all 0.2s;" onclick="shareOfferViaWhatsApp('${res.key}')" title="Enviar oferta por WhatsApp Web">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+            WhatsApp Web
+          </button>
+          <button type="button" class="btn" style="background:var(--surface);color:var(--text);border:1.5px solid var(--border);padding:10px 14px;border-radius:var(--rs);font-weight:700;font-size:13.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;transition:all 0.2s;" onclick="copyOfferWhatsAppText('${res.key}', this)" title="Copiar texto para WhatsApp">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            Copiar Texto
+          </button>
+        </div>`;
     }
 
     return `<div class="inv-card${best?' best':''}${isLocked?' locked':''}">
@@ -11288,7 +11172,7 @@ function renderInvCards(results, useSva){
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
               ${tariffName || r.name}
             </span>
-            ${best?'<span class="best-badge">✓ Mejor opcion</span>':''}
+            ${best?'<span class="best-badge" style="background:#059669;color:#fff;font-weight:800;padding:2px 8px;border-radius:4px;font-size:11px;display:inline-flex;align-items:center;gap:4px;">🏆 Mayor Ahorro</span>':''}
             ${cardExtraBadges}
           </div>
         </div>
@@ -11344,7 +11228,19 @@ function renderInvCards(results, useSva){
 function renderSummary(results, actual){
   const isLuz = compMode === 'luz';
   document.getElementById('comp-summary').innerHTML=`<div class="sum-card">
-    <div class="sum-card-title">Resumen comparativo</div>
+    <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;margin-bottom:12px;">
+      <div class="sum-card-title" style="margin-bottom:0;">Resumen comparativo</div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+        <button type="button" class="btn" style="background:#25D366;color:#fff;border:none;padding:6px 12px;border-radius:var(--rs);font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;box-shadow:0 2px 5px rgba(37,211,102,0.25);" onclick="shareSummaryViaWhatsApp()" title="Enviar resumen por WhatsApp Web">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+          WhatsApp Web
+        </button>
+        <button type="button" class="btn" style="background:var(--surface);color:var(--text);border:1.5px solid var(--border);padding:6px 12px;border-radius:var(--rs);font-weight:700;font-size:12px;cursor:pointer;display:inline-flex;align-items:center;gap:5px;" onclick="copySummaryWhatsAppText(this)" title="Copiar resumen para WhatsApp">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+          Copiar Resumen
+        </button>
+      </div>
+    </div>
     ${actual>0?`<div style="font-size:14px;color:var(--t2);margin-bottom:14px">Factura actual: <strong>${f2(actual)} €/mes</strong></div>`:''}
     <div class="table-responsive">
     <table class="sum-table"><thead><tr>
@@ -11382,7 +11278,7 @@ function renderSummary(results, actual){
             ${isPlanAhora ? '<span style="font-size:10.5px;color:#059669;font-weight:800;background:rgba(5,150,105,0.1);padding:1px 6px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);">⭐ 1ª Opción Campaña</span>' : ''}
             ${r.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:10.5px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:1px 5px;border-radius:4px;">(+2€/mes BV)</span>' : ''}
           </div>
-          ${isBest?'<span class="badge-best" style="margin-left:6px;">✓ mejor</span>':''}
+          ${isBest?'<span class="badge-best" style="margin-left:6px;background:#059669;color:#fff;font-weight:800;padding:2px 6px;border-radius:4px;font-size:10.5px;">🏆 Mayor Ahorro</span>':''}
         </td>
         ${isLuz ? `<td style="text-align:right;color:var(--t2)">${r.excPrice.toFixed(3)} €</td>` : ''}
         <td style="text-align:right;font-weight:700">${f2(r.total)} €</td>
@@ -11973,7 +11869,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785005500000;
+const CURRENT_BUILD_VERSION = 1785006000000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -15257,6 +15153,17 @@ function updateDashboardRankingWidget() {
     statusText = `Te faltan <strong>${info.remaining.toFixed(1)} pts</strong> para estar en objetivos. ${motivationalPhrase}`;
   }
   
+  let tramoBonusHtml = '';
+  if (typeof getTramoBonusInfo === 'function') {
+    const tramoInfo = getTramoBonusInfo(info.points, info.objective);
+    tramoBonusHtml = `
+      <div style="margin-top:4px;padding:4px 8px;border-radius:6px;background:${tramoInfo.badgeBg};border:1px solid ${tramoInfo.badgeColor}33;font-size:11px;color:${tramoInfo.badgeColor};font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:6px;">
+        <span>${tramoInfo.badgeText}</span>
+        <span style="font-size:10px;opacity:0.9;padding:1px 5px;background:${tramoInfo.badgeColor}18;border-radius:4px;">${tramoInfo.tierName}</span>
+      </div>
+    `;
+  }
+
   // Render circular progress wheel HTML
   container.innerHTML = `
     <div style="display: flex; align-items: center; justify-content: center; gap: 16px; padding: 3px 0;">
@@ -15280,7 +15187,8 @@ function updateDashboardRankingWidget() {
         <div style="font-size: 11px; color: var(--t2); line-height: 1.35;">
           ${statusText}
         </div>
-        <div style="font-size: 10px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px;">
+        ${tramoBonusHtml}
+        <div style="font-size: 10px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           Ranking Puesto #${info.rank}
         </div>
@@ -15494,11 +15402,14 @@ const SEARCH_INDEX = [
   { title: "Texto Legal: Endesa (Cosmos Mobile, Zonas, Requisitos)", keywords: ["endesa", "cosmos", "hostezadis", "aljarafe", "sevilla", "cadiz", "madrid", "almeria", "jaen", "granada", "barcelona", "valencia", "ciudad real", "toledo", "huelva", "badajoz", "malaga", "cordoba", "justo titulo", "requisitos"], action: () => { showPanel('scripts', document.getElementById('btn-nav-scripts')); switchCia('endesa'); } },
   { title: "Texto Legal: Gana Energía (Residencial, Pymes, Requisitos)", keywords: ["gana", "gana energia", "pymes", "requisitos", "sms", "pin", "firma"], action: () => { showPanel('scripts', document.getElementById('btn-nav-scripts')); switchCia('gana'); } },
   
-  // Promociones
-  { title: "Promociones: Carrefour", keywords: ["carrefour", "promociones", "tarjeta", "regalo", "supermercado", "correo", "postal"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
-  { title: "Promociones: Leroy Merlin", keywords: ["leroy merlin", "promociones", "tarjeta", "regalo", "supermercado", "electronica", "tienda", "sevilla", "huelva", "malaga", "barcelona"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
-  { title: "Promociones: Caprabo", keywords: ["caprabo", "promociones", "tarjeta", "regalo", "supermercado", "barcelona", "cliente"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
-  { title: "Promociones Supermercados (Iberdrola)", keywords: ["promociones", "tarjetas", "regalo", "supermercado", "cif", "30€", "50€", "ccpp"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
+  // Tarifario & Normativa Unificada (PVP, Procedimientos, Promociones, Enlaces)
+  { title: "Tarifario PVP y Precios Oficiales (Luz y Gas)", keywords: ["tarifario", "pvp", "precios", "tarifas", "luz", "gas", "kwh", "iberdrola", "naturgy", "endesa", "gana"], action: () => { showPanel('tarifario', document.getElementById('btn-nav-tarifario')); if (typeof switchTarifarioTab === 'function') switchTarifarioTab('pvp'); } },
+  { title: "Procedimientos de Contratación y Requisitos", keywords: ["procedimientos", "normativa", "requisitos", "justo titulo", "documentacion", "contratacion", "cambio titular"], action: () => { showPanel('tarifario', document.getElementById('btn-nav-tarifario')); if (typeof switchTarifarioTab === 'function') switchTarifarioTab('proc'); } },
+  { title: "Promociones: Carrefour", keywords: ["carrefour", "promociones", "tarjeta", "regalo", "supermercado", "correo", "postal"], action: () => { showPanel('tarifario', document.getElementById('btn-nav-tarifario')); if (typeof switchTarifarioTab === 'function') switchTarifarioTab('promo'); } },
+  { title: "Promociones: Leroy Merlin", keywords: ["leroy merlin", "promociones", "tarjeta", "regalo", "supermercado", "electronica", "tienda", "sevilla", "huelva", "malaga", "barcelona"], action: () => { showPanel('tarifario', document.getElementById('btn-nav-tarifario')); if (typeof switchTarifarioTab === 'function') switchTarifarioTab('promo'); } },
+  { title: "Promociones: Caprabo", keywords: ["caprabo", "promociones", "tarjeta", "regalo", "supermercado", "barcelona", "cliente"], action: () => { showPanel('tarifario', document.getElementById('btn-nav-tarifario')); if (typeof switchTarifarioTab === 'function') switchTarifarioTab('promo'); } },
+  { title: "Promociones Supermercados (Iberdrola)", keywords: ["promociones", "tarjetas", "regalo", "supermercado", "cif", "30€", "50€", "ccpp"], action: () => { showPanel('tarifario', document.getElementById('btn-nav-tarifario')); if (typeof switchTarifarioTab === 'function') switchTarifarioTab('promo'); } },
+  { title: "Enlaces de Trabajo (WhatsApp, CRM, Consultas)", keywords: ["enlaces", "utilidades", "whatsapp", "crm", "consultas", "ontime", "sips", "energiza", "calculadora", "owncloud"], action: () => { showPanel('tarifario', document.getElementById('btn-nav-tarifario')); if (typeof switchTarifarioTab === 'function') switchTarifarioTab('enlaces'); } },
 
   // Comparador
   { title: "Comparador de Luz y Gas", keywords: ["comparador", "luz", "gas", "potencia", "kwh", "excedentes", "bateria virtual", "ahorro", "propuesta", "pdf"], action: () => showPanel('comparativa', document.getElementById('btn-nav-comparativa')) },
@@ -15515,8 +15426,6 @@ const SEARCH_INDEX = [
   // Condiciones Telemarketing
   { title: "Condiciones Telemarketing y Comisiones", keywords: ["condiciones", "telemarketing", "comisiones", "descomisiones", "retro", "retrocomision", "retrocomisiones", "retrocomisión", "objetivos", "securitas", "direct", "iberdrola", "endesa", "gana", "naturgy"], action: () => showPanel('telemarketing') },
 
-  // Enlaces de Trabajo
-  { title: "Enlaces de Trabajo (WhatsApp, CRM, Consultas)", keywords: ["enlaces", "utilidades", "whatsapp", "crm", "consultas", "ontime", "sips", "energiza", "calculadora", "owncloud"], action: () => showPanel('sips', document.getElementById('btn-nav-sips')) },
   { title: "Buscar Comunidades Solares (Iberdrola)", keywords: ["comunidades solares", "comunidad solar", "iberdrola solar", "solar", "cobertura solar", "autoconsumo", "buscar comunidades", "buscar comunidad solar"], action: () => { window.open('https://www.iberdrola.es/smart-solar/productos/comunidades-solares#header_titulo', '_blank'); } },
 
   // Gerencia (solo si es gerente)
