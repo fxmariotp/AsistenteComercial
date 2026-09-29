@@ -12,6 +12,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/tramos-alert.js"></script>
+<script src="js/retrocomision.js"></script>
 <script>
   (function() {
     const COMERCIALES = {
@@ -31,7 +32,8 @@
       "MARIAC": "MARIA CABRERA",
       "28750523V": "OLGA VILLA",
       "29502580C": "LIBRERO",
-      "53343101Y": "NURIA CEBALLOS DURAN"
+      "53343101Y": "NURIA CEBALLOS DURAN",
+      "53770728V": "FRANCISCO JAVIER MORA ANDREU"
     };
     const dni = localStorage.getItem('comercial_dni');
     const name = localStorage.getItem('comercial_nombre');
@@ -3371,6 +3373,9 @@ hr {
   .db-liquid-glass-row {
     grid-template-columns: 1fr;
   }
+  .retro-form-grid {
+    grid-template-columns: 1fr !important;
+  }
 }
 .db-liquid-glass-card {
   position: relative;
@@ -4461,6 +4466,84 @@ input:focus, select:focus, textarea:focus {
           </div>
           <div id="db-widget-ranking-content">
             <!-- Loaded dynamically with circular SVG progress wheel -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ── Comprobador de CUPS y Retrocomisiones (Inicio) ── -->
+      <div class="db-retrocomision-section" style="margin-bottom: 10px;">
+        <div class="db-widget-card" style="padding: 16px 20px; gap: 12px; background: rgba(255, 255, 255, 0.82); border: 1.5px solid rgba(255, 255, 255, 0.95); box-shadow: 0 6px 24px rgba(32, 40, 84, 0.04);">
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
+            <div style="display: flex; align-items: center; gap: 9px;">
+              <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(53, 127, 191, 0.12); display: flex; align-items: center; justify-content: center; color: var(--blue);">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+              <div>
+                <h4 style="font-size: 14px; font-weight: 700; color: var(--text); margin: 0; display: flex; align-items: center; gap: 6px;">
+                  Comprobador de CUPS y Retrocomisiones
+                  <span style="font-size: 10px; font-weight: 700; background: var(--blue-bg); color: var(--blue); padding: 2px 7px; border-radius: 10px; border: 1px solid rgba(53,127,191,0.2);">Normativa Oficial</span>
+                </h4>
+                <p style="font-size: 11.5px; color: var(--t3); margin: 0; margin-top: 1px;">Calcula automáticamente los días de antigüedad y el % de retrocomisión aplicable por compañía.</p>
+              </div>
+            </div>
+            <div style="font-size: 11.5px; color: var(--t3); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <span style="background: rgba(5,150,105,0.08); color: #059669; padding: 2px 6px; border-radius: 4px; font-weight: 600;">⚡ Iberdrola</span>
+              <span style="background: rgba(220,130,50,0.08); color: #d97706; padding: 2px 6px; border-radius: 4px; font-weight: 600;">🌱 Naturgy</span>
+              <span style="background: rgba(53,127,191,0.08); color: #357FBF; padding: 2px 6px; border-radius: 4px; font-weight: 600;">🔌 Endesa</span>
+              <span style="background: rgba(147,51,234,0.08); color: #9333ea; padding: 2px 6px; border-radius: 4px; font-weight: 600;">💡 Gana Energía</span>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 10px; align-items: end;" class="retro-form-grid">
+            <!-- CUPS -->
+            <div>
+              <label for="retro-cups" style="display: block; font-size: 11.5px; font-weight: 700; color: var(--t2); margin-bottom: 4px;">
+                CUPS del Cliente <span style="font-weight: 400; color: var(--t3);">(Opcional)</span>
+              </label>
+              <div style="display: flex; gap: 6px;">
+                <input type="text" id="retro-cups" placeholder="ES0021... (20-22 caracteres)" maxlength="22" oninput="renderRetrocomisionCheck()" style="flex: 1; padding: 8px 11px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; font-family: monospace; outline: none; background: rgba(255,255,255,0.9); color: var(--text); transition: border-color 0.2s;">
+                <button type="button" onclick="pasteCupsToRetroInput()" title="Pegar CUPS copiado del portapapeles" style="padding: 0 10px; background: rgba(53,127,191,0.08); border: 1.5px solid rgba(53,127,191,0.25); border-radius: var(--rs); color: var(--blue); font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                  Pegar
+                </button>
+              </div>
+            </div>
+
+            <!-- Compañía -->
+            <div>
+              <label for="retro-cia" style="display: block; font-size: 11.5px; font-weight: 700; color: var(--t2); margin-bottom: 4px;">
+                Compañía <span style="color: var(--red);">*</span>
+              </label>
+              <select id="retro-cia" onchange="renderRetrocomisionCheck()" style="width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; font-weight: 600; outline: none; background: rgba(255,255,255,0.9); color: var(--text); cursor: pointer;">
+                <option value="iberdrola">Iberdrola</option>
+                <option value="naturgy">Naturgy</option>
+                <option value="endesa">Endesa</option>
+                <option value="gana">Gana Energía</option>
+              </select>
+            </div>
+
+            <!-- Fecha Contrato -->
+            <div>
+              <label for="retro-fecha" style="display: block; font-size: 11.5px; font-weight: 700; color: var(--t2); margin-bottom: 4px;">
+                Fecha Contrato Anterior <span style="color: var(--red);">*</span>
+              </label>
+              <input type="date" id="retro-fecha" onchange="renderRetrocomisionCheck()" oninput="renderRetrocomisionCheck()" style="width: 100%; padding: 7.5px 10px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; font-weight: 600; outline: none; background: rgba(255,255,255,0.9); color: var(--text); cursor: pointer;">
+            </div>
+
+            <!-- Botón Limpiar -->
+            <div>
+              <button type="button" onclick="document.getElementById('retro-cups').value=''; document.getElementById('retro-fecha').value=''; renderRetrocomisionCheck();" style="padding: 8px 12px; background: rgba(0,0,0,0.04); border: 1.5px solid var(--border); border-radius: var(--rs); color: var(--t2); font-size: 12px; font-weight: 600; cursor: pointer; height: 37px;" title="Limpiar formulario">
+                Limpiar
+              </button>
+            </div>
+          </div>
+
+          <!-- Resultado del cálculo -->
+          <div id="retro-resultado" style="margin-top: 2px;">
+            <!-- Rendered by renderRetrocomisionCheck() -->
           </div>
         </div>
       </div>
@@ -7270,7 +7353,7 @@ input:focus, select:focus, textarea:focus {
 */
 
 function isPlanAhoraActive() {
-  return Date.now() <= new Date('2026-09-30T23:59:59+02:00').getTime();
+  return Date.now() <= new Date('2026-10-15T23:59:59+02:00').getTime();
 }
 
 const BASE = {
@@ -7286,7 +7369,7 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
-      {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-09-30T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 30/09 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña (≤10kW)'},
+      {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-10-15T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña (≤10kW)'},
       {n:'Plan Especial', te:0.1873, tp1:0.1090, tp2:0.0790, te_sin:0.1592, te_con:0.149, desc_sin:0.15, desc_con:0.20, nota:'Precio único 24h sin permanencia (<10kW)'}
     ],
     tarifas_gas:[
@@ -10123,6 +10206,7 @@ function showPanel(id, btn){
     if (typeof updateDashboardAgendaWidget === 'function') updateDashboardAgendaWidget();
     if (typeof updateDashboardLaborablesWidget === 'function') updateDashboardLaborablesWidget();
     if (typeof updateDashboardRankingWidget === 'function') updateDashboardRankingWidget();
+    if (typeof renderRetrocomisionCheck === 'function') renderRetrocomisionCheck();
   }
 }
 
@@ -10239,7 +10323,7 @@ function renderCondiciones(){
             <div style="margin-top:6px;display:flex;flex-direction:column;gap:5px;">
               <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                 <span style="font-size:10.5px;font-weight:800;color:#dc2626;background:rgba(220,38,38,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);display:inline-flex;align-items:center;gap:3px;">
-                  ⏳ Campaña hasta 30/09 (23:59:59)
+                  ⏳ Campaña hasta 15/10 (23:59:59)
                 </span>
                 <span style="font-size:10.5px;font-weight:700;color:#d97706;background:rgba(217,119,6,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(217,119,6,0.2);">
                   ⚠️ Solo con mantenimiento
@@ -10392,7 +10476,7 @@ function renderCondiciones(){
 }
 
 function updatePlanAhoraCountdown() {
-  const targetDate = new Date('2026-09-30T23:59:59+02:00').getTime();
+  const targetDate = new Date('2026-10-15T23:59:59+02:00').getTime();
   const now = new Date().getTime();
   const diff = targetDate - now;
   const elements = document.querySelectorAll('.plan-ahora-timer-val');
@@ -10881,10 +10965,10 @@ function calcComp(){
             desc_sin: 0.15,
             desc_con: 0.20,
             temporal: true,
-            expira: '2026-09-30T23:59:59',
+            expira: '2026-10-15T23:59:59',
             solo_mantenimiento: true,
             provincias: ['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'],
-            nota: 'Campaña temporal hasta 30/09 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña'
+            nota: 'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña'
           }
         ];
       } else {
@@ -11855,7 +11939,8 @@ const COMERCIALES = {
   "MARIAC": "MARIA CABRERA",
   "28750523V": "OLGA VILLA",
   "29502580C": "LIBRERO",
-  "53343101Y": "NURIA CEBALLOS DURAN"
+  "53343101Y": "NURIA CEBALLOS DURAN",
+  "53770728V": "FRANCISCO JAVIER MORA ANDREU"
 };
 
 const DEFAULT_VACATIONS = {
@@ -11875,7 +11960,8 @@ const DEFAULT_VACATIONS = {
   "MARIAC": [],
   "28750523V": [],
   "29502580C": [],
-  "53343101Y": []
+  "53343101Y": [],
+  "53770728V": []
 };
 
 const DEFAULT_VACATION_MOTIVES = {};
@@ -12000,7 +12086,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785006500000;
+const CURRENT_BUILD_VERSION = 1785007000000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -12225,6 +12311,11 @@ if (AGENT_ROLES['29502580C'] === undefined) {
 // Preasignar rol a Nuria Ceballos Durán a Trabajadores Evaria
 if (AGENT_ROLES['53343101Y'] === undefined) {
   AGENT_ROLES['53343101Y'] = 'evaria';
+}
+
+// Preasignar rol a Francisco Javier Mora Andreu a Comercial Renosur
+if (AGENT_ROLES['53770728V'] === undefined) {
+  AGENT_ROLES['53770728V'] = 'comercial';
 }
 
 async function fetchAgentRolesFromCloud() {
@@ -16703,7 +16794,7 @@ function getRenosurChatResponse(query) {
           mantenimiento: "4,48 €/mes (Pack Iberdrola Hogar obligatorio)",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%",
-          vigencia: "Válido hasta el 30 de septiembre a las 23:59:59 (con cuenta atrás activa).",
+          vigencia: "Válido hasta el 15 de octubre a las 23:59:59 (con cuenta atrás activa).",
           condiciones_especiales: "Solo se puede meter con mantenimiento. Solo se puede vender en Sevilla, Huelva, Barcelona y A Coruña."
         },
         plan_especial: {
@@ -16846,10 +16937,10 @@ function getRenosurChatResponse(query) {
   };
 
   // ── RESPUESTAS EXACTAS PARA TARIFAS Y PRECIOS ──
-  // 1. Iberdrola Plan Ahora (CAMPAÑA TEMPORAL ACTIVA HASTA 30/09)
+  // 1. Iberdrola Plan Ahora (CAMPAÑA TEMPORAL ACTIVA HASTA 15/10)
   if (q.includes('plan ahora') || q.includes('ahora 0-10') || q.includes('ahora 10-15') || (q.includes('ahora') && q.includes('iberdrola'))) {
     return "⚡ <strong>Iberdrola — Plan Ahora (Campaña Temporal Activa):</strong><br><br>" +
-           "⏳ <strong>Vigencia:</strong> Hasta el <strong>30 de septiembre a las 23:59:59</strong> (con cuenta atrás en vivo en la app).<br>" +
+           "⏳ <strong>Vigencia:</strong> Hasta el <strong>15 de octubre a las 23:59:59</strong> (con cuenta atrás en vivo en la app).<br>" +
            "⚠️ <strong>Condición de contratación:</strong> <strong>Solo se puede meter con mantenimiento</strong>.<br>" +
            "📍 <strong>Zonas autorizadas:</strong> Solo se puede comercializar/vender en <strong>Sevilla, Huelva, Barcelona y A Coruña</strong>.<br><br>" +
            "• <strong>Término de Energía:</strong><br>" +
@@ -16982,7 +17073,7 @@ function getRenosurChatResponse(query) {
       
       // Luz más barata
       const ibLuzBest = isPlanAhoraActive() 
-        ? `• <strong>Iberdrola Plan Ahora (Temporal hasta 30/09):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>• <strong>Iberdrola Plan Especial:</strong> 0,1592 €/kWh (0,149 €/kWh con SVA)<br>`
+        ? `• <strong>Iberdrola Plan Ahora (Temporal hasta 15/10):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>• <strong>Iberdrola Plan Especial:</strong> 0,1592 €/kWh (0,149 €/kWh con SVA)<br>`
         : `• <strong>Iberdrola Plan Especial:</strong> 0,1592 €/kWh (0,149 €/kWh con SVA)<br>`;
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              ibLuzBest +
@@ -17036,7 +17127,7 @@ function getRenosurChatResponse(query) {
         if (isPlanAhoraActive()) {
           return `<strong>Tarifas de Luz de Iberdrola disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
             `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Plan Ahora (Temporal hasta 30/09) — 0,094 €/kWh (Con Mant.)</button>` +
+            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Plan Ahora (Temporal hasta 15/10) — 0,094 €/kWh (Con Mant.)</button>` +
             `  <button onclick="sendQuickChatQuery('Iberdrola Plan Especial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Especial — Desde 0,149 €/kWh</button>` +
             `</div>`;
         } else {
@@ -17288,6 +17379,7 @@ document.addEventListener('DOMContentLoaded',()=>{
   migrateLocalStorageVacations();
   loadSession();
   initUserActivityTracking();
+  if (typeof renderRetrocomisionCheck === 'function') renderRetrocomisionCheck();
 });
 </script>
 
