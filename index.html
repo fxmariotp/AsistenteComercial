@@ -3373,9 +3373,6 @@ hr {
   .db-liquid-glass-row {
     grid-template-columns: 1fr;
   }
-  .retro-form-grid {
-    grid-template-columns: 1fr !important;
-  }
 }
 .db-liquid-glass-card {
   position: relative;
@@ -4470,81 +4467,48 @@ input:focus, select:focus, textarea:focus {
         </div>
       </div>
 
-      <!-- ── Comprobador de CUPS y Retrocomisiones (Inicio) ── -->
-      <div class="db-retrocomision-section" style="margin-bottom: 10px;">
-        <div class="db-widget-card" style="padding: 16px 20px; gap: 12px; background: rgba(255, 255, 255, 0.82); border: 1.5px solid rgba(255, 255, 255, 0.95); box-shadow: 0 6px 24px rgba(32, 40, 84, 0.04);">
-          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;">
-            <div style="display: flex; align-items: center; gap: 9px;">
-              <div style="width: 32px; height: 32px; border-radius: 8px; background: rgba(53, 127, 191, 0.12); display: flex; align-items: center; justify-content: center; color: var(--blue);">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+      <!-- ── Comprobador de Retrocomisiones (Inicio) ── -->
+      <div class="db-retrocomision-section" style="margin-bottom: 8px;">
+        <div class="db-widget-card" style="padding: 10px 16px; background: rgba(255, 255, 255, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.95); box-shadow: 0 4px 18px rgba(32, 40, 84, 0.03);">
+          <!-- Fila horizontal única -->
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
+            <!-- Izquierda: Icono y Título -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+              <div style="width: 28px; height: 28px; border-radius: 7px; background: rgba(53, 127, 191, 0.12); display: flex; align-items: center; justify-content: center; color: var(--blue);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
                   <circle cx="11" cy="11" r="8"></circle>
                   <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                 </svg>
               </div>
-              <div>
-                <h4 style="font-size: 14px; font-weight: 700; color: var(--text); margin: 0; display: flex; align-items: center; gap: 6px;">
-                  Comprobador de CUPS y Retrocomisiones
-                  <span style="font-size: 10px; font-weight: 700; background: var(--blue-bg); color: var(--blue); padding: 2px 7px; border-radius: 10px; border: 1px solid rgba(53,127,191,0.2);">Normativa Oficial</span>
-                </h4>
-                <p style="font-size: 11.5px; color: var(--t3); margin: 0; margin-top: 1px;">Calcula automáticamente los días de antigüedad y el % de retrocomisión aplicable por compañía.</p>
+              <span style="font-size: 13.5px; font-weight: 700; color: var(--text); white-space: nowrap;">Comprobador Retrocomisiones</span>
+            </div>
+
+            <!-- Derecha: Controles en la misma línea (Compañía, Fecha y Limpiar) -->
+            <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;" class="retro-inline-row">
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <label for="retro-cia" style="font-size: 12px; font-weight: 700; color: var(--t2); white-space: nowrap;">Compañía:</label>
+                <select id="retro-cia" onchange="renderRetrocomisionCheck()" style="padding: 5px 9px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 12.5px; font-weight: 600; outline: none; background: rgba(255,255,255,0.95); color: var(--text); cursor: pointer; height: 32px;">
+                  <option value="iberdrola">Iberdrola</option>
+                  <option value="naturgy">Naturgy</option>
+                  <option value="endesa">Endesa</option>
+                  <option value="gana">Gana Energía</option>
+                </select>
               </div>
-            </div>
-            <div style="font-size: 11.5px; color: var(--t3); display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
-              <span style="background: rgba(5,150,105,0.08); color: #059669; padding: 2px 6px; border-radius: 4px; font-weight: 600;">⚡ Iberdrola</span>
-              <span style="background: rgba(220,130,50,0.08); color: #d97706; padding: 2px 6px; border-radius: 4px; font-weight: 600;">🌱 Naturgy</span>
-              <span style="background: rgba(53,127,191,0.08); color: #357FBF; padding: 2px 6px; border-radius: 4px; font-weight: 600;">🔌 Endesa</span>
-              <span style="background: rgba(147,51,234,0.08); color: #9333ea; padding: 2px 6px; border-radius: 4px; font-weight: 600;">💡 Gana Energía</span>
-            </div>
-          </div>
 
-          <div style="display: grid; grid-template-columns: 1.4fr 1fr 1fr auto; gap: 10px; align-items: end;" class="retro-form-grid">
-            <!-- CUPS -->
-            <div>
-              <label for="retro-cups" style="display: block; font-size: 11.5px; font-weight: 700; color: var(--t2); margin-bottom: 4px;">
-                CUPS del Cliente <span style="font-weight: 400; color: var(--t3);">(Opcional)</span>
-              </label>
-              <div style="display: flex; gap: 6px;">
-                <input type="text" id="retro-cups" placeholder="ES0021... (20-22 caracteres)" maxlength="22" oninput="renderRetrocomisionCheck()" style="flex: 1; padding: 8px 11px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; font-family: monospace; outline: none; background: rgba(255,255,255,0.9); color: var(--text); transition: border-color 0.2s;">
-                <button type="button" onclick="pasteCupsToRetroInput()" title="Pegar CUPS copiado del portapapeles" style="padding: 0 10px; background: rgba(53,127,191,0.08); border: 1.5px solid rgba(53,127,191,0.25); border-radius: var(--rs); color: var(--blue); font-size: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; gap: 4px; white-space: nowrap;">
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
-                  Pegar
-                </button>
+              <div style="display: flex; align-items: center; gap: 6px;">
+                <label for="retro-fecha" style="font-size: 12px; font-weight: 700; color: var(--t2); white-space: nowrap;">Fecha Contrato:</label>
+                <input type="date" id="retro-fecha" onchange="renderRetrocomisionCheck()" oninput="renderRetrocomisionCheck()" style="padding: 4px 8px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 12.5px; font-weight: 600; outline: none; background: rgba(255,255,255,0.95); color: var(--text); cursor: pointer; height: 32px;">
               </div>
-            </div>
 
-            <!-- Compañía -->
-            <div>
-              <label for="retro-cia" style="display: block; font-size: 11.5px; font-weight: 700; color: var(--t2); margin-bottom: 4px;">
-                Compañía <span style="color: var(--red);">*</span>
-              </label>
-              <select id="retro-cia" onchange="renderRetrocomisionCheck()" style="width: 100%; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; font-weight: 600; outline: none; background: rgba(255,255,255,0.9); color: var(--text); cursor: pointer;">
-                <option value="iberdrola">Iberdrola</option>
-                <option value="naturgy">Naturgy</option>
-                <option value="endesa">Endesa</option>
-                <option value="gana">Gana Energía</option>
-              </select>
-            </div>
-
-            <!-- Fecha Contrato -->
-            <div>
-              <label for="retro-fecha" style="display: block; font-size: 11.5px; font-weight: 700; color: var(--t2); margin-bottom: 4px;">
-                Fecha Contrato Anterior <span style="color: var(--red);">*</span>
-              </label>
-              <input type="date" id="retro-fecha" onchange="renderRetrocomisionCheck()" oninput="renderRetrocomisionCheck()" style="width: 100%; padding: 7.5px 10px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 13px; font-weight: 600; outline: none; background: rgba(255,255,255,0.9); color: var(--text); cursor: pointer;">
-            </div>
-
-            <!-- Botón Limpiar -->
-            <div>
-              <button type="button" onclick="document.getElementById('retro-cups').value=''; document.getElementById('retro-fecha').value=''; renderRetrocomisionCheck();" style="padding: 8px 12px; background: rgba(0,0,0,0.04); border: 1.5px solid var(--border); border-radius: var(--rs); color: var(--t2); font-size: 12px; font-weight: 600; cursor: pointer; height: 37px;" title="Limpiar formulario">
+              <button type="button" onclick="document.getElementById('retro-fecha').value=''; renderRetrocomisionCheck();" style="padding: 0 10px; background: rgba(0,0,0,0.04); border: 1.5px solid var(--border); border-radius: var(--rs); color: var(--t2); font-size: 12px; font-weight: 600; cursor: pointer; height: 32px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;" title="Limpiar fecha">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 Limpiar
               </button>
             </div>
           </div>
 
           <!-- Resultado del cálculo -->
-          <div id="retro-resultado" style="margin-top: 2px;">
-            <!-- Rendered by renderRetrocomisionCheck() -->
-          </div>
+          <div id="retro-resultado"></div>
         </div>
       </div>
 
@@ -12086,7 +12050,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785007000000;
+const CURRENT_BUILD_VERSION = 1785007500000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 

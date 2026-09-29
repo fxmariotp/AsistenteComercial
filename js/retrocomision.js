@@ -1,12 +1,12 @@
 // ══════════════════════════════════════════════════════════════════════════════
-// 🔍 MÓDULO DE COMPROBADOR DE CUPS Y RETROCOMISIONES
+// 🔍 MÓDULO DE COMPROBADOR DE RETROCOMISIONES POR COMPAÑÍA
 // ══════════════════════════════════════════════════════════════════════════════
 
-function calcRetrocomisionInfo(company, dateStr, cups) {
+function calcRetrocomisionInfo(company, dateStr) {
   if (!dateStr) {
     return {
       hasDate: false,
-      message: 'Introduce o selecciona la fecha del contrato anterior para comprobar el estado de retrocomisión.'
+      message: 'Selecciona la fecha del contrato anterior para comprobar el estado de retrocomisión.'
     };
   }
 
@@ -29,7 +29,7 @@ function calcRetrocomisionInfo(company, dateStr, cups) {
     return {
       isFuture: true,
       diffDays,
-      message: '⚠️ La fecha introducida es futura. Por favor, selecciona la fecha de contratación o activación del cliente anterior.'
+      message: '⚠️ La fecha introducida es futura. Por favor, selecciona la fecha de activación o contratación del cliente.'
     };
   }
 
@@ -94,7 +94,7 @@ function calcRetrocomisionInfo(company, dateStr, cups) {
       if (diffDays <= 61) {
         retroPct = 100;
         statusTier = 'danger';
-        ruleDetails = `Contrato firmado antes del 01/05/2026. Tiene <strong>${diffDays} días</strong> (de los 61 días de retro requeridos). Aplica un <strong>100% de retrocomisión</strong>.`;
+        ruleDetails = `Contrato firmado antes del 01/05/2026. Tiene <strong>${diffDays} días</strong> (de los 61 días requeridos). Aplica un <strong>100% de retrocomisión</strong>.`;
       } else {
         retroPct = 0;
         statusTier = 'success';
@@ -109,7 +109,7 @@ function calcRetrocomisionInfo(company, dateStr, cups) {
       if (diffDays <= 181) {
         retroPct = 100;
         statusTier = 'danger';
-        ruleDetails = `Contrato firmado entre 01/05/2026 y 01/06/2026. Tiene <strong>${diffDays} días</strong> (de los 181 días de retro requeridos). Aplica un <strong>100% de retrocomisión</strong>.`;
+        ruleDetails = `Contrato firmado entre 01/05/2026 y 01/06/2026. Tiene <strong>${diffDays} días</strong> (de los 181 días requeridos). Aplica un <strong>100% de retrocomisión</strong>.`;
       } else {
         retroPct = 0;
         statusTier = 'success';
@@ -124,7 +124,7 @@ function calcRetrocomisionInfo(company, dateStr, cups) {
       if (diffDays <= 365) {
         retroPct = 100;
         statusTier = 'danger';
-        ruleDetails = `Contrato firmado a partir del 01/06/2026. Tiene <strong>${diffDays} días</strong> (de los 365 días de retro requeridos). Aplica un <strong>100% de retrocomisión</strong>.`;
+        ruleDetails = `Contrato firmado a partir del 01/06/2026. Tiene <strong>${diffDays} días</strong> (de los 365 días requeridos). Aplica un <strong>100% de retrocomisión</strong>.`;
       } else {
         retroPct = 0;
         statusTier = 'success';
@@ -169,7 +169,6 @@ function calcRetrocomisionInfo(company, dateStr, cups) {
 
   return {
     hasDate: true,
-    cups: (cups || '').trim().toUpperCase(),
     company: comp,
     diffDays,
     retroPct,
@@ -189,31 +188,24 @@ function calcRetrocomisionInfo(company, dateStr, cups) {
 function renderRetrocomisionCheck() {
   const elCia = document.getElementById('retro-cia');
   const elFecha = document.getElementById('retro-fecha');
-  const elCups = document.getElementById('retro-cups');
   const elResult = document.getElementById('retro-resultado');
 
   if (!elResult) return;
 
   const cia = elCia ? elCia.value : 'iberdrola';
   const fecha = elFecha ? elFecha.value : '';
-  const cups = elCups ? elCups.value : '';
 
   if (!fecha) {
-    elResult.innerHTML = `
-      <div style="background: rgba(255,255,255,0.65); border: 1.5px dashed var(--border); border-radius: var(--rs); padding: 18px; text-align: center; color: var(--t3); font-size: 13px;">
-        <span style="font-size: 26px; display: block; margin-bottom: 6px;">📅</span>
-        <strong style="color: var(--text);">Introduce la fecha del contrato</strong> para calcular los días transcurridos y el estado de retrocomisión de la compañía seleccionada.
-      </div>
-    `;
+    elResult.innerHTML = '';
     return;
   }
 
-  const info = calcRetrocomisionInfo(cia, fecha, cups);
+  const info = calcRetrocomisionInfo(cia, fecha);
 
   if (info.isFuture) {
     elResult.innerHTML = `
-      <div style="background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: var(--rs); padding: 14px 18px; color: #b91c1c; font-size: 13px; display: flex; align-items: center; gap: 10px;">
-        <span style="font-size: 22px;">⚠️</span>
+      <div style="background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: var(--rs); padding: 9px 14px; color: #b91c1c; font-size: 12.5px; display: flex; align-items: center; gap: 8px; margin-top: 8px;">
+        <span style="font-size: 18px;">⚠️</span>
         <div>${info.message}</div>
       </div>
     `;
@@ -246,7 +238,7 @@ function renderRetrocomisionCheck() {
   if (info.retroPct === 100) {
     if (info.dateTo50 && info.daysTo50 > 0) {
       nextStepHtml = `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.25);border-radius:8px;font-size:12px;color:#92400e;margin-top:8px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.25);border-radius:8px;font-size:12px;color:#92400e;margin-top:6px;">
           <span>⏳ Baja al <strong>50% de retro</strong>:</span>
           <strong>${info.dateTo50} (en ${info.daysTo50} días)</strong>
         </div>
@@ -254,7 +246,7 @@ function renderRetrocomisionCheck() {
     }
     if (info.dateToFree && info.daysToFree > 0) {
       nextStepHtml += `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.25);border-radius:8px;font-size:12px;color:#065f46;margin-top:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.25);border-radius:8px;font-size:12px;color:#065f46;margin-top:6px;">
           <span>🎉 Queda <strong>100% Libre (0% retro)</strong>:</span>
           <strong>${info.dateToFree} (en ${info.daysToFree} días)</strong>
         </div>
@@ -263,7 +255,7 @@ function renderRetrocomisionCheck() {
   } else if (info.retroPct === 50) {
     if (info.dateToFree && info.daysToFree > 0) {
       nextStepHtml = `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 12px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.25);border-radius:8px;font-size:12px;color:#065f46;margin-top:8px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.25);border-radius:8px;font-size:12px;color:#065f46;margin-top:6px;">
           <span>🎉 Queda <strong>100% Libre (0% retro)</strong>:</span>
           <strong>${info.dateToFree} (en ${info.daysToFree} días)</strong>
         </div>
@@ -271,49 +263,42 @@ function renderRetrocomisionCheck() {
     }
   } else {
     nextStepHtml = `
-      <div style="display:flex;align-items:center;gap:8px;padding:8px 12px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;font-size:12.5px;color:#065f46;margin-top:8px;">
+      <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;font-size:12px;color:#065f46;margin-top:6px;">
         <span>🚀 <strong>Puedes tramitar este contrato con tranquilidad:</strong> se comisionará íntegramente al no aplicar retrocomisión.</span>
       </div>
     `;
   }
 
-  const cupsBadgeHtml = info.cups
-    ? `<span style="font-family: monospace; font-size: 11.5px; background: rgba(0,0,0,0.06); padding: 3px 8px; border-radius: 4px; font-weight: 700; border: 1px solid rgba(0,0,0,0.1); color: var(--text);">CUPS: ${info.cups}</span>`
-    : '';
-
   elResult.innerHTML = `
-    <div style="background: rgba(255,255,255,0.85); backdrop-filter: blur(12px); border: 1.5px solid ${badgeColor}55; border-radius: 14px; padding: 16px; box-shadow: 0 4px 15px rgba(0,0,0,0.03); animation: fadeIn 0.3s ease-out;">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:10px;">
-        <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-          <span style="font-size: 13px; font-weight: 800; padding: 4px 10px; border-radius: 6px; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}44; display: inline-flex; align-items: center; gap: 5px;">
-            <span>${badgeIcon}</span>
-            <span>${badgeTitle}</span>
-          </span>
-          ${cupsBadgeHtml}
-        </div>
+    <div style="background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border: 1.5px solid ${badgeColor}55; border-radius: 12px; padding: 12px 16px; box-shadow: 0 3px 12px rgba(0,0,0,0.03); margin-top: 10px; animation: fadeIn 0.25s ease-out;">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+        <span style="font-size: 12.5px; font-weight: 800; padding: 3px 9px; border-radius: 6px; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}44; display: inline-flex; align-items: center; gap: 5px;">
+          <span>${badgeIcon}</span>
+          <span>${badgeTitle}</span>
+        </span>
         <div style="font-size: 12px; color: var(--t2); font-weight: 600;">
           Antigüedad: <strong style="color: var(--text); font-size: 13px;">${info.diffDays} días</strong> transcurridos
         </div>
       </div>
 
       <!-- Barra de progreso visual -->
-      <div style="margin: 10px 0;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:4px;">
+      <div style="margin: 8px 0;">
+        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:3px;">
           <span>Fecha Contrato: <strong>${info.formattedContractDate}</strong></span>
           <span>Periodo Normativo: <strong>${info.totalPeriodDays} días</strong></span>
         </div>
-        <div style="width: 100%; height: 8px; background: #e2e8f0; border-radius: 6px; overflow: hidden; position: relative;">
-          <div style="width: ${info.percentElapsed}%; height: 100%; background: ${badgeColor}; border-radius: 6px; transition: width 0.5s ease-out;"></div>
+        <div style="width: 100%; height: 7px; background: #e2e8f0; border-radius: 5px; overflow: hidden; position: relative;">
+          <div style="width: ${info.percentElapsed}%; height: 100%; background: ${badgeColor}; border-radius: 5px; transition: width 0.4s ease-out;"></div>
         </div>
       </div>
 
-      <div style="font-size: 12.5px; color: var(--t2); line-height: 1.45; margin-top: 8px;">
+      <div style="font-size: 12px; color: var(--t2); line-height: 1.4; margin-top: 6px;">
         ${info.ruleDetails}
       </div>
 
       ${nextStepHtml}
 
-      <div style="margin-top: 10px; padding-top: 8px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 11px; color: var(--t3);">
+      <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 11px; color: var(--t3);">
         📋 <em>${info.ruleTitle}</em>
       </div>
     </div>
@@ -321,17 +306,5 @@ function renderRetrocomisionCheck() {
 }
 
 function pasteCupsToRetroInput() {
-  if (navigator.clipboard && navigator.clipboard.readText) {
-    navigator.clipboard.readText().then(text => {
-      const el = document.getElementById('retro-cups');
-      if (el && text) {
-        el.value = text.trim();
-        renderRetrocomisionCheck();
-      }
-    }).catch(() => {
-      alert("Por favor, pega el CUPS directamente en el campo de texto.");
-    });
-  } else {
-    alert("Por favor, pega el CUPS directamente en el campo de texto.");
-  }
+  // Función de compatibilidad
 }
