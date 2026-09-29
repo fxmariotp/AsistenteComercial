@@ -7151,9 +7151,9 @@ input:focus, select:focus, textarea:focus {
         <div class="ranking-header-bar">
           <div class="ranking-title-wrap">
             <div class="ranking-title">Ranking de Rendimiento</div>
-            <span class="ranking-live-badge">
-              <span class="ranking-live-dot"></span>
-              En Vivo
+            <span class="ranking-live-badge" id="ranking-live-badge">
+              <span class="ranking-live-dot" id="ranking-live-dot"></span>
+              <span id="ranking-live-text">En Vivo</span>
             </span>
           </div>
           <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
@@ -7167,9 +7167,9 @@ input:focus, select:focus, textarea:focus {
                 Modo TV Sala
               </button>
             </div>
-            <button class="btn" onclick="loadNativeRanking()" style="padding: 8px 14px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; border-radius: 12px;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-              Actualizar
+            <button class="btn" id="btn-ranking-refresh" onclick="loadNativeRanking(true)" style="padding: 8px 14px; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; border-radius: 12px; transition: all 0.2s ease;">
+              <svg id="icon-ranking-refresh" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <span id="text-ranking-refresh">Actualizar</span>
             </button>
           </div>
         </div>
@@ -8962,211 +8962,236 @@ function checkAndTrackRankingChanges(newData) {
   return false;
 }
 
-// Helper to fetch Google Script with direct try & multiple CORS proxy fallbacks
-async function fetchGoogleScript(targetUrl, timeoutMs = 6000) {
-  // 1. Try our same-origin Vercel serverless proxy first (fully bypasses CORS & adblockers)
+// Helper to fetch Google Script with multi-tier strategy (Edge Vercel Proxy -> Direct CORS -> Concurrent Proxies)
+async function fetchGoogleScript(targetUrl, timeoutMs = 15000, forceFresh = false) {
+  const timestamp = Date.now();
+  
+  // 1. Probar primero el proxy serverless de Vercel en el mismo origen (ultra-rápido con Edge CDN & memoria)
   try {
     const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    const res = await fetch("/api/ranking", { signal: controller.signal });
+    const id = setTimeout(() => controller.abort(), 8000);
+    const vercelUrl = `/api/ranking${forceFresh ? '?force=true&t=' + timestamp : ''}`;
+    const res = await fetch(vercelUrl, { signal: controller.signal });
     clearTimeout(id);
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data)) return data;
+      if (Array.isArray(data) && data.length > 0) return data;
     }
   } catch (e) {
-    console.warn("Vercel serverless proxy failed. Trying direct Google Script fetch...", e);
+    // Si no está en Vercel o la API no responde, continuar inmediatamente a llamada directa
   }
 
-  // 2. Try directly second (omitting credentials to avoid credential-redirect CORS blocks)
+  // 2. Llamada directa a Google Apps Script (Google devuelve Access-Control-Allow-Origin: *)
   try {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), timeoutMs);
-    const res = await fetch(targetUrl, { signal: controller.signal, credentials: 'omit' });
+    const directUrl = forceFresh ? `${targetUrl}&_t=${timestamp}` : targetUrl;
+    const res = await fetch(directUrl, { signal: controller.signal, credentials: 'omit', mode: 'cors' });
     clearTimeout(id);
     if (res.ok) {
       const data = await res.json();
-      if (Array.isArray(data)) return data;
+      if (Array.isArray(data) && data.length > 0) return data;
     }
   } catch (e) {
-    console.warn("Direct fetch to Google Script failed/blocked. Trying CORS Proxy 1 (CodeTabs)...", e);
+    console.warn("Llamada directa a Google Script falló, probando proxies concurrentes...", e);
   }
   
-  // 3. Fallback to CodeTabs CORS Proxy
-  try {
-    const proxyUrl = "https://api.codetabs.com/v1/proxy?quest=" + encodeURIComponent(targetUrl);
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    const res = await fetch(proxyUrl, { signal: controller.signal });
-    clearTimeout(id);
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data)) return data;
-    }
-  } catch (e) {
-    console.warn("CORS Proxy 1 (CodeTabs) failed. Trying CORS Proxy 2 (AllOrigins)...", e);
-  }
+  // 3. Carrera concurrente de proxies CORS de respaldo (Promise.any: el más rápido gana sin esperas secuenciales)
+  const proxyEndpoints = [
+    `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
+    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
+  ];
 
-  // 4. Fallback to AllOrigins CORS Proxy
-  try {
-    const proxyUrl = "https://api.allorigins.win/get?url=" + encodeURIComponent(targetUrl);
+  const proxyPromises = proxyEndpoints.map(async (pUrl) => {
     const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    const res = await fetch(proxyUrl, { signal: controller.signal });
-    clearTimeout(id);
-    if (res.ok) {
-      const wrapper = await res.json();
-      if (wrapper && wrapper.contents) {
-        const data = JSON.parse(wrapper.contents);
-        if (Array.isArray(data)) return data;
+    const id = setTimeout(() => controller.abort(), 10000);
+    try {
+      const res = await fetch(pUrl, { signal: controller.signal });
+      clearTimeout(id);
+      if (res.ok) {
+        const text = await res.text();
+        const data = JSON.parse(text);
+        if (Array.isArray(data) && data.length > 0) return data;
       }
-    }
+    } catch (err) {}
+    throw new Error("Proxy error: " + pUrl);
+  });
+
+  try {
+    const fastestResult = await Promise.any(proxyPromises);
+    if (fastestResult) return fastestResult;
   } catch (e) {
-    console.warn("CORS Proxy 2 (AllOrigins) failed. Trying CORS Proxy 3 (CorsProxy.io)...", e);
+    // Todos los proxies fallaron
   }
 
-  // 5. Fallback to CorsProxy.io
-  try {
-    const proxyUrl = "https://corsproxy.io/?" + encodeURIComponent(targetUrl);
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    const res = await fetch(proxyUrl, { signal: controller.signal });
-    clearTimeout(id);
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data)) return data;
-    }
-  } catch (e) {
-    console.warn("CORS Proxy 3 (CorsProxy.io) failed.", e);
-  }
-  
-  throw new Error("All fetch methods (Vercel proxy, direct, and CORS proxies) failed to load Google Script data");
+  throw new Error("No se pudo obtener datos del ranking de ninguna fuente remota");
 }
 
-async function loadNativeRanking() {
+let rankingInFlightPromise = null;
+
+function getCachedRankingData() {
+  try {
+    const raw = localStorage.getItem('renosur_ranking_raw_cache');
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) {
+        return parsed;
+      }
+    }
+  } catch (e) {}
+  return null;
+}
+
+async function loadNativeRanking(isUserAction = false) {
   const url = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
   const nativeContainer = document.getElementById('ranking-native-container');
   const iframeContainer = document.getElementById('ranking-iframe-container');
   const listContainer = document.getElementById('ranking-list-container');
   const podiumContainer = document.getElementById('ranking-podium-container');
-  
-  if (podiumContainer) podiumContainer.innerHTML = '';
-  if (listContainer) {
-    listContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center;color:var(--t2);padding:40px;">
-      <span class="cdot" style="background:var(--blue);width:10px;height:10px;animation:pulse 1s infinite alternate;margin-right:8px;display:inline-block;border-radius:50%;"></span>
-      Cargando ranking en tiempo real...
-    </div>`;
-  }
-  
-  // Mostrar hora de la última sincronización en caché mientras se carga
-  const cachedTs = parseInt(localStorage.getItem('ranking_last_update') || '0', 10);
-  const elLastUpdateInit = document.getElementById('stat-last-update');
-  const elLastUpdateDescInit = document.getElementById('stat-last-update-desc');
-  if (elLastUpdateInit && cachedTs) {
-    const d = new Date(cachedTs);
-    const hh = String(d.getHours()).padStart(2, '0');
-    const mm = String(d.getMinutes()).padStart(2, '0');
-    elLastUpdateInit.textContent = `${hh}:${mm}`;
-    if (elLastUpdateDescInit) {
-      elLastUpdateDescInit.textContent = `Último recuento a las ${hh}:${mm}`;
-    }
-  }
+  const refreshBtn = document.getElementById('btn-ranking-refresh');
+  const refreshText = document.getElementById('text-ranking-refresh');
+  const refreshIcon = document.getElementById('icon-ranking-refresh');
+  const liveText = document.getElementById('ranking-live-text');
+  const liveDot = document.getElementById('ranking-live-dot');
 
-  // Ensure native container is visible by default
+  // Asegurar que el contenedor nativo esté visible
   if (nativeContainer) nativeContainer.style.display = 'block';
   if (iframeContainer) iframeContainer.style.display = 'none';
 
-  try {
-    const data = await fetchGoogleScript(url);
-    if (Array.isArray(data)) {
-      rawRankingData = data.filter(r => r && r[0]); // Filter empty rows
-      if (rawRankingData.length > 0) {
-        localStorage.setItem('ranking_connected', 'true');
-        checkAndTrackRankingChanges(rawRankingData);
-        
-        // Reset iframe status
-        const statusText = document.getElementById('ranking-iframe-status-text');
-        const guideBtn = document.getElementById('btn-iframe-guide');
-        const retryBtn = document.getElementById('btn-iframe-retry');
-        if (statusText) statusText.textContent = "Mostrando la versión original giratoria.";
-        if (guideBtn) guideBtn.style.display = 'none';
-        if (retryBtn) {
-          retryBtn.style.display = 'none';
-          retryBtn.disabled = false;
-        }
-
-        renderNativeRanking(rawRankingData);
-        return;
-      }
-    }
-    throw new Error("Invalid data format received");
-  } catch (err) {
-    console.warn("No se pudo cargar el ranking nativo (CORS o script no actualizado):", err);
-    
-    // Fallback automatically to iframe view
-    switchRankingView('iframe');
-    
-    // Update status bar in iframe view
-    const statusText = document.getElementById('ranking-iframe-status-text');
-    const guideBtn = document.getElementById('btn-iframe-guide');
-    const retryBtn = document.getElementById('btn-iframe-retry');
-    if (statusText) {
-      statusText.innerHTML = `<span style="color: #d97706; display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Conexión Premium fallida (CORS/Red). Mostrando versión original.</span>`;
-    }
-    if (guideBtn) guideBtn.style.display = 'inline-flex';
-    if (retryBtn) {
-      retryBtn.style.display = 'inline-flex';
-      retryBtn.disabled = false;
-    }
-    
-    // Clear podium
-    if (podiumContainer) podiumContainer.innerHTML = '';
-    
-    // Show a beautiful error message in the list container with connection guides
-    if (listContainer) {
-      listContainer.innerHTML = `
-        <div style="grid-column: 1 / -1; text-align:center; padding: 40px 20px; border: 1px dashed var(--border); border-radius: var(--r); background: var(--surface); margin-top: 15px;">
-          <div style="font-size: 32px; margin-bottom: 12px;">🔌</div>
-          <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px;">Conexion Premium Pendiente</h3>
-          <p style="font-size: 13.5px; color: var(--t2); max-width: 480px; margin: 0 auto 20px; line-height: 1.5;">
-            No se pudo cargar el ranking de forma nativa. Esto sucede si el script de Google aún no se ha configurado para devolver JSON, o si hay un bloqueo temporal de CORS / red.
-          </p>
-          <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-            <button class="btn" onclick="toggleSetupGuide(true)">Ver guia de conexion</button>
-            <button class="btn btn-secondary" onclick="loadNativeRanking()">Intentar de nuevo</button>
-          </div>
-        </div>
-      `;
-    }
-    
-    // Reset stats to placeholder values
-    const elTotal = document.getElementById('stat-total-headcount');
-    const elRate = document.getElementById('stat-success-rate');
-    const elCount = document.getElementById('stat-success-count');
-    const elLeaderName = document.getElementById('stat-leader-name');
-    const elLeaderPts = document.getElementById('stat-leader-points');
-    const elLastUpdateErr = document.getElementById('stat-last-update');
-    const elLastUpdateDescErr = document.getElementById('stat-last-update-desc');
-    
-    if (elTotal) elTotal.textContent = '-';
-    if (elRate) elRate.textContent = '-%';
-    if (elCount) elCount.textContent = 'Conexion no establecida';
-    if (elLeaderName) elLeaderName.textContent = '-';
-    if (elLeaderPts) elLeaderPts.textContent = '0 puntos acumulados';
-    const cachedTsErr = parseInt(localStorage.getItem('ranking_last_update') || '0', 10);
-    if (elLastUpdateErr) {
-      if (cachedTsErr) {
-        const d = new Date(cachedTsErr);
-        const hh = String(d.getHours()).padStart(2, '0');
-        const mm = String(d.getMinutes()).padStart(2, '0');
-        elLastUpdateErr.textContent = `${hh}:${mm}`;
-        if (elLastUpdateDescErr) elLastUpdateDescErr.textContent = `Último recuento: ${hh}:${mm}`;
-      } else {
-        elLastUpdateErr.textContent = '--:--';
-        if (elLastUpdateDescErr) elLastUpdateDescErr.textContent = 'Sin conexión';
+  // 1. CARGA INMEDIATA DESDE CACHÉ (0ms de latencia, evita pantalla en blanco o spinner molesto)
+  if (!rawRankingData || rawRankingData.length === 0) {
+    const cached = getCachedRankingData();
+    if (cached && cached.length > 0) {
+      rawRankingData = cached;
+      renderNativeRanking(rawRankingData);
+    } else {
+      // Solo si es la primera vez que se entra en la vida de este navegador y no hay caché previa
+      if (podiumContainer) podiumContainer.innerHTML = '';
+      if (listContainer) {
+        listContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align:center;color:var(--t2);padding:40px;">
+          <span class="cdot" style="background:var(--blue);width:10px;height:10px;animation:pulse 1s infinite alternate;margin-right:8px;display:inline-block;border-radius:50%;"></span>
+          Cargando ranking en tiempo real...
+        </div>`;
       }
     }
   }
+
+  // 2. Deduplicación: si ya hay una solicitud en vuelo, reutilizar la promesa
+  if (rankingInFlightPromise) {
+    return rankingInFlightPromise;
+  }
+
+  // 3. Indicadores visuales discretos de sincronización
+  if (refreshBtn && isUserAction) {
+    refreshBtn.disabled = true;
+    if (refreshText) refreshText.textContent = "Actualizando...";
+    if (refreshIcon) refreshIcon.classList.add('spinner');
+  }
+  if (liveText && liveDot) {
+    liveText.textContent = "Sincronizando...";
+    liveDot.style.background = "#38bdf8";
+  }
+
+  rankingInFlightPromise = (async () => {
+    try {
+      const data = await fetchGoogleScript(url, 15000, isUserAction);
+      if (Array.isArray(data)) {
+        const validRows = data.filter(r => r && r[0]);
+        if (validRows.length > 0) {
+          rawRankingData = validRows;
+          localStorage.setItem('renosur_ranking_raw_cache', JSON.stringify(rawRankingData));
+          localStorage.setItem('ranking_connected', 'true');
+          checkAndTrackRankingChanges(rawRankingData);
+
+          // Reset status en caso de que viniera de error de iframe
+          const statusText = document.getElementById('ranking-iframe-status-text');
+          const guideBtn = document.getElementById('btn-iframe-guide');
+          const retryBtn = document.getElementById('btn-iframe-retry');
+          if (statusText) statusText.textContent = "Mostrando la versión original giratoria.";
+          if (guideBtn) guideBtn.style.display = 'none';
+          if (retryBtn) { retryBtn.style.display = 'none'; retryBtn.disabled = false; }
+
+          if (liveText && liveDot) {
+            liveText.textContent = "En Vivo";
+            liveDot.style.background = "#10b981";
+          }
+
+          renderNativeRanking(rawRankingData);
+
+          if (refreshBtn && isUserAction) {
+            if (refreshText) refreshText.textContent = "¡Actualizado!";
+            if (refreshIcon) {
+              refreshIcon.classList.remove('spinner');
+              refreshIcon.innerHTML = `<polyline points="20 6 9 17 4 12"></polyline>`;
+            }
+            setTimeout(() => {
+              if (refreshText) refreshText.textContent = "Actualizar";
+              if (refreshIcon) {
+                refreshIcon.innerHTML = `<polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>`;
+              }
+              refreshBtn.disabled = false;
+            }, 2000);
+          }
+          return rawRankingData;
+        }
+      }
+      throw new Error("Formato de datos no válido recibido");
+    } catch (err) {
+      console.warn("Aviso en sincronización de ranking:", err);
+
+      // SI YA TENEMOS DATOS EN MEMORIA O CACHÉ, NO SACAR AL USUARIO NI MOSTRAR ERROR AGRESIVO
+      if (rawRankingData && rawRankingData.length > 0) {
+        if (liveText && liveDot) {
+          liveText.textContent = "Caché Guardada";
+          liveDot.style.background = "#f59e0b";
+        }
+        const elLastDesc = document.getElementById('stat-last-update-desc');
+        if (elLastDesc) {
+          elLastDesc.textContent = "Mostrando últimos datos (reintentando en 2º plano)";
+        }
+        if (refreshBtn && isUserAction) {
+          if (refreshText) refreshText.textContent = "Reintentar";
+          if (refreshIcon) {
+            refreshIcon.classList.remove('spinner');
+          }
+          refreshBtn.disabled = false;
+        }
+        return rawRankingData;
+      }
+
+      // Solo si es la primera vez absoluta y NO hay caché en absoluto:
+      switchRankingView('iframe');
+      const statusText = document.getElementById('ranking-iframe-status-text');
+      const guideBtn = document.getElementById('btn-iframe-guide');
+      const retryBtn = document.getElementById('btn-iframe-retry');
+      if (statusText) {
+        statusText.innerHTML = `<span style="color: #d97706; display: flex; align-items: center; gap: 6px;"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg> Conexión inicial no completada. Mostrando versión original.</span>`;
+      }
+      if (guideBtn) guideBtn.style.display = 'inline-flex';
+      if (retryBtn) { retryBtn.style.display = 'inline-flex'; retryBtn.disabled = false; }
+
+      if (podiumContainer) podiumContainer.innerHTML = '';
+      if (listContainer) {
+        listContainer.innerHTML = `
+          <div style="grid-column: 1 / -1; text-align:center; padding: 40px 20px; border: 1px dashed var(--border); border-radius: var(--r); background: var(--surface); margin-top: 15px;">
+            <div style="font-size: 32px; margin-bottom: 12px;">🔌</div>
+            <h3 style="font-size: 16px; font-weight: 700; color: var(--text); margin-bottom: 8px;">Conexion Premium Pendiente</h3>
+            <p style="font-size: 13.5px; color: var(--t2); max-width: 480px; margin: 0 auto 20px; line-height: 1.5;">
+              No se pudo sincronizar el ranking por primera vez. Comprueba tu conexión o reintenta en unos instantes.
+            </p>
+            <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+              <button class="btn" onclick="toggleSetupGuide(true)">Ver guia de conexion</button>
+              <button class="btn btn-secondary" onclick="loadNativeRanking(true)">Intentar de nuevo</button>
+            </div>
+          </div>
+        `;
+      }
+    } finally {
+      rankingInFlightPromise = null;
+    }
+  })();
+
+  return rankingInFlightPromise;
 }
 
 function renderNativeRanking(data) {
@@ -12054,7 +12079,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785008600000;
+const CURRENT_BUILD_VERSION = 1785009000000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -13987,18 +14012,30 @@ async function loadComisionesData(force = false) {
   }
 }
 
-// Auto-sync comisiones cada 30 segundos y al enfocar la pestaña
+// Auto-sync comisiones y ranking de forma periódica y al enfocar la pestaña
+let lastRankingBackgroundSync = 0;
+function triggerBackgroundRankingSync() {
+  const now = Date.now();
+  if (now - lastRankingBackgroundSync < 45000) return; // Debounce de 45s
+  lastRankingBackgroundSync = now;
+  if (typeof loadNativeRanking === 'function') {
+    loadNativeRanking(false);
+  }
+}
+
 if (typeof window !== 'undefined') {
   window.addEventListener('focus', () => {
     if (typeof currentAgentDni !== 'undefined' && currentAgentDni) {
       loadComisionesData(true);
     }
+    triggerBackgroundRankingSync();
   });
   setInterval(() => {
     if (typeof currentAgentDni !== 'undefined' && currentAgentDni) {
       loadComisionesData(true);
     }
-  }, 30000);
+    triggerBackgroundRankingSync();
+  }, 60000);
 }
 
 function getAgentComisionAmount() {
@@ -15570,16 +15607,22 @@ function toggleTaskCompletionFromDashboard(id) {
 }
 
 async function fetchRankingForDashboard() {
-  const url = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
+  // 1. Mostrar de inmediato la información de ranking si existe en caché local
+  if (!rawRankingData || rawRankingData.length === 0) {
+    const cached = typeof getCachedRankingData === 'function' ? getCachedRankingData() : null;
+    if (cached && cached.length > 0) {
+      rawRankingData = cached;
+      updateDashboardRankingWidget();
+    }
+  }
+  
+  // 2. Sincronizar en segundo plano usando la función unificada loadNativeRanking
   try {
-    const data = await fetchGoogleScript(url, 5000);
-    if (Array.isArray(data)) {
-      rawRankingData = data.filter(r => r && r[0]);
-      localStorage.setItem('ranking_connected', 'true');
-      checkAndTrackRankingChanges(rawRankingData);
+    if (typeof loadNativeRanking === 'function') {
+      await loadNativeRanking(false);
     }
   } catch (e) {
-    console.warn("Could not fetch ranking for dashboard widget:", e);
+    console.warn("Could not sync ranking for dashboard widget:", e);
   }
   updateDashboardRankingWidget();
 }
