@@ -4472,18 +4472,7 @@ input:focus, select:focus, textarea:focus {
         <div class="db-widget-card" style="padding: 10px 16px; background: rgba(255, 255, 255, 0.85); border: 1.5px solid rgba(255, 255, 255, 0.95); box-shadow: 0 4px 18px rgba(32, 40, 84, 0.03);">
           <!-- Fila horizontal única -->
           <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;">
-            <!-- Izquierda: Icono y Título -->
-            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
-              <div style="width: 28px; height: 28px; border-radius: 7px; background: rgba(53, 127, 191, 0.12); display: flex; align-items: center; justify-content: center; color: var(--blue);">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-                  <circle cx="11" cy="11" r="8"></circle>
-                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-                </svg>
-              </div>
-              <span style="font-size: 13.5px; font-weight: 700; color: var(--text); white-space: nowrap;">Comprobador Retrocomisiones</span>
-            </div>
-
-            <!-- Derecha: Controles en la misma línea (Compañía, Fecha y Limpiar) -->
+            <!-- Izquierda: Controles en la misma línea (Compañía, Fecha y Limpiar) -->
             <div style="display: flex; align-items: center; gap: 10px; flex-wrap: wrap;" class="retro-inline-row">
               <div style="display: flex; align-items: center; gap: 6px;">
                 <label for="retro-cia" style="font-size: 12px; font-weight: 700; color: var(--t2); white-space: nowrap;">Compañía:</label>
@@ -4504,6 +4493,17 @@ input:focus, select:focus, textarea:focus {
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
                 Limpiar
               </button>
+            </div>
+
+            <!-- Derecha: Icono y Título -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+              <div style="width: 28px; height: 28px; border-radius: 7px; background: rgba(53, 127, 191, 0.12); display: flex; align-items: center; justify-content: center; color: var(--blue);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+              </div>
+              <span style="font-size: 13.5px; font-weight: 700; color: var(--text); white-space: nowrap;">Comprobador Retrocomisiones</span>
             </div>
           </div>
 
@@ -12050,7 +12050,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785007500000;
+const CURRENT_BUILD_VERSION = 1785007800000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
