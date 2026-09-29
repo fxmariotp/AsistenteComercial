@@ -58,10 +58,13 @@ function calcRetrocomisionInfo(company, dateStr) {
 
   const comp = (company || 'iberdrola').toLowerCase();
 
+  let companyNotice = '';
+
   if (comp === 'iberdrola' || comp === 'naturgy') {
     const compName = comp === 'iberdrola' ? 'Iberdrola' : 'Naturgy';
     totalPeriodDays = 121;
-    ruleTitle = `Normativa ${compName}: 0-61 días (100% retro) · 62-121 días (50% retro) · Más de 121 días (Libre / 0%)`;
+    ruleTitle = `Normativa ${compName}: 0-61 días (100% retro) · 62-121 días (50% retro) · Más de 121 días (Libre / 0%) · Mínimo 12 meses en compañía`;
+    companyNotice = `⚠️ <strong>Aviso ${compName}:</strong> Deben de durar <strong>12 meses</strong> en la compañía aunque no tengan retrocomisión.`;
     
     dateTo50 = addDays(contractDate, 62);
     dateToFree = addDays(contractDate, 122);
@@ -79,7 +82,7 @@ function calcRetrocomisionInfo(company, dateStr) {
     } else {
       retroPct = 0;
       statusTier = 'success';
-      ruleDetails = `El contrato tiene <strong>${diffDays} días</strong> de antigüedad (más de 121 días). ¡Está <strong>100% libre de retrocomisión</strong>! Puedes comisionar al 100%.`;
+      ruleDetails = `El contrato tiene <strong>${diffDays} días</strong> de antigüedad (más de 121 días). ¡Está <strong>100% libre de retrocomisión</strong>! Puedes comisionar al 100% (recuerda que debe durar 12 meses en compañía).`;
     }
   } else if (comp === 'endesa') {
     const cut1 = new Date(2026, 4, 1); // 01/05/2026
@@ -181,7 +184,8 @@ function calcRetrocomisionInfo(company, dateStr) {
     dateToFree: dateToFree ? formatDate(dateToFree) : null,
     daysToFree: Math.max(0, daysToFree),
     totalPeriodDays,
-    percentElapsed: totalPeriodDays > 0 ? Math.min(100, Math.round((diffDays / totalPeriodDays) * 100)) : 100
+    percentElapsed: totalPeriodDays > 0 ? Math.min(100, Math.round((diffDays / totalPeriodDays) * 100)) : 100,
+    companyNotice
   };
 }
 
@@ -269,6 +273,16 @@ function renderRetrocomisionCheck() {
     `;
   }
 
+  let noticeHtml = '';
+  if (info.companyNotice) {
+    noticeHtml = `
+      <div style="display:flex;align-items:center;gap:9px;padding:8px 12px;background:rgba(217,119,6,0.1);border:1.5px solid rgba(217,119,6,0.35);border-radius:8px;font-size:12px;color:#92400e;margin-top:8px;">
+        <span style="font-size:16px;flex-shrink:0;">⚠️</span>
+        <div style="line-height:1.4;">${info.companyNotice}</div>
+      </div>
+    `;
+  }
+
   elResult.innerHTML = `
     <div style="background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border: 1.5px solid ${badgeColor}55; border-radius: 12px; padding: 12px 16px; box-shadow: 0 3px 12px rgba(0,0,0,0.03); margin-top: 10px; animation: fadeIn 0.25s ease-out;">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
@@ -297,6 +311,7 @@ function renderRetrocomisionCheck() {
       </div>
 
       ${nextStepHtml}
+      ${noticeHtml}
 
       <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 11px; color: var(--t3);">
         📋 <em>${info.ruleTitle}</em>
