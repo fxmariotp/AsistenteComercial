@@ -4487,6 +4487,10 @@ input:focus, select:focus, textarea:focus {
               <div style="display: flex; align-items: center; gap: 6px;">
                 <label for="retro-fecha" style="font-size: 12px; font-weight: 700; color: var(--t2); white-space: nowrap;">Fecha Contrato:</label>
                 <input type="date" id="retro-fecha" onchange="renderRetrocomisionCheck()" oninput="renderRetrocomisionCheck()" style="padding: 4px 8px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 12.5px; font-weight: 600; outline: none; background: rgba(255,255,255,0.95); color: var(--text); cursor: pointer; height: 32px;">
+                <button type="button" onclick="pasteDateToRetroInput()" title="Pegar fecha del portapapeles (ej. 01/05/2026)" style="padding: 0 9px; background: rgba(53,127,191,0.08); border: 1.5px solid rgba(53,127,191,0.25); border-radius: var(--rs); color: var(--blue); font-size: 12px; font-weight: 600; cursor: pointer; height: 32px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
+                  Pegar
+                </button>
               </div>
 
               <button type="button" onclick="document.getElementById('retro-fecha').value=''; renderRetrocomisionCheck();" style="padding: 0 10px; background: rgba(0,0,0,0.04); border: 1.5px solid var(--border); border-radius: var(--rs); color: var(--t2); font-size: 12px; font-weight: 600; cursor: pointer; height: 32px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;" title="Limpiar fecha">
@@ -12050,7 +12054,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785007800000;
+const CURRENT_BUILD_VERSION = 1785008000000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 

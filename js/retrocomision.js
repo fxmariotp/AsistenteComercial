@@ -305,6 +305,79 @@ function renderRetrocomisionCheck() {
   `;
 }
 
-function pasteCupsToRetroInput() {
-  // Función de compatibilidad
+function parsePastedDate(text) {
+  if (!text) return null;
+  const str = String(text).trim();
+
+  // 1. DD/MM/YYYY o DD-MM-YYYY o DD.MM.YYYY
+  const matchDMY = str.match(/\b(\d{1,2})[\/\-\.](\d{1,2})[\/\-\.](\d{2,4})\b/);
+  if (matchDMY) {
+    let day = parseInt(matchDMY[1], 10);
+    let month = parseInt(matchDMY[2], 10);
+    let year = parseInt(matchDMY[3], 10);
+    if (year < 100) year += 2000;
+
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      const dd = String(day).padStart(2, '0');
+      const mm = String(month).padStart(2, '0');
+      return `${year}-${mm}-${dd}`;
+    }
+  }
+
+  // 2. YYYY-MM-DD o YYYY/MM/DD o YYYY.MM.DD
+  const matchYMD = str.match(/\b(\d{4})[\/\-\.](\d{1,2})[\/\-\.](\d{1,2})\b/);
+  if (matchYMD) {
+    let year = parseInt(matchYMD[1], 10);
+    let month = parseInt(matchYMD[2], 10);
+    let day = parseInt(matchYMD[3], 10);
+    if (month >= 1 && month <= 12 && day >= 1 && day <= 31) {
+      const dd = String(day).padStart(2, '0');
+      const mm = String(month).padStart(2, '0');
+      return `${year}-${mm}-${dd}`;
+    }
+  }
+
+  return null;
 }
+
+function handlePastedRetroDate(text) {
+  const parsed = parsePastedDate(text);
+  const elFecha = document.getElementById('retro-fecha');
+  if (parsed && elFecha) {
+    elFecha.value = parsed;
+    renderRetrocomisionCheck();
+  } else {
+    alert("No se ha detectado una fecha válida en el portapapeles.\nTexto recibido: " + (text ? `"${text.substring(0, 35)}"` : "(vacío)") + "\n\nFormato admitido: DD/MM/AAAA (ej. 01/05/2026)");
+  }
+}
+
+function pasteDateToRetroInput() {
+  if (navigator.clipboard && navigator.clipboard.readText) {
+    navigator.clipboard.readText().then(text => {
+      handlePastedRetroDate(text);
+    }).catch(() => {
+      const manual = prompt("Pega aquí la fecha (ej. 01/05/2026):");
+      if (manual) handlePastedRetroDate(manual);
+    });
+  } else {
+    const manual = prompt("Pega aquí la fecha (ej. 01/05/2026):");
+    if (manual) handlePastedRetroDate(manual);
+  }
+}
+
+function pasteCupsToRetroInput() {
+  pasteDateToRetroInput();
+}
+
+// Vincular evento de pegado directo en el input retro-fecha si está en el DOM
+document.addEventListener('DOMContentLoaded', () => {
+  const elFecha = document.getElementById('retro-fecha');
+  if (elFecha) {
+    elFecha.addEventListener('paste', (e) => {
+      e.preventDefault();
+      const text = (e.clipboardData || window.clipboardData).getData('text');
+      if (text) handlePastedRetroDate(text);
+    });
+  }
+});
+
