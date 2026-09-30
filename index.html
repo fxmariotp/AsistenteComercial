@@ -10646,7 +10646,7 @@ const PROCEDIMIENTOS = {
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
       'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).',
       'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
-      'Cambios de potencia: Permitido en Naturgy. Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
+      'Cambios de potencia: En Naturgy NO se pueden hacer cambios de potencia (el contrato se debe tramitar con la potencia actual del suministro).'
     ]
   },
   endesa: {
@@ -10682,7 +10682,7 @@ const PROCEDIMIENTOS = {
       'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).',
       'Grabación / Guión legal: El texto de verificación Cosmos Mobile para Endesa NO es de uso general; es de uso exclusivo para la gestora Hostezadis al realizar un cambio de titularidad.',
       'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
-      'Cambios de potencia: En Endesa NO podemos hacer cambio de potencia (en las demás compañías sí). Subir la potencia en las otras compañías cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
+      'Cambios de potencia: En Endesa NO podemos hacer cambio de potencia (en Naturgy tampoco se permiten; solo en Iberdrola y Gana Energía). Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
   },
   gana: {
@@ -12079,7 +12079,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785009000000;
+const CURRENT_BUILD_VERSION = 1785009200000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -16009,9 +16009,10 @@ const KNOWLEDGE_BASE = [
   {
     keywords: ["potencia", "bajar potencia", "subir potencia", "cambio potencia"],
     answer: `<strong>Cambios de Potencia (Por Compañía):</strong><br><br>
-    • <strong>Iberdrola, Naturgy y Gana Energía:</strong> Permitido.<br>
+    • <strong>Iberdrola y Gana Energía:</strong> Permitido.<br>
       - **Subir potencia:** ≈50€ por cada kW incrementado.<br>
       - **Bajar potencia:** ≈9€ en total (sin límite de kW, independientemente del cambio).<br>
+    • <strong>Naturgy:</strong> **NO se permite realizar cambios de potencia** (la tarifa se debe tramitar con la potencia actual del suministro).<br>
     • <strong>Endesa:</strong> **NO se permite realizar cambios de potencia** (la tarifa se contrata con la potencia actual del suministro).`
   },
   {
@@ -16119,9 +16120,10 @@ function getRenosurChatResponse(query) {
   
   if ((cleanQ.includes('potencia') && (cleanQ.includes('subir') || cleanQ.includes('bajar') || cleanQ.includes('cambio') || cleanQ.includes('modificar') || cleanQ.includes('aumentar') || cleanQ.includes('reducir'))) || cleanQ.includes('cambio de potencia') || cleanQ.includes('cambio potencia')) {
     return `<strong>Cambios de Potencia (Por Compañía):</strong><br><br>` +
-           `• <strong>Iberdrola, Naturgy y Gana Energía:</strong> Permitido.<br>` +
+           `• <strong>Iberdrola y Gana Energía:</strong> Permitido.<br>` +
            `  - <strong>Subir potencia:</strong> ≈50€ por cada kW incrementado.<br>` +
            `  - <strong>Bajar potencia:</strong> ≈9€ en total (sin límite de kW, independientemente del cambio).<br>` +
+           `• <strong>Naturgy:</strong> <strong>NO se permite realizar cambios de potencia</strong> (la tarifa se debe tramitar con la potencia actual del suministro).<br>` +
            `• <strong>Endesa:</strong> <strong>NO se permite realizar cambios de potencia</strong> (la tarifa se debe contratar con la potencia existente).`;
   }
 
@@ -16332,7 +16334,7 @@ function getRenosurChatResponse(query) {
                `  - <strong>Mayores de 75 años:</strong> Introducir año ficticio de nacimiento en la ficha y especificar edad real en Observaciones.<br>` +
                `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
                `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
-               `  - <strong>Cambios de potencia:</strong> Permitido (Subir ≈50€/kW; Bajar ≈9€ en total).`;
+               `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Naturgy</strong> (contratar con la potencia actual del suministro).`;
       }
       if (isCIF) {
         return `<strong>Naturgy — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
@@ -16349,7 +16351,7 @@ function getRenosurChatResponse(query) {
                `• <strong>Requisitos Críticos y Normas Operativas:</strong><br>` +
                `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras, IBI o certificado de empadronamiento).<br>` +
                `  - <strong>Altas nuevas:</strong> Obligatorio el CIE.<br>` +
-               `  - <strong>Cambios de potencia:</strong> Permitido (Subir ≈50€/kW; Bajar ≈9€ en total).`;
+               `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Naturgy</strong> (contratar con la potencia actual del suministro).`;
       }
     }
 
@@ -16442,7 +16444,7 @@ function getRenosurChatResponse(query) {
     if (!hasIberdrola && !hasNaturgy && !hasEndesa && !hasGana) {
       return `<strong>Requisitos y Procedimientos de Contratación por Compañía:</strong><br><br>` +
              `• <strong>Iberdrola:</strong> Lectura legal + DNI/NIE ambas caras (obligatorio). Firma por doble SMS (Protección de Datos + Contrato) + llamada de bienvenida. Límite estricto 75 años.<br><br>` +
-             `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones.<br><br>` +
+             `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones. No se permiten cambios de potencia.<br><br>` +
              `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA (Servicio de Asistencia de la Comercializadora) en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
              `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
              `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Naturgy?") para elegir entre Particular o CIF.*</em>`;
