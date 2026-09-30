@@ -3,6 +3,9 @@
 <html lang="es"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <title>Asistente Comercial</title>
 <link rel="icon" type="image/png" href="favicon.png?v=2">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -5145,7 +5148,7 @@ input:focus, select:focus, textarea:focus {
 
             <div class="fsec">Periodo</div>
             <div class="fgrp"><label>Dias facturados</label><input type="number" id="f-dias" placeholder="30" autocomplete="off" value="" min="1" max="90" oninput="calcComp()"></div>
-            <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.03">3%</option><option value="0.10">10%</option><option value="0.21" selected>21%</option></select></div>
+            <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()" oninput="calcComp()"><option value="0.03">3%</option><option value="0.10">10%</option><option value="0.21" selected>21%</option></select></div>
             
             <div class="fsec luz-grp">Potencia contratada</div>
             <div class="fgrp luz-grp"><label>P1 (kW)</label><input type="number" id="f-pot1" placeholder="4.6" autocomplete="off" value="" step="0.001" oninput="calcComp()"></div>
@@ -10863,7 +10866,9 @@ function calcComp(){
   const dias=gv('f-dias')||30;
   const useSva=document.getElementById('f-sva').checked;
   const isCif=document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false;
-  const iva=gv('f-iva')||0.21, actual=gv('f-actual');
+  const ivaSelectEl = document.getElementById('f-iva');
+  const iva = (ivaSelectEl && !isNaN(parseFloat(ivaSelectEl.value))) ? parseFloat(ivaSelectEl.value) : 0.21;
+  const actual = gv('f-actual');
   
   let pot1 = 0, pot2 = 0, kwh1 = 0, kwh2 = 0, kwh3 = 0, excedente = 0, bateriaVirtual = 0, gas = 0, alq = 0;
   
@@ -11498,16 +11503,15 @@ function renderSummary(results, actual){
 }
 
 function printCompanyOffer(key) {
-  if (!window.lastCompResults || window.lastCompResults.length === 0) {
-    calcComp();
-  }
+  // Siempre forzar recálculo actualizado para asegurar que cualquier cambio (ej. IVA 3%, 10%, 21%, días, etc.) esté 100% reflejado
+  calcComp();
   const results = window.lastCompResults;
   if (!results || results.length === 0) {
     alert("Por favor, introduce los datos de la factura primero.");
     return;
   }
   
-  const targetRes = results.find(r => r.key === key);
+  const targetRes = results.find(r => r.key === key) || results[0];
   if (!targetRes) {
     alert("No se encontro el resultado de la compañia seleccionada.");
     return;
@@ -11524,6 +11528,11 @@ function printCompanyOffer(key) {
     dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
     costeGestion, cuotaBateriaVirtualEndesa, appliedBateriaVirtual
   } = targetRes;
+
+  const ivaSelectEl = document.getElementById('f-iva');
+  const domIva = ivaSelectEl && !isNaN(parseFloat(ivaSelectEl.value)) ? parseFloat(ivaSelectEl.value) : 0.21;
+  const finalIva = (typeof iva === 'number' && !isNaN(iva)) ? iva : domIva;
+  const finalIvaPct = Math.round(finalIva * 100);
 
   const te = useSva ? r.te_con : r.te_sin;
   const bandObj = band === 'rl1' ? r.gas_rl1 : (band === 'rl2' ? r.gas_rl2 : r.gas_rl3);
@@ -11694,15 +11703,15 @@ function printCompanyOffer(key) {
 
   tbodyHtml += `
     <tr style="font-weight: 600; color: #475569;">
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: left;">I.V.A. (${Math.round(iva * 100)}%)</td>
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">${Math.round(iva * 100)}% s/ ${f2(useSva ? subtotalNoExc : subtotal)} €</td>
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">${f2(useSva ? (subtotalNoExc * iva) : ivaAmt)} €</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: left;">I.V.A. (${finalIvaPct}%)</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">${finalIvaPct}% s/ ${f2(useSva ? subtotalNoExc : subtotal)} €</td>
+      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">${f2(useSva ? (subtotalNoExc * finalIva) : ivaAmt)} €</td>
     </tr>
   `;
 
   if (useSva && excedente > 0 && compMode === 'luz') {
-    const batteryDiscount = Math.min(excAmt * (1 + iva), subtotalNoExc * (1 + iva));
-    const formulaText = `${excedente.toFixed(2)} kWh × ${(excPrice * (1 + iva)).toFixed(3)} €/kWh (IVA inc.)`;
+    const batteryDiscount = Math.min(excAmt * (1 + finalIva), subtotalNoExc * (1 + finalIva));
+    const formulaText = `${excedente.toFixed(2)} kWh × ${(excPrice * (1 + finalIva)).toFixed(3)} €/kWh (IVA inc.)`;
     tbodyHtml += `
       <tr style="font-weight: 600; color: #166534; background: #f0fdf4;">
         <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Virtual</td>
@@ -12079,7 +12088,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785009300000;
+const CURRENT_BUILD_VERSION = 1785009400000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
