@@ -201,6 +201,13 @@ function renderRetrocomisionCheck() {
 
   if (!fecha) {
     elResult.innerHTML = '';
+    if (!permMesesManuallyEdited) {
+      const elPermMeses = document.getElementById('perm-meses');
+      if (elPermMeses && elPermMeses.value) {
+        elPermMeses.value = '';
+        calcPermanenciaBoe();
+      }
+    }
     return;
   }
 
@@ -214,6 +221,17 @@ function renderRetrocomisionCheck() {
       </div>
     `;
     return;
+  }
+
+  // Pre-rellenar meses restantes en calculadora de permanencia si no ha sido editado manualmente
+  if (!permMesesManuallyEdited) {
+    const elapsedMonths = Math.min(12, Math.floor(info.diffDays / 30.416));
+    const remainingMonths = Math.max(0, 12 - elapsedMonths);
+    const elPermMeses = document.getElementById('perm-meses');
+    if (elPermMeses) {
+      elPermMeses.value = remainingMonths;
+      calcPermanenciaBoe();
+    }
   }
 
   let badgeBg = '';
@@ -394,5 +412,74 @@ document.addEventListener('DOMContentLoaded', () => {
       if (text) handlePastedRetroDate(text);
     });
   }
+  if (typeof calcPermanenciaBoe === 'function') {
+    calcPermanenciaBoe();
+  }
 });
+
+// ══════════════════════════════════════════════════════════════════════════════
+// ⚖️ CALCULADORA DE PENALIZACIÓN POR PERMANENCIA (BOE - MÁX. 5%)
+// ══════════════════════════════════════════════════════════════════════════════
+
+let permMesesManuallyEdited = false;
+
+function calcPermanenciaBoe() {
+  const elMeses = document.getElementById('perm-meses');
+  const elPrecio = document.getElementById('perm-precio');
+  const elConsumo = document.getElementById('perm-consumo');
+  const elDisplay = document.getElementById('perm-total-display');
+  const elDetail = document.getElementById('perm-formula-detail');
+
+  if (!elDisplay) return;
+
+  const rawMeses = elMeses ? String(elMeses.value).replace(',', '.').trim() : '';
+  const rawPrecio = elPrecio ? String(elPrecio.value).replace(',', '.').trim() : '';
+  const rawConsumo = elConsumo ? String(elConsumo.value).replace(',', '.').trim() : '';
+
+  const meses = rawMeses !== '' ? parseFloat(rawMeses) : 0;
+  const precio = rawPrecio !== '' ? parseFloat(rawPrecio) : 0;
+  const consumo = rawConsumo !== '' ? parseFloat(rawConsumo) : 0;
+
+  const validMeses = (!isNaN(meses) && meses > 0) ? meses : 0;
+  const validPrecio = (!isNaN(precio) && precio > 0) ? precio : 0;
+  const validConsumo = (!isNaN(consumo) && consumo > 0) ? consumo : 0;
+
+  // Fórmula oficial BOE: 5% (0.05) × meses restantes × precio del kW base × consumo medio mensual
+  const penalizacion = 0.05 * validMeses * validPrecio * validConsumo;
+
+  const f2 = (n) => (Math.round(n * 100) / 100).toFixed(2);
+
+  if (validMeses > 0 && validPrecio > 0 && validConsumo > 0) {
+    elDisplay.textContent = `${f2(penalizacion)} €`;
+    elDisplay.style.color = '#dc2626';
+    if (elDetail) {
+      elDetail.style.display = 'block';
+      elDetail.innerHTML = `⚖️ <strong>Penalización máx. legal BOE (5%):</strong> 0,05 × <strong>${validMeses} meses</strong> × <strong>${validPrecio.toFixed(3)} €/kWh</strong> × <strong>${validConsumo} kWh/mes</strong> = <strong style="color:#b91c1c;font-size:12.5px;">${f2(penalizacion)} €</strong>.<br><span style="font-size:11px;color:var(--t3);">*Según la normativa del Sector Eléctrico (BOE), la penalización máxima legal por rescisión anticipada en contratos domésticos es únicamente del 5% del valor de la energía estimada pendiente por consumir.</span>`;
+    }
+  } else {
+    elDisplay.textContent = (validMeses > 0 && (validPrecio > 0 || validConsumo > 0)) ? `${f2(penalizacion)} €` : '0,00 €';
+    elDisplay.style.color = '#d97706';
+    if (elDetail) {
+      if (validMeses > 0 || validPrecio > 0 || validConsumo > 0) {
+        elDetail.style.display = 'block';
+        elDetail.innerHTML = `ℹ️ Completa los <strong>meses restantes</strong>, <strong>precio kW base (€)</strong> y <strong>consumo medio mensual</strong> para calcular la penalización máxima del 5% fijada por el BOE.`;
+      } else {
+        elDetail.style.display = 'none';
+        elDetail.innerHTML = '';
+      }
+    }
+  }
+}
+
+function clearPermanenciaBoe() {
+  const elMeses = document.getElementById('perm-meses');
+  const elPrecio = document.getElementById('perm-precio');
+  const elConsumo = document.getElementById('perm-consumo');
+  if (elMeses) elMeses.value = '';
+  if (elPrecio) elPrecio.value = '';
+  if (elConsumo) elConsumo.value = '';
+  permMesesManuallyEdited = false;
+  calcPermanenciaBoe();
+}
+
 

@@ -4516,6 +4516,53 @@ input:focus, select:focus, textarea:focus {
 
           <!-- Resultado del cálculo -->
           <div id="retro-resultado"></div>
+
+          <!-- Separador sutil -->
+          <div style="margin: 10px 0 9px 0; border-top: 1px solid rgba(0, 0, 0, 0.07);"></div>
+
+          <!-- ── Fila horizontal: Calculadora de Permanencia BOE (Máx. 5%) ── -->
+          <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px;" class="perm-inline-row">
+            <!-- Izquierda: Controles (Título/Badge, Meses, Precio, Consumo, Limpiar) -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+              <div style="display: flex; align-items: center; gap: 6px; margin-right: 2px;">
+                <div style="width: 24px; height: 24px; border-radius: 6px; background: rgba(217, 119, 6, 0.12); display: flex; align-items: center; justify-content: center; color: #d97706;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <span style="font-size: 12px; font-weight: 800; color: #92400e; white-space: nowrap;">Permanencia BOE:</span>
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <label for="perm-meses" style="font-size: 11.5px; font-weight: 700; color: var(--t2); white-space: nowrap;">Meses rest.:</label>
+                <input type="number" id="perm-meses" min="0" max="36" step="1" placeholder="ej. 6" oninput="permMesesManuallyEdited = true; calcPermanenciaBoe();" style="width: 68px; padding: 4px 7px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 12px; font-weight: 600; outline: none; background: rgba(255,255,255,0.95); color: var(--text); height: 30px;">
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <label for="perm-precio" style="font-size: 11.5px; font-weight: 700; color: var(--t2); white-space: nowrap;">Precio kW (€):</label>
+                <input type="number" id="perm-precio" min="0" step="0.0001" placeholder="ej. 0.150" oninput="calcPermanenciaBoe()" style="width: 82px; padding: 4px 7px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 12px; font-weight: 600; outline: none; background: rgba(255,255,255,0.95); color: var(--text); height: 30px;">
+              </div>
+
+              <div style="display: flex; align-items: center; gap: 5px;">
+                <label for="perm-consumo" style="font-size: 11.5px; font-weight: 700; color: var(--t2); white-space: nowrap;">Consumo mes (kWh):</label>
+                <input type="number" id="perm-consumo" min="0" step="1" placeholder="ej. 200" oninput="calcPermanenciaBoe()" style="width: 82px; padding: 4px 7px; border: 1.5px solid var(--border); border-radius: var(--rs); font-size: 12px; font-weight: 600; outline: none; background: rgba(255,255,255,0.95); color: var(--text); height: 30px;">
+              </div>
+
+              <button type="button" onclick="clearPermanenciaBoe()" style="padding: 0 8px; background: rgba(0,0,0,0.04); border: 1.5px solid var(--border); border-radius: var(--rs); color: var(--t2); font-size: 11.5px; font-weight: 600; cursor: pointer; height: 30px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;" title="Limpiar permanencia">
+                <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                Limpiar
+              </button>
+            </div>
+
+            <!-- Derecha: Resultado del cálculo de penalización -->
+            <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+              <div style="background: rgba(245, 158, 11, 0.08); border: 1.5px solid rgba(245, 158, 11, 0.3); border-radius: var(--rs); padding: 4px 12px; height: 30px; display: inline-flex; align-items: center; gap: 6px;">
+                <span style="font-size: 11.5px; font-weight: 700; color: var(--t2); white-space: nowrap;">Penalización máx. (5%):</span>
+                <strong id="perm-total-display" style="font-size: 13.5px; font-weight: 800; color: #d97706;">0,00 €</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Detalle explicativo de la fórmula BOE -->
+          <div id="perm-formula-detail" style="font-size: 11.5px; color: var(--t2); margin-top: 6px; padding: 6px 10px; background: rgba(245, 158, 11, 0.05); border: 1px dashed rgba(245, 158, 11, 0.3); border-radius: 6px; display: none;"></div>
         </div>
       </div>
 
@@ -12088,7 +12135,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785009400000;
+const CURRENT_BUILD_VERSION = 1785009500000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -15929,6 +15976,16 @@ const KNOWLEDGE_BASE = [
     • <strong>Naturgy:</strong> 0-2 meses (100% de descomisión) | 2-4 meses (50% de descomisión).<br>
     • <strong>Pymes:</strong> 12 meses (100% de descomisión).<br>
     • <strong>Securitas Direct:</strong> 6 meses (100% de descomisión).`
+  },
+  {
+    keywords: ["permanencia boe", "permanencia clientes", "penalizacion permanencia", "penalización permanencia", "calculo permanencia", "cálculo permanencia", "formula permanencia", "fórmula permanencia", "cuanto paga de permanencia", "cuánto paga de permanencia", "permanencia contrato"],
+    answer: `<strong>Penalización por Permanencia del Cliente según el BOE (Máx. 5%):</strong><br><br>
+    Según la normativa del Sector Eléctrico (BOE), la penalización máxima legal por rescisión anticipada en contratos con permanencia es únicamente del <strong>5% del valor de la energía estimada pendiente por consumir</strong>.<br><br>
+    <strong>Fórmula oficial:</strong><br>
+    <code>Penalización = 5% (0,05) × Meses restantes × Precio kW base (€) × Consumo medio mensual (kWh)</code><br><br>
+    <em>Ejemplo:</em> Si le quedan 6 meses, con precio 0,150 €/kWh y consumo de 200 kWh/mes:<br>
+    <code>0,05 × 6 × 0,150 × 200 = 9,00 € de penalización máxima legal.</code><br><br>
+    <em>*Tienes la calculadora interactiva lista en la línea inferior del Comprobador de Retrocomisiones en el Dashboard.*</em>`
   },
   {
     keywords: ["comisiones", "comision", "pagos", "cuanto gano", "cuanto pagan", "escalado", "telemarketing", "septiembre", "condiciones telemarketing", "objetivos telemarketing", "salario base telemarketing"],
