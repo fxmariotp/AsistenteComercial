@@ -5145,7 +5145,7 @@ input:focus, select:focus, textarea:focus {
 
             <div class="fsec">Periodo</div>
             <div class="fgrp"><label>Dias facturados</label><input type="number" id="f-dias" placeholder="30" autocomplete="off" value="" min="1" max="90" oninput="calcComp()"></div>
-            <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.21">21%</option><option value="0.10">10%</option></select></div>
+            <div class="fgrp"><label>IVA</label><select id="f-iva" onchange="calcComp()"><option value="0.03">3%</option><option value="0.10">10%</option><option value="0.21" selected>21%</option></select></div>
             
             <div class="fsec luz-grp">Potencia contratada</div>
             <div class="fgrp luz-grp"><label>P1 (kW)</label><input type="number" id="f-pot1" placeholder="4.6" autocomplete="off" value="" step="0.001" oninput="calcComp()"></div>
@@ -12079,7 +12079,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785009200000;
+const CURRENT_BUILD_VERSION = 1785009300000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
