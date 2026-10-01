@@ -268,6 +268,7 @@ async function detectClientDeviceInfo() {
     const results = await Promise.allSettled([
       fetchIpHelper('https://api.ipify.org?format=json', true),
       fetchIpHelper('https://api64.ipify.org?format=json', true),
+      fetchIpHelper('https://ipwho.is', true),
       fetchIpHelper('https://api.my-ip.io/v2/ip.json', true),
       fetchIpHelper('https://icanhazip.com', false)
     ]);
@@ -339,13 +340,20 @@ async function detectClientDeviceInfo() {
   };
 }
 
+function getTodayIsoDate(d = new Date()) {
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 async function writeLoginLogToSupabase(dni, name) {
   if (!supabaseClient) return;
   
   try {
     const clientInfo = await detectClientDeviceInfo();
     const now = new Date();
-    const dateStr = now.toLocaleDateString('en-CA');
+    const dateStr = getTodayIsoDate(now);
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + dni + '_' + Date.now();
     
@@ -436,7 +444,7 @@ async function attemptLogin() {
   
   if (inputPass === validPassword) {
     const now = Date.now();
-    const todayStr = new Date().toLocaleDateString('en-CA');
+    const todayStr = getTodayIsoDate();
     localStorage.setItem('comercial_dni', inputDni);
     localStorage.setItem('comercial_nombre', matchedName);
     localStorage.setItem('last_user_activity_' + inputDni, String(now));
