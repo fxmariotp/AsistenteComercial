@@ -623,6 +623,73 @@ hr {
 }
 
 /* ── CONDICIONES ── */
+.cond-tabs-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1.5px solid var(--border);
+}
+
+.cond-segmented-toggle {
+  display: inline-flex;
+  background: #f1eae2;
+  border-radius: 12px;
+  padding: 5px;
+  gap: 6px;
+  box-shadow: inset 0 1px 3px rgba(0,0,0,0.06);
+}
+
+.cond-tab-toggle-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 22px;
+  font-size: 14.5px;
+  font-weight: 700;
+  border-radius: 9px;
+  border: 1.5px solid transparent;
+  background: transparent;
+  color: var(--t2);
+  cursor: pointer;
+  transition: all 0.22s cubic-bezier(0.4, 0, 0.2, 1);
+  font-family: inherit;
+}
+
+.cond-tab-toggle-btn:hover {
+  color: var(--text);
+  background: rgba(255,255,255,0.6);
+}
+
+.cond-tab-toggle-btn.active#cond-btn-luz {
+  background: var(--blue);
+  color: #ffffff;
+  border-color: var(--blue);
+  box-shadow: 0 4px 12px rgba(53, 127, 191, 0.3);
+}
+
+.cond-tab-toggle-btn.active#cond-btn-gas {
+  background: var(--orange);
+  color: #ffffff;
+  border-color: var(--orange);
+  box-shadow: 0 4px 12px rgba(224, 128, 52, 0.35);
+}
+
+.cond-tab-toggle-btn svg {
+  transition: transform 0.2s ease;
+}
+
+.cond-tab-toggle-btn:hover svg {
+  transform: scale(1.08);
+}
+
+.cond-tab-content {
+  animation: fadeIn 0.25s ease-out;
+}
+
 .cond-sec-title {
   font-size: 20px;
   font-weight: 800;
@@ -5160,10 +5227,32 @@ input:focus, select:focus, textarea:focus {
 
     <!-- ══════ CONDICIONES ══════ -->
     <div class="panel" id="panel-condiciones">
-      <div class="legend" style="margin-bottom:20px">
-        <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1.5px solid var(--green2)"></div>Sin mantenimiento</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--blue-bg);border:1.5px solid var(--blue2)"></div>Con mantenimiento (+descuento extra)</div>
-        <div class="legend-item"><div class="legend-dot" style="background:var(--orange-bg);border:1.5px solid var(--orange2)"></div>Discriminacion horaria</div>
+      <div class="cond-tabs-header">
+        <div class="cond-segmented-toggle">
+          <button type="button" class="cond-tab-toggle-btn active" id="cond-btn-luz" onclick="setTarifasTab('luz')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span>Tarifas de Luz</span>
+          </button>
+          <button type="button" class="cond-tab-toggle-btn" id="cond-btn-gas" onclick="setTarifasTab('gas')">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M12 2c-4 4-5 7.5-5 10a5 5 0 0 0 10 0c0-2.5-1-6-5-10z"></path>
+            </svg>
+            <span>Tarifas de Gas</span>
+          </button>
+        </div>
+
+        <div id="cond-legend-luz" class="legend cond-legend" style="margin:0;">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--green-bg);border:1.5px solid var(--green2)"></div>Sin mantenimiento</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue-bg);border:1.5px solid var(--blue2)"></div>Con mantenimiento (+descuento extra)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--orange-bg);border:1.5px solid var(--orange2)"></div>Discriminación horaria</div>
+        </div>
+        <div id="cond-legend-gas" class="legend cond-legend" style="margin:0;display:none;">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--orange-bg);border:1.5px solid var(--orange)"></div>Término Variable (€/kWh)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--surface);border:1.5px solid var(--t3)"></div>Término Fijo (€/día y mes)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue-bg);border:1.5px solid var(--blue)"></div>Mantenimiento Gas</div>
+        </div>
       </div>
       <div id="cond-render"></div>
     </div>
@@ -7392,7 +7481,8 @@ const BASE = {
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
       {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-10-15T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña (≤10kW) · Sin tarjetas promocionales'},
-      {n:'Plan Impulsa', te:0.186533, tp1:0.1240, tp2:0.0710, te_sin:0.1492, te_con:0.1306, desc_sin:0.20, desc_con:0.30, nota:'Precio único 24h sin permanencia'}
+      {n:'Plan Impulsa', te:0.186533, tp1:0.1240, tp2:0.0710, te_sin:0.1492, te_con:0.1306, desc_sin:0.20, desc_con:0.30, nota:'Precio único 24h sin permanencia'},
+      {n:'Plan Especial', te:0.174875, tp1:0.1090, tp2:0.0790, te_sin:0.1399, te_con:0.1312, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia (<10kW)'}
     ],
     tarifas_gas:[
       {n:'Iberdrola Gas RL1', tv:0.1024, tf:0.2112},
@@ -10289,7 +10379,36 @@ function switchCia(id){
   document.getElementById('sv-'+id).classList.add('active');
 }
 
-// ── CONDICIONES ──
+// ── CONDICIONES Y TARIFAS ──
+let currentTarifasTab = 'luz';
+
+function setTarifasTab(tab) {
+  currentTarifasTab = tab;
+  
+  const btnLuz = document.getElementById('cond-btn-luz');
+  const btnGas = document.getElementById('cond-btn-gas');
+  const legLuz = document.getElementById('cond-legend-luz');
+  const legGas = document.getElementById('cond-legend-gas');
+  const tabLuz = document.getElementById('cond-tab-luz');
+  const tabGas = document.getElementById('cond-tab-gas');
+  
+  if (tab === 'luz') {
+    if (btnLuz) btnLuz.classList.add('active');
+    if (btnGas) btnGas.classList.remove('active');
+    if (legLuz) legLuz.style.display = 'flex';
+    if (legGas) legGas.style.display = 'none';
+    if (tabLuz) tabLuz.style.display = 'block';
+    if (tabGas) tabGas.style.display = 'none';
+  } else {
+    if (btnLuz) btnLuz.classList.remove('active');
+    if (btnGas) btnGas.classList.add('active');
+    if (legLuz) legLuz.style.display = 'none';
+    if (legGas) legGas.style.display = 'flex';
+    if (tabLuz) tabLuz.style.display = 'none';
+    if (tabGas) tabGas.style.display = 'block';
+  }
+}
+
 function renderCondiciones(){
   const cias=['iberdrola','naturgy','endesa','gana'];
   const serviceFilesLuz = {
@@ -10305,16 +10424,16 @@ function renderCondiciones(){
     'gana': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO GANAENERGIA/SERVICIO GAS GANA ENERGIA.PNG'
   };
   
-  let html=`<h2 class="cond-sec-title">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-    Tarifas de Luz
-  </h2>
-  <div class="cond-grid">`;
+  // ── PESTAÑA: TARIFAS DE LUZ ──
+  let htmlLuz = `<div id="cond-tab-luz" class="cond-tab-content" style="display:${currentTarifasTab === 'luz' ? 'block' : 'none'};">
+    <h2 class="cond-sec-title" style="margin-top:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+      Tarifas de Luz
+    </h2>
+    <div class="cond-grid">`;
   
   cias.forEach(id=>{
     const r=RATES[id];
-    const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
-    
     let retrocomision = '';
     if (id === 'iberdrola') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
@@ -10326,17 +10445,24 @@ function renderCondiciones(){
       retrocomision = '12 meses';
     }
 
-    html+=`<div class="cond-cia-block">
+    let dtoHdrText = '';
+    if (id === 'iberdrola') {
+      dtoHdrText = '<span style="font-size:13px;color:var(--t2);margin-left:auto;">Dto. según plan (hasta <strong>30%</strong>)</span>';
+    } else if (r.desc_sin > 0) {
+      dtoHdrText = `<span style="font-size:13px;color:var(--t2);margin-left:auto;">Dto. sin/con mant.: <strong>${(r.desc_sin*100).toFixed(0)}%</strong>/<strong>${(r.desc_con*100).toFixed(0)}%</strong></span>`;
+    }
+
+    htmlLuz += `<div class="cond-cia-block">
       <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;height:42px;">
         <img src="${getCompanyLogoUrl(id)}" onerror="handleLogoError(this, '${id}')" alt="${r.name}" style="height:36px;max-width:150px;object-fit:contain;display:block;">
         <div style="font-size:10.5px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(217,119,6,0.15);white-space:nowrap;margin-left:4px;">
           Retrocomisión: ${retrocomision}
         </div>
-        ${r.desc_sin>0?`<span style="font-size:13px;color:var(--t2);margin-left:auto;">Dto. sin/con mant.: <strong>${(r.desc_sin*100).toFixed(0)}%</strong>/<strong>${(r.desc_con*100).toFixed(0)}%</strong></span>`:''}
+        ${dtoHdrText}
       </div>`;
 
     // LUZ
-    html+=`<div class="cond-sub-title">Luz — Termino de Energia (€/kWh)</div>
+    htmlLuz += `<div class="cond-sub-title">Luz — Termino de Energia (€/kWh)</div>
     <div class="table-responsive">
     <table class="tariff-table"><thead><tr>
       <th>Tarifa</th><th>Base</th><th>Sin mant.</th><th>Con mant.</th>
@@ -10352,7 +10478,7 @@ function renderCondiciones(){
     activeTarifasLuz.forEach(t=>{
       if(t.dh===true && t.periodos){
         // Tarifa con discriminacion horaria
-        html+=`<tr><td><strong>${t.n}</strong><br><span class="badge-dh">Discriminacion Horaria</span> <span class="badge-dh" style="background:rgba(16,185,129,0.08);color:#10b981;border-color:rgba(16,185,129,0.2);">Precio variable indexado</span>${t.nota?`<br><span style="font-size:13px;color:var(--t3)">${t.nota}</span>`:''}</td>
+        htmlLuz += `<tr><td><strong>${t.n}</strong><br><span class="badge-dh">Discriminacion Horaria</span> <span class="badge-dh" style="background:rgba(16,185,129,0.08);color:#10b981;border-color:rgba(16,185,129,0.2);">Precio variable indexado</span>${t.nota?`<br><span style="font-size:13px;color:var(--t3)">${t.nota}</span>`:''}</td>
           <td class="price-base"><div style="font-size:13px;color:var(--t3);margin-bottom:4px">Varia:</div>${t.periodos.map(p=>`<div>${p.p}: <strong>${p.te.toFixed(3)}</strong></div>`).join('')}</td>
           <td><span style="color:var(--t3)">igual</span></td><td><span style="color:var(--t3)">igual</span></td></tr>`;
       } else if(t.te!==null){
@@ -10401,7 +10527,7 @@ function renderCondiciones(){
         }
         const teBaseDisp = (t.te.toString().split('.')[1]?.length > 3) ? t.te.toString() : t.te.toFixed(3);
         const teConDisp = teCon ? ((teCon.toString().split('.')[1]?.length > 3) ? teCon.toString() : teCon.toFixed(3)) : '';
-        html+=`<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}${extraNoteHtml}${temporalBannerHtml}<br><span style="font-size:12px;color:var(--t3)">${dtoText}</span></td>
+        htmlLuz += `<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}${extraNoteHtml}${temporalBannerHtml}<br><span style="font-size:12px;color:var(--t3)">${dtoText}</span></td>
           <td class="price-base">${teBaseDisp}</td>
           <td>${sinMantHtml}</td>
           <td>${teCon && teCon !== t.te ? `<span class="price-con">${teConDisp}</span>` : '<span style="color:var(--t3)">igual</span>'}</td>
@@ -10410,12 +10536,9 @@ function renderCondiciones(){
     });
     let potHtml = '';
     if (id === 'iberdrola') {
-      if (isPlanAhoraActive()) {
-        potHtml = `<span>Potencia Plan Ahora: TP1 0.120 · TP2 0.120 €/kW·dia</span>
-                   <br><span style="margin-top:2px;display:inline-block">Potencia Plan Impulsa: TP1 0.124 · TP2 0.071 €/kW·dia</span>`;
-      } else {
-        potHtml = `<span>Potencia Plan Impulsa: TP1 0.124 · TP2 0.071 €/kW·dia</span>`;
-      }
+      potHtml = `<span>• <strong>Plan Impulsa:</strong> TP1 0.124 · TP2 0.071 €/kW·día</span>
+                 <br><span style="margin-top:2px;display:inline-block">• <strong>Plan Especial:</strong> TP1 0.109 · TP2 0.079 €/kW·día</span>` +
+                 (isPlanAhoraActive() ? `<br><span style="margin-top:2px;display:inline-block">• <strong>Plan Ahora:</strong> TP1 0.120 · TP2 0.120 €/kW·día</span>` : '');
     } else if (r.tarifas_luz.length > 1 && id === 'naturgy') {
       potHtml = `<span>Potencia DNI: TP1 ${r.tarifas_luz[0].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(3)} €/kW·dia</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia CIF: TP1 ${r.tarifas_luz[1].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(3)} €/kW·dia</span>`;
@@ -10438,7 +10561,7 @@ function renderCondiciones(){
       svaHtml = `<span>Mantenimiento: <strong>No disponible</strong></span>`;
     }
 
-    html+=`</tbody></table></div>
+    htmlLuz += `</tbody></table></div>
     <div style="font-size:12px;color:var(--t3);margin-top:6px;display:flex;flex-direction:column;gap:4px;">
       <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px;align-items:flex-start;">
         <div>${potHtml}</div>
@@ -10455,17 +10578,18 @@ function renderCondiciones(){
     </div>`;
   });
 
-  html+=`</div>
-  <h2 class="cond-sec-title" style="margin-top:20px">
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><path d="M12 2c-4 4-5 7.5-5 10a5 5 0 0 0 10 0c0-2.5-1-6-5-10z"></path></svg>
-    Tarifas de Gas
-  </h2>
-  <div class="cond-grid">`;
+  htmlLuz += `</div></div>`;
+
+  // ── PESTAÑA: TARIFAS DE GAS ──
+  let htmlGas = `<div id="cond-tab-gas" class="cond-tab-content" style="display:${currentTarifasTab === 'gas' ? 'block' : 'none'};">
+    <h2 class="cond-sec-title" style="margin-top:4px;">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--orange)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:-2px"><path d="M12 2c-4 4-5 7.5-5 10a5 5 0 0 0 10 0c0-2.5-1-6-5-10z"></path></svg>
+      Tarifas de Gas
+    </h2>
+    <div class="cond-grid">`;
 
   cias.forEach(id=>{
     const r=RATES[id];
-    const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
-
     let retrocomision = '';
     if (id === 'iberdrola') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
@@ -10477,7 +10601,7 @@ function renderCondiciones(){
       retrocomision = '12 meses';
     }
 
-    html+=`<div class="cond-cia-block">
+    htmlGas += `<div class="cond-cia-block">
       <div class="cond-cia-hdr" style="display:flex;align-items:center;gap:12px;margin-bottom:14px;flex-wrap:wrap;height:42px;">
         <img src="${getCompanyLogoUrl(id)}" onerror="handleLogoError(this, '${id}')" alt="${r.name}" style="height:36px;max-width:150px;object-fit:contain;display:block;">
         <div style="font-size:10.5px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(217,119,6,0.15);white-space:nowrap;margin-left:4px;">
@@ -10486,13 +10610,13 @@ function renderCondiciones(){
       </div>`;
 
     // GAS
-    html+=`<div class="cond-sub-title">Gas — Termino Variable (€/kWh) y Fijo (€/dia)</div>
+    htmlGas += `<div class="cond-sub-title">Gas — Termino Variable (€/kWh) y Fijo (€/dia)</div>
     <div class="table-responsive">
     <table class="tariff-table"><thead><tr>
       <th>Tarifa</th><th>TV (€/kWh)</th><th>TF (€/dia)</th><th>Equiv. mes</th>
     </tr></thead><tbody>`;
     r.tarifas_gas.forEach(t=>{
-      html+=`<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(3)}</span></td><td>${t.tf.toFixed(3)}</td><td>${(t.tf*30).toFixed(2)} €</td></tr>`;
+      htmlGas += `<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(3)}</span></td><td>${t.tf.toFixed(3)}</td><td>${(t.tf*30).toFixed(2)} €</td></tr>`;
     });
     let svaGasHtml = '';
     if (r.sva_gas > 0) {
@@ -10500,7 +10624,7 @@ function renderCondiciones(){
     } else {
       svaGasHtml = `<span>Mantenimiento Gas: <strong>No disponible</strong></span>`;
     }
-    html+=`</tbody></table></div>
+    htmlGas += `</tbody></table></div>
     <div style="font-size:12px;color:var(--t3);margin-top:6px;display:flex;flex-direction:column;gap:4px;">
       <div style="display:flex;justify-content:flex-end;flex-wrap:wrap;gap:4px;align-items:flex-start;">
         <div style="text-align:right;display:flex;flex-direction:column;align-items:flex-end;gap:2px;">
@@ -10515,9 +10639,31 @@ function renderCondiciones(){
     </div>`;
   });
 
-  html+=`</div>`;
+  htmlGas += `</div></div>`;
 
-  document.getElementById('cond-render').innerHTML=html;
+  const renderEl = document.getElementById('cond-render');
+  if (renderEl) {
+    renderEl.innerHTML = htmlLuz + htmlGas;
+  }
+
+  // Sincronizar botones y leyendas
+  const btnLuz = document.getElementById('cond-btn-luz');
+  const btnGas = document.getElementById('cond-btn-gas');
+  const legLuz = document.getElementById('cond-legend-luz');
+  const legGas = document.getElementById('cond-legend-gas');
+  if (btnLuz && btnGas) {
+    if (currentTarifasTab === 'luz') {
+      btnLuz.classList.add('active');
+      btnGas.classList.remove('active');
+      if (legLuz) legLuz.style.display = 'flex';
+      if (legGas) legGas.style.display = 'none';
+    } else {
+      btnLuz.classList.remove('active');
+      btnGas.classList.add('active');
+      if (legLuz) legLuz.style.display = 'none';
+      if (legGas) legGas.style.display = 'flex';
+    }
+  }
 }
 
 function updatePlanAhoraCountdown() {
@@ -10948,8 +11094,11 @@ function calcComp(){
   if (compMode === 'luz') {
     const maxPot = Math.max(pot1, pot2);
     const allowPlanAhora = isPlanAhoraActive() && (maxPot <= 10);
+    const allowPlanEspecial = (maxPot <= 10);
     offers = [
-      ...(allowPlanAhora ? [{ id: 'iberdrola', type: 'ahora' }, { id: 'iberdrola', type: 'impulsa' }] : [{ id: 'iberdrola', type: 'impulsa' }]),
+      ...(allowPlanAhora ? [{ id: 'iberdrola', type: 'ahora' }] : []),
+      { id: 'iberdrola', type: 'impulsa' },
+      ...(allowPlanEspecial ? [{ id: 'iberdrola', type: 'especial' }] : []),
       { id: 'naturgy', type: 'standard' },
       { id: 'endesa', type: 'standard' },
       { id: 'gana', type: 'gana_24h' },
@@ -10997,6 +11146,17 @@ function calcComp(){
             provincias: ['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'],
             nota: 'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña · Sin tarjetas promocionales'
           }
+        ];
+      } else if (off.type === 'especial') {
+        r.name = isCif ? 'Iberdrola Plan Especial (Precio CIF)' : 'Iberdrola Plan Especial';
+        r.tp1 = 0.1090;
+        r.tp2 = 0.0790;
+        r.te_sin = 0.1399;
+        r.te_con = 0.1312;
+        r.desc_sin = 0.20;
+        r.desc_con = 0.25;
+        r.tarifas_luz = [
+          {n:'Plan Especial', te:0.174875, tp1:0.1090, tp2:0.0790, te_sin:0.1399, te_con:0.1312, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia (<10kW)'}
         ];
       } else {
         r.name = isCif ? 'Iberdrola Plan Impulsa (Precio CIF)' : 'Iberdrola Plan Impulsa';
@@ -11151,6 +11311,8 @@ function calcComp(){
       if (cia === 'iberdrola') {
         if (off.type === 'ahora') {
           tariffName = isCif ? 'Plan Ahora (CIF)' : 'Plan Ahora';
+        } else if (off.type === 'especial') {
+          tariffName = isCif ? 'Plan Especial (CIF)' : 'Plan Especial';
         } else {
           tariffName = isCif ? 'Plan Impulsa (CIF)' : 'Plan Impulsa';
         }
@@ -12104,7 +12266,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785010100000;
+const CURRENT_BUILD_VERSION = 1785010200000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -16882,6 +17044,20 @@ function getRenosurChatResponse(query) {
           mantenimiento: "4,48 €/mes",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
+        },
+        plan_especial: {
+          name: "Iberdrola Plan Especial",
+          base: "0,174875 €/kWh",
+          sin_mantenimiento: "0,1399 €/kWh",
+          con_mantenimiento: "0,1312 €/kWh",
+          descuento_sin_mantenimiento: "20%",
+          descuento_con_mantenimiento: "25%",
+          descuento_general: "20% sin mantenimiento / 25% con mantenimiento",
+          potencia: "TP1: 0,1090 €/kW-día | TP2: 0,0790 €/kW-día",
+          excedentes: "0,05 €/kWh",
+          mantenimiento: "4,48 €/mes",
+          permanencia: "No tiene permanencia.",
+          retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
         }
       },
       gas: {
@@ -17028,8 +17204,8 @@ function getRenosurChatResponse(query) {
            "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
   }
 
-  // 4. Iberdrola Plan Impulsa (y alias antiguos)
-  if (q.includes('plan impulsa') || q.includes('impulsa iberdrola') || q.includes('iberdrola impulsa') || q.includes('cuanto cuesta iberdrola') || q.includes('cuánto cuesta iberdrola') || q.includes('cuesta iberdrola') || q.includes('impulsa 24h') || q.includes('impulsa') || q.includes('plan especial') || q.includes('especial iberdrola') || q.includes('iberdrola especial')) {
+  // 2. Iberdrola Plan Impulsa
+  if (q.includes('plan impulsa') || q.includes('impulsa iberdrola') || q.includes('iberdrola impulsa') || q.includes('impulsa 24h') || q.includes('impulsa')) {
     return "<strong>Iberdrola — Plan Impulsa:</strong><br><br>" +
       "• <strong>Término de Energía:</strong><br>" +
       "  - Precio Base: 0,186533 €/kWh<br>" +
@@ -17037,6 +17213,21 @@ function getRenosurChatResponse(query) {
       "  - Con Mantenimiento (30% dto.): <strong>0,1306 €/kWh</strong><br><br>" +
       "• <strong>Término de Potencia:</strong><br>" +
       "  - TP1 (Punta): <strong>0,1240 €/kW·día</strong> | TP2 (Valle): <strong>0,0710 €/kW·día</strong><br><br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia<br>" +
+      "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
+  }
+
+  // 3. Iberdrola Plan Especial
+  if (q.includes('plan especial') || q.includes('especial iberdrola') || q.includes('iberdrola especial') || q.includes('especial')) {
+    return "<strong>Iberdrola — Plan Especial:</strong><br><br>" +
+      "• <strong>Término de Energía:</strong><br>" +
+      "  - Precio Base (<10kW): 0,174875 €/kWh<br>" +
+      "  - Sin Mantenimiento (20% dto.): <strong>0,1399 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (25% dto.): <strong>0,1312 €/kWh</strong><br><br>" +
+      "• <strong>Término de Potencia:</strong><br>" +
+      "  - TP1 (Punta): <strong>0,1090 €/kW·día</strong> | TP2 (Valle): <strong>0,0790 €/kW·día</strong><br><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
@@ -17146,8 +17337,8 @@ function getRenosurChatResponse(query) {
       
       // Luz más barata
       const ibLuzBest = isPlanAhoraActive() 
-        ? `• <strong>Iberdrola Plan Ahora (Temporal hasta 15/10):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>`
-        : `• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>`;
+        ? `• <strong>Iberdrola Plan Ahora (Temporal hasta 15/10):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>• <strong>Iberdrola Plan Especial:</strong> 0,1399 €/kWh (0,1312 €/kWh con SVA)<br>`
+        : `• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>• <strong>Iberdrola Plan Especial:</strong> 0,1399 €/kWh (0,1312 €/kWh con SVA)<br>`;
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              ibLuzBest +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1230 €/kWh<br>` +
@@ -17202,11 +17393,13 @@ function getRenosurChatResponse(query) {
             `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
             `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Plan Ahora (Temporal hasta 15/10) — 0,094 €/kWh (Con Mant.)</button>` +
             `  <button onclick="sendQuickChatQuery('Iberdrola Plan Impulsa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Impulsa — Desde 0,1306 €/kWh</button>` +
+            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Especial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Especial — Desde 0,1312 €/kWh</button>` +
             `</div>`;
         } else {
-          return `<strong>Tarifa de Luz de Iberdrola disponible:</strong><br>Selecciona la tarifa que deseas consultar:<br><br>` +
+          return `<strong>Tarifas de Luz de Iberdrola disponibles:</strong><br>Selecciona la tarifa que deseas consultar:<br><br>` +
             `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
             `  <button onclick="sendQuickChatQuery('Iberdrola Plan Impulsa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Impulsa — Desde 0,1306 €/kWh</button>` +
+            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Especial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Especial — Desde 0,1312 €/kWh</button>` +
             `</div>`;
         }
       }
