@@ -22,6 +22,11 @@ const RENOSUR_AGENTS = [
     keywords: ["CRISTINA", "SANTOS", "LARIOS", "CRIS"]
   },
   {
+    dni: "53770728V",
+    name: "FRANCISCO JAVIER MORA ANDREU",
+    keywords: ["FRANCISCO JAVIER", "JAVIER MORA", "FRANCISCO JAVIER MORA", "MORA ANDREU", "JAVI"]
+  },
+  {
     dni: "47269866J",
     name: "JOSE MIGUEL CABRERA MARQUEZ",
     keywords: ["JOSE MIGUEL", "JOSE M", "JOSEMI", "JOSÉ MIGUEL"]
