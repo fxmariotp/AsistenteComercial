@@ -7351,9 +7351,9 @@ input:focus, select:focus, textarea:focus {
     - Plan Hogar Especial:         TE=0,1989 TP1=31,00 TP2=16,99
     - Plan Estable:                TE=0,1686 TP1=39,99 TP2=21,99
     - Plan Supertranquilidad:      TE=0,1624 TP1=33,99 TP2=33,99
-    - Plan Especial (<10kW):       TE=0,174875 TP1=39,785 TP2=28,835 (P1 0,109 P2 0,079 €/kW·dia)
-    Descuento sin mantenimiento: 20% TE (0,1399 €/kWh)
-    Descuento con mantenimiento (Pack): 25% TE (0,1312 €/kWh)
+    - Plan Impulsa:                TE=0,186533 TP1=45,26 TP2=25,915 (P1 0,124 P2 0,071 €/kW·dia)
+    Descuento sin mantenimiento: 20% TE (0,1492 €/kWh)
+    Descuento con mantenimiento (Pack): 30% TE (0,1306 €/kWh)
     Gas RL1: TV=0,1206 TF=6,55€/mes · RL2: TV=0,1192 TF=11,18 · RL3: TV=0,1192 TF=21,53
     Impuesto electrico: 5,11%
 
@@ -7392,7 +7392,7 @@ const BASE = {
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
       {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-10-15T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña (≤10kW) · Sin tarjetas promocionales'},
-      {n:'Plan Especial', te:0.174875, tp1:0.1090, tp2:0.0790, te_sin:0.1399, te_con:0.1312, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia (<10kW)'}
+      {n:'Plan Impulsa', te:0.186533, tp1:0.1240, tp2:0.0710, te_sin:0.1492, te_con:0.1306, desc_sin:0.20, desc_con:0.30, nota:'Precio único 24h sin permanencia'}
     ],
     tarifas_gas:[
       {n:'Iberdrola Gas RL1', tv:0.1024, tf:0.2112},
@@ -10412,9 +10412,9 @@ function renderCondiciones(){
     if (id === 'iberdrola') {
       if (isPlanAhoraActive()) {
         potHtml = `<span>Potencia Plan Ahora: TP1 0.120 · TP2 0.120 €/kW·dia</span>
-                   <br><span style="margin-top:2px;display:inline-block">Potencia Plan Especial: TP1 0.109 · TP2 0.079 €/kW·dia</span>`;
+                   <br><span style="margin-top:2px;display:inline-block">Potencia Plan Impulsa: TP1 0.124 · TP2 0.071 €/kW·dia</span>`;
       } else {
-        potHtml = `<span>Potencia Plan Especial: TP1 0.109 · TP2 0.079 €/kW·dia</span>`;
+        potHtml = `<span>Potencia Plan Impulsa: TP1 0.124 · TP2 0.071 €/kW·dia</span>`;
       }
     } else if (r.tarifas_luz.length > 1 && id === 'naturgy') {
       potHtml = `<span>Potencia DNI: TP1 ${r.tarifas_luz[0].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(3)} €/kW·dia</span>
@@ -10944,12 +10944,12 @@ function calcComp(){
     else if (annualGas > 15000) band = 'rl3';
   }
 
-  let offers = [];
+    let offers = [];
   if (compMode === 'luz') {
     const maxPot = Math.max(pot1, pot2);
     const allowPlanAhora = isPlanAhoraActive() && (maxPot <= 10);
     offers = [
-      ...(allowPlanAhora ? [{ id: 'iberdrola', type: 'ahora' }, { id: 'iberdrola', type: 'especial' }] : [{ id: 'iberdrola', type: 'especial' }]),
+      ...(allowPlanAhora ? [{ id: 'iberdrola', type: 'ahora' }, { id: 'iberdrola', type: 'impulsa' }] : [{ id: 'iberdrola', type: 'impulsa' }]),
       { id: 'naturgy', type: 'standard' },
       { id: 'endesa', type: 'standard' },
       { id: 'gana', type: 'gana_24h' },
@@ -10999,15 +10999,15 @@ function calcComp(){
           }
         ];
       } else {
-        r.name = isCif ? 'Iberdrola Plan Especial (Precio CIF)' : 'Iberdrola Plan Especial';
-        r.tp1 = 0.1090;
-        r.tp2 = 0.0790;
-        r.te_sin = 0.1399;
-        r.te_con = 0.1312;
+        r.name = isCif ? 'Iberdrola Plan Impulsa (Precio CIF)' : 'Iberdrola Plan Impulsa';
+        r.tp1 = 0.1240;
+        r.tp2 = 0.0710;
+        r.te_sin = 0.1492;
+        r.te_con = 0.1306;
         r.desc_sin = 0.20;
-        r.desc_con = 0.25;
+        r.desc_con = 0.30;
         r.tarifas_luz = [
-          {n:'Plan Especial', te:0.174875, tp1:0.1090, tp2:0.0790, te_sin:0.1399, te_con:0.1312, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia (<10kW)'}
+          {n:'Plan Impulsa', te:0.186533, tp1:0.1240, tp2:0.0710, te_sin:0.1492, te_con:0.1306, desc_sin:0.20, desc_con:0.30, nota:'Precio único 24h sin permanencia'}
         ];
       }
     }
@@ -11152,7 +11152,7 @@ function calcComp(){
         if (off.type === 'ahora') {
           tariffName = isCif ? 'Plan Ahora (CIF)' : 'Plan Ahora';
         } else {
-          tariffName = isCif ? 'Plan Especial (CIF)' : 'Plan Especial';
+          tariffName = isCif ? 'Plan Impulsa (CIF)' : 'Plan Impulsa';
         }
       } else if (cia === 'naturgy') {
         tariffName = isCif ? 'Fijo Luz 24h (CIF)' : 'Por Uso Luz';
@@ -12104,7 +12104,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785010000000;
+const CURRENT_BUILD_VERSION = 1785010100000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -16869,15 +16869,15 @@ function getRenosurChatResponse(query) {
           vigencia: "Válido hasta el 15 de octubre a las 23:59:59.",
           condiciones_especiales: "Solo se puede meter con mantenimiento. Solo se puede vender en Sevilla, Huelva, Barcelona y A Coruña. No se pueden dar tarjetas promocionales."
         },
-        plan_especial: {
-          name: "Iberdrola Plan Especial",
-          base: "0,174875 €/kWh",
-          sin_mantenimiento: "0,1399 €/kWh",
-          con_mantenimiento: "0,1312 €/kWh",
+        plan_impulsa: {
+          name: "Iberdrola Plan Impulsa",
+          base: "0,186533 €/kWh",
+          sin_mantenimiento: "0,1492 €/kWh",
+          con_mantenimiento: "0,1306 €/kWh",
           descuento_sin_mantenimiento: "20%",
-          descuento_con_mantenimiento: "25%",
-          descuento_general: "20% sin mantenimiento / 25% con mantenimiento",
-          potencia: "TP1: 0,1090 €/kW-día | TP2: 0,0790 €/kW-día",
+          descuento_con_mantenimiento: "30%",
+          descuento_general: "20% sin mantenimiento / 30% con mantenimiento",
+          potencia: "TP1: 0,1240 €/kW-día | TP2: 0,0710 €/kW-día",
           excedentes: "0,05 €/kWh",
           mantenimiento: "4,48 €/mes",
           permanencia: "No tiene permanencia.",
@@ -17028,15 +17028,15 @@ function getRenosurChatResponse(query) {
            "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
   }
 
-  // 4. Iberdrola Plan Especial (y alias antiguos)
-  if (q.includes('plan especial') || q.includes('especial iberdrola') || q.includes('iberdrola especial') || q.includes('cuanto cuesta iberdrola') || q.includes('cuánto cuesta iberdrola') || q.includes('cuesta iberdrola') || q.includes('impulsa 24h') || q.includes('impulsa')) {
-    return "<strong>Iberdrola — Plan Especial:</strong><br><br>" +
+  // 4. Iberdrola Plan Impulsa (y alias antiguos)
+  if (q.includes('plan impulsa') || q.includes('impulsa iberdrola') || q.includes('iberdrola impulsa') || q.includes('cuanto cuesta iberdrola') || q.includes('cuánto cuesta iberdrola') || q.includes('cuesta iberdrola') || q.includes('impulsa 24h') || q.includes('impulsa') || q.includes('plan especial') || q.includes('especial iberdrola') || q.includes('iberdrola especial')) {
+    return "<strong>Iberdrola — Plan Impulsa:</strong><br><br>" +
       "• <strong>Término de Energía:</strong><br>" +
-      "  - Precio Base (<10kW): 0,174875 €/kWh<br>" +
-      "  - Sin Mantenimiento (20% dto.): <strong>0,1399 €/kWh</strong><br>" +
-      "  - Con Mantenimiento (25% dto.): <strong>0,1312 €/kWh</strong><br><br>" +
+      "  - Precio Base: 0,186533 €/kWh<br>" +
+      "  - Sin Mantenimiento (20% dto.): <strong>0,1492 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (30% dto.): <strong>0,1306 €/kWh</strong><br><br>" +
       "• <strong>Término de Potencia:</strong><br>" +
-      "  - TP1 (Punta): <strong>0,1090 €/kW·día</strong> | TP2 (Valle): <strong>0,0790 €/kW·día</strong><br><br>" +
+      "  - TP1 (Punta): <strong>0,1240 €/kW·día</strong> | TP2 (Valle): <strong>0,0710 €/kW·día</strong><br><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
@@ -17146,8 +17146,8 @@ function getRenosurChatResponse(query) {
       
       // Luz más barata
       const ibLuzBest = isPlanAhoraActive() 
-        ? `• <strong>Iberdrola Plan Ahora (Temporal hasta 15/10):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>• <strong>Iberdrola Plan Especial:</strong> 0,1399 €/kWh (0,1312 €/kWh con SVA)<br>`
-        : `• <strong>Iberdrola Plan Especial:</strong> 0,1399 €/kWh (0,1312 €/kWh con SVA)<br>`;
+        ? `• <strong>Iberdrola Plan Ahora (Temporal hasta 15/10):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>`
+        : `• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>`;
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              ibLuzBest +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1230 €/kWh<br>` +
@@ -17201,12 +17201,12 @@ function getRenosurChatResponse(query) {
           return `<strong>Tarifas de Luz de Iberdrola disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
             `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
             `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Plan Ahora (Temporal hasta 15/10) — 0,094 €/kWh (Con Mant.)</button>` +
-            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Especial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Especial — Desde 0,1312 €/kWh</button>` +
+            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Impulsa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Impulsa — Desde 0,1306 €/kWh</button>` +
             `</div>`;
         } else {
           return `<strong>Tarifa de Luz de Iberdrola disponible:</strong><br>Selecciona la tarifa que deseas consultar:<br><br>` +
             `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Especial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Especial — Desde 0,1312 €/kWh</button>` +
+            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Impulsa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Impulsa — Desde 0,1306 €/kWh</button>` +
             `</div>`;
         }
       }
