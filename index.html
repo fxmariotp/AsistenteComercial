@@ -6747,6 +6747,10 @@ input:focus, select:focus, textarea:focus {
             <span class="promo-chip-badge ib">IBERDROLA</span>
             <span>Solo contratos con <strong>Iberdrola</strong></span>
           </div>
+          <div class="promo-rule-chip" style="border-color: rgba(220,38,38,0.3); background: rgba(220,38,38,0.04);">
+            <span class="promo-chip-badge" style="background:#dc2626;">PLAN AHORA</span>
+            <span><strong>Sin tarjetas promocionales</strong></span>
+          </div>
           <div class="promo-rule-chip">
             <span class="promo-chip-badge cif">CIF / PYMES</span>
             <span>Máximo <strong>30 €</strong> (nunca 50 €)</span>
@@ -7387,7 +7391,7 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
-      {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-10-15T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña (≤10kW)'},
+      {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-10-15T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña (≤10kW) · Sin tarjetas promocionales'},
       {n:'Plan Especial', te:0.174875, tp1:0.1090, tp2:0.0790, te_sin:0.1399, te_con:0.1312, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia (<10kW)'}
     ],
     tarifas_gas:[
@@ -10374,11 +10378,9 @@ function renderCondiciones(){
                 <span style="font-size:10.5px;font-weight:700;color:#2563eb;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">
                   📍 Sevilla, Huelva, Barcelona y A Coruña
                 </span>
-              </div>
-              <div style="background:linear-gradient(135deg, #0f172a, #1e293b);color:#fff;padding:4px 10px;border-radius:6px;font-size:11.5px;font-weight:600;display:inline-flex;align-items:center;gap:6px;width:fit-content;box-shadow:0 1px 4px rgba(0,0,0,0.18);">
-                <span style="width:7px;height:7px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
-                <span style="color:#94a3b8;">Cuenta atrás:</span>
-                <span class="plan-ahora-timer-val" style="color:#38bdf8;font-family:monospace;font-weight:800;font-size:12px;">Calculando...</span>
+                <span style="font-size:10.5px;font-weight:700;color:#dc2626;background:rgba(220,38,38,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);">
+                  🚫 Sin tarjetas promocionales
+                </span>
               </div>
             </div>`;
         }
@@ -10516,38 +10518,15 @@ function renderCondiciones(){
   html+=`</div>`;
 
   document.getElementById('cond-render').innerHTML=html;
-  if (typeof updatePlanAhoraCountdown === 'function') {
-    updatePlanAhoraCountdown();
-  }
 }
 
 function updatePlanAhoraCountdown() {
-  const targetDate = new Date('2026-10-15T23:59:59+02:00').getTime();
-  const now = new Date().getTime();
-  const diff = targetDate - now;
-  const elements = document.querySelectorAll('.plan-ahora-timer-val');
-  if (!elements || elements.length === 0) return;
-  
-  if (diff <= 0) {
-    elements.forEach(el => {
-      el.innerHTML = '<span style="color:#ef4444;font-weight:800;">¡OFERTA FINALIZADA!</span>';
-    });
-    return;
-  }
-  
-  const days = Math.floor(diff / (1000 * 60 * 60 * 24));
-  const hours = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-  const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-  const seconds = Math.floor((diff % (1000 * 60)) / 1000);
-  
-  const timeStr = `${days}d ${hours.toString().padStart(2, '0')}h ${minutes.toString().padStart(2, '0')}m ${seconds.toString().padStart(2, '0')}s`;
-  elements.forEach(el => {
-    el.textContent = timeStr;
-  });
+  // Cuenta atrás eliminada
 }
 
-if (!window.planAhoraTimerInterval) {
-  window.planAhoraTimerInterval = setInterval(updatePlanAhoraCountdown, 1000);
+if (window.planAhoraTimerInterval) {
+  clearInterval(window.planAhoraTimerInterval);
+  window.planAhoraTimerInterval = null;
 }
 
 function openServiceDocumentModal(url, title) {
@@ -10663,7 +10642,7 @@ const PROCEDIMIENTOS = {
     requisitos: [
       'No se permite la contratación para personas mayores de 75 años.',
       'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta, IBI, o también sirve el certificado de empadronamiento).',
-      'Promociones comerciales (Tarjetas regalo): Solo válidas para contratos con Iberdrola. Los contratos con CIF (Pymes) reciben 30€ (no optan a los 50€) y las CCPP (Comunidades de Propietarios) tienen prohibido tener tarjeta.',
+      'Promociones comerciales (Tarjetas regalo): Solo válidas para contratos con Iberdrola. Los contratos con CIF (Pymes) reciben 30€ (no optan a los 50€) y las CCPP (Comunidades de Propietarios) tienen prohibido tener tarjeta. Con el Plan Ahora está totalmente prohibido dar tarjetas promocionales.',
       'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
       'Cambios de potencia: Permitido en Iberdrola. Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
@@ -11016,7 +10995,7 @@ function calcComp(){
             expira: '2026-10-15T23:59:59',
             solo_mantenimiento: true,
             provincias: ['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'],
-            nota: 'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña'
+            nota: 'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña · Sin tarjetas promocionales'
           }
         ];
       } else {
@@ -11200,20 +11179,18 @@ function calcComp(){
   });
 
   results.sort((a,b)=>{
-    // Plan Ahora ALWAYS comes first to boost and incite sales
-    const isAhoraA = (a.cia === 'iberdrola' && a.type === 'ahora');
-    const isAhoraB = (b.cia === 'iberdrola' && b.type === 'ahora');
-    if (isAhoraA && !isAhoraB) return -1;
-    if (!isAhoraA && isAhoraB) return 1;
+    // Gana Energía SIEMPRE la última, ahorre lo que ahorre
+    const isGanaA = (a.cia === 'gana');
+    const isGanaB = (b.cia === 'gana');
+    if (isGanaA && !isGanaB) return 1;
+    if (!isGanaA && isGanaB) return -1;
+    if (isGanaA && isGanaB) return a.total - b.total;
 
-    // For other offers, prioritize non-locked
+    // Las ofertas bloqueadas (ej. Plan Ahora sin SVA) van al final de las disponibles
     if (a.isLocked && !b.isLocked) return 1;
     if (!a.isLocked && b.isLocked) return -1;
 
-    // Gana comes last
-    if (a.cia === 'gana' && b.cia !== 'gana') return 1;
-    if (a.cia !== 'gana' && b.cia === 'gana') return -1;
-
+    // Mayor ahorro primero (menor total primero)
     return a.total - b.total;
   });
   window.lastCompResults = results; // Save for print report
@@ -11339,10 +11316,11 @@ function unlockPlanAhoraSva() {
 
 function renderInvCards(results, useSva){
   const isLuz = compMode === 'luz';
+  const firstNonLockedIdx = results.findIndex(res => !res.isLocked);
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
     const{cia,r,total,ahorro,actual,tariffName,isLocked}=res;
     const isPlanAhora = res.cia === 'iberdrola' && res.type === 'ahora';
-    const best = !isLocked && (idx === 0 || (results[0] && results[0].isLocked && idx === 1));
+    const best = !isLocked && idx === firstNonLockedIdx;
     const aPos=ahorro>0, aNeg=ahorro<0;
     const pct=(actual>0 && ahorro!==null)?(ahorro/actual)*100:null;
     
@@ -11365,19 +11343,13 @@ function renderInvCards(results, useSva){
     }
     if (isPlanAhora) {
       if (isLocked) {
-        cardExtraBadges += '<span style="font-size:11px;color:#b45309;font-weight:800;background:rgba(245,158,11,0.15);padding:2px 8px;border-radius:4px;border:1px solid rgba(245,158,11,0.3);display:inline-flex;align-items:center;gap:4px;">⭐ 1ª Opción Campaña</span>';
-        cardExtraBadges += '<span style="font-size:11px;color:#b91c1c;font-weight:800;background:rgba(220,38,38,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(220,38,38,0.25);display:inline-flex;align-items:center;gap:4px;">🔒 Capado (Requiere SVA)</span>';
+        cardExtraBadges += '<span style="font-size:11px;color:#b45309;font-weight:800;background:rgba(245,158,11,0.15);padding:2px 8px;border-radius:4px;border:1px solid rgba(245,158,11,0.3);display:inline-flex;align-items:center;gap:4px;">⚡ Plan Ahora</span>';
+        cardExtraBadges += '<span style="font-size:11px;color:#b91c1c;font-weight:800;background:rgba(220,38,38,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(220,38,38,0.25);display:inline-flex;align-items:center;gap:4px;">🔒 Requiere SVA</span>';
       } else {
-        cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:800;background:rgba(5,150,105,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);display:inline-flex;align-items:center;gap:4px;">⭐ Opción Recomendada</span>';
+        cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:800;background:rgba(5,150,105,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);display:inline-flex;align-items:center;gap:4px;">⚡ Plan Ahora</span>';
       }
-      // Live Countdown Timer Badge in header
-      cardExtraBadges += `
-        <div style="background:linear-gradient(135deg, #0f172a, #1e293b);color:#fff;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;box-shadow:0 1px 3px rgba(0,0,0,0.2);">
-          <span style="width:6px;height:6px;background:${isLocked ? '#f59e0b' : '#22c55e'};border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
-          <span style="color:#94a3b8;font-size:10px;">Cuenta atrás:</span>
-          <span class="plan-ahora-timer-val" style="color:#38bdf8;font-family:monospace;font-weight:800;font-size:11px;">Calculando...</span>
-        </div>`;
       cardExtraBadges += '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">📍 Sevilla, Huelva, Barcelona y A Coruña</span>';
+      cardExtraBadges += '<span style="font-size:11px;color:#dc2626;font-weight:700;background:rgba(220,38,38,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);">🚫 Sin tarjetas promocionales</span>';
     }
 
     let lockedBannerHtml = '';
@@ -11389,14 +11361,9 @@ function renderInvCards(results, useSva){
               <span style="font-size:26px;">🔒</span>
               <div>
                 <div style="font-size:13px;color:#9a3412;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
-                  <span>¡1ª Opción Recomendada! (Bloqueada: Requiere SVA)</span>
-                  <div style="background:linear-gradient(135deg, #0f172a, #1e293b);color:#fff;padding:2px 7px;border-radius:4px;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">
-                    <span style="width:6px;height:6px;background:#ef4444;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
-                    <span style="color:#94a3b8;font-size:10px;">Expira en:</span>
-                    <span class="plan-ahora-timer-val" style="color:#38bdf8;font-family:monospace;font-weight:800;">Calculando...</span>
-                  </div>
+                  <span>Plan Ahora Bloqueado: Requiere Mantenimiento (SVA)</span>
                 </div>
-                <div style="font-size:11.5px;color:#c2410c;margin-top:3px;">El <strong>Plan Ahora de Iberdrola</strong> exige contratar el <strong>Pack Iberdrola Hogar (4,48 €/mes)</strong> para desbloquear el precio promocional de <strong>0,094 €/kWh</strong>. ¡Activa el SVA para maximizar el ahorro y la comisión!</div>
+                <div style="font-size:11.5px;color:#c2410c;margin-top:3px;">El <strong>Plan Ahora de Iberdrola</strong> exige contratar el <strong>Pack Iberdrola Hogar (4,48 €/mes)</strong> para desbloquear el precio promocional de <strong>0,094 €/kWh</strong>. <em>*No se pueden dar tarjetas promocionales con esta tarifa.*</em></div>
               </div>
             </div>
             <button type="button" onclick="unlockPlanAhoraSva()" style="background:linear-gradient(135deg, #059669, #047857);color:#fff;border:none;padding:9px 18px;border-radius:6px;font-weight:800;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 6px rgba(5,150,105,0.3);transition:all 0.2s;">
@@ -11410,13 +11377,8 @@ function renderInvCards(results, useSva){
             <div style="display:flex;align-items:center;gap:8px;">
               <span style="font-size:20px;">⚡</span>
               <div style="font-size:12.5px;color:#166534;font-weight:700;">
-                ¡Campaña Especial Iberdrola Plan Ahora Activa! Precio final: <strong style="color:#047857;font-size:13.5px;">0,094 €/kWh</strong> (+ Pack Hogar 4,48 €/mes).
+                ¡Campaña Especial Iberdrola Plan Ahora Activa! Precio final: <strong style="color:#047857;font-size:13.5px;">0,094 €/kWh</strong> (+ Pack Hogar 4,48 €/mes). <span style="color:#dc2626;margin-left:6px;font-weight:800;">🚫 No se pueden dar tarjetas promocionales.</span>
               </div>
-            </div>
-            <div style="background:linear-gradient(135deg, #0f172a, #1e293b);color:#fff;padding:3px 8px;border-radius:6px;font-size:11px;font-weight:700;display:inline-flex;align-items:center;gap:5px;">
-              <span style="width:6px;height:6px;background:#22c55e;border-radius:50%;display:inline-block;animation:pulse 1.5s infinite;"></span>
-              <span style="color:#94a3b8;font-size:10px;">Expira en:</span>
-              <span class="plan-ahora-timer-val" style="color:#38bdf8;font-family:monospace;font-weight:800;">Calculando...</span>
             </div>
           </div>`;
       }
@@ -11502,6 +11464,7 @@ function renderInvCards(results, useSva){
 
 function renderSummary(results, actual){
   const isLuz = compMode === 'luz';
+  const firstNonLockedIdx = results.findIndex(res => !res.isLocked);
   document.getElementById('comp-summary').innerHTML=`<div class="sum-card">
     <div class="sum-card-title">Resumen comparativo</div>
     ${actual>0?`<div style="font-size:14px;color:var(--t2);margin-bottom:14px">Factura actual: <strong>${f2(actual)} €/mes</strong></div>`:''}
@@ -11522,7 +11485,8 @@ function renderSummary(results, actual){
             <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
               ${logoHtml}
               <span><strong>${r.r.name.split(' (')[0]}</strong> <span style="font-size:11.5px;color:#b45309;font-weight:700;background:rgba(245,158,11,0.12);padding:2px 6px;border-radius:4px;border:1px solid rgba(245,158,11,0.25);">${r.tariffName || r.r.name}</span></span>
-              ${isPlanAhora ? '<span style="font-size:10.5px;color:#b45309;font-weight:800;background:rgba(245,158,11,0.15);padding:1px 6px;border-radius:4px;border:1px solid rgba(245,158,11,0.3);">⭐ 1ª Opción Campaña</span>' : ''}
+              ${isPlanAhora ? '<span style="font-size:10.5px;color:#b45309;font-weight:800;background:rgba(245,158,11,0.15);padding:1px 6px;border-radius:4px;border:1px solid rgba(245,158,11,0.3);">⚡ Plan Ahora</span>' : ''}
+              ${isPlanAhora ? '<span style="font-size:10.5px;color:#dc2626;font-weight:700;background:rgba(220,38,38,0.08);padding:1px 5px;border-radius:4px;border:1px solid rgba(220,38,38,0.18);">🚫 Sin tarjetas</span>' : ''}
               <span style="font-size:10.5px;color:#dc2626;font-weight:800;background:rgba(220,38,38,0.08);padding:1px 6px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);">🔒 Requiere SVA</span>
             </div>
           </td>
@@ -11532,13 +11496,14 @@ function renderSummary(results, actual){
           <td style="text-align:right;font-weight:700;color:#94a3b8;">—</td>
         </tr>`;
       }
-      const isBest = !r.isLocked && (i===0 || (results[0] && results[0].isLocked && i===1));
+      const isBest = !r.isLocked && i === firstNonLockedIdx;
       return`<tr class="${isBest?'brow':''}">
         <td>
           <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
             ${logoHtml}
             <span><strong>${r.r.name.split(' (')[0]}</strong> <span style="font-size:11.5px;color:var(--blue);font-weight:700;background:rgba(13,92,158,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(13,92,158,0.15);">${r.tariffName || r.r.name}</span></span>
-            ${isPlanAhora ? '<span style="font-size:10.5px;color:#059669;font-weight:800;background:rgba(5,150,105,0.1);padding:1px 6px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);">⭐ 1ª Opción Campaña</span>' : ''}
+            ${isPlanAhora ? '<span style="font-size:10.5px;color:#059669;font-weight:800;background:rgba(5,150,105,0.1);padding:1px 6px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);">⚡ Plan Ahora</span>' : ''}
+            ${isPlanAhora ? '<span style="font-size:10.5px;color:#dc2626;font-weight:700;background:rgba(220,38,38,0.08);padding:1px 5px;border-radius:4px;border:1px solid rgba(220,38,38,0.18);">🚫 Sin tarjetas</span>' : ''}
             ${r.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:10.5px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:1px 5px;border-radius:4px;">(+2€/mes BV)</span>' : ''}
           </div>
           ${isBest?'<span class="badge-best" style="margin-left:6px;background:#059669;color:#fff;font-weight:800;padding:2px 6px;border-radius:4px;font-size:10.5px;">🏆 Mayor Ahorro</span>':''}
@@ -12139,7 +12104,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785009700000;
+const CURRENT_BUILD_VERSION = 1785009800000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -16018,7 +15983,8 @@ const KNOWLEDGE_BASE = [
     answer: `<strong>Promoción de Carrefour:</strong><br><br>
     • <strong>Método de entrega:</strong> Correo postal (se envían físicamente al domicilio del cliente).<br>
     • <strong>Condición:</strong> Solo válida para contratos firmados con Iberdrola.<br>
-    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.`
+    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.<br>
+    • <strong>Exclusión Plan Ahora:</strong> Con el Plan Ahora <strong>NO</strong> se pueden dar tarjetas promocionales.`
   },
   {
     keywords: ["leroy", "leroy merlin"],
@@ -16029,26 +15995,35 @@ const KNOWLEDGE_BASE = [
       - Barcelona (tienda de Cabrera de Mar).<br>
       - Málaga (tienda de Marbella).<br>
       - Sevilla (Dos Hermanas).<br>
-    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.`
+    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.<br>
+    • <strong>Exclusión Plan Ahora:</strong> Con el Plan Ahora <strong>NO</strong> se pueden dar tarjetas promocionales.`
   },
   {
     keywords: ["caprabo"],
     answer: `<strong>Promoción de Caprabo:</strong><br><br>
     • <strong>Método de entrega:</strong> Ingreso directo en la tarjeta de cliente (el cliente debe pasar su tarjeta física por caja).<br>
     • <strong>Tiendas válidas:</strong> Provincia de Barcelona (tiendas en Rubí, Masnou, Abrera y Max Center La Farga).<br>
-    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.`
+    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.<br>
+    • <strong>Exclusión Plan Ahora:</strong> Con el Plan Ahora <strong>NO</strong> se pueden dar tarjetas promocionales.`
   },
   {
     keywords: ["cif", "pymes", "empresas", "30", "30€", "50", "50€"],
     answer: `<strong>Condiciones para CIFs (Pymes/Empresas) en Promociones:</strong><br><br>
     • Las promociones de supermercado (tarjetas regalo) para contratos con CIF (empresas/autónomos) tienen un **límite máximo de 30€**.<br>
     • Los contratos con CIF **no optan en ningún caso a la promoción de 50€**.<br>
-    • Solo son válidos si se contratan con Iberdrola.`
+    • Solo son válidos si se contratan con Iberdrola.<br>
+    • Con el Plan Ahora <strong>NO</strong> se pueden dar tarjetas promocionales.`
   },
   {
     keywords: ["ccpp", "comunidades de propietarios", "comunidad de vecinos"],
     answer: `<strong>Condiciones para CCPP (Comunidades de Propietarios):</strong><br><br>
     • Las CCPP tienen **totalmente prohibido y excluido** recibir tarjetas de regalo o promociones comerciales en cualquiera de los supermercados asociados (Carrefour, Leroy Merlin, Caprabo).`
+  },
+  {
+    keywords: ["plan ahora tarjeta", "plan ahora promocion", "tarjeta plan ahora", "tarjetas plan ahora", "promocion plan ahora", "promociones plan ahora"],
+    answer: `<strong>Tarjetas Promocionales en Plan Ahora (Iberdrola):</strong><br><br>
+    • Con el <strong>Plan Ahora de Iberdrola NO se pueden dar tarjetas promocionales</strong> bajo ningún concepto.<br>
+    • Las promociones de tarjetas regalo (Carrefour, Leroy Merlin, Caprabo) solo aplican a otras tarifas autorizadas de Iberdrola.`
   },
   {
     keywords: ["comunidades solares", "comunidad solar", "buscar comunidades solares", "buscar comunidad solar", "solar iberdrola", "smart solar", "mapa solar"],
@@ -16877,8 +16852,8 @@ function getRenosurChatResponse(query) {
           mantenimiento: "4,48 €/mes (Pack Iberdrola Hogar obligatorio)",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%",
-          vigencia: "Válido hasta el 15 de octubre a las 23:59:59 (con cuenta atrás activa).",
-          condiciones_especiales: "Solo se puede meter con mantenimiento. Solo se puede vender en Sevilla, Huelva, Barcelona y A Coruña."
+          vigencia: "Válido hasta el 15 de octubre a las 23:59:59.",
+          condiciones_especiales: "Solo se puede meter con mantenimiento. Solo se puede vender en Sevilla, Huelva, Barcelona y A Coruña. No se pueden dar tarjetas promocionales."
         },
         plan_especial: {
           name: "Iberdrola Plan Especial",
@@ -17023,9 +16998,10 @@ function getRenosurChatResponse(query) {
   // 1. Iberdrola Plan Ahora (CAMPAÑA TEMPORAL ACTIVA HASTA 15/10)
   if (q.includes('plan ahora') || q.includes('ahora 0-10') || q.includes('ahora 10-15') || (q.includes('ahora') && q.includes('iberdrola'))) {
     return "⚡ <strong>Iberdrola — Plan Ahora (Campaña Temporal Activa):</strong><br><br>" +
-           "⏳ <strong>Vigencia:</strong> Hasta el <strong>15 de octubre a las 23:59:59</strong> (con cuenta atrás en vivo en la app).<br>" +
+           "⏳ <strong>Vigencia:</strong> Hasta el <strong>15 de octubre a las 23:59:59</strong>.<br>" +
            "⚠️ <strong>Condición de contratación:</strong> <strong>Solo se puede meter con mantenimiento</strong>.<br>" +
-           "📍 <strong>Zonas autorizadas:</strong> Solo se puede comercializar/vender en <strong>Sevilla, Huelva, Barcelona y A Coruña</strong>.<br><br>" +
+           "📍 <strong>Zonas autorizadas:</strong> Solo se puede comercializar/vender en <strong>Sevilla, Huelva, Barcelona y A Coruña</strong>.<br>" +
+           "🚫 <strong>Tarjetas promocionales:</strong> <strong>NO se pueden dar tarjetas promocionales</strong> con esta tarifa.<br><br>" +
            "• <strong>Término de Energía:</strong><br>" +
            "  - Precio base energía: 0,1176 €/kWh<br>" +
            "  - Sin Mantenimiento: <strong>❌ Prohibido</strong> (no se puede contratar sin mantenimiento)<br>" +
