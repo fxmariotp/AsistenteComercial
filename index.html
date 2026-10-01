@@ -10536,9 +10536,13 @@ function renderCondiciones(){
     });
     let potHtml = '';
     if (id === 'iberdrola') {
-      potHtml = `<span>• <strong>Plan Impulsa:</strong> TP1 0.124 · TP2 0.071 €/kW·día</span>
-                 <br><span style="margin-top:2px;display:inline-block">• <strong>Plan Especial:</strong> TP1 0.109 · TP2 0.079 €/kW·día</span>` +
-                 (isPlanAhoraActive() ? `<br><span style="margin-top:2px;display:inline-block">• <strong>Plan Ahora:</strong> TP1 0.120 · TP2 0.120 €/kW·día</span>` : '');
+      const potLines = activeTarifasLuz.map((t, idx) => {
+        const p1 = (t.tp1 !== undefined ? t.tp1 : r.tp1).toFixed(3);
+        const p2 = (t.tp2 !== undefined ? t.tp2 : r.tp2).toFixed(3);
+        const marginStyle = idx > 0 ? 'margin-top:2px;display:inline-block;' : '';
+        return `<span style="${marginStyle}">• <strong>${t.n}:</strong> TP1 ${p1} · TP2 ${p2} €/kW·día</span>`;
+      });
+      potHtml = potLines.join('<br>');
     } else if (r.tarifas_luz.length > 1 && id === 'naturgy') {
       potHtml = `<span>Potencia DNI: TP1 ${r.tarifas_luz[0].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(3)} €/kW·dia</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia CIF: TP1 ${r.tarifas_luz[1].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(3)} €/kW·dia</span>`;
@@ -12266,7 +12270,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785010200000;
+const CURRENT_BUILD_VERSION = 1785010300000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
