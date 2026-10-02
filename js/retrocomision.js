@@ -200,7 +200,28 @@ function renderRetrocomisionCheck() {
   const fecha = elFecha ? elFecha.value : '';
 
   if (!fecha) {
-    elResult.innerHTML = '';
+    elResult.innerHTML = `
+      <div class="db-tool-result-card">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+          <span class="db-tool-badge" style="background: rgba(53, 127, 191, 0.1); color: var(--blue); border: 1px solid rgba(53, 127, 191, 0.25);">
+            <span>🔍</span>
+            <span>ESTADO RETROCOMISIÓN</span>
+          </span>
+          <div style="font-size: 12px; color: var(--t3); font-weight: 600;">
+            Sin fecha indicada
+          </div>
+        </div>
+        <div class="db-tool-empty-box" style="margin-top: 6px;">
+          <div class="db-tool-empty-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          </div>
+          <div style="line-height:1.4;">
+            <div style="font-weight:700;color:var(--text);font-size:12px;margin-bottom:2px;">Comprobador de penalización</div>
+            <div style="color:var(--t3);font-size:11.5px;">Selecciona la fecha del contrato anterior o pulsa <strong>Pegar</strong> para comprobar los tramos y días libres.</div>
+          </div>
+        </div>
+      </div>
+    `;
     if (!permMesesManuallyEdited) {
       const elPermMeses = document.getElementById('perm-meses');
       if (elPermMeses && elPermMeses.value) {
@@ -215,9 +236,19 @@ function renderRetrocomisionCheck() {
 
   if (info.isFuture) {
     elResult.innerHTML = `
-      <div style="background: #fef2f2; border: 1.5px solid #fca5a5; border-radius: var(--rs); padding: 9px 14px; color: #b91c1c; font-size: 12.5px; display: flex; align-items: center; gap: 8px; margin-top: 8px;">
-        <span style="font-size: 18px;">⚠️</span>
-        <div>${info.message}</div>
+      <div class="db-tool-result-card" style="border-color: rgba(220, 38, 38, 0.35);">
+        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
+          <span class="db-tool-badge" style="background: #fee2e2; color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.3);">
+            <span>⚠️</span>
+            <span>FECHA NO VÁLIDA</span>
+          </span>
+        </div>
+        <div class="db-tool-empty-box" style="margin-top: 6px; background: rgba(254, 242, 242, 0.7); border-color: rgba(252, 165, 165, 0.8);">
+          <div class="db-tool-empty-icon" style="background: rgba(220, 38, 38, 0.1); color: #dc2626;">⚠️</div>
+          <div style="line-height:1.4; color: #991b1b; font-size: 12px;">
+            ${info.message}
+          </div>
+        </div>
       </div>
     `;
     return;
@@ -302,9 +333,9 @@ function renderRetrocomisionCheck() {
   }
 
   elResult.innerHTML = `
-    <div style="background: rgba(255,255,255,0.92); backdrop-filter: blur(12px); border: 1.5px solid ${badgeColor}55; border-radius: 12px; padding: 12px 16px; box-shadow: 0 3px 12px rgba(0,0,0,0.03); margin-top: 10px; animation: fadeIn 0.25s ease-out;">
+    <div class="db-tool-result-card" style="border-color: ${badgeColor}44;">
       <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-        <span style="font-size: 12.5px; font-weight: 800; padding: 3px 9px; border-radius: 6px; background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}44; display: inline-flex; align-items: center; gap: 5px;">
+        <span class="db-tool-badge" style="background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}44;">
           <span>${badgeIcon}</span>
           <span>${badgeTitle}</span>
         </span>
@@ -319,7 +350,7 @@ function renderRetrocomisionCheck() {
           <span>Fecha Contrato: <strong>${info.formattedContractDate}</strong></span>
           <span>Periodo Normativo: <strong>${info.totalPeriodDays} días</strong></span>
         </div>
-        <div style="width: 100%; height: 7px; background: #e2e8f0; border-radius: 5px; overflow: hidden; position: relative;">
+        <div style="width: 100%; height: 7px; background: rgba(0,0,0,0.06); border-radius: 5px; overflow: hidden; position: relative;">
           <div style="width: ${info.percentElapsed}%; height: 100%; background: ${badgeColor}; border-radius: 5px; transition: width 0.4s ease-out;"></div>
         </div>
       </div>
@@ -412,6 +443,9 @@ document.addEventListener('DOMContentLoaded', () => {
       if (text) handlePastedRetroDate(text);
     });
   }
+  if (typeof renderRetrocomisionCheck === 'function') {
+    renderRetrocomisionCheck();
+  }
   if (typeof calcPermanenciaBoe === 'function') {
     calcPermanenciaBoe();
   }
@@ -429,6 +463,8 @@ function calcPermanenciaBoe() {
   const elConsumo = document.getElementById('perm-consumo');
   const elDisplay = document.getElementById('perm-total-display');
   const elDetail = document.getElementById('perm-formula-detail');
+  const elBadge = document.getElementById('perm-badge-status');
+  const elCard = document.getElementById('perm-result-card');
 
   if (!elDisplay) return;
 
@@ -446,27 +482,99 @@ function calcPermanenciaBoe() {
 
   // Fórmula oficial BOE: 5% (0.05) × meses restantes × precio del kW base × consumo medio mensual
   const penalizacion = 0.05 * validMeses * validPrecio * validConsumo;
-
   const f2 = (n) => (Math.round(n * 100) / 100).toFixed(2);
 
   if (validMeses > 0 && validPrecio > 0 && validConsumo > 0) {
     elDisplay.textContent = `${f2(penalizacion)} €`;
     elDisplay.style.color = '#dc2626';
+    if (elBadge) {
+      elBadge.style.background = '#fee2e2';
+      elBadge.style.color = '#dc2626';
+      elBadge.style.borderColor = 'rgba(220, 38, 38, 0.3)';
+      elBadge.innerHTML = '<span>⚠️</span><span>PENALIZACIÓN MÁX. (5%)</span>';
+    }
+    if (elCard) {
+      elCard.style.borderColor = 'rgba(220, 38, 38, 0.35)';
+    }
     if (elDetail) {
       elDetail.style.display = 'block';
-      elDetail.innerHTML = `⚖️ <strong>Penalización máx. legal BOE (5%):</strong> 0,05 × <strong>${validMeses} meses</strong> × <strong>${validPrecio.toFixed(3)} €/kWh</strong> × <strong>${validConsumo} kWh/mes</strong> = <strong style="color:#b91c1c;font-size:12.5px;">${f2(penalizacion)} €</strong>.<br><span style="font-size:11px;color:var(--t3);">*Según la normativa del Sector Eléctrico (BOE), la penalización máxima legal por rescisión anticipada en contratos domésticos es únicamente del 5% del valor de la energía estimada pendiente por consumir.</span>`;
+      elDetail.innerHTML = `
+        <!-- Barra comparativa BOE -->
+        <div style="margin: 8px 0;">
+          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:3px;">
+            <span>Límite Legal Sector Eléctrico</span>
+            <span>Tope: <strong>5% del valor pendiente</strong></span>
+          </div>
+          <div style="width: 100%; height: 7px; background: rgba(0,0,0,0.06); border-radius: 5px; overflow: hidden; position: relative;">
+            <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #dc2626); border-radius: 5px;"></div>
+          </div>
+        </div>
+
+        <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.22);border-radius:8px;font-size:12px;color:#991b1b;margin-top:6px;">
+          <span>⚖️ <strong>Fórmula BOE:</strong> 0,05 × <strong>${validMeses} meses</strong> × <strong>${validPrecio.toFixed(4)} €/kWh</strong> × <strong>${validConsumo} kWh</strong> = <strong style="color:#b91c1c;font-size:13px;">${f2(penalizacion)} €</strong></span>
+        </div>
+
+        <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 11px; color: var(--t3); line-height: 1.35;">
+          📜 <em>*Según la Ley del Sector Eléctrico (BOE), la penalización máxima legal por rescisión anticipada en contratos domésticos es únicamente del 5% del valor estimado de la energía pendiente por consumir.</em>
+        </div>
+      `;
+    }
+  } else if (validMeses > 0 || validPrecio > 0 || validConsumo > 0) {
+    elDisplay.textContent = '0,00 €';
+    elDisplay.style.color = '#d97706';
+    if (elBadge) {
+      elBadge.style.background = 'rgba(217, 119, 6, 0.1)';
+      elBadge.style.color = '#d97706';
+      elBadge.style.borderColor = 'rgba(217, 119, 6, 0.25)';
+      elBadge.innerHTML = '<span>⏳</span><span>PENDIENTE DE DATOS</span>';
+    }
+    if (elCard) {
+      elCard.style.borderColor = 'rgba(217, 119, 6, 0.3)';
+    }
+    const missing = [];
+    if (!validMeses) missing.push('meses restantes');
+    if (!validPrecio) missing.push('precio kW base');
+    if (!validConsumo) missing.push('consumo medio mensual');
+
+    if (elDetail) {
+      elDetail.style.display = 'block';
+      elDetail.innerHTML = `
+        <div class="db-tool-empty-box" style="margin-top: 6px;">
+          <div class="db-tool-empty-icon" style="color: #d97706; background: rgba(217, 119, 6, 0.1);">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          </div>
+          <div style="line-height:1.4;">
+            <div style="font-weight:700;color:var(--text);font-size:12px;margin-bottom:2px;">Faltan datos para el cálculo</div>
+            <div style="color:var(--t2);font-size:11.5px;">Completa <strong>${missing.join(', ')}</strong> para calcular la penalización máxima fijada por el BOE.</div>
+          </div>
+        </div>
+      `;
     }
   } else {
-    elDisplay.textContent = (validMeses > 0 && (validPrecio > 0 || validConsumo > 0)) ? `${f2(penalizacion)} €` : '0,00 €';
-    elDisplay.style.color = '#d97706';
+    elDisplay.textContent = '0,00 €';
+    elDisplay.style.color = 'var(--blue)';
+    if (elBadge) {
+      elBadge.style.background = 'rgba(53, 127, 191, 0.1)';
+      elBadge.style.color = 'var(--blue)';
+      elBadge.style.borderColor = 'rgba(53, 127, 191, 0.25)';
+      elBadge.innerHTML = '<span>⚖️</span><span>PENALIZACIÓN MÁX. (5%)</span>';
+    }
+    if (elCard) {
+      elCard.style.borderColor = 'rgba(226, 232, 240, 0.9)';
+    }
     if (elDetail) {
-      if (validMeses > 0 || validPrecio > 0 || validConsumo > 0) {
-        elDetail.style.display = 'block';
-        elDetail.innerHTML = `ℹ️ Completa los <strong>meses restantes</strong>, <strong>precio kW base (€)</strong> y <strong>consumo medio mensual</strong> para calcular la penalización máxima del 5% fijada por el BOE.`;
-      } else {
-        elDetail.style.display = 'none';
-        elDetail.innerHTML = '';
-      }
+      elDetail.style.display = 'block';
+      elDetail.innerHTML = `
+        <div class="db-tool-empty-box" style="margin-top: 6px;">
+          <div class="db-tool-empty-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <div style="line-height:1.4;">
+            <div style="font-weight:700;color:var(--text);font-size:12px;margin-bottom:2px;">Calculadora de rescisión anticipada</div>
+            <div style="color:var(--t3);font-size:11.5px;">Introduce meses restantes, precio kW y consumo medio para calcular el tope del 5% fijado por el BOE.</div>
+          </div>
+        </div>
+      `;
     }
   }
 }
@@ -481,5 +589,18 @@ function clearPermanenciaBoe() {
   permMesesManuallyEdited = false;
   calcPermanenciaBoe();
 }
+
+function clearRetrocomision() {
+  const elFecha = document.getElementById('retro-fecha');
+  if (elFecha) elFecha.value = '';
+  renderRetrocomisionCheck();
+}
+
+// Exportar globalmente para eventos en HTML
+window.renderRetrocomisionCheck = renderRetrocomisionCheck;
+window.clearRetrocomision = clearRetrocomision;
+window.calcPermanenciaBoe = calcPermanenciaBoe;
+window.clearPermanenciaBoe = clearPermanenciaBoe;
+window.pasteDateToRetroInput = pasteDateToRetroInput;
 
 
