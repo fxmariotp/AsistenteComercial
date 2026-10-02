@@ -193,6 +193,7 @@ function renderRetrocomisionCheck() {
   const elCia = document.getElementById('retro-cia');
   const elFecha = document.getElementById('retro-fecha');
   const elResult = document.getElementById('retro-resultado');
+  const elBadge = document.getElementById('retro-badge-status');
 
   if (!elResult) return;
 
@@ -200,28 +201,12 @@ function renderRetrocomisionCheck() {
   const fecha = elFecha ? elFecha.value : '';
 
   if (!fecha) {
-    elResult.innerHTML = `
-      <div class="db-tool-result-card">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span class="db-tool-badge" style="background: rgba(53, 127, 191, 0.1); color: var(--blue); border: 1px solid rgba(53, 127, 191, 0.25);">
-            <span>🔍</span>
-            <span>ESTADO RETROCOMISIÓN</span>
-          </span>
-          <div style="font-size: 12px; color: var(--t3); font-weight: 600;">
-            Sin fecha indicada
-          </div>
-        </div>
-        <div class="db-tool-empty-box" style="margin-top: 6px;">
-          <div class="db-tool-empty-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-          </div>
-          <div style="line-height:1.4;">
-            <div style="font-weight:700;color:var(--text);font-size:12px;margin-bottom:2px;">Comprobador de penalización</div>
-            <div style="color:var(--t3);font-size:11.5px;">Selecciona la fecha del contrato anterior o pulsa <strong>Pegar</strong> para comprobar los tramos y días libres.</div>
-          </div>
-        </div>
-      </div>
-    `;
+    elResult.innerHTML = '';
+    elResult.style.display = 'none';
+    if (elBadge) {
+      elBadge.style.display = 'none';
+      elBadge.innerHTML = '';
+    }
     if (!permMesesManuallyEdited) {
       const elPermMeses = document.getElementById('perm-meses');
       if (elPermMeses && elPermMeses.value) {
@@ -235,20 +220,18 @@ function renderRetrocomisionCheck() {
   const info = calcRetrocomisionInfo(cia, fecha);
 
   if (info.isFuture) {
+    if (elBadge) {
+      elBadge.style.display = 'inline-flex';
+      elBadge.style.background = '#fee2e2';
+      elBadge.style.color = '#dc2626';
+      elBadge.style.borderColor = 'rgba(220, 38, 38, 0.3)';
+      elBadge.innerHTML = '<span>⚠️</span><span>FECHA FUTURA</span>';
+    }
+    elResult.style.display = 'block';
     elResult.innerHTML = `
-      <div class="db-tool-result-card" style="border-color: rgba(220, 38, 38, 0.35);">
-        <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-          <span class="db-tool-badge" style="background: #fee2e2; color: #dc2626; border: 1px solid rgba(220, 38, 38, 0.3);">
-            <span>⚠️</span>
-            <span>FECHA NO VÁLIDA</span>
-          </span>
-        </div>
-        <div class="db-tool-empty-box" style="margin-top: 6px; background: rgba(254, 242, 242, 0.7); border-color: rgba(252, 165, 165, 0.8);">
-          <div class="db-tool-empty-icon" style="background: rgba(220, 38, 38, 0.1); color: #dc2626;">⚠️</div>
-          <div style="line-height:1.4; color: #991b1b; font-size: 12px;">
-            ${info.message}
-          </div>
-        </div>
+      <div style="background: rgba(254, 242, 242, 0.85); border: 1px solid rgba(252, 165, 165, 0.8); border-radius: 8px; padding: 6px 12px; color: #b91c1c; font-size: 11.5px; display: flex; align-items: center; gap: 8px; margin-top: 6px;">
+        <span style="font-size: 14px;">⚠️</span>
+        <div>${info.message}</div>
       </div>
     `;
     return;
@@ -274,50 +257,58 @@ function renderRetrocomisionCheck() {
     badgeBg = '#fee2e2';
     badgeColor = '#dc2626';
     badgeIcon = '⛔';
-    badgeTitle = '100% DE RETROCOMISIÓN';
+    badgeTitle = '100% RETRO';
   } else if (info.retroPct === 50) {
     badgeBg = '#fef3c7';
     badgeColor = '#d97706';
     badgeIcon = '⚠️';
-    badgeTitle = '50% DE RETROCOMISIÓN';
+    badgeTitle = '50% RETRO';
   } else {
     badgeBg = '#d1fae5';
     badgeColor = '#059669';
     badgeIcon = '✅';
-    badgeTitle = '¡LIBRE DE RETROCOMISIÓN! (0%)';
+    badgeTitle = '0% (¡LIBRE!)';
+  }
+
+  if (elBadge) {
+    elBadge.style.display = 'inline-flex';
+    elBadge.style.background = badgeBg;
+    elBadge.style.color = badgeColor;
+    elBadge.style.borderColor = badgeColor + '44';
+    elBadge.innerHTML = `<span>${badgeIcon}</span><span>${badgeTitle}</span>`;
   }
 
   let nextStepHtml = '';
   if (info.retroPct === 100) {
     if (info.dateTo50 && info.daysTo50 > 0) {
       nextStepHtml = `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.25);border-radius:8px;font-size:12px;color:#92400e;margin-top:6px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 10px;background:rgba(217,119,6,0.07);border:1px solid rgba(217,119,6,0.2);border-radius:6px;font-size:11.5px;color:#92400e;">
           <span>⏳ Baja al <strong>50% de retro</strong>:</span>
-          <strong>${info.dateTo50} (en ${info.daysTo50} días)</strong>
+          <strong>${info.dateTo50} (en ${info.daysTo50} d.)</strong>
         </div>
       `;
     }
     if (info.dateToFree && info.daysToFree > 0) {
       nextStepHtml += `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.25);border-radius:8px;font-size:12px;color:#065f46;margin-top:6px;">
-          <span>🎉 Queda <strong>100% Libre (0% retro)</strong>:</span>
-          <strong>${info.dateToFree} (en ${info.daysToFree} días)</strong>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 10px;background:rgba(5,150,105,0.07);border:1px solid rgba(5,150,105,0.2);border-radius:6px;font-size:11.5px;color:#065f46;margin-top:4px;">
+          <span>🎉 Queda <strong>100% Libre</strong>:</span>
+          <strong>${info.dateToFree} (en ${info.daysToFree} d.)</strong>
         </div>
       `;
     }
   } else if (info.retroPct === 50) {
     if (info.dateToFree && info.daysToFree > 0) {
       nextStepHtml = `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:10px;padding:6px 12px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.25);border-radius:8px;font-size:12px;color:#065f46;margin-top:6px;">
-          <span>🎉 Queda <strong>100% Libre (0% retro)</strong>:</span>
-          <strong>${info.dateToFree} (en ${info.daysToFree} días)</strong>
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 10px;background:rgba(5,150,105,0.07);border:1px solid rgba(5,150,105,0.2);border-radius:6px;font-size:11.5px;color:#065f46;">
+          <span>🎉 Queda <strong>100% Libre</strong>:</span>
+          <strong>${info.dateToFree} (en ${info.daysToFree} d.)</strong>
         </div>
       `;
     }
   } else {
     nextStepHtml = `
-      <div style="display:flex;align-items:center;gap:8px;padding:6px 12px;background:rgba(16,185,129,0.1);border:1px solid rgba(16,185,129,0.25);border-radius:8px;font-size:12px;color:#065f46;margin-top:6px;">
-        <span>🚀 <strong>Puedes tramitar este contrato con tranquilidad:</strong> se comisionará íntegramente al no aplicar retrocomisión.</span>
+      <div style="display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:6px;font-size:11.5px;color:#065f46;">
+        <span>🚀 <strong>Sin penalización:</strong> comisionable íntegramente (0% retro).</span>
       </div>
     `;
   }
@@ -325,44 +316,33 @@ function renderRetrocomisionCheck() {
   let noticeHtml = '';
   if (info.companyNotice) {
     noticeHtml = `
-      <div style="display:flex;align-items:center;gap:9px;padding:8px 12px;background:rgba(217,119,6,0.1);border:1.5px solid rgba(217,119,6,0.35);border-radius:8px;font-size:12px;color:#92400e;margin-top:8px;">
-        <span style="font-size:16px;flex-shrink:0;">⚠️</span>
-        <div style="line-height:1.4;">${info.companyNotice}</div>
+      <div style="display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.25);border-radius:6px;font-size:11px;color:#92400e;margin-top:4px;line-height:1.35;">
+        <span>⚠️</span>
+        <div>${info.companyNotice}</div>
       </div>
     `;
   }
 
+  elResult.style.display = 'block';
   elResult.innerHTML = `
-    <div class="db-tool-result-card" style="border-color: ${badgeColor}44;">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;margin-bottom:8px;">
-        <span class="db-tool-badge" style="background: ${badgeBg}; color: ${badgeColor}; border: 1px solid ${badgeColor}44;">
-          <span>${badgeIcon}</span>
-          <span>${badgeTitle}</span>
-        </span>
-        <div style="font-size: 12px; color: var(--t2); font-weight: 600;">
-          Antigüedad: <strong style="color: var(--text); font-size: 13px;">${info.diffDays} días</strong> transcurridos
-        </div>
+    <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(226, 232, 240, 0.8); animation: fadeIn 0.2s ease-out;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px;font-size:11px;color:var(--t3);">
+        <span>Antigüedad: <strong style="color:var(--text);">${info.diffDays} días</strong> transcurridos</span>
+        <span>Periodo normativo: <strong>${info.totalPeriodDays} días</strong></span>
       </div>
 
-      <!-- Barra de progreso visual -->
-      <div style="margin: 8px 0;">
-        <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:3px;">
-          <span>Fecha Contrato: <strong>${info.formattedContractDate}</strong></span>
-          <span>Periodo Normativo: <strong>${info.totalPeriodDays} días</strong></span>
-        </div>
-        <div style="width: 100%; height: 7px; background: rgba(0,0,0,0.06); border-radius: 5px; overflow: hidden; position: relative;">
-          <div style="width: ${info.percentElapsed}%; height: 100%; background: ${badgeColor}; border-radius: 5px; transition: width 0.4s ease-out;"></div>
-        </div>
+      <div style="width: 100%; height: 5px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; margin-bottom: 5px;">
+        <div style="width: ${info.percentElapsed}%; height: 100%; background: ${badgeColor}; border-radius: 4px; transition: width 0.4s ease-out;"></div>
       </div>
 
-      <div style="font-size: 12px; color: var(--t2); line-height: 1.4; margin-top: 6px;">
+      <div style="font-size: 11.5px; color: var(--t2); line-height: 1.35; margin-bottom: 4px;">
         ${info.ruleDetails}
       </div>
 
       ${nextStepHtml}
       ${noticeHtml}
 
-      <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 11px; color: var(--t3);">
+      <div style="margin-top: 4px; font-size: 10.5px; color: var(--t3);">
         📋 <em>${info.ruleTitle}</em>
       </div>
     </div>
@@ -463,10 +443,8 @@ function calcPermanenciaBoe() {
   const elConsumo = document.getElementById('perm-consumo');
   const elDisplay = document.getElementById('perm-total-display');
   const elDetail = document.getElementById('perm-formula-detail');
-  const elBadge = document.getElementById('perm-badge-status');
-  const elCard = document.getElementById('perm-result-card');
 
-  if (!elDisplay) return;
+  if (!elDisplay || !elDetail) return;
 
   const rawMeses = elMeses ? String(elMeses.value).replace(',', '.').trim() : '';
   const rawPrecio = elPrecio ? String(elPrecio.value).replace(',', '.').trim() : '';
@@ -487,95 +465,36 @@ function calcPermanenciaBoe() {
   if (validMeses > 0 && validPrecio > 0 && validConsumo > 0) {
     elDisplay.textContent = `${f2(penalizacion)} €`;
     elDisplay.style.color = '#dc2626';
-    if (elBadge) {
-      elBadge.style.background = '#fee2e2';
-      elBadge.style.color = '#dc2626';
-      elBadge.style.borderColor = 'rgba(220, 38, 38, 0.3)';
-      elBadge.innerHTML = '<span>⚠️</span><span>PENALIZACIÓN MÁX. (5%)</span>';
-    }
-    if (elCard) {
-      elCard.style.borderColor = 'rgba(220, 38, 38, 0.35)';
-    }
-    if (elDetail) {
-      elDetail.style.display = 'block';
-      elDetail.innerHTML = `
-        <!-- Barra comparativa BOE -->
-        <div style="margin: 8px 0;">
-          <div style="display:flex;justify-content:space-between;font-size:11px;color:var(--t3);margin-bottom:3px;">
-            <span>Límite Legal Sector Eléctrico</span>
-            <span>Tope: <strong>5% del valor pendiente</strong></span>
-          </div>
-          <div style="width: 100%; height: 7px; background: rgba(0,0,0,0.06); border-radius: 5px; overflow: hidden; position: relative;">
-            <div style="width: 100%; height: 100%; background: linear-gradient(90deg, #f59e0b, #dc2626); border-radius: 5px;"></div>
-          </div>
+    elDetail.style.display = 'block';
+    elDetail.innerHTML = `
+      <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(226, 232, 240, 0.8); animation: fadeIn 0.2s ease-out;">
+        <div style="display:flex;align-items:center;gap:8px;padding:4px 10px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.2);border-radius:6px;font-size:11.5px;color:#991b1b;">
+          <span>⚖️ <strong>Fórmula BOE (5% máx.):</strong> 0,05 × <strong>${validMeses} meses</strong> × <strong>${validPrecio.toFixed(4)} €/kWh</strong> × <strong>${validConsumo} kWh</strong> = <strong style="color:#b91c1c;font-size:12.5px;">${f2(penalizacion)} €</strong></span>
         </div>
-
-        <div style="display:flex;align-items:center;gap:8px;padding:7px 11px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.22);border-radius:8px;font-size:12px;color:#991b1b;margin-top:6px;">
-          <span>⚖️ <strong>Fórmula BOE:</strong> 0,05 × <strong>${validMeses} meses</strong> × <strong>${validPrecio.toFixed(4)} €/kWh</strong> × <strong>${validConsumo} kWh</strong> = <strong style="color:#b91c1c;font-size:13px;">${f2(penalizacion)} €</strong></span>
+        <div style="margin-top: 4px; font-size: 10.5px; color: var(--t3); line-height: 1.3;">
+          📜 <em>*Tope fijado por la Ley del Sector Eléctrico (BOE) para rescisión anticipada (máx. 5% de la energía estimada pendiente).</em>
         </div>
-
-        <div style="margin-top: 8px; padding-top: 6px; border-top: 1px solid rgba(0,0,0,0.06); font-size: 11px; color: var(--t3); line-height: 1.35;">
-          📜 <em>*Según la Ley del Sector Eléctrico (BOE), la penalización máxima legal por rescisión anticipada en contratos domésticos es únicamente del 5% del valor estimado de la energía pendiente por consumir.</em>
-        </div>
-      `;
-    }
+      </div>
+    `;
   } else if (validMeses > 0 || validPrecio > 0 || validConsumo > 0) {
     elDisplay.textContent = '0,00 €';
     elDisplay.style.color = '#d97706';
-    if (elBadge) {
-      elBadge.style.background = 'rgba(217, 119, 6, 0.1)';
-      elBadge.style.color = '#d97706';
-      elBadge.style.borderColor = 'rgba(217, 119, 6, 0.25)';
-      elBadge.innerHTML = '<span>⏳</span><span>PENDIENTE DE DATOS</span>';
-    }
-    if (elCard) {
-      elCard.style.borderColor = 'rgba(217, 119, 6, 0.3)';
-    }
     const missing = [];
-    if (!validMeses) missing.push('meses restantes');
-    if (!validPrecio) missing.push('precio kW base');
-    if (!validConsumo) missing.push('consumo medio mensual');
-
-    if (elDetail) {
-      elDetail.style.display = 'block';
-      elDetail.innerHTML = `
-        <div class="db-tool-empty-box" style="margin-top: 6px;">
-          <div class="db-tool-empty-icon" style="color: #d97706; background: rgba(217, 119, 6, 0.1);">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
-          </div>
-          <div style="line-height:1.4;">
-            <div style="font-weight:700;color:var(--text);font-size:12px;margin-bottom:2px;">Faltan datos para el cálculo</div>
-            <div style="color:var(--t2);font-size:11.5px;">Completa <strong>${missing.join(', ')}</strong> para calcular la penalización máxima fijada por el BOE.</div>
-          </div>
-        </div>
-      `;
-    }
+    if (!validMeses) missing.push('meses');
+    if (!validPrecio) missing.push('precio kW');
+    if (!validConsumo) missing.push('consumo');
+    elDetail.style.display = 'block';
+    elDetail.innerHTML = `
+      <div style="margin-top: 6px; padding: 4px 10px; background: rgba(217, 119, 6, 0.07); border: 1px solid rgba(217, 119, 6, 0.2); border-radius: 6px; font-size: 11px; color: #92400e; display: flex; align-items: center; gap: 6px;">
+        <span>ℹ️</span>
+        <span>Completa <strong>${missing.join(', ')}</strong> para calcular la penalización máxima legal del 5% fijada por el BOE.</span>
+      </div>
+    `;
   } else {
     elDisplay.textContent = '0,00 €';
     elDisplay.style.color = 'var(--blue)';
-    if (elBadge) {
-      elBadge.style.background = 'rgba(53, 127, 191, 0.1)';
-      elBadge.style.color = 'var(--blue)';
-      elBadge.style.borderColor = 'rgba(53, 127, 191, 0.25)';
-      elBadge.innerHTML = '<span>⚖️</span><span>PENALIZACIÓN MÁX. (5%)</span>';
-    }
-    if (elCard) {
-      elCard.style.borderColor = 'rgba(226, 232, 240, 0.9)';
-    }
-    if (elDetail) {
-      elDetail.style.display = 'block';
-      elDetail.innerHTML = `
-        <div class="db-tool-empty-box" style="margin-top: 6px;">
-          <div class="db-tool-empty-icon">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-          </div>
-          <div style="line-height:1.4;">
-            <div style="font-weight:700;color:var(--text);font-size:12px;margin-bottom:2px;">Calculadora de rescisión anticipada</div>
-            <div style="color:var(--t3);font-size:11.5px;">Introduce meses restantes, precio kW y consumo medio para calcular el tope del 5% fijado por el BOE.</div>
-          </div>
-        </div>
-      `;
-    }
+    elDetail.style.display = 'none';
+    elDetail.innerHTML = '';
   }
 }
 
