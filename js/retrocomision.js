@@ -299,7 +299,7 @@ function renderRetrocomisionCheck() {
   } else if (info.retroPct === 50) {
     if (info.dateToFree && info.daysToFree > 0) {
       nextStepHtml = `
-        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 10px;background:rgba(5,150,105,0.07);border:1px solid rgba(5,150,105,0.2);border-radius:6px;font-size:11.5px;color:#065f46;">
+        <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;padding:3px 9px;background:rgba(5,150,105,0.07);border:1px solid rgba(5,150,105,0.2);border-radius:5px;font-size:11px;color:#065f46;">
           <span>🎉 Queda <strong>100% Libre</strong>:</span>
           <strong>${info.dateToFree} (en ${info.daysToFree} d.)</strong>
         </div>
@@ -307,7 +307,7 @@ function renderRetrocomisionCheck() {
     }
   } else {
     nextStepHtml = `
-      <div style="display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:6px;font-size:11.5px;color:#065f46;">
+      <div style="display:flex;align-items:center;gap:6px;padding:3px 9px;background:rgba(16,185,129,0.08);border:1px solid rgba(16,185,129,0.2);border-radius:5px;font-size:11px;color:#065f46;">
         <span>🚀 <strong>Sin penalización:</strong> comisionable íntegramente (0% retro).</span>
       </div>
     `;
@@ -316,7 +316,7 @@ function renderRetrocomisionCheck() {
   let noticeHtml = '';
   if (info.companyNotice) {
     noticeHtml = `
-      <div style="display:flex;align-items:center;gap:6px;padding:4px 10px;background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.25);border-radius:6px;font-size:11px;color:#92400e;margin-top:4px;line-height:1.35;">
+      <div style="display:flex;align-items:center;gap:5px;padding:3px 9px;background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.25);border-radius:5px;font-size:10.5px;color:#92400e;margin-top:3px;line-height:1.3;">
         <span>⚠️</span>
         <div>${info.companyNotice}</div>
       </div>
@@ -325,24 +325,24 @@ function renderRetrocomisionCheck() {
 
   elResult.style.display = 'block';
   elResult.innerHTML = `
-    <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(226, 232, 240, 0.8); animation: fadeIn 0.2s ease-out;">
-      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px;font-size:11px;color:var(--t3);">
+    <div style="margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(226, 232, 240, 0.8); animation: fadeIn 0.2s ease-out; max-width: 820px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:2px;font-size:10.5px;color:var(--t3);">
         <span>Antigüedad: <strong style="color:var(--text);">${info.diffDays} días</strong> transcurridos</span>
         <span>Periodo normativo: <strong>${info.totalPeriodDays} días</strong></span>
       </div>
 
-      <div style="width: 100%; height: 5px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; margin-bottom: 5px;">
+      <div style="width: 100%; height: 4px; background: rgba(0,0,0,0.06); border-radius: 4px; overflow: hidden; margin-bottom: 4px;">
         <div style="width: ${info.percentElapsed}%; height: 100%; background: ${badgeColor}; border-radius: 4px; transition: width 0.4s ease-out;"></div>
       </div>
 
-      <div style="font-size: 11.5px; color: var(--t2); line-height: 1.35; margin-bottom: 4px;">
+      <div style="font-size: 11px; color: var(--t2); line-height: 1.35; margin-bottom: 3px;">
         ${info.ruleDetails}
       </div>
 
       ${nextStepHtml}
       ${noticeHtml}
 
-      <div style="margin-top: 4px; font-size: 10.5px; color: var(--t3);">
+      <div style="margin-top: 3px; font-size: 10px; color: var(--t3);">
         📋 <em>${info.ruleTitle}</em>
       </div>
     </div>
@@ -467,11 +467,11 @@ function calcPermanenciaBoe() {
     elDisplay.style.color = '#dc2626';
     elDetail.style.display = 'block';
     elDetail.innerHTML = `
-      <div style="margin-top: 6px; padding-top: 6px; border-top: 1px solid rgba(226, 232, 240, 0.8); animation: fadeIn 0.2s ease-out;">
-        <div style="display:flex;align-items:center;gap:8px;padding:4px 10px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.2);border-radius:6px;font-size:11.5px;color:#991b1b;">
-          <span>⚖️ <strong>Fórmula BOE (5% máx.):</strong> 0,05 × <strong>${validMeses} meses</strong> × <strong>${validPrecio.toFixed(4)} €/kWh</strong> × <strong>${validConsumo} kWh</strong> = <strong style="color:#b91c1c;font-size:12.5px;">${f2(penalizacion)} €</strong></span>
+      <div style="margin-top: 5px; padding-top: 5px; border-top: 1px solid rgba(226, 232, 240, 0.8); animation: fadeIn 0.2s ease-out; max-width: 820px;">
+        <div style="display:inline-flex;align-items:center;gap:7px;padding:3px 9px;background:rgba(220,38,38,0.06);border:1px solid rgba(220,38,38,0.2);border-radius:5px;font-size:11px;color:#991b1b;">
+          <span>⚖️ <strong>Fórmula BOE (5% máx.):</strong> 0,05 × <strong>${validMeses} meses</strong> × <strong>${validPrecio.toFixed(4)} €/kWh</strong> × <strong>${validConsumo} kWh</strong> = <strong style="color:#b91c1c;font-size:12px;">${f2(penalizacion)} €</strong></span>
         </div>
-        <div style="margin-top: 4px; font-size: 10.5px; color: var(--t3); line-height: 1.3;">
+        <div style="margin-top: 3px; font-size: 10px; color: var(--t3); line-height: 1.3;">
           📜 <em>*Tope fijado por la Ley del Sector Eléctrico (BOE) para rescisión anticipada (máx. 5% de la energía estimada pendiente).</em>
         </div>
       </div>
@@ -485,7 +485,7 @@ function calcPermanenciaBoe() {
     if (!validConsumo) missing.push('consumo');
     elDetail.style.display = 'block';
     elDetail.innerHTML = `
-      <div style="margin-top: 6px; padding: 4px 10px; background: rgba(217, 119, 6, 0.07); border: 1px solid rgba(217, 119, 6, 0.2); border-radius: 6px; font-size: 11px; color: #92400e; display: flex; align-items: center; gap: 6px;">
+      <div style="margin-top: 5px; padding: 3px 8px; background: rgba(217, 119, 6, 0.07); border: 1px solid rgba(217, 119, 6, 0.2); border-radius: 5px; font-size: 10.5px; color: #92400e; display: inline-flex; align-items: center; gap: 5px; max-width: 820px;">
         <span>ℹ️</span>
         <span>Completa <strong>${missing.join(', ')}</strong> para calcular la penalización máxima legal del 5% fijada por el BOE.</span>
       </div>
