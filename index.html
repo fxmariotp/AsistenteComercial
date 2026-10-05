@@ -3607,19 +3607,36 @@ hr {
   color: var(--t2);
   white-space: nowrap;
 }
+/* Quitar flechitas nativas en inputs de tipo número para que no tapen el texto */
+.db-tool-input-sm::-webkit-inner-spin-button,
+.db-tool-input-sm::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.db-tool-input-sm[type=number] {
+  -moz-appearance: textfield;
+  appearance: textfield;
+}
+
 .db-tool-input-sm {
-  height: 25px;
-  padding: 1px 6px;
+  height: 26px;
+  padding: 2px 7px;
   background: rgba(255, 255, 255, 0.95);
   border: 1.1px solid var(--border);
-  border-radius: 5px;
-  font-size: 11.5px;
-  font-weight: 600;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 500;
   color: var(--text);
   outline: none;
   transition: all 0.2s ease;
   font-family: inherit;
   box-sizing: border-box;
+}
+.db-tool-input-sm::placeholder {
+  font-size: 10.5px;
+  font-weight: 400;
+  color: var(--t3);
+  opacity: 0.85;
 }
 .db-tool-input-sm:focus {
   border-color: var(--blue);
@@ -3628,18 +3645,18 @@ hr {
 }
 
 .db-tool-btn-action-sm {
-  height: 25px;
-  padding: 0 7px;
+  height: 26px;
+  padding: 0 8px;
   background: rgba(53, 127, 191, 0.08);
   border: 1.1px solid rgba(53, 127, 191, 0.25);
-  border-radius: 5px;
+  border-radius: 6px;
   color: var(--blue);
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 3px;
+  gap: 4px;
   white-space: nowrap;
   transition: all 0.2s ease;
   flex-shrink: 0;
@@ -3651,13 +3668,13 @@ hr {
 }
 
 .db-tool-btn-clear-sm {
-  height: 25px;
-  padding: 0 6px;
+  height: 26px;
+  padding: 0 7px;
   background: rgba(0, 0, 0, 0.03);
   border: 1.1px solid var(--border);
-  border-radius: 5px;
+  border-radius: 6px;
   color: var(--t2);
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 600;
   cursor: pointer;
   display: inline-flex;
@@ -3681,11 +3698,11 @@ hr {
   flex-shrink: 0;
 }
 .db-tool-status-pill-sm {
-  height: 25px;
-  padding: 0 8px;
-  border-radius: 5px;
+  height: 26px;
+  padding: 0 9px;
+  border-radius: 6px;
   font-size: 11px;
-  font-weight: 800;
+  font-weight: 700;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -3695,9 +3712,9 @@ hr {
 .db-tool-metric-pill-sm {
   background: rgba(53, 127, 191, 0.08);
   border: 1.1px solid rgba(53, 127, 191, 0.25);
-  border-radius: 5px;
-  padding: 0 8px;
-  height: 25px;
+  border-radius: 6px;
+  padding: 0 9px;
+  height: 26px;
   display: inline-flex;
   align-items: center;
   gap: 4px;
@@ -4737,7 +4754,7 @@ input:focus, select:focus, textarea:focus {
             <div class="db-tool-controls-sm">
               <div class="db-tool-field-sm">
                 <label for="retro-cia" class="db-tool-lbl-sm">Cía:</label>
-                <select id="retro-cia" onchange="renderRetrocomisionCheck()" class="db-tool-input-sm" style="width: 96px;">
+                <select id="retro-cia" onchange="renderRetrocomisionCheck()" class="db-tool-input-sm" style="width: 104px;">
                   <option value="iberdrola">Iberdrola</option>
                   <option value="naturgy">Naturgy</option>
                   <option value="endesa">Endesa</option>
@@ -4747,7 +4764,7 @@ input:focus, select:focus, textarea:focus {
 
               <div class="db-tool-field-sm">
                 <label for="retro-fecha" class="db-tool-lbl-sm">Fecha:</label>
-                <input type="date" id="retro-fecha" onchange="renderRetrocomisionCheck()" oninput="renderRetrocomisionCheck()" class="db-tool-input-sm" style="width: 112px;">
+                <input type="date" id="retro-fecha" onchange="renderRetrocomisionCheck()" oninput="renderRetrocomisionCheck()" class="db-tool-input-sm" style="width: 124px;">
                 <button type="button" onclick="pasteDateToRetroInput()" class="db-tool-btn-action-sm" title="Pegar fecha del portapapeles">
                   <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><rect x="8" y="2" width="8" height="4" rx="1" ry="1"></rect></svg>
                   Pegar
@@ -4796,17 +4813,17 @@ input:focus, select:focus, textarea:focus {
             <div class="db-tool-controls-sm">
               <div class="db-tool-field-sm">
                 <label for="perm-meses" class="db-tool-lbl-sm">Meses:</label>
-                <input type="number" id="perm-meses" min="0" max="36" step="1" placeholder="ej. 6" oninput="permMesesManuallyEdited = true; calcPermanenciaBoe();" class="db-tool-input-sm" style="width: 46px;">
+                <input type="number" id="perm-meses" min="0" max="36" step="1" placeholder="ej. 6" oninput="permMesesManuallyEdited = true; calcPermanenciaBoe();" class="db-tool-input-sm" style="width: 50px; text-align: center;">
               </div>
 
               <div class="db-tool-field-sm">
                 <label for="perm-precio" class="db-tool-lbl-sm">Precio kW:</label>
-                <input type="number" id="perm-precio" min="0" step="0.0001" placeholder="0.150" oninput="calcPermanenciaBoe()" class="db-tool-input-sm" style="width: 62px;">
+                <input type="number" id="perm-precio" min="0" step="0.0001" placeholder="0.150 €" oninput="calcPermanenciaBoe()" class="db-tool-input-sm" style="width: 68px; text-align: center;">
               </div>
 
               <div class="db-tool-field-sm">
                 <label for="perm-consumo" class="db-tool-lbl-sm">Consumo:</label>
-                <input type="number" id="perm-consumo" min="0" step="1" placeholder="kWh/m" oninput="calcPermanenciaBoe()" class="db-tool-input-sm" style="width: 62px;">
+                <input type="number" id="perm-consumo" min="0" step="1" placeholder="kWh/mes" oninput="calcPermanenciaBoe()" class="db-tool-input-sm" style="width: 72px; text-align: center;">
               </div>
 
               <button type="button" class="db-tool-btn-clear-sm" onclick="clearPermanenciaBoe()" title="Limpiar campos">
@@ -12467,7 +12484,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785010600000;
+const CURRENT_BUILD_VERSION = 1785010700000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
