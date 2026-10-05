@@ -3610,38 +3610,49 @@ hr {
 /* Quitar flechitas nativas en inputs de tipo número para que no tapen el texto */
 .db-tool-input-sm::-webkit-inner-spin-button,
 .db-tool-input-sm::-webkit-outer-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
+  -webkit-appearance: none !important;
+  margin: 0 !important;
 }
 .db-tool-input-sm[type=number] {
-  -moz-appearance: textfield;
-  appearance: textfield;
+  -moz-appearance: textfield !important;
+  appearance: textfield !important;
 }
 
+select.db-tool-input-sm,
+input.db-tool-input-sm,
 .db-tool-input-sm {
-  height: 26px;
-  padding: 2px 7px;
-  background: rgba(255, 255, 255, 0.95);
-  border: 1.1px solid var(--border);
-  border-radius: 6px;
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text);
-  outline: none;
-  transition: all 0.2s ease;
-  font-family: inherit;
-  box-sizing: border-box;
+  height: 26px !important;
+  min-height: 26px !important;
+  max-height: 26px !important;
+  line-height: 22px !important;
+  padding: 1px 6px !important;
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1.1px solid var(--border) !important;
+  border-radius: 6px !important;
+  font-size: 11px !important;
+  font-weight: 500 !important;
+  color: var(--text) !important;
+  outline: none !important;
+  transition: all 0.2s ease !important;
+  font-family: inherit !important;
+  box-sizing: border-box !important;
+}
+select.db-tool-input-sm option {
+  font-size: 11.5px !important;
+  padding: 3px 6px !important;
+  color: var(--text) !important;
+  background: #ffffff !important;
 }
 .db-tool-input-sm::placeholder {
-  font-size: 10.5px;
-  font-weight: 400;
-  color: var(--t3);
-  opacity: 0.85;
+  font-size: 10.5px !important;
+  font-weight: 400 !important;
+  color: var(--t3) !important;
+  opacity: 0.85 !important;
 }
 .db-tool-input-sm:focus {
-  border-color: var(--blue);
-  background: #ffffff;
-  box-shadow: 0 0 0 2px rgba(53, 127, 191, 0.12);
+  border-color: var(--blue) !important;
+  background: #ffffff !important;
+  box-shadow: 0 0 0 2px rgba(53, 127, 191, 0.12) !important;
 }
 
 .db-tool-btn-action-sm {
@@ -4136,7 +4147,7 @@ body {
 }
 
 /* ── FORM ELEMENTS (DUB.CO PRECISION) ── */
-input[type="text"], input[type="number"], input[type="date"], select, textarea {
+input[type="text"]:not(.db-tool-input-sm), input[type="number"]:not(.db-tool-input-sm), input[type="date"]:not(.db-tool-input-sm), select:not(.db-tool-input-sm), textarea {
   background: #ffffff !important;
   border: 1px solid #d1d5db !important;
   border-radius: 8px !important;
@@ -4148,7 +4159,7 @@ input[type="text"], input[type="number"], input[type="date"], select, textarea {
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03) !important;
 }
 
-input:focus, select:focus, textarea:focus {
+input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textarea:focus {
   border-color: #2563eb !important;
   box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15) !important;
 }
@@ -4415,13 +4426,13 @@ body {
 }
 
 /* Inputs & Form controls */
-input[type="text"], input[type="number"], input[type="date"], select, textarea {
+input[type="text"]:not(.db-tool-input-sm), input[type="number"]:not(.db-tool-input-sm), input[type="date"]:not(.db-tool-input-sm), select:not(.db-tool-input-sm), textarea {
   border-radius: 6px !important;
   border: 1px solid #d1d5db !important;
   padding: 8px 12px !important;
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05) !important;
 }
-input:focus, select:focus, textarea:focus {
+input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textarea:focus {
   border-color: #2563eb !important;
   box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12) !important;
 }
@@ -12484,7 +12495,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785010700000;
+const CURRENT_BUILD_VERSION = 1785010800000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
