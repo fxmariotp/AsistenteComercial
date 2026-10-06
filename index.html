@@ -3621,10 +3621,10 @@ hr {
 select.db-tool-input-sm,
 input.db-tool-input-sm,
 .db-tool-input-sm {
-  height: 26px !important;
-  min-height: 26px !important;
-  max-height: 26px !important;
-  line-height: 22px !important;
+  height: 27px !important;
+  min-height: 27px !important;
+  max-height: 27px !important;
+  line-height: normal !important;
   padding: 1px 6px !important;
   background: rgba(255, 255, 255, 0.95) !important;
   border: 1.1px solid var(--border) !important;
@@ -3636,6 +3636,12 @@ input.db-tool-input-sm,
   transition: all 0.2s ease !important;
   font-family: inherit !important;
   box-sizing: border-box !important;
+  vertical-align: middle !important;
+}
+select.db-tool-input-sm {
+  padding-top: 0 !important;
+  padding-bottom: 0 !important;
+  cursor: pointer;
 }
 select.db-tool-input-sm option {
   font-size: 11.5px !important;
@@ -6208,7 +6214,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
       <div style="display: flex; gap: 10px; margin-bottom: 22px; border-bottom: 1px solid var(--border); padding-bottom: 14px; flex-wrap: wrap;">
         <button id="btn-tele-sep" class="tele-tab-btn active" onclick="switchTeleTab('sep')">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          Septiembre 2026 (Mes promocional)
+          Octubre 2026 (Mes promocional Nº2)
         </button>
         <button id="btn-tele-gen" class="tele-tab-btn inactive" onclick="switchTeleTab('gen')">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
@@ -7757,8 +7763,8 @@ const BASE = {
   },
   gana:{
     name:'Gana Energia', color:'#E30613',
-    tp1:0.0890, tp2:0.0890,
-    te_sin:0.1290, te_con:0.1290,
+    tp1:0.0990, tp2:0.0990,
+    te_sin:0.1390, te_con:0.1390,
     precio_excedente:0.06,
     sva_luz:4.13, sva_gas:9.38,
     gas_rl1:{tf:0.1310, tv:0.082885},
@@ -7766,7 +7772,7 @@ const BASE = {
     gas_rl3:{tf:0.627333, tv:0.076230},
     imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Plan 24 Horas', te:0.1290, tp1:0.0890, tp2:0.0890, nota:'Precio unico 24h sin permanencia'},
+      {n:'Plan 24 Horas', te:0.1390, tp1:0.0990, tp2:0.0990, nota:'Precio unico 24h sin permanencia'},
       {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.2300}, {p:'P2 (Llano)', te:0.1570}, {p:'P3 (Valle)', te:0.1420}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestion (+5.00 €/mes)'}
     ],
     tarifas_gas:[
@@ -12495,7 +12501,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785010800000;
+const CURRENT_BUILD_VERSION = 1785010900000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -16362,8 +16368,8 @@ const KNOWLEDGE_BASE = [
     <em>*Tienes la calculadora interactiva lista en la línea inferior del Comprobador de Retrocomisiones en el Dashboard.*</em>`
   },
   {
-    keywords: ["comisiones", "comision", "pagos", "cuanto gano", "cuanto pagan", "escalado", "telemarketing", "septiembre", "condiciones telemarketing", "objetivos telemarketing", "salario base telemarketing"],
-    answer: `<strong>Condiciones y Escalado de Telemarketing (Septiembre 2026):</strong><br><br>
+    keywords: ["comisiones", "comision", "pagos", "cuanto gano", "cuanto pagan", "escalado", "telemarketing", "septiembre", "octubre", "condiciones telemarketing", "objetivos telemarketing", "salario base telemarketing"],
+    answer: `<strong>Condiciones y Escalado de Telemarketing (Octubre 2026 - Mes promocional Nº2):</strong><br><br>
     • <strong>Jornada 5 horas:</strong> <strong>960 € brutos</strong> | Objetivo: <strong>18 puntos</strong><br>
       - <em>18 – 24 puntos:</em> Comisión base (Luz c/s: 50€ | Luz s/s: 30€ | Gas c/m: 30€ | Gas s/m: 10€)<br>
       - <em>25 – 29 puntos:</em> <strong>+10 €/contrato</strong> (Luz c/s: 60€ | Luz s/s: 40€ | Gas c/m: 40€ | Gas s/m: 20€)<br>
@@ -17376,12 +17382,12 @@ function getRenosurChatResponse(query) {
       luz: {
         plan_24h: {
           name: "Plan 24 Horas",
-          base: "0,1290 €/kWh",
-          sin_mantenimiento: "0,1290 €/kWh (Igual que el precio base)",
-          con_mantenimiento: "0,1290 €/kWh (Igual que el precio base)",
+          base: "0,1390 €/kWh",
+          sin_mantenimiento: "0,1390 €/kWh (Igual que el precio base)",
+          con_mantenimiento: "0,1390 €/kWh (Igual que el precio base)",
           descuento_sin_mantenimiento: "0%",
           descuento_con_mantenimiento: "No se muestra descuento adicional con mantenimiento.",
-          potencia: "TP1: 0,0890 €/kW-día | TP2: 0,0890 €/kW-día",
+          potencia: "TP1: 0,0990 €/kW-día | TP2: 0,0990 €/kW-día",
           excedentes: "0,06 €/kWh",
           mantenimiento: "No se indica un coste de mantenimiento específico en esta tarjeta.",
           permanencia: "No tiene permanencia.",
@@ -17517,8 +17523,8 @@ function getRenosurChatResponse(query) {
   // 9. Gana Energía Plan 24 Horas
   if (q.includes('plan 24 horas') || q.includes('gana energia plan 24') || (q.includes('gana') && q.includes('24 horas'))) {
     return "<strong>Gana Energía — Plan 24 Horas:</strong><br><br>" +
-      "• <strong>Término de Energía:</strong> <strong>0,1290 €/kWh</strong> (Precio fijo 24h, sin dto. adicional)<br>" +
-      "• <strong>Término de Potencia:</strong> TP1: <strong>0,0890 €/kW·día</strong> | TP2: <strong>0,0890 €/kW·día</strong><br>" +
+      "• <strong>Término de Energía:</strong> <strong>0,1390 €/kWh</strong> (Precio fijo 24h, sin dto. adicional)<br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,0990 €/kW·día</strong> | TP2: <strong>0,0990 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Servicio Manitas):</strong> 4,25 €/mes (0,1374 €/día)<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
@@ -17571,7 +17577,7 @@ function getRenosurChatResponse(query) {
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              ibLuzBest +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1230 €/kWh<br>` +
-             `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1290 €/kWh<br>` +
+             `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1390 €/kWh<br>` +
              `• <strong>Endesa Luz 24H:</strong> 0,137 €/kWh (0,131 €/kWh con mant.)<br>` +
              `• <strong>Endesa Solar Plus:</strong> 0,145 €/kWh (+2€/mes BV)<br><br>` +
              `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
@@ -17649,7 +17655,7 @@ function getRenosurChatResponse(query) {
       if (company === 'gana') {
         return `<strong>Tarifas de Luz de Gana Energía disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-          `  <button onclick="sendQuickChatQuery('Gana Energia Plan 24 Horas')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan 24 Horas (Precio Fijo) — 0,1290 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Gana Energia Plan 24 Horas')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan 24 Horas (Precio Fijo) — 0,1390 €/kWh</button>` +
           `  <button onclick="sendQuickChatQuery('Gana Energia Precio de Mercado')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Precio de Mercado (Variable Indexada / 3 tramos)</button>` +
           `</div>`;
       }
