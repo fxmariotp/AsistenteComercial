@@ -7767,18 +7767,18 @@ const BASE = {
     te_sin:0.1390, te_con:0.1390,
     precio_excedente:0.06,
     sva_luz:4.13, sva_gas:9.38,
-    gas_rl1:{tf:0.1310, tv:0.082885},
-    gas_rl2:{tf:0.270333, tv:0.080344},
-    gas_rl3:{tf:0.627333, tv:0.076230},
+    gas_rl1:{tf:0.175233, tv:0.092000},
+    gas_rl2:{tf:0.314118, tv:0.089902},
+    gas_rl3:{tf:0.678697, tv:0.086462},
     imp_electrico:0.0511,
     tarifas_luz:[
       {n:'Plan 24 Horas', te:0.1390, tp1:0.0990, tp2:0.0990, nota:'Precio unico 24h sin permanencia'},
       {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.2300}, {p:'P2 (Llano)', te:0.1570}, {p:'P3 (Valle)', te:0.1420}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestion (+5.00 €/mes)'}
     ],
     tarifas_gas:[
-      {n:'Gana Gas RL1', tv:0.082885, tf:0.1310},
-      {n:'Gana Gas RL2', tv:0.080344, tf:0.270333},
-      {n:'Gana Gas RL3', tv:0.076230, tf:0.627333}
+      {n:'Gana Gas RL1', tv:0.092000, tf:0.175233},
+      {n:'Gana Gas RL2', tv:0.089902, tf:0.314118},
+      {n:'Gana Gas RL3', tv:0.086462, tf:0.678697}
     ]
   }
 };
@@ -10881,7 +10881,8 @@ function renderCondiciones(){
       <th>Tarifa</th><th>TV (€/kWh)</th><th>TF (€/dia)</th><th>Equiv. mes</th>
     </tr></thead><tbody>`;
     r.tarifas_gas.forEach(t=>{
-      htmlGas += `<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${t.tv.toFixed(3)}</span></td><td>${t.tf.toFixed(3)}</td><td>${(t.tf*30).toFixed(2)} €</td></tr>`;
+      const tvFmt = (t.tv % 0.001 === 0) ? t.tv.toFixed(3) : t.tv.toFixed(4);
+      htmlGas += `<tr><td><strong>${t.n}</strong></td><td><span class="price-sin">${tvFmt}</span></td><td>${t.tf.toFixed(3)}</td><td>${(t.tf*30).toFixed(2)} €</td></tr>`;
     });
     let svaGasHtml = '';
     if (r.sva_gas > 0) {
@@ -12531,7 +12532,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785011000000;
+const CURRENT_BUILD_VERSION = 1785011100000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
@@ -17440,9 +17441,9 @@ function getRenosurChatResponse(query) {
         }
       },
       gas: {
-        rl1: "TV (Término Variable): 0,0829 €/kWh | TF (Término Fijo): 0,1310 €/día (Equivalente mensual: 3,93 €/mes)",
-        rl2: "TV (Término Variable): 0,0803 €/kWh | TF (Término Fijo): 0,2703 €/día (Equivalente mensual: 8,11 €/mes)",
-        rl3: "TV (Término Variable): 0,0762 €/kWh | TF (Término Fijo): 0,6273 €/día (Equivalente mensual: 18,82 €/mes)",
+        rl1: "TV (Término Variable): 0,0920 €/kWh | TF (Término Fijo): 0,1752 €/día (Equivalente mensual: 5,26 €/mes)",
+        rl2: "TV (Término Variable): 0,0899 €/kWh | TF (Término Fijo): 0,3141 €/día (Equivalente mensual: 9,42 €/mes)",
+        rl3: "TV (Término Variable): 0,0865 €/kWh | TF (Término Fijo): 0,6787 €/día (Equivalente mensual: 20,36 €/mes)",
         mantenimiento: "9,38 €/mes",
         retrocomision: "12 meses"
       }
@@ -17585,18 +17586,18 @@ function getRenosurChatResponse(query) {
       const isGasComp = q.includes('gas') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3');
       if (isGasComp) {
         if (q.includes('rl1')) {
-          return `Según los precios mostrados, el término variable más bajo de gas RL1 es <strong>Endesa Gas RL1</strong> (0,074 €/kWh), pero el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,1310 €/día o 3,93 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+          return `Según los precios mostrados, el término variable más bajo de gas RL1 es <strong>Endesa Gas RL1</strong> (0,074 €/kWh), mientras que el término fijo diario más bajo es de <strong>Naturgy</strong> (0,1693 €/día o 5,08 €/mes). <strong>Gana Energía</strong> cuenta con 0,0920 €/kWh de variable y 0,1752 €/día de fijo (5,26 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
         }
         if (q.includes('rl2')) {
-          return `Según los precios mostrados, el término variable más bajo de gas RL2 es <strong>Endesa Gas RL2</strong> (0,070 €/kWh), pero el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,2703 €/día o 8,11 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+          return `Según los precios mostrados, el término variable más bajo de gas RL2 es <strong>Endesa Gas RL2</strong> (0,070 €/kWh), mientras que el término fijo diario más bajo es de <strong>Naturgy</strong> (0,3008 €/día o 9,02 €/mes). <strong>Gana Energía</strong> cuenta con 0,0899 €/kWh de variable y 0,3141 €/día de fijo (9,42 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
         }
         if (q.includes('rl3')) {
-          return `Según los precios mostrados, el término variable más bajo de gas RL3 es <strong>Endesa Gas RL3</strong> (0,064 €/kWh), pero el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,6273 €/día o 18,82 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+          return `Según los precios mostrados, el término variable más bajo de gas RL3 es <strong>Endesa Gas RL3</strong> (0,064 €/kWh), mientras que el término fijo diario más bajo es de <strong>Naturgy</strong> (0,6496 €/día o 19,49 €/mes). <strong>Gana Energía</strong> cuenta con 0,0865 €/kWh de variable y 0,6787 €/día de fijo (20,36 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
         }
         return `<strong>Comparativa de Gas por tramos (precios variables de consumo):</strong><br><br>` +
-               `• <strong>RL1 más barata:</strong> Variable: Endesa (0,074 €/kWh) | Fijo: Gana Energía (0,1310 €/día).<br>` +
-               `• <strong>RL2 más barata:</strong> Variable: Endesa (0,070 €/kWh) | Fijo: Gana Energía (0,2703 €/día).<br>` +
-               `• <strong>RL3 más barata:</strong> Variable: Endesa (0,064 €/kWh) | Fijo: Gana Energía (0,6273 €/día).<br><br>` +
+               `• <strong>RL1:</strong> Variable más bajo: Endesa (0,074 €/kWh) | Fijo más bajo: Naturgy (0,1693 €/día). Gana Energía: Var. 0,0920 €/kWh | Fijo 0,1752 €/día.<br>` +
+               `• <strong>RL2:</strong> Variable más bajo: Endesa (0,070 €/kWh) | Fijo más bajo: Naturgy (0,3008 €/día). Gana Energía: Var. 0,0899 €/kWh | Fijo 0,3141 €/día.<br>` +
+               `• <strong>RL3:</strong> Variable más bajo: Endesa (0,064 €/kWh) | Fijo más bajo: Naturgy (0,6496 €/día). Gana Energía: Var. 0,0865 €/kWh | Fijo 0,6787 €/día.<br><br>` +
                `<em>*Nota:* El precio final dependerá del consumo total mensual. No se puede afirmar que una compañía es globalmente la más barata sin realizar la estimación correspondiente.</em>`;
       }
       
