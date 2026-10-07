@@ -9971,9 +9971,33 @@ async function copyShiftReport() {
     const mm = String(d.getMinutes()).padStart(2, '0');
     updateTimeStr = `Actualizado a las ${hh}:${mm} h`;
   }
+
+  // Calcular días laborales restantes generales del periodo actual (sin contar vacaciones individuales, solo festivos y fines de semana)
+  let diasLaborablesRestantes = 0;
+  if (typeof getPeriodIndexForDate === 'function' && typeof PERIODS !== 'undefined') {
+    const currentPeriodIdx = getPeriodIndexForDate(now);
+    const period = PERIODS[currentPeriodIdx];
+    if (period) {
+      const end = isoToDate(period.end);
+      end.setHours(0,0,0,0);
+      const current = new Date(now);
+      current.setHours(0,0,0,0);
+      const start = isoToDate(period.start);
+      start.setHours(0,0,0,0);
+      
+      let iter = current < start ? new Date(start) : new Date(current);
+      while (iter <= end) {
+        if (typeof calIsLabor === 'function' ? calIsLabor(iter) : (!calIsWeekend(iter) && !FESTIVOS.includes(toIso(iter)))) {
+          diasLaborablesRestantes++;
+        }
+        iter.setDate(iter.getDate() + 1);
+      }
+    }
+  }
+  const diasLabel = diasLaborablesRestantes === 1 ? 'día laboral restante' : 'días laborales restantes';
   
   const reportDiv = document.createElement('div');
-  reportDiv.style.width = '520px';
+  reportDiv.style.width = '540px';
   reportDiv.style.padding = '24px 20px';
   reportDiv.style.borderRadius = '20px';
   reportDiv.style.background = '#ffffff';
@@ -10048,9 +10072,15 @@ async function copyShiftReport() {
           <div style="font-size: 10.5px; color: #64748b; font-weight: 600; margin-top: 1px;">${dateStr}</div>
         </div>
       </div>
-      <div style="background: #f8fafc; border: 1px solid #e2e8f0; color: #334155; font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 12px; display: inline-flex; align-items: center; gap: 5px;">
-        <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
-        EN VIVO
+      <div style="display: flex; align-items: center; gap: 8px;">
+        <div style="background: rgba(37, 99, 235, 0.07); border: 1px solid rgba(37, 99, 235, 0.18); color: #1d4ed8; font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 12px; display: inline-flex; align-items: center; gap: 5px;">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #2563eb;"><rect x="3" y="4" width="18" height="18" rx="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+          <span><b>${diasLaborablesRestantes}</b> ${diasLabel}</span>
+        </div>
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; color: #334155; font-size: 10px; font-weight: 700; padding: 4px 9px; border-radius: 12px; display: inline-flex; align-items: center; gap: 5px;">
+          <span style="width: 6px; height: 6px; border-radius: 50%; background: #10b981; display: inline-block;"></span>
+          EN VIVO
+        </div>
       </div>
     </div>
     <div style="display: flex; flex-direction: column;">
@@ -10093,7 +10123,7 @@ async function copyShiftReport() {
     if (navigator.clipboard && window.ClipboardItem) {
       const item = new ClipboardItem({ 'image/png': blobPromise });
       await navigator.clipboard.write([item]);
-      alert(`\u{1F4F8} \xA1Imagen de recuento de la sala copiada al portapapeles! Listo para pegar en WhatsApp.`);
+      alert(`📸 ¡Imagen de recuento copiada al portapapeles! (${diasLaborablesRestantes} ${diasLabel}). Listo para pegar en WhatsApp.`);
     } else {
       throw new Error("ClipboardItem API no soportada");
     }
@@ -12501,7 +12531,7 @@ function migrateLocalStorageVacations() {
 }
 
 // ── AUTENTICACION Y SESIONES ──
-const CURRENT_BUILD_VERSION = 1785010900000;
+const CURRENT_BUILD_VERSION = 1785011000000;
 let agentStatusCheckInterval = null;
 let lastVersionCheckTime = Date.now();
 
