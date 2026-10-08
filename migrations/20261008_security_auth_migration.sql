@@ -3,6 +3,10 @@
 -- Archivo: migrations/20261008_security_auth_migration.sql
 -- Rama de trabajo: security-phase1-prep
 -- 
+-- REGLA DE NEGOCIO CONFIRMADA POR DIRECCIÓN:
+-- El cupo anual de vacaciones de Comerciales Renosur es de 26 días laborables.
+-- (Regla documentada en el modelo de seguridad; sin alteración de saldos en Fase 1).
+-- 
 -- ORDEN ESTRICTO DE EJECUCIÓN (Anti-ventanas de exposición y cero interrupción):
 -- 1. Hardening de esquemas (revocar CREATE a public).
 -- 2. Creación de tablas de soporte (agentes_perfiles, conexiones_audit).
@@ -183,53 +187,59 @@ END $$;
 
 -- ----------------------------------------------------------------------------
 -- 6. POLÍTICAS DE ACCESO DE MÍNIMO PRIVILEGIO (authenticated)
--- Limpieza preventiva de cualquier política previa para evitar reglas permisivas
+-- Limpieza preventiva dinámica de cualquier política previa en pg_policies
+-- para impedir que sobrevivan reglas permisivas desconocidas
 -- ----------------------------------------------------------------------------
+DO $$
+DECLARE
+    pol RECORD;
+BEGIN
+    FOR pol IN
+        SELECT schemaname, tablename, policyname
+        FROM pg_policies
+        WHERE schemaname = 'public'
+          AND tablename IN ('agentes_perfiles', 'conexiones_audit', 'tareas', 'vacaciones', 'promociones', 'agentes_roles')
+    LOOP
+        EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I;', pol.policyname, pol.schemaname, pol.tablename);
+    END LOOP;
+END $$;
 
 -- Políticas en agentes_perfiles
-DROP POLICY IF EXISTS "agentes_perfiles_select" ON public.agentes_perfiles;
 CREATE POLICY "agentes_perfiles_select" ON public.agentes_perfiles
     FOR SELECT TO authenticated
     USING (user_id = auth.uid() OR (public.is_active_agent() AND public.is_gerente()));
 
-DROP POLICY IF EXISTS "agentes_perfiles_gerente_insert" ON public.agentes_perfiles;
 CREATE POLICY "agentes_perfiles_gerente_insert" ON public.agentes_perfiles
     FOR INSERT TO authenticated
     WITH CHECK (public.is_gerente());
 
 -- UPDATE valida tanto la fila original (USING) como los nuevos valores (WITH CHECK)
-DROP POLICY IF EXISTS "agentes_perfiles_gerente_update" ON public.agentes_perfiles;
 CREATE POLICY "agentes_perfiles_gerente_update" ON public.agentes_perfiles
     FOR UPDATE TO authenticated
     USING (public.is_gerente())
     WITH CHECK (public.is_gerente());
 
-DROP POLICY IF EXISTS "agentes_perfiles_gerente_delete" ON public.agentes_perfiles;
 CREATE POLICY "agentes_perfiles_gerente_delete" ON public.agentes_perfiles
     FOR DELETE TO authenticated
     USING (public.is_gerente());
 
--- Políticas en tareas (Aislamiento absoluto de la agenda comercial)
+-- Políticas en tareas (Aislamiento absoluto de la agenda comercial propia)
 DO $$
 BEGIN
     IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'tareas') THEN
-        DROP POLICY IF EXISTS "tareas_select_propio_o_gerente" ON public.tareas;
-        CREATE POLICY "tareas_select_propio_o_gerente" ON public.tareas
+        CREATE POLICY "tareas_select_propio" ON public.tareas
             FOR SELECT TO authenticated
-            USING (public.is_active_agent() AND (dni = public.current_user_dni() OR (public.is_gerente() AND dni != 'SYSTEM_LOGIN_LOG')));
+            USING (public.is_active_agent() AND dni = public.current_user_dni());
 
-        DROP POLICY IF EXISTS "tareas_insert_propio" ON public.tareas;
         CREATE POLICY "tareas_insert_propio" ON public.tareas
             FOR INSERT TO authenticated
             WITH CHECK (public.is_active_agent() AND dni = public.current_user_dni());
 
-        DROP POLICY IF EXISTS "tareas_update_propio" ON public.tareas;
         CREATE POLICY "tareas_update_propio" ON public.tareas
             FOR UPDATE TO authenticated
             USING (public.is_active_agent() AND dni = public.current_user_dni())
             WITH CHECK (public.is_active_agent() AND dni = public.current_user_dni());
 
-        DROP POLICY IF EXISTS "tareas_delete_propio" ON public.tareas;
         CREATE POLICY "tareas_delete_propio" ON public.tareas
             FOR DELETE TO authenticated
             USING (public.is_active_agent() AND dni = public.current_user_dni());
@@ -316,7 +326,7 @@ BEGIN
         REVOKE ALL ON TABLE public.promociones FROM anon;
     END IF;
     IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'agentes_roles') THEN
-        REVOKE ALL ON TABLE public.agentes_roles FROM anon;
+        REVOKE ALL ON TABLE public.agentes_roles FROM PUBLIC, anon, authenticated;
     END IF;
 END $$;
 

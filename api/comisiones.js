@@ -1,35 +1,37 @@
+// ============================================================================
+// API: CONSULTA AUTORIZADA DE COMISIONES (GOOGLE SHEETS API v4 + SERVICE ACCOUNT)
+// Archivo: api/comisiones.js
+// ============================================================================
+// REGLA DE NEGOCIO CONFIRMADA POR DIRECCIÓN:
+// El cupo anual de vacaciones de Comerciales Renosur es de 26 días laborables.
+// (Esta regla se documenta a nivel de políticas sin alterar cálculos actuales).
+// ============================================================================
+
 const https = require('https');
+const crypto = require('crypto');
+const { URL } = require('url');
 
 /**
- * ============================================================================
- * FASE 1: SEGURIDAD Y CONTROL DE ACCESO EN /api/comisiones
- * ============================================================================
- * 
  * MEDIDAS DE SEGURIDAD IMPLEMENTADAS:
- * 1. Verificación obligatoria de token JWT de Supabase Auth en servidor.
- * 2. Scoping estricto por rol:
- *    - 'comercial': Devuelve ÚNICAMENTE su propia comisión. Sin datos de terceros.
+ * 1. Acceso a Google Sheets privado mediante Google Service Account (OAuth 2.0 JWT Bearer).
+ * 2. Consulta autorizada a la API v4 de Google Sheets (/v4/spreadsheets/.../values/A:Z).
+ * 3. Cero credenciales ni URLs públicas predeterminadas (requiere variables de entorno explícitas).
+ * 4. Verificación obligatoria de token JWT de Supabase Auth en servidor contra /auth/v1/user.
+ * 5. Consulta autoritativa en BD pública (agentes_perfiles): rol, activo, must_change_password.
+ * 6. Scoping estricto por rol:
+ *    - 'comercial': Devuelve ÚNICAMENTE su propia comisión individual.
  *    - 'gerente': Devuelve las comisiones consolidadas del equipo comercial.
  *    - 'evaria': Denegado (HTTP 403 Forbidden).
- * 3. Eliminación de la fuga de 'sheetId' en la respuesta JSON.
- * 4. Cabeceras anti-caché estrictas (private, no-cache, no-store) para impedir
- *    que proxys intermedios o navegadores almacenen datos confidenciales.
- * 
- * NOTA CRÍTICA SOBRE LA FUENTE DE DATOS:
- * Proteger esta API es indispensable pero insuficiente si la hoja de cálculo
- * de Google Sheets sigue configurada como "Cualquier persona con el enlace".
- * La dirección debe revocar el acceso público de la hoja y consumirla mediante
- * Google Service Account con permisos de solo lectura restringidos a una cuenta
- * de servicio privada.
+ * 7. Eliminación absoluta de filtración de 'sheetId' en la respuesta JSON.
+ * 8. Cabeceras anti-caché estrictas (private, no-cache, no-store, must-revalidate).
  */
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "https://bxgdtdzlijeaetlekbub.supabase.co";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
-
-// Configuración unificada de acceso a Google Sheets y origen privado
+// Variables de entorno estrictas (sin valores de producción predeterminados)
+const SUPABASE_URL = process.env.SUPABASE_URL || "";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
 const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || "";
 const GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || process.env.GOOGLE_PRIVATE_KEY || "";
-const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID || "1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI";
+const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID || "";
 
 const RENOSUR_AGENTS = [
   {
@@ -89,10 +91,6 @@ const RENOSUR_AGENTS = [
   }
 ];
 
-// Identificadores conocidos de roles para el periodo de transición segura
-const KNOWN_GERENTES = ["MIGUELR"];
-const KNOWN_EVARIA = ["MARIAC", "28750523V"];
-
 function cleanStr(str) {
   return (str || '')
     .normalize('NFD')
@@ -106,7 +104,7 @@ function findMatchingAgent(rawAgent) {
   const cleanInput = cleanStr(rawAgent);
   if (!cleanInput) return null;
 
-  // 1. Coincidencia exacta con nombre completo oficial
+  // 1. Coincidencia exacta con nombre oficial
   for (const agent of RENOSUR_AGENTS) {
     if (cleanStr(agent.name) === cleanInput) return agent;
   }
@@ -143,7 +141,6 @@ function findMatchingAgent(rawAgent) {
   }
 
   if (matchingCandidates.length > 1) {
-    // Si hay más de un comercial coincidente, declarar fila ambigua para revisión
     return {
       isAmbiguous: true,
       rawAgent,
@@ -215,7 +212,6 @@ function parseComisionValue(raw) {
  * Valida el token Bearer contra el endpoint /auth/v1/user de Supabase.
  */
 function verifySupabaseToken(token, callback) {
-  // Soporte para entornos de prueba locales controlados
   if (process.env.NODE_ENV === 'test' && token.startsWith('TEST_MOCK_TOKEN_')) {
     const parts = token.split('_');
     const mockRole = parts[3] || 'comercial';
@@ -269,9 +265,7 @@ function verifySupabaseToken(token, callback) {
 }
 
 /**
- * Consulta el perfil del usuario directamente en la base de datos (agentes_perfiles)
- * para garantizar que el estado proviene de una fuente controlada por servidor
- * y NUNCA de user_metadata modificable por el cliente.
+ * Consulta autoritativa en agentes_perfiles (servidor)
  */
 function fetchUserProfile(token, user, callback) {
   try {
@@ -314,13 +308,130 @@ function fetchUserProfile(token, user, callback) {
   }
 }
 
+/**
+ * Obtiene un access_token de Google mediante OAuth 2.0 JWT Bearer flow para la cuenta de servicio.
+ */
+function getGoogleAccessToken(email, privateKeyRaw, callback) {
+  try {
+    let privateKey = privateKeyRaw;
+    if (privateKey.includes('\\n')) {
+      privateKey = privateKey.replace(/\\n/g, '\n');
+    }
+
+    const now = Math.floor(Date.now() / 1000);
+    const header = { alg: 'RS256', typ: 'JWT' };
+    const claimSet = {
+      iss: email,
+      scope: 'https://www.googleapis.com/auth/spreadsheets.readonly',
+      aud: 'https://oauth2.googleapis.com/token',
+      exp: now + 3600,
+      iat: now
+    };
+
+    const sHeader = Buffer.from(JSON.stringify(header)).toString('base64url');
+    const sClaim = Buffer.from(JSON.stringify(claimSet)).toString('base64url');
+    const signInput = `${sHeader}.${sClaim}`;
+
+    const signer = crypto.createSign('RSA-SHA256');
+    signer.update(signInput);
+    signer.end();
+    const signature = signer.sign(privateKey, 'base64url');
+    const jwt = `${signInput}.${signature}`;
+
+    const postData = `grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`;
+    const tokenUrl = new URL('https://oauth2.googleapis.com/token');
+
+    const req = https.request(tokenUrl, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+        'Content-Length': Buffer.byteLength(postData)
+      },
+      timeout: 10000
+    }, (res) => {
+      let raw = '';
+      res.on('data', chunk => raw += chunk);
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          try {
+            const data = JSON.parse(raw);
+            if (data.access_token) {
+              return callback(null, data.access_token);
+            }
+            return callback(new Error("No se recibió access_token de Google OAuth"));
+          } catch (e) {
+            return callback(new Error("Error parseando respuesta de Google OAuth"));
+          }
+        }
+        return callback(new Error(`Error de autenticación Google OAuth (HTTP ${res.statusCode}): ${raw}`));
+      });
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      callback(new Error("Timeout al autenticar con Google OAuth"));
+    });
+    req.on('error', err => callback(err));
+    req.write(postData);
+    req.end();
+  } catch (err) {
+    callback(err);
+  }
+}
+
+/**
+ * Consulta la hoja privada de Google Sheets mediante la API REST v4 oficial.
+ */
+function fetchPrivateSheetValues(accessToken, sheetId, callback) {
+  try {
+    const range = encodeURIComponent('A:Z');
+    const sheetsUrl = new URL(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}`);
+    
+    const options = {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+        'Accept': 'application/json'
+      },
+      timeout: 12000
+    };
+
+    const req = https.get(sheetsUrl, options, (res) => {
+      let raw = '';
+      res.on('data', chunk => raw += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            const json = JSON.parse(raw);
+            const values = json.values || [];
+            return callback(null, values);
+          } catch (e) {
+            return callback(new Error("Error parseando filas de Google Sheets API"));
+          }
+        } else if (res.statusCode === 401 || res.statusCode === 403) {
+          return callback(new Error(`Permisos insuficientes en Google Sheets (HTTP ${res.statusCode}). Verifica que la cuenta de servicio tenga acceso de lectura.`));
+        } else {
+          return callback(new Error(`Google Sheets API respondió con HTTP ${res.statusCode}: ${raw}`));
+        }
+      });
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      callback(new Error("Timeout al consultar Google Sheets API"));
+    });
+    req.on('error', err => callback(err));
+  } catch (err) {
+    callback(err);
+  }
+}
+
 module.exports = function (req, res) {
   // CORS estricto
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
 
-  // Cabeceras estrictas contra almacenamiento en caché de respuestas confidenciales
+  // Cabeceras estrictas anti-caché
   res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate, max-age=0');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
@@ -329,8 +440,18 @@ module.exports = function (req, res) {
     return res.status(200).end();
   }
 
-  // 1. Verificación de cabecera Authorization Bearer
+  // 1. Verificación obligatoria de variables de entorno (Cero valores por defecto a producción)
   const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+  const isMockTest = process.env.NODE_ENV === 'test' && authHeader && authHeader.includes('TEST_MOCK_TOKEN_');
+
+  if (!isMockTest && (!SUPABASE_URL || !SUPABASE_ANON_KEY || !GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || !GOOGLE_SHEET_ID)) {
+    return res.status(503).json({
+      success: false,
+      error: "Configuración incompleta: Se requieren SUPABASE_URL, SUPABASE_ANON_KEY, GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY y GOOGLE_SHEET_ID en las variables de entorno del servidor."
+    });
+  }
+
+  // 2. Verificación de cabecera Authorization Bearer
   if (!authHeader || !authHeader.startsWith('Bearer ')) {
     return res.status(401).json({
       success: false,
@@ -346,7 +467,7 @@ module.exports = function (req, res) {
     });
   }
 
-  // 2. Verificación criptográfica del token con Supabase Auth
+  // 3. Verificación criptográfica del token con Supabase Auth
   verifySupabaseToken(token, (authErr, user) => {
     if (authErr || !user) {
       return res.status(401).json({
@@ -356,7 +477,7 @@ module.exports = function (req, res) {
       });
     }
 
-    // 3. Consulta de la fuente de verdad en servidor: agentes_perfiles
+    // 4. Consulta de la fuente de verdad en servidor: agentes_perfiles
     fetchUserProfile(token, user, (profileErr, profile) => {
       if (profileErr || !profile) {
         return res.status(403).json({
@@ -406,150 +527,144 @@ module.exports = function (req, res) {
 
       const claims = { dni, rol, status: activo ? 'active' : 'inactive', nombre, mustChangePassword, id: user.id };
 
-    const targetUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&t=${Date.now()}`;
-
-    function fetchUrl(url, redirectCount = 0) {
-      if (redirectCount > 5) {
-        return res.status(500).json({ error: "Demasiadas redirecciones de Google Sheets" });
-      }
-
-      https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } }, (googleRes) => {
-        const { statusCode } = googleRes;
-
-        if (statusCode >= 300 && statusCode < 400 && googleRes.headers.location) {
-          return fetchUrl(googleRes.headers.location, redirectCount + 1);
+      function processSheetRows(rows) {
+        if (!rows || rows.length === 0) {
+          return res.status(200).json({ success: false, error: "La hoja de comisiones está vacía", data: {} });
         }
 
-        if (statusCode === 401 || statusCode === 403) {
+        // Detectar columnas y fila de cabecera
+        let startRow = 0;
+        let colAgente = 0;
+        let colComi = 1;
+
+        for (let i = 0; i < Math.min(rows.length, 5); i++) {
+          const r = rows[i] || [];
+          for (let j = 0; j < r.length; j++) {
+            const val = cleanStr(r[j]);
+            if (val === 'AGENTE' || val === 'AGENTES' || val.includes('AGENTE')) {
+              colAgente = j;
+              startRow = i + 1;
+            }
+            if (val === 'COMI' || val === 'COMISION' || val === 'COMISIONES' || val.includes('COMI')) {
+              colComi = j;
+            }
+          }
+        }
+
+        const comisionesMap = {};
+        const matchedDetails = [];
+        const ambiguousDetails = [];
+
+        for (let i = startRow; i < rows.length; i++) {
+          const r = rows[i];
+          if (!r) continue;
+
+          const rawAgent = (r[colAgente] !== undefined && r[colAgente] !== '' ? r[colAgente] : (r[0] || '')).toString().trim();
+          const cleanAgent = cleanStr(rawAgent);
+
+          if (!rawAgent || cleanAgent === 'AGENTES' || cleanAgent === 'AGENTE' || cleanAgent === 'TOTAL' || cleanAgent === 'TOTALES' || cleanAgent === 'MEDIA' || cleanAgent === 'PROMEDIO') {
+            continue;
+          }
+
+          let rawVal = 0;
+          if (r[colComi] !== undefined && r[colComi] !== '') {
+            rawVal = r[colComi];
+          } else if (r[1] !== undefined && r[1] !== '') {
+            rawVal = r[1];
+          } else if (r[19] !== undefined && r[19] !== '') {
+            rawVal = r[19];
+          }
+
+          const val = parseComisionValue(rawVal);
+          const matchResult = findMatchingAgent(rawAgent);
+          if (matchResult && !matchResult.isAmbiguous) {
+            comisionesMap[matchResult.dni] = val;
+            comisionesMap[matchResult.name] = val;
+            comisionesMap[cleanStr(matchResult.name)] = val;
+            matchedDetails.push({
+              dni: matchResult.dni,
+              nombre: matchResult.name,
+              rawNameInSheet: rawAgent,
+              comision: val,
+              filaExcel: i + 1
+            });
+          } else if (matchResult && matchResult.isAmbiguous) {
+            ambiguousDetails.push({
+              rawNameInSheet: rawAgent,
+              filaExcel: i + 1,
+              comision: val,
+              candidatos: matchResult.candidates
+            });
+          }
+        }
+
+        // 5. Respuesta filtrada por rol (Principio de mínimo privilegio)
+        if (claims.rol === 'gerente') {
           return res.status(200).json({
+            success: true,
+            isGerente: true,
+            headerRow: startRow,
+            colAgente,
+            colComi,
+            totalEmparejados: matchedDetails.length,
+            totalAmbiguos: ambiguousDetails.length,
+            matchedDetails,
+            ambiguousDetails,
+            data: comisionesMap
+          });
+        } else {
+          // Comercial: ÚNICAMENTE recibe su propia comisión individual
+          const userDni = claims.dni;
+          let userComision = 0;
+          if (userDni && comisionesMap[userDni] !== undefined) {
+            userComision = comisionesMap[userDni];
+          } else if (claims.nombre && comisionesMap[cleanStr(claims.nombre)] !== undefined) {
+            userComision = comisionesMap[cleanStr(claims.nombre)];
+          }
+
+          return res.status(200).json({
+            success: true,
+            isGerente: false,
+            dni: userDni,
+            nombre: claims.nombre,
+            comision: userComision
+          });
+        }
+      }
+
+      // Si es una ejecución de prueba local con mock token:
+      if (isMockTest) {
+        const mockRows = [
+          ["AGENTE", "COMISION"],
+          ["CHRISTIAN CABRERA MARQUEZ", "1250,50"],
+          ["BEGOÑA CABANILLAS PIQUERO", "980,00"],
+          ["JOSE MIGUEL CABRERA MARQUEZ", "1100,00"]
+        ];
+        return processSheetRows(mockRows);
+      }
+
+      // Flujo seguro en servidor: OAuth 2.0 con Service Account y Google Sheets API v4
+      getGoogleAccessToken(GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, (tokenErr, accessToken) => {
+        if (tokenErr || !accessToken) {
+          return res.status(502).json({
             success: false,
-            error: "La hoja de cálculo está en modo privado y no se puede leer sin credenciales de servicio.",
-            data: {}
+            error: "Error de autenticación con la cuenta de servicio de Google Sheets",
+            details: tokenErr ? tokenErr.message : "No se obtuvo token"
           });
         }
 
-        if (statusCode !== 200) {
-          return res.status(statusCode).json({ error: `Google Sheets respondió con código ${statusCode}` });
-        }
-
-        let rawData = '';
-        googleRes.on('data', (chunk) => { rawData += chunk; });
-        googleRes.on('end', () => {
-          try {
-            const rows = parseCSV(rawData);
-            if (!rows || rows.length === 0) {
-              return res.status(200).json({ success: false, error: "El archivo CSV de comisiones está vacío", data: {} });
-            }
-
-            // Detectar columnas y fila de cabecera
-            let startRow = 0;
-            let colAgente = 0;
-            let colComi = 1;
-
-            for (let i = 0; i < Math.min(rows.length, 5); i++) {
-              const r = rows[i];
-              for (let j = 0; j < r.length; j++) {
-                const val = cleanStr(r[j]);
-                if (val === 'AGENTE' || val === 'AGENTES' || val.includes('AGENTE')) {
-                  colAgente = j;
-                  startRow = i + 1;
-                }
-                if (val === 'COMI' || val === 'COMISION' || val === 'COMISIONES' || val.includes('COMI')) {
-                  colComi = j;
-                }
-              }
-            }
-
-            const comisionesMap = {};
-            const matchedDetails = [];
-            const ambiguousDetails = [];
-
-            for (let i = startRow; i < rows.length; i++) {
-              const r = rows[i];
-              if (!r) continue;
-
-              const rawAgent = (r[colAgente] !== undefined && r[colAgente] !== '' ? r[colAgente] : (r[0] || '')).trim();
-              const cleanAgent = cleanStr(rawAgent);
-
-              if (!rawAgent || cleanAgent === 'AGENTES' || cleanAgent === 'AGENTE' || cleanAgent === 'TOTAL' || cleanAgent === 'TOTALES' || cleanAgent === 'MEDIA' || cleanAgent === 'PROMEDIO') {
-                continue;
-              }
-
-              let rawVal = 0;
-              if (r[colComi] !== undefined && r[colComi] !== '') {
-                rawVal = r[colComi];
-              } else if (r[1] !== undefined && r[1] !== '') {
-                rawVal = r[1];
-              } else if (r[19] !== undefined && r[19] !== '') {
-                rawVal = r[19];
-              }
-
-              const val = parseComisionValue(rawVal);
-              const matchResult = findMatchingAgent(rawAgent);
-              if (matchResult && !matchResult.isAmbiguous) {
-                comisionesMap[matchResult.dni] = val;
-                comisionesMap[matchResult.name] = val;
-                comisionesMap[cleanStr(matchResult.name)] = val;
-                matchedDetails.push({
-                  dni: matchResult.dni,
-                  nombre: matchResult.name,
-                  rawNameInSheet: rawAgent,
-                  comision: val,
-                  filaExcel: i + 1
-                });
-              } else if (matchResult && matchResult.isAmbiguous) {
-                ambiguousDetails.push({
-                  rawNameInSheet: rawAgent,
-                  filaExcel: i + 1,
-                  comision: val,
-                  candidatos: matchResult.candidates
-                });
-              }
-            }
-
-            // 5. Respuesta filtrada por rol (Principio de mínimo privilegio)
-            if (claims.rol === 'gerente') {
-              // Gerente recibe el consolidado del equipo y las filas ambiguas para revisión manual, pero NUNCA el sheetId
-              return res.status(200).json({
-                success: true,
-                isGerente: true,
-                headerRow: startRow,
-                colAgente,
-                colComi,
-                totalEmparejados: matchedDetails.length,
-                totalAmbiguos: ambiguousDetails.length,
-                matchedDetails,
-                ambiguousDetails,
-                data: comisionesMap
-              });
-            } else {
-              // Comercial: ÚNICAMENTE recibe su propia comisión individual
-              const userDni = claims.dni;
-              let userComision = 0;
-              if (userDni && comisionesMap[userDni] !== undefined) {
-                userComision = comisionesMap[userDni];
-              } else if (claims.nombre && comisionesMap[cleanStr(claims.nombre)] !== undefined) {
-                userComision = comisionesMap[cleanStr(claims.nombre)];
-              }
-
-              return res.status(200).json({
-                success: true,
-                isGerente: false,
-                dni: userDni,
-                nombre: claims.nombre,
-                comision: userComision
-              });
-            }
-          } catch (e) {
-            return res.status(500).json({ error: "Error procesando el archivo de comisiones", details: e.message });
+        fetchPrivateSheetValues(accessToken, GOOGLE_SHEET_ID, (fetchErr, sheetRows) => {
+          if (fetchErr) {
+            return res.status(502).json({
+              success: false,
+              error: "Error al consultar la API v4 de Google Sheets",
+              details: fetchErr.message
+            });
           }
-        });
-      }).on('error', (e) => {
-        return res.status(500).json({ error: e.message });
-      });
-    }
 
-      fetchUrl(targetUrl);
+          processSheetRows(sheetRows);
+        });
+      });
     });
   });
 };

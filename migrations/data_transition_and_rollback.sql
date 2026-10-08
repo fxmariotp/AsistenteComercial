@@ -1,6 +1,11 @@
 -- ============================================================================
 -- PROCEDIMIENTO SEGURO DE TRANSICIÓN DE DATOS, MANTENIMIENTO Y RECUPERACIÓN
 -- Archivo: migrations/data_transition_and_rollback.sql
+-- Rama de trabajo: security-phase1-prep
+-- ============================================================================
+-- REGLA DE NEGOCIO CONFIRMADA POR DIRECCIÓN:
+-- El cupo anual de vacaciones de Comerciales Renosur es de 26 días laborables.
+-- (Regla documentada en el modelo de seguridad; sin alteración de saldos en Fase 1).
 -- ============================================================================
 
 -- ----------------------------------------------------------------------------
@@ -43,41 +48,136 @@
 --     });
 --   }
 -- }
---
--- PASO 2: Migrar registros históricos de conexión a conexiones_audit:
-INSERT INTO public.conexiones_audit (id, user_id, dni, nombre, ip, fecha, hora, detalles, created_at)
-SELECT 
-    t.id,
-    p.user_id,
-    t.title AS dni,
-    t.type AS nombre,
-    COALESCE(t.phone, 'Desconocida') AS ip,
-    CASE 
-        WHEN t.date ~ '^\d{4}-\d{2}-\d{2}$' THEN t.date::date 
-        ELSE CURRENT_DATE 
-    END AS fecha,
-    CASE 
-        WHEN t.time ~ '^\d{2}:\d{2}(:\d{2})?$' THEN t.time::time 
-        ELSE CURRENT_TIME 
-    END AS hora,
-    jsonb_build_object('notes', t.notes) AS detalles,
-    to_timestamp(COALESCE(t.created_at, 0) / 1000.0) AS created_at
-FROM public.tareas t
-JOIN public.agentes_perfiles p ON p.dni = t.title
-WHERE t.dni = 'SYSTEM_LOGIN_LOG'
-ON CONFLICT (id) DO NOTHING;
 
--- PASO 3: Una vez verificada la inserción, limpiar los logs de la tabla tareas:
-DELETE FROM public.tareas WHERE dni = 'SYSTEM_LOGIN_LOG';
+-- PASO 2: Tabla dedicada para preservar registros de conexión huérfanos
+-- (Evita cualquier pérdida de logs antiguos cuyos DNI no coincidan con perfiles activos)
+CREATE TABLE IF NOT EXISTS public.conexiones_audit_huerfanas (
+    id VARCHAR(100) PRIMARY KEY,
+    raw_dni VARCHAR(50),
+    raw_nombre VARCHAR(150),
+    ip VARCHAR(50),
+    fecha DATE,
+    hora TIME,
+    detalles JSONB,
+    created_at TIMESTAMPTZ,
+    motivo_orfandad TEXT DEFAULT 'Sin perfil asociado en agentes_perfiles al momento de la migración',
+    migrated_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- PASO 3: Transacción atómica protegida con verificación estricta de recuentos e integridad
+DO $$
+DECLARE
+    v_total_original INT := 0;
+    v_total_migrados INT := 0;
+    v_total_huerfanos INT := 0;
+    v_total_preservados INT := 0;
+BEGIN
+    -- 1. Recuento inicial exacto de registros SYSTEM_LOGIN_LOG en tareas
+    SELECT COUNT(*) INTO v_total_original 
+    FROM public.tareas 
+    WHERE dni = 'SYSTEM_LOGIN_LOG';
+
+    RAISE NOTICE 'Registros originales SYSTEM_LOGIN_LOG detectados: %', v_total_original;
+
+    IF v_total_original > 0 THEN
+        -- 2. Migrar registros que coinciden con agentes_perfiles a conexiones_audit
+        INSERT INTO public.conexiones_audit (id, user_id, dni, nombre, ip, fecha, hora, detalles, created_at)
+        SELECT 
+            t.id,
+            p.user_id,
+            t.title AS dni,
+            t.type AS nombre,
+            COALESCE(t.phone, 'Desconocida') AS ip,
+            CASE 
+                WHEN t.date ~ '^\d{4}-\d{2}-\d{2}$' THEN t.date::date 
+                ELSE CURRENT_DATE 
+            END AS fecha,
+            CASE 
+                WHEN t.time ~ '^\d{2}:\d{2}(:\d{2})?$' THEN t.time::time 
+                ELSE CURRENT_TIME 
+            END AS hora,
+            jsonb_build_object('notes', t.notes) AS detalles,
+            to_timestamp(COALESCE(t.created_at, 0) / 1000.0) AS created_at
+        FROM public.tareas t
+        JOIN public.agentes_perfiles p ON p.dni = t.title
+        WHERE t.dni = 'SYSTEM_LOGIN_LOG'
+        ON CONFLICT (id) DO NOTHING;
+
+        -- 3. Identificar y preservar registros huérfanos (sin perfil coincidente)
+        INSERT INTO public.conexiones_audit_huerfanas (id, raw_dni, raw_nombre, ip, fecha, hora, detalles, created_at)
+        SELECT 
+            t.id,
+            t.title AS raw_dni,
+            t.type AS raw_nombre,
+            COALESCE(t.phone, 'Desconocida') AS ip,
+            CASE 
+                WHEN t.date ~ '^\d{4}-\d{2}-\d{2}$' THEN t.date::date 
+                ELSE CURRENT_DATE 
+            END AS fecha,
+            CASE 
+                WHEN t.time ~ '^\d{2}:\d{2}(:\d{2})?$' THEN t.time::time 
+                ELSE CURRENT_TIME 
+            END AS hora,
+            jsonb_build_object('notes', t.notes) AS detalles,
+            to_timestamp(COALESCE(t.created_at, 0) / 1000.0) AS created_at
+        FROM public.tareas t
+        LEFT JOIN public.agentes_perfiles p ON p.dni = t.title
+        WHERE t.dni = 'SYSTEM_LOGIN_LOG' AND p.dni IS NULL
+        ON CONFLICT (id) DO NOTHING;
+
+        -- 4. Verificación estricta de recuentos e identificadores antes de cualquier eliminación
+        SELECT COUNT(*) INTO v_total_migrados
+        FROM public.conexiones_audit ca
+        WHERE ca.id IN (SELECT id FROM public.tareas WHERE dni = 'SYSTEM_LOGIN_LOG');
+
+        SELECT COUNT(*) INTO v_total_huerfanos
+        FROM public.conexiones_audit_huerfanas cah
+        WHERE cah.id IN (SELECT id FROM public.tareas WHERE dni = 'SYSTEM_LOGIN_LOG');
+
+        v_total_preservados := v_total_migrados + v_total_huerfanos;
+
+        RAISE NOTICE 'Preservados en conexiones_audit: %, en conexiones_audit_huerfanas: %, Total: %',
+            v_total_migrados, v_total_huerfanos, v_total_preservados;
+
+        -- Si no se conservó el 100% de los identificadores, abortar la transacción de inmediato
+        IF v_total_preservados < v_total_original THEN
+            RAISE EXCEPTION 'ABORTANDO TRANSACCIÓN: Pérdida potencial de registros de conexión detectada. Total original: %, Total preservado: %', 
+                v_total_original, v_total_preservados;
+        END IF;
+
+        -- 5. Eliminación atómica ÚNICAMENTE de los identificadores confirmados y respaldados
+        DELETE FROM public.tareas 
+        WHERE dni = 'SYSTEM_LOGIN_LOG'
+          AND (
+            id IN (SELECT id FROM public.conexiones_audit)
+            OR id IN (SELECT id FROM public.conexiones_audit_huerfanas)
+          );
+
+        RAISE NOTICE 'Transición de auditoría completada con éxito. Cero registros huérfanos perdidos.';
+    END IF;
+END $$;
 
 -- ----------------------------------------------------------------------------
 -- PARTE B: RETIRADA DEFINITIVA DE CONTRASEÑAS EN CLARO Y CACHÉS
 -- ----------------------------------------------------------------------------
--- 1. Respaldar agentes_roles en archivo offline cifrado para histórico de auditoría.
--- 2. Eliminar la tabla agentes_roles en producción:
+-- 1. INSPECCIÓN DE DEPENDENCIAS DE CATALOGO ANTES DE DROP TABLE:
+-- Ejecutar esta consulta antes de DROP TABLE CASCADE para auditar vistas, funciones
+-- o restricciones foráneas que hagan referencia a agentes_roles:
+/*
+SELECT 
+    cl.relname AS tabla_dependiente,
+    c.conname AS nombre_restriccion,
+    c.contype AS tipo_restriccion
+FROM pg_constraint c
+JOIN pg_class cl ON cl.oid = c.conrelid
+WHERE c.confrelid = 'public.agentes_roles'::regclass;
+*/
+
+-- 2. Respaldar agentes_roles en archivo offline cifrado para histórico de auditoría.
+-- 3. Eliminar la tabla agentes_roles en producción:
 DROP TABLE IF EXISTS public.agentes_roles CASCADE;
 
--- 3. Limpieza forzada en clientes:
+-- 4. Limpieza forzada en clientes:
 -- El frontend ejecuta en el evento de inicio de sesión y arranque:
 -- localStorage.removeItem('renosur_agent_roles');
 -- localStorage.removeItem('cached_agent_passwords');

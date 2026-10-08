@@ -38,12 +38,10 @@
       "53343101Y": "NURIA CEBALLOS DURAN",
       "53770728V": "FRANCISCO JAVIER MORA ANDREU"
     };
-    // Verificación temprana: si no existe sesión activa registrada, redirigir a login
-    // La validación criptográfica del token la ejecuta loadSession() con supabaseClient
+    // Verificación temprana: si no existe token de sesión activa registrado, redirigir a login
+    // La validación autoritativa en servidor la ejecuta loadSession() con supabaseClient
     const hasSbToken = Object.keys(localStorage).some(k => k.startsWith('sb-') && k.endsWith('-auth-token'));
-    const dni = localStorage.getItem('comercial_dni');
-    const name = localStorage.getItem('comercial_nombre');
-    if (!hasSbToken && (!dni || !name || COMERCIALES[dni] !== name)) {
+    if (!hasSbToken) {
       window.location.href = 'login.html';
     }
   })();
@@ -12613,22 +12611,13 @@ function startAgentStatusCheck() {
     if (typeof supabaseClient !== 'undefined' && supabaseClient) {
       try {
         const { data, error } = await supabaseClient
-          .from('agentes_roles')
-          .select('rol')
+          .from('agentes_perfiles')
+          .select('activo')
           .eq('dni', currentAgentDni)
-          .single();
+          .maybeSingle();
           
         if (!error && data) {
-          let role = data.rol;
-          let status = 'active';
-          if (role && role.includes(':')) {
-            const parts = role.split(':');
-            const lastPart = parts[parts.length - 1];
-            if (lastPart === 'active' || lastPart === 'inactive') {
-              status = lastPart;
-            }
-          }
-          if (status === 'inactive') {
+          if (data.activo === false) {
             clearInterval(agentStatusCheckInterval);
             alert('Tu cuenta de agente ha sido desactivada por la gerencia. Se cerrará la sesión.');
             logout();
@@ -12650,25 +12639,24 @@ function getTodayIsoDate(d = new Date()) {
 
 async function loadSession() {
   let sessionUser = null;
+  let authError = null;
   if (typeof supabaseClient !== 'undefined' && supabaseClient) {
     try {
       const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (error) authError = error;
       if (session && session.user) {
         sessionUser = session.user;
       }
     } catch (e) {
+      authError = e;
       console.warn("Error comprobando sesión en Supabase Auth:", e);
     }
   }
 
-  // Si no hay sesión válida en Supabase Auth y tampoco credencial legacy en entorno local
+  // Sin sesión activa válida en Supabase Auth, denegar el acceso inmediatamente (cero fallbacks inseguros a localStorage)
   if (!sessionUser) {
-    const legacyDni = localStorage.getItem('comercial_dni');
-    const legacyName = localStorage.getItem('comercial_nombre');
-    if (!legacyDni || !legacyName || COMERCIALES[legacyDni] !== legacyName) {
-      logout();
-      return;
-    }
+    logout();
+    return;
   }
 
   let dni = '';
@@ -12676,48 +12664,49 @@ async function loadSession() {
   let role = 'comercial';
   let status = 'active';
 
-  if (sessionUser) {
-    // Consulta autoritativa en public.agentes_perfiles (servidor)
-    let profile = null;
-    try {
-      const { data, error } = await supabaseClient
-        .from('agentes_perfiles')
-        .select('dni, nombre, rol, activo, must_change_password')
-        .eq('user_id', sessionUser.id)
-        .maybeSingle();
-      if (!error && data) profile = data;
-    } catch (e) {
-      console.warn("Error consultando agentes_perfiles en loadSession:", e);
-    }
+  // Consulta autoritativa en public.agentes_perfiles (servidor)
+  let profile = null;
+  let queryError = null;
+  try {
+    const { data, error } = await supabaseClient
+      .from('agentes_perfiles')
+      .select('dni, nombre, rol, activo, must_change_password')
+      .eq('user_id', sessionUser.id)
+      .maybeSingle();
+    queryError = error;
+    if (!error && data) profile = data;
+  } catch (e) {
+    queryError = e;
+    console.warn("Error consultando agentes_perfiles en loadSession:", e);
+  }
 
-    if (profile) {
-      dni = (profile.dni || '').trim().toUpperCase();
-      name = profile.nombre || COMERCIALES[dni] || 'Agente';
-      role = (profile.rol || 'comercial').toLowerCase();
-      status = profile.activo ? 'active' : 'inactive';
+  // Distinguir fallo de conexión de sesión inválida sin otorgar permisos por defecto
+  if (queryError && !profile) {
+    alert("Error de conexión al verificar el perfil con el servidor. Por favor, comprueba tu conexión y vuelve a intentarlo.");
+    return;
+  }
 
-      if (profile.activo === false) {
-        if (supabaseClient) await supabaseClient.auth.signOut();
-        alert('Tu cuenta de agente está desactivada por la gerencia.');
-        logout();
-        return;
-      }
+  if (!profile) {
+    alert("Acceso denegado: Perfil de agente no registrado o no autorizado en el sistema.");
+    logout();
+    return;
+  }
 
-      if (profile.must_change_password === true) {
-        window.location.href = 'login.html';
-        return;
-      }
-    } else {
-      // Determinación estricta por identidad de correo en caso de transición previa
-      dni = sessionUser.email ? sessionUser.email.split('@')[0].toUpperCase() : '';
-      name = COMERCIALES[dni] || 'Agente';
-      role = (dni === 'MIGUELR' ? 'gerente' : 'comercial');
-      status = 'active';
-    }
-  } else {
-    dni = localStorage.getItem('comercial_dni');
-    name = localStorage.getItem('comercial_nombre');
-    role = AGENT_ROLES[dni] || (dni === 'MIGUELR' ? 'gerente' : 'comercial');
+  dni = (profile.dni || '').trim().toUpperCase();
+  name = profile.nombre || COMERCIALES[dni] || 'Agente';
+  role = (profile.rol || 'comercial').toLowerCase();
+  status = profile.activo ? 'active' : 'inactive';
+
+  if (profile.activo === false) {
+    if (supabaseClient) await supabaseClient.auth.signOut();
+    alert('Tu cuenta de agente está desactivada por la gerencia.');
+    logout();
+    return;
+  }
+
+  if (profile.must_change_password === true) {
+    window.location.href = 'login.html';
+    return;
   }
 
   currentAgentDni = dni;
@@ -12855,19 +12844,12 @@ async function fetchAgentRolesFromCloud() {
 
 async function saveAgentRoleToCloud(dni, rol) {
   AGENT_ROLES[dni] = rol;
-  const rawRoles = {};
-  Object.keys(AGENT_ROLES).forEach(k => {
-    const pwd = AGENT_PASSWORDS[k];
-    const status = AGENT_STATUSES[k] || 'active';
-    rawRoles[k] = AGENT_ROLES[k] + (pwd && pwd !== k ? ':' + pwd : '') + (status !== 'active' ? ':' + status : '');
-  });
-  localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
   if (!supabaseClient) return;
   try {
-    const pwd = AGENT_PASSWORDS[dni];
-    const status = AGENT_STATUSES[dni] || 'active';
-    const dbValue = rol + ':' + (pwd || dni) + ':' + status;
-    await supabaseClient.from('agentes_roles').upsert({ dni, rol: dbValue });
+    await supabaseClient
+      .from('agentes_perfiles')
+      .update({ rol: rol.toLowerCase(), updated_at: new Date().toISOString() })
+      .eq('dni', dni);
   } catch (e) {
     console.error("Error saving agent role to cloud", e);
   }
@@ -13050,18 +13032,31 @@ async function writeConnectionLog(dni, name, isReconnection = false) {
     if (clientInfo.touchPoints > 0) notesStr += ` ###TOUCH###:${clientInfo.touchPoints}`;
     if (isReconnection) notesStr += ` ###RECONEXION###:true`;
 
-    const { error } = await supabaseClient.from('tareas').insert({
+    let authUserId = null;
+    if (supabaseClient) {
+      try {
+        const { data: { session } } = await supabaseClient.auth.getSession();
+        if (session && session.user) authUserId = session.user.id;
+      } catch (_) {}
+    }
+    if (!authUserId) return;
+
+    const { error } = await supabaseClient.from('conexiones_audit').insert({
       id: logId,
-      dni: 'SYSTEM_LOGIN_LOG',
-      title: dni,
-      type: name,
-      phone: clientInfo.publicIp,
-      date: dateStr,
-      time: timeStr,
-      notes: notesStr,
-      completed: true,
-      notified: false,
-      created_at: Date.now()
+      user_id: authUserId,
+      dni: dni,
+      nombre: name,
+      ip: clientInfo.publicIp || 'Desconocida',
+      fecha: dateStr,
+      hora: timeStr,
+      detalles: {
+        notes: notesStr,
+        reconnection: isReconnection,
+        screenRes: clientInfo.screenRes,
+        userAgent: clientInfo.userAgent,
+        clientModel: clientInfo.clientModel
+      },
+      created_at: new Date().toISOString()
     });
     
     if (error) {
@@ -13165,27 +13160,7 @@ function updateLoginLogsFilterUI() {
 
 async function deleteLoginLog(logId, event) {
   if (event) event.stopPropagation();
-  if (!confirm("¿Deseas eliminar este registro de conexión?")) return;
-  
-  try {
-    if (supabaseClient) {
-      const { error } = await supabaseClient
-        .from('tareas')
-        .delete()
-        .eq('id', logId);
-      if (error) {
-        console.error("Error deleting login log:", error);
-        alert("Error al eliminar el registro: " + (error.message || ''));
-        return;
-      }
-    }
-    
-    cachedLoginLogs = cachedLoginLogs.filter(item => item.id !== logId);
-    filterLoginLogs();
-  } catch (err) {
-    console.error("Exception deleting login log:", err);
-    alert("Ocurrió un error al eliminar el registro.");
-  }
+  alert("Por política de seguridad y trazabilidad estricta, los registros de auditoría de conexiones son inmutables y no pueden eliminarse individualmente.");
 }
 
 function toggleIpVisibility() {
@@ -13228,15 +13203,14 @@ async function loadLoginLogs() {
 
   try {
     const { data, error } = await supabaseClient
-      .from('tareas')
+      .from('conexiones_audit')
       .select('*')
-      .eq('dni', 'SYSTEM_LOGIN_LOG')
       .order('created_at', { ascending: false })
       .limit(3000);
       
     if (error) {
       console.error("Error fetching login logs:", error);
-      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros.</td></tr>`;
+      tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; padding: 20px; color: var(--red);">Error al cargar los registros de auditoría.</td></tr>`;
       return;
     }
 
@@ -13246,9 +13220,21 @@ async function loadLoginLogs() {
       return;
     }
 
-    data.sort((a, b) => Number(b.created_at || 0) - Number(a.created_at || 0));
-    cachedLoginLogs = data;
+    const mapped = data.map(r => ({
+      id: r.id,
+      user_id: r.user_id,
+      dni: r.dni,
+      title: r.dni,
+      name: r.nombre,
+      type: r.nombre,
+      phone: r.ip,
+      date: typeof r.fecha === 'string' ? r.fecha.substring(0, 10) : r.fecha,
+      time: r.hora,
+      notes: (r.detalles && r.detalles.notes) || (typeof r.detalles === 'string' ? r.detalles : ''),
+      created_at: r.created_at
+    }));
 
+    cachedLoginLogs = mapped;
     filterLoginLogs();
   } catch (e) {
     console.error("Exception loading login logs:", e);
@@ -13623,13 +13609,11 @@ function initGruposAgentes() {
   
   const mappedComerciales = Object.keys(COMERCIALES).map(dni => {
     const currentRol = AGENT_ROLES[dni] || 'comercial';
-    const currentPwd = AGENT_PASSWORDS[dni] || dni;
     const currentStatus = AGENT_STATUSES[dni] || 'active';
     return {
       dni,
       name: COMERCIALES[dni],
       rol: currentRol,
-      pwd: currentPwd,
       status: currentStatus
     };
   });
@@ -13655,7 +13639,7 @@ function initGruposAgentes() {
       </select>
     `;
     
-    const userFieldHtml = `<input type="text" id="user-dni-${agent.dni}" value="${agent.dni}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-family: monospace; font-size: 13px; width: 110px; outline: none;">`;
+    const userFieldHtml = `<input type="text" id="user-dni-${agent.dni}" value="${agent.dni}" readonly style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: rgba(0,0,0,0.02); color: var(--text); font-family: monospace; font-size: 13px; width: 110px; outline: none;">`;
       
     const pwdFieldHtml = `<div style="display: flex; align-items: center; gap: 6px;">
       <span style="font-size: 12px; color: var(--t2); font-family: monospace; letter-spacing: 2px;">••••••••</span>
@@ -13684,7 +13668,7 @@ function initGruposAgentes() {
 }
 
 function gerenteTriggerPasswordReset(dni) {
-  alert(`Restablecimiento seguro para ${dni}: En la arquitectura protegida con Supabase Auth, las contraseñas nunca se gestionan en texto claro. Para restablecer o activar este usuario, se genera un enlace/clave administrativa temporal que forzará al comercial a definir su contraseña privada en el primer acceso.`);
+  alert(`Restablecimiento seguro para ${dni}: Las contraseñas están gestionadas por Supabase Auth en servidor y nunca se exponen al cliente. Al activar la cuenta o solicitar restablecimiento, el sistema marca must_change_password=true en BD y exige definir la contraseña privada en el próximo acceso.`);
 }
 
 async function saveAllAgentUsersByGerente() {
@@ -13697,127 +13681,64 @@ async function saveAllAgentUsersByGerente() {
   
   const rows = document.querySelectorAll('#tbl-gerente-usuarios-body tr');
   const updates = [];
-  let validationError = null;
   
   rows.forEach(row => {
     const inputDni = row.querySelector('input[id^="user-dni-"]');
     if (!inputDni) return;
     
-    const originalDni = inputDni.id.replace('user-dni-', '');
-    const newDni = inputDni.value.trim().toUpperCase();
+    const dni = inputDni.id.replace('user-dni-', '');
+    const selectRole = document.getElementById('user-role-' + dni);
+    const inputStatus = document.getElementById('user-status-' + dni);
     
-    const inputPwd = document.getElementById('user-pwd-' + originalDni);
-    const selectRole = document.getElementById('user-role-' + originalDni);
-    const inputStatus = document.getElementById('user-status-' + originalDni);
-    
-    const newPwd = inputPwd ? inputPwd.value.trim() : (AGENT_PASSWORDS[originalDni] || originalDni);
-    const newRole = selectRole ? selectRole.value : (AGENT_ROLES[originalDni] || 'comercial');
-    const newStatus = inputStatus ? (inputStatus.checked ? 'active' : 'inactive') : (AGENT_STATUSES[originalDni] || 'active');
-    
-    if (!newDni) {
-      validationError = 'El DNI/Usuario no puede estar vacio.';
-    }
-    if (!newPwd) {
-      validationError = 'La contrase\u00f1a no puede estar vacia.';
-    }
+    const newRole = selectRole ? selectRole.value : (AGENT_ROLES[dni] || 'comercial');
+    const newStatus = inputStatus ? (inputStatus.checked ? 'active' : 'inactive') : (AGENT_STATUSES[dni] || 'active');
     
     updates.push({
-      originalDni,
-      newDni,
-      newPwd,
+      dni,
       newRole,
       newStatus
     });
   });
   
-  if (validationError) {
-    alert(validationError);
-    if (btn) {
-      btn.disabled = false;
-      btn.style.opacity = '1';
-      btn.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg> Guardar Cambios`;
-    }
-    return;
-  }
-  
   let success = true;
   if (supabaseClient) {
     try {
       for (const item of updates) {
-        const origDni = item.originalDni;
-        const changedDni = item.newDni !== origDni;
-        const changedPwd = item.newPwd !== (AGENT_PASSWORDS[origDni] || origDni);
-        const changedRole = item.newRole !== (AGENT_ROLES[origDni] || 'comercial');
-        const changedStatus = item.newStatus !== (AGENT_STATUSES[origDni] || 'active');
+        const changedRole = item.newRole !== (AGENT_ROLES[item.dni] || 'comercial');
+        const changedStatus = item.newStatus !== (AGENT_STATUSES[item.dni] || 'active');
         
-        if (changedDni || changedPwd || changedRole || changedStatus) {
-          const dbValue = item.newRole + ':' + item.newPwd + ':' + item.newStatus;
-          
-          if (changedDni) {
-            const { error: deleteError } = await supabaseClient
-              .from('agentes_roles')
-              .delete()
-              .eq('dni', origDni);
-            if (deleteError) {
-              console.error("Error deleting old DNI:", deleteError);
-              success = false;
-            }
-          }
-          
-          if (success) {
-            const { error: upsertError } = await supabaseClient
-              .from('agentes_roles')
-              .upsert({ dni: item.newDni, rol: dbValue });
-            if (upsertError) {
-              console.error("Error upserting DNI:", upsertError);
-              success = false;
-            }
+        if (changedRole || changedStatus) {
+          const { error } = await supabaseClient
+            .from('agentes_perfiles')
+            .update({
+              rol: item.newRole,
+              activo: item.newStatus === 'active',
+              updated_at: new Date().toISOString()
+            })
+            .eq('dni', item.dni);
+            
+          if (error) {
+            console.error("Error actualizando agentes_perfiles para " + item.dni + ":", error);
+            success = false;
           }
         }
       }
     } catch (e) {
-      console.error("Exception saving agent users to cloud:", e);
+      console.error("Excepción al guardar usuarios de agentes:", e);
       success = false;
     }
   }
   
   if (success) {
     updates.forEach(item => {
-      const origDni = item.originalDni;
-      const newDni = item.newDni;
-      
-      if (newDni !== origDni) {
-        const agentName = COMERCIALES[origDni];
-        delete COMERCIALES[origDni];
-        COMERCIALES[newDni] = agentName;
-        
-        delete AGENT_ROLES[origDni];
-        delete AGENT_PASSWORDS[origDni];
-        delete AGENT_STATUSES[origDni];
-      }
-      
-      AGENT_ROLES[newDni] = item.newRole;
-      AGENT_PASSWORDS[newDni] = item.newPwd;
-      AGENT_STATUSES[newDni] = item.newStatus;
-      
-      if (currentAgentDni === origDni && newDni !== origDni) {
-        currentAgentDni = newDni;
-        localStorage.setItem('comercial_dni', newDni);
-      }
+      AGENT_ROLES[item.dni] = item.newRole;
+      AGENT_STATUSES[item.dni] = item.newStatus;
     });
-    
-    const rawRoles = {};
-    Object.keys(AGENT_ROLES).forEach(k => {
-      const pwd = AGENT_PASSWORDS[k];
-      const status = AGENT_STATUSES[k] || 'active';
-      rawRoles[k] = AGENT_ROLES[k] + ':' + (pwd || k) + ':' + status;
-    });
-    localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
     
     applyAgentPermissions();
     initGruposAgentes();
     
-    alert('\u00a1Cambios guardados con exito!');
+    alert('¡Cambios guardados con éxito en la base de datos!');
   } else {
     alert('Error al guardar algunos cambios en la base de datos.');
   }
@@ -13829,12 +13750,65 @@ async function saveAllAgentUsersByGerente() {
   }
 }
 
+async function saveAgentUserByGerente(dni) {
+  const roleSelect = document.getElementById('user-role-' + dni);
+  const statusInput = document.getElementById('user-status-' + dni);
+  const newRole = roleSelect ? roleSelect.value : (AGENT_ROLES[dni] || 'comercial');
+  const newStatus = statusInput ? (statusInput.checked ? 'active' : 'inactive') : (AGENT_STATUSES[dni] || 'active');
+
+  if (!supabaseClient) return;
+  try {
+    const { error } = await supabaseClient
+      .from('agentes_perfiles')
+      .update({
+        rol: newRole,
+        activo: newStatus === 'active',
+        updated_at: new Date().toISOString()
+      })
+      .eq('dni', dni);
+
+    if (error) {
+      alert("Error al actualizar usuario: " + error.message);
+    } else {
+      AGENT_ROLES[dni] = newRole;
+      AGENT_STATUSES[dni] = newStatus;
+      applyAgentPermissions();
+      alert("¡Usuario actualizado con éxito!");
+    }
+  } catch (e) {
+    alert("Error de conexión al actualizar usuario.");
+  }
+}
+
 async function toggleAgentStatusByGerente(dni) {
-  // Obsoleta
+  const currentStatus = AGENT_STATUSES[dni] || 'active';
+  const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
+  if (!supabaseClient) return;
+
+  try {
+    const { error } = await supabaseClient
+      .from('agentes_perfiles')
+      .update({
+        activo: newStatus === 'active',
+        updated_at: new Date().toISOString()
+      })
+      .eq('dni', dni);
+
+    if (error) {
+      alert("Error al actualizar estado: " + error.message);
+    } else {
+      AGENT_STATUSES[dni] = newStatus;
+      applyAgentPermissions();
+      initGruposAgentes();
+      alert("¡Estado del agente actualizado con éxito!");
+    }
+  } catch (e) {
+    alert("Error de conexión al actualizar estado.");
+  }
 }
 
 async function saveAllAgentRoles() {
-  // Función vacía para compatibilidad
+  // Obsoleta: reemplazada por saveAllAgentUsersByGerente sobre agentes_perfiles
 }
 
 function openPasswordModal() {
@@ -13862,28 +13836,27 @@ async function saveNewPassword(event) {
   const errorEl = document.getElementById('password-modal-error');
   const btn = document.getElementById('btn-save-pwd');
   
-  const currentPwd = document.getElementById('pwd-current').value.trim();
-  const newPwd = document.getElementById('pwd-new').value.trim();
-  const confirmPwd = document.getElementById('pwd-confirm').value.trim();
+  const currentPwd = document.getElementById('pwd-current').value;
+  const newPwd = document.getElementById('pwd-new').value;
+  const confirmPwd = document.getElementById('pwd-confirm').value;
   
   if (!currentPwd || !newPwd || !confirmPwd) {
     if (errorEl) errorEl.textContent = 'Por favor, rellena todos los campos.';
     return;
   }
   
-  const actualCurrent = AGENT_PASSWORDS[currentAgentDni] || currentAgentDni;
-  if (currentPwd !== actualCurrent) {
-    if (errorEl) errorEl.textContent = 'La contrase\u00f1a actual es incorrecta.';
-    return;
-  }
-  
   if (newPwd !== confirmPwd) {
-    if (errorEl) errorEl.textContent = 'La nueva contrase\u00f1a y la confirmaci\u00f3n no coinciden.';
+    if (errorEl) errorEl.textContent = 'La nueva contraseña y la confirmación no coinciden.';
     return;
   }
   
+  if (newPwd.length < 8) {
+    if (errorEl) errorEl.textContent = 'La nueva contraseña debe tener al menos 8 caracteres.';
+    return;
+  }
+
   if (newPwd === currentPwd) {
-    if (errorEl) errorEl.textContent = 'La nueva contrase\u00f1a debe ser diferente a la actual.';
+    if (errorEl) errorEl.textContent = 'La nueva contraseña debe ser diferente a la actual.';
     return;
   }
   
@@ -13893,238 +13866,59 @@ async function saveNewPassword(event) {
     btn.textContent = 'Guardando...';
   }
   
-  let success = true;
-  const currentRole = AGENT_ROLES[currentAgentDni] || 'comercial';
-  const currentStatus = AGENT_STATUSES[currentAgentDni] || 'active';
-  const newRoleVal = currentRole + ':' + newPwd + ':' + currentStatus;
-  
-  if (supabaseClient) {
-    try {
-      const { error } = await supabaseClient
-        .from('agentes_roles')
-        .upsert({ dni: currentAgentDni, rol: newRoleVal });
-      
-      if (error) {
-        console.error("Error updating password in Supabase:", error);
-        success = false;
-      }
-    } catch (e) {
-      console.error("Exception updating password in Supabase:", e);
-      success = false;
+  try {
+    if (!supabaseClient) throw new Error("Cliente de autenticación no inicializado.");
+    const { data: { session }, error: sessionErr } = await supabaseClient.auth.getSession();
+    if (!session || !session.user || !session.access_token) {
+      throw new Error("Sesión inválida. Vuelve a iniciar sesión.");
     }
-  }
-  
-  if (btn) {
-    btn.disabled = false;
-    btn.style.opacity = '1';
-    btn.textContent = 'Guardar Cambios';
-  }
-  
-  if (success) {
-    AGENT_PASSWORDS[currentAgentDni] = newPwd;
-    alert('\u00A1Contrase\u00f1a cambiada con \u00E9xito!');
+
+    // 1. Reautenticar con la contraseña actual en Supabase Auth
+    const { error: signInErr } = await supabaseClient.auth.signInWithPassword({
+      email: session.user.email,
+      password: currentPwd
+    });
+    if (signInErr) {
+      if (errorEl) errorEl.textContent = 'La contraseña actual es incorrecta.';
+      if (btn) {
+        btn.disabled = false;
+        btn.style.opacity = '1';
+        btn.textContent = 'Guardar Cambios';
+      }
+      return;
+    }
+
+    // 2. Llamada autorizada al endpoint seguro /api/update-password
+    const res = await fetch('/api/update-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      },
+      body: JSON.stringify({ newPassword: newPwd })
+    });
+
+    const data = await res.json();
+    if (!res.ok || !data.success) {
+      throw new Error(data.error || "Error al actualizar la contraseña en el servidor.");
+    }
+
+    alert('¡Contraseña cambiada con éxito!');
     closePasswordModal();
-  } else {
-    if (errorEl) errorEl.textContent = 'Error al conectar con la base de datos. Int\u00e9ntalo de nuevo.';
-  }
-}
-
-async function saveAgentUserByGerente(originalDni) {
-  const btn = document.getElementById('btn-save-user-' + originalDni);
-  if (!btn) return;
-  
-  const newDni = document.getElementById('user-dni-' + originalDni).value.trim().toUpperCase();
-  const newPwd = document.getElementById('user-pwd-' + originalDni).value.trim();
-  const roleSelect = document.getElementById('user-role-' + originalDni);
-  const newRole = roleSelect ? roleSelect.value : (AGENT_ROLES[originalDni] || 'comercial');
-  const currentStatus = AGENT_STATUSES[originalDni] || 'active';
-  
-  if (!newDni) {
-    alert('El DNI/Usuario no puede estar vac\u00edo.');
-    return;
-  }
-  if (!newPwd) {
-    alert('La contrase\u00f1a no puede estar vac\u00eda.');
-    return;
-  }
-  
-  btn.disabled = true;
-  btn.style.opacity = '0.7';
-  btn.textContent = 'Guardando...';
-  
-  const newRoleVal = newRole + ':' + newPwd + ':' + currentStatus;
-  
-  let success = true;
-  if (supabaseClient) {
-    try {
-      if (newDni !== originalDni) {
-        const { error: deleteError } = await supabaseClient
-          .from('agentes_roles')
-          .delete()
-          .eq('dni', originalDni);
-          
-        if (deleteError) {
-          console.error("Error deleting old DNI in Supabase:", deleteError);
-          success = false;
-        }
-      }
-      
-      if (success) {
-        const { error: upsertError } = await supabaseClient
-          .from('agentes_roles')
-          .upsert({ dni: newDni, rol: newRoleVal });
-          
-        if (upsertError) {
-          console.error("Error upserting new DNI in Supabase:", upsertError);
-          success = false;
-        }
-      }
-    } catch (e) {
-      console.error("Exception updating agent user in Supabase:", e);
-      success = false;
+  } catch (err) {
+    console.error("Error al actualizar contraseña:", err);
+    if (errorEl) errorEl.textContent = err.message || 'Error al conectar con el servidor.';
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.style.opacity = '1';
+      btn.textContent = 'Guardar Cambios';
     }
-  }
-  
-  btn.disabled = false;
-  btn.style.opacity = '1';
-  btn.textContent = 'Guardar';
-  
-  if (success) {
-    if (newDni !== originalDni) {
-      const agentName = COMERCIALES[originalDni];
-      delete COMERCIALES[originalDni];
-      COMERCIALES[newDni] = agentName;
-      
-      delete AGENT_ROLES[originalDni];
-      delete AGENT_PASSWORDS[originalDni];
-      delete AGENT_STATUSES[originalDni];
-      
-      AGENT_ROLES[newDni] = newRole;
-      AGENT_PASSWORDS[newDni] = newPwd;
-      AGENT_STATUSES[newDni] = currentStatus;
-      
-      if (currentAgentDni === originalDni) {
-        currentAgentDni = newDni;
-        localStorage.setItem('comercial_dni', newDni);
-      }
-      
-      initGruposAgentes();
-    } else {
-      AGENT_ROLES[originalDni] = newRole;
-      AGENT_PASSWORDS[originalDni] = newPwd;
-    }
-    
-    const rawRoles = {};
-    Object.keys(AGENT_ROLES).forEach(k => {
-      const pwd = AGENT_PASSWORDS[k];
-      const status = AGENT_STATUSES[k] || 'active';
-      rawRoles[k] = AGENT_ROLES[k] + ':' + (pwd || k) + ':' + status;
-    });
-    localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
-    
-    applyAgentPermissions();
-    alert('\u00a1Usuario guardado con \u00e9xito!');
-  } else {
-    alert('Error al guardar el usuario en la base de datos.');
-  }
-}
-
-async function toggleAgentStatusByGerente(dni) {
-  const inputDniEl = document.getElementById('user-dni-' + dni);
-  const currentDni = inputDniEl ? inputDniEl.value.trim().toUpperCase() : dni;
-  
-  const btn = document.getElementById('btn-toggle-status-' + dni);
-  if (!btn) return;
-  
-  const currentStatus = AGENT_STATUSES[dni] || 'active';
-  const newStatus = currentStatus === 'active' ? 'inactive' : 'active';
-  
-  btn.disabled = true;
-  btn.style.opacity = '0.7';
-  btn.textContent = 'Guardando...';
-  
-  const currentRole = AGENT_ROLES[dni] || 'comercial';
-  const currentPwd = AGENT_PASSWORDS[dni] || dni;
-  const newRoleVal = currentRole + ':' + currentPwd + ':' + newStatus;
-  
-  let success = true;
-  if (supabaseClient) {
-    try {
-      if (currentDni !== dni) {
-        const { error: deleteError } = await supabaseClient
-          .from('agentes_roles')
-          .delete()
-          .eq('dni', dni);
-        if (deleteError) success = false;
-      }
-      
-      if (success) {
-        const { error } = await supabaseClient
-          .from('agentes_roles')
-          .upsert({ dni: currentDni, rol: newRoleVal });
-        if (error) success = false;
-      }
-    } catch (e) {
-      console.error("Exception updating status in Supabase:", e);
-      success = false;
-    }
-  }
-  
-  btn.disabled = false;
-  btn.style.opacity = '1';
-  
-  if (success) {
-    if (currentDni !== dni) {
-      const agentName = COMERCIALES[dni];
-      delete COMERCIALES[dni];
-      COMERCIALES[currentDni] = agentName;
-      
-      delete AGENT_ROLES[dni];
-      delete AGENT_PASSWORDS[dni];
-      delete AGENT_STATUSES[dni];
-      
-      AGENT_ROLES[currentDni] = currentRole;
-      AGENT_PASSWORDS[currentDni] = currentPwd;
-      AGENT_STATUSES[currentDni] = newStatus;
-      
-      if (currentAgentDni === dni) {
-        currentAgentDni = currentDni;
-        localStorage.setItem('comercial_dni', currentDni);
-      }
-      
-      initGruposAgentes();
-    } else {
-      AGENT_STATUSES[dni] = newStatus;
-      
-      const badge = document.getElementById('status-badge-' + dni);
-      if (badge) {
-        badge.textContent = newStatus === 'inactive' ? 'Inactivo' : 'Activo';
-        badge.style.cssText = newStatus === 'inactive' 
-          ? 'padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(239, 68, 68, 0.15); color: #ef4444;' 
-          : 'padding: 4px 8px; border-radius: 4px; font-size: 11px; font-weight: 700; background: rgba(16, 185, 129, 0.15); color: #10b981;';
-      }
-      
-      btn.textContent = newStatus === 'inactive' ? 'Activar' : 'Desactivar';
-      btn.style.background = newStatus === 'inactive' ? 'var(--green)' : '#f97316';
-    }
-    
-    const rawRoles = {};
-    Object.keys(AGENT_ROLES).forEach(k => {
-      const pwd = AGENT_PASSWORDS[k];
-      const status = AGENT_STATUSES[k] || 'active';
-      rawRoles[k] = AGENT_ROLES[k] + ':' + (pwd || k) + ':' + status;
-    });
-    localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRoles));
-    
-    applyAgentPermissions();
-    alert('\u00A1Estado del agente actualizado con \u00E9xito!');
-  } else {
-    alert('Error al guardar el estado en la base de datos.');
   }
 }
 
 async function saveAgentPasswordByGerente(dni) {
-  // Vacía ya que es reemplazada por saveAgentUserByGerente
+  // Obsoleta: la gestión de contraseñas se realiza mediante Supabase Auth
 }
 
 function updateDashboardLaborablesWidget() {
@@ -14816,28 +14610,57 @@ function toggleComisionPwdVisibility() {
   }
 }
 
-function submitComisionAuth(e) {
+async function submitComisionAuth(e) {
   if (e) e.preventDefault();
   const input = document.getElementById('comision-auth-pwd');
   const errorEl = document.getElementById('comision-auth-error');
+  const submitBtn = document.getElementById('btn-comision-auth-submit');
   if (!input) return;
 
   const enteredPwd = input.value;
-  const currentDni = (typeof currentAgentDni !== 'undefined' && currentAgentDni) ? currentAgentDni : localStorage.getItem('comercial_dni');
-  
-  let validPassword = currentDni;
-  if (typeof AGENT_PASSWORDS !== 'undefined' && currentDni && AGENT_PASSWORDS[currentDni]) {
-    validPassword = AGENT_PASSWORDS[currentDni];
+  if (!enteredPwd) {
+    if (errorEl) errorEl.textContent = 'Por favor, introduce tu contraseña.';
+    return;
   }
 
-  if (enteredPwd === validPassword) {
-    closeComisionAuthModal();
-    revealComision();
-  } else {
-    if (errorEl) errorEl.textContent = 'Contraseña incorrecta. Inténtalo de nuevo.';
-    input.style.borderColor = '#ef4444';
-    input.focus();
-    input.select();
+  if (submitBtn) {
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Verificando...';
+  }
+
+  try {
+    if (!supabaseClient) {
+      throw new Error("Cliente de autenticación no inicializado.");
+    }
+    const { data: { session }, error: sessionErr } = await supabaseClient.auth.getSession();
+    if (!session || !session.user || !session.user.email) {
+      throw new Error("No hay una sesión activa verificable. Inicia sesión de nuevo.");
+    }
+
+    // Reautenticación criptográfica en Supabase Auth (servidor) sin comparar secretos en JavaScript
+    const { error: authErr } = await supabaseClient.auth.signInWithPassword({
+      email: session.user.email,
+      password: enteredPwd
+    });
+
+    if (authErr) {
+      if (errorEl) errorEl.textContent = 'Contraseña incorrecta. Inténtalo de nuevo.';
+      input.style.borderColor = '#ef4444';
+      input.focus();
+      input.select();
+    } else {
+      input.value = '';
+      closeComisionAuthModal();
+      revealComision();
+    }
+  } catch (err) {
+    console.error("Error en reautenticación para comisiones:", err);
+    if (errorEl) errorEl.textContent = err.message || 'Error al validar la contraseña.';
+  } finally {
+    if (submitBtn) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Desbloquear';
+    }
   }
 }
 
@@ -15571,17 +15394,22 @@ function fireAgendaAlert(item) {
   
   const banner = document.getElementById('agenda-alert-banner');
   if (banner) {
+    const safeTitle = escapeHtml(item.title || '');
+    const safePhone = escapeHtml(item.phone || '');
+    const safeTime = escapeHtml(item.time || (item.type === 'call' ? '' : 'Programado'));
+    const safeNotes = escapeHtml(item.notes || '');
+
     const titleText = item.type === 'call' 
-      ? `📞 Llamar a <strong>${item.title}</strong>` 
-      : `🔔 Recordatorio: <strong>${item.title}</strong>`;
+      ? `📞 Llamar a <strong>${safeTitle}</strong>` 
+      : `🔔 Recordatorio: <strong>${safeTitle}</strong>`;
     const detailsText = item.type === 'call' 
-      ? `Tel: ${item.phone} | Hora: ${item.time}` 
-      : `Hora: ${item.time || 'Programado'}`;
+      ? `Tel: ${safePhone} | Hora: ${safeTime}` 
+      : `Hora: ${safeTime}`;
     banner.innerHTML = `
       <div style="display: flex; flex-direction: column; gap: 4px; position: relative; padding-right: 24px;">
         <div style="font-size: 14.5px; font-weight: 700; color: #fff; margin: 0;">${titleText}</div>
         <div style="font-size: 12.5px; color: rgba(255,255,255,0.85);">${detailsText}</div>
-        ${item.notes ? `<div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px; border-left: 2px solid rgba(255,255,255,0.3); padding-left: 6px; font-style: italic;">${item.notes}</div>` : ''}
+        ${safeNotes ? `<div style="font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 4px; border-left: 2px solid rgba(255,255,255,0.3); padding-left: 6px; font-style: italic;">${safeNotes}</div>` : ''}
         <button onclick="document.getElementById('agenda-alert-banner').style.display='none'" style="position: absolute; top: 0; right: 0; background: transparent; border: none; cursor: pointer; color: rgba(255,255,255,0.8); font-size: 16px; padding: 2px; line-height: 1;">×</button>
       </div>
     `;
