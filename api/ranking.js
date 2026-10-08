@@ -49,6 +49,162 @@ const ALLOWED_HTTP_STATUS_CODES = new Set([
   504  // Gateway Timeout
 ]);
 
+/**
+ * CLASIFICACIÓN ESTRUCTURADA DE ERRORES:
+ * Define de forma unívoca qué errores son transitorios (elegibles para fallback a caché si no superan 5 min)
+ * y cuáles son no transitorios (formato, JSON, configuración, redirección rechazada, 401/403 de Apps Script),
+ * los cuales NUNCA deben enmascararse tras una caché existente.
+ */
+const ERROR_CATEGORIES = {
+  TRANSIENT_NETWORK: 'TRANSIENT_NETWORK',
+  INVALID_JSON: 'INVALID_JSON',
+  INVALID_FORMAT: 'INVALID_FORMAT',
+  CONFIG_ERROR: 'CONFIG_ERROR',
+  REDIRECTION_REJECTED: 'REDIRECTION_REJECTED',
+  APPS_SCRIPT_EXPLICIT: 'APPS_SCRIPT_EXPLICIT',
+  UPSTREAM_HTTP_ERROR: 'UPSTREAM_HTTP_ERROR'
+};
+
+const TRANSIENT_NETWORK_CODES = new Set([
+  'ETIMEDOUT',
+  'ECONNRESET',
+  'ECONNREFUSED',
+  'ENOTFOUND',
+  'ESOCKETTIMEDOUT',
+  'EHOSTUNREACH',
+  'EPIPE',
+  'EAI_AGAIN'
+]);
+
+class RankingError extends Error {
+  constructor(message, options = {}) {
+    super(message);
+    this.name = 'RankingError';
+    this.category = options.category || ERROR_CATEGORIES.CONFIG_ERROR;
+    this.isTransient = options.isTransient === true;
+    this.httpStatus = options.httpStatus || 502;
+    if (options.code) this.code = options.code;
+  }
+}
+
+function classifyRankingError(err) {
+  if (!err) {
+    return {
+      category: ERROR_CATEGORIES.CONFIG_ERROR,
+      isTransient: false,
+      httpStatus: 502,
+      code: 502,
+      message: "Error desconocido"
+    };
+  }
+
+  if (err instanceof RankingError || (typeof err === 'object' && err.category && typeof err.isTransient === 'boolean')) {
+    return {
+      category: err.category,
+      isTransient: err.isTransient === true,
+      httpStatus: err.httpStatus || 502,
+      code: err.code || err.httpStatus || 502,
+      message: err.message
+    };
+  }
+
+  const msg = err.message || '';
+  const codeStr = err.code || '';
+
+  // 1. Error explícito devuelto por Apps Script
+  if (msg.startsWith('APPS_SCRIPT_ERROR:')) {
+    const parts = msg.split(':');
+    const rawCode = parseInt(parts[1], 10);
+    const validCode = ALLOWED_HTTP_STATUS_CODES.has(rawCode) ? rawCode : 502;
+    const cleanMsg = parts.slice(2).join(':');
+    return {
+      category: ERROR_CATEGORIES.APPS_SCRIPT_EXPLICIT,
+      isTransient: false,
+      httpStatus: validCode,
+      code: validCode,
+      message: cleanMsg
+    };
+  }
+
+  // 2. Errores de formato de esquema
+  if (msg.includes('Formato de respuesta de ranking no válido')) {
+    return {
+      category: ERROR_CATEGORIES.INVALID_FORMAT,
+      isTransient: false,
+      httpStatus: 502,
+      code: 502,
+      message: msg
+    };
+  }
+
+  // 3. Errores de JSON inválido
+  if (msg.includes('JSON') || msg.includes('Error parseando respuesta JSON')) {
+    return {
+      category: ERROR_CATEGORIES.INVALID_JSON,
+      isTransient: false,
+      httpStatus: 502,
+      code: 502,
+      message: msg
+    };
+  }
+
+  // 4. Redirecciones rechazadas o malformadas
+  if (
+    msg.includes('redirección') ||
+    msg.includes('redirecciones') ||
+    msg.includes('Protocolo de redirección inseguro') ||
+    msg.includes('Destino de redirección no verificado')
+  ) {
+    return {
+      category: ERROR_CATEGORIES.REDIRECTION_REJECTED,
+      isTransient: false,
+      httpStatus: 502,
+      code: 502,
+      message: msg
+    };
+  }
+
+  // 5. Configuración incompleta
+  if (msg.includes('Configuración incompleta')) {
+    return {
+      category: ERROR_CATEGORIES.CONFIG_ERROR,
+      isTransient: false,
+      httpStatus: 503,
+      code: 503,
+      message: msg
+    };
+  }
+
+  // 6. Errores transitorios de red / socket / timeout identificados explícitamente
+  const isTransientCode = TRANSIENT_NETWORK_CODES.has(codeStr);
+  const isTransientMsg = msg.includes('Timeout') ||
+                         msg.includes('timeout') ||
+                         msg.includes('socket hang up') ||
+                         msg.includes('ETIMEDOUT') ||
+                         msg.includes('ECONNRESET') ||
+                         msg.includes('ECONNREFUSED') ||
+                         msg.includes('ENOTFOUND');
+
+  if (isTransientCode || isTransientMsg) {
+    return {
+      category: ERROR_CATEGORIES.TRANSIENT_NETWORK,
+      isTransient: true,
+      httpStatus: 502,
+      code: 502,
+      message: msg
+    };
+  }
+
+  // Fallback seguro: cualquier otro error se clasifica como no transitorio
+  return {
+    category: ERROR_CATEGORIES.CONFIG_ERROR,
+    isTransient: false,
+    httpStatus: 502,
+    code: 502,
+    message: msg
+  };
+}
+
 function verifySupabaseToken(token, callback) {
   try {
     const authUrl = new URL('/auth/v1/user', SUPABASE_URL);
@@ -146,7 +302,11 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
 
   function executeRequest(urlStr, method, body, redirectCount = 0) {
     if (redirectCount > 5) {
-      return callback(new Error("Demasiadas redirecciones de Google Apps Script"));
+      return callback(new RankingError("Demasiadas redirecciones de Google Apps Script", {
+        category: ERROR_CATEGORIES.REDIRECTION_REJECTED,
+        isTransient: false,
+        httpStatus: 502
+      }));
     }
 
     try {
@@ -177,12 +337,20 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
           try {
             redirectUrl = new URL(redirectLocation, urlStr);
           } catch (urlErr) {
-            return callback(new Error("URL de redirección malformada: " + urlErr.message));
+            return callback(new RankingError("URL de redirección malformada: " + urlErr.message, {
+              category: ERROR_CATEGORIES.REDIRECTION_REJECTED,
+              isTransient: false,
+              httpStatus: 502
+            }));
           }
 
           // Validación estricta del protocolo
           if (redirectUrl.protocol !== 'https:') {
-            return callback(new Error("Protocolo de redirección inseguro: se requiere HTTPS"));
+            return callback(new RankingError("Protocolo de redirección inseguro: se requiere HTTPS", {
+              category: ERROR_CATEGORIES.REDIRECTION_REJECTED,
+              isTransient: false,
+              httpStatus: 502
+            }));
           }
 
           // Verificación de destino confiable (Allowlist estricta de dominios de ejecución de Google)
@@ -192,7 +360,11 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
                                      host === 'script.google.com';
 
           if (!isAllowedGoogleHost) {
-            return callback(new Error(`Destino de redirección no verificado o no confiable: ${host}. Abortando para proteger la integridad.`));
+            return callback(new RankingError(`Destino de redirección no verificado o no confiable: ${host}. Abortando para proteger la integridad.`, {
+              category: ERROR_CATEGORIES.REDIRECTION_REJECTED,
+              isTransient: false,
+              httpStatus: 502
+            }));
           }
 
           // Google Apps Script exige leer el resultado del doPost mediante GET en script.googleusercontent.com
@@ -201,7 +373,11 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
         }
 
         if (statusCode !== 200) {
-          return callback(new Error(`Google Apps Script respondió con código HTTP ${statusCode}`));
+          return callback(new RankingError(`Google Apps Script respondió con código HTTP ${statusCode}`, {
+            category: ERROR_CATEGORIES.UPSTREAM_HTTP_ERROR,
+            isTransient: false,
+            httpStatus: 502
+          }));
         }
 
         let raw = '';
@@ -213,7 +389,12 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
             if (data && (data.ok === false || data.success === false)) {
               const code = Number(data.code) || 502;
               const msg = data.error || "Error reportado por el receptor de ranking";
-              return callback(new Error(`APPS_SCRIPT_ERROR:${code}:${msg}`));
+              return callback(new RankingError(`APPS_SCRIPT_ERROR:${code}:${msg}`, {
+                category: ERROR_CATEGORIES.APPS_SCRIPT_EXPLICIT,
+                isTransient: false,
+                httpStatus: ALLOWED_HTTP_STATUS_CODES.has(code) ? code : 502,
+                code: code
+              }));
             }
             if (Array.isArray(data)) {
               return callback(null, data);
@@ -224,26 +405,53 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
             if (data && data.data && Array.isArray(data.data)) {
               return callback(null, data.data);
             }
-            return callback(new Error("Formato de respuesta de ranking no válido"));
+            return callback(new RankingError("Formato de respuesta de ranking no válido", {
+              category: ERROR_CATEGORIES.INVALID_FORMAT,
+              isTransient: false,
+              httpStatus: 502
+            }));
           } catch (e) {
-            return callback(new Error("Error parseando respuesta JSON de Google Apps Script: " + e.message));
+            return callback(new RankingError("Error parseando respuesta JSON de Google Apps Script: " + e.message, {
+              category: ERROR_CATEGORIES.INVALID_JSON,
+              isTransient: false,
+              httpStatus: 502
+            }));
           }
         });
       });
 
       req.on('timeout', () => {
         req.destroy();
-        callback(new Error("Timeout al conectar con Google Apps Script"));
+        callback(new RankingError("Timeout al conectar con Google Apps Script", {
+          category: ERROR_CATEGORIES.TRANSIENT_NETWORK,
+          isTransient: true,
+          httpStatus: 502,
+          code: 'ETIMEDOUT'
+        }));
       });
 
-      req.on('error', err => callback(err));
+      req.on('error', (err) => {
+        const classified = classifyRankingError(err);
+        callback(new RankingError(err.message, {
+          category: classified.category,
+          isTransient: classified.isTransient,
+          httpStatus: classified.httpStatus,
+          code: err.code
+        }));
+      });
 
       if (method === 'POST' && body) {
         req.write(body);
       }
       req.end();
     } catch (err) {
-      callback(err);
+      const classified = classifyRankingError(err);
+      callback(new RankingError(err.message, {
+        category: classified.category,
+        isTransient: classified.isTransient,
+        httpStatus: classified.httpStatus,
+        code: err.code
+      }));
     }
   }
 
@@ -362,25 +570,14 @@ module.exports = function (req, res) {
       // Petición privada Servidor a Servidor con secreto compartido
       fetchPrivateRankingImpl(RANKING_APPS_SCRIPT_URL, RANKING_SHARED_SECRET, (err, rankingData) => {
         if (err) {
-          // 1. PROCESAR ERRORES EXPLÍCITOS DE APPS SCRIPT ANTES DE CUALQUIER FALLBACK DE CACHÉ
-          // Un rechazo de autenticación (401), configuración (503) o petición inválida (400)
-          // NUNCA debe convertirse en HTTP 200 con datos antiguos de caché.
-          if (err.message && err.message.startsWith('APPS_SCRIPT_ERROR:')) {
-            const parts = err.message.split(':');
-            const rawCode = parseInt(parts[1], 10);
-            const httpCode = ALLOWED_HTTP_STATUS_CODES.has(rawCode) ? rawCode : 502;
-            const msg = parts.slice(2).join(':');
-            return res.status(httpCode).json({
-              success: false,
-              code: httpCode,
-              error: msg
-            });
-          }
-
-          // 2. FALLBACK DE CACHÉ LIMITADO ESTRICTAMENTE A FALLOS TRANSITORIOS (red, timeout, DNS)
-          // Exige que la antigüedad no supere MAX_STALE_CACHE_MS y marca claramente la respuesta como STALE.
+          const classified = classifyRankingError(err);
           const cacheAge = now - memoryCache.timestamp;
-          if (!isForce && memoryCache.data && cacheAge <= MAX_STALE_CACHE_MS) {
+
+          // 1. FALLBACK DE CACHÉ LIMITADO ESTRICTAMENTE A FALLOS TRANSITORIOS IDENTIFICADOS EXPLÍCITAMENTE
+          // Errores de formato, JSON, configuración, redirección rechazada o explícitos de Apps Script
+          // NUNCA hacen fallback a caché y devuelven inmediatamente su código de error correspondiente,
+          // incluso si existe una caché reciente en memoria interna del servidor.
+          if (classified.isTransient && !isForce && memoryCache.data && cacheAge <= MAX_STALE_CACHE_MS) {
             res.setHeader('X-Cache-Status', 'STALE');
             res.setHeader('X-Cache-Fallback', 'true');
             res.setHeader('X-Cache-Age-Seconds', Math.round(cacheAge / 1000).toString());
@@ -388,11 +585,14 @@ module.exports = function (req, res) {
             return res.status(200).json(memoryCache.data);
           }
 
-          // 3. Fallo transitorio con caché caducada (> MAX_STALE_CACHE_MS) o sin datos
-          return res.status(502).json({
+          // 2. Si no es un fallo transitorio o la caché no es válida/caducó (> MAX_STALE_CACHE_MS):
+          // Se detiene la operación y se responde con el código de error correspondiente validado.
+          const httpCode = classified.httpStatus;
+          return res.status(httpCode).json({
             success: false,
-            code: 502,
-            error: "Error al consultar el servicio privado de Ranking",
+            code: httpCode,
+            error: classified.message,
+            category: classified.category,
             details: err.message
           });
         }
@@ -408,6 +608,9 @@ module.exports = function (req, res) {
 
 module.exports.fetchPrivateRanking = fetchPrivateRanking;
 module.exports.ALLOWED_HTTP_STATUS_CODES = ALLOWED_HTTP_STATUS_CODES;
+module.exports.ERROR_CATEGORIES = ERROR_CATEGORIES;
+module.exports.RankingError = RankingError;
+module.exports.classifyRankingError = classifyRankingError;
 module.exports.MAX_STALE_CACHE_MS = MAX_STALE_CACHE_MS;
 module.exports.CACHE_TTL_MS = CACHE_TTL_MS;
 module.exports.getMemoryCache = () => memoryCache;

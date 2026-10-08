@@ -339,7 +339,7 @@ if ($nodeCmd) {
     $runtimeOutput = & $nodeCmd.Source "$PWD\tests\test_runtime_verifications.js"
     $runtimeExit = $LASTEXITCODE
     $runtimeCondition = ($runtimeExit -eq 0)
-    Report-Test -Category "Runtime Suite" -TestName "Bateria de 16 pruebas en tiempo real ejecutando codigo de servidor y apps script" -Profile "Runtime Engine" -Expected "Exit code 0; 16 pruebas superadas; 0 fallidas" -Obtained "Ejecucion completada con exito en tiempo real" -Condition $runtimeCondition
+    Report-Test -Category "Runtime Suite" -TestName "Bateria de 18 pruebas en tiempo real ejecutando codigo de servidor y apps script" -Profile "Runtime Engine" -Expected "Exit code 0; 18 pruebas superadas; 0 fallidas" -Obtained "Ejecucion completada con exito en tiempo real" -Condition $runtimeCondition
 } else {
     Write-Host " [SKIP] [Runtime Suite] Node/agy-node no detectado en el PATH para ejecucion directa" -ForegroundColor Yellow
 }

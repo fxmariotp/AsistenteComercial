@@ -192,6 +192,73 @@ console.log("\n\x1b[37m=== CASO 2: Caché caducada y fallo del receptor ===\x1b[
   );
 })();
 
+(function testRecentCacheWithInvalidFormatReturns502Never200() {
+  // Sembrar la memoria con caché reciente (1 minuto de antigüedad: dentro de los 5 min de fallback pero fuera de los 30s de HIT directo)
+  const freshData = [{ posicion: 1, nombre: "COMERCIAL CACHE RECIENTE", puntos: 999, objetivo: 16, pendientes: 0 }];
+  const oneMinuteAgo = Date.now() - (60 * 1000);
+  apiRanking.setMemoryCache(freshData, oneMinuteAgo);
+
+  // Simular error no transitorio de formato de respuesta inválido (p.ej. schema corrupto de Apps Script)
+  apiRanking._setFetchPrivateRankingForTesting((url, secret, cb) => {
+    cb(new apiRanking.RankingError("Formato de respuesta de ranking no válido", {
+      category: apiRanking.ERROR_CATEGORIES.INVALID_FORMAT,
+      isTransient: false,
+      httpStatus: 502
+    }));
+  });
+
+  // Petición estándar (sin force=true) donde un fallo transitorio sí dispararía fallback
+  const { req, res } = createMockHttp({ query: {} });
+  apiRanking(req, res);
+
+  const statusIs502 = res.statusCode === 502;
+  const never200 = res.statusCode !== 200;
+  const noCachedDataReturned = !Array.isArray(res._jsonData);
+  const errorMatches = res._jsonData &&
+                       res._jsonData.success === false &&
+                       res._jsonData.code === 502 &&
+                       res._jsonData.category === apiRanking.ERROR_CATEGORIES.INVALID_FORMAT;
+
+  report(
+    "Caché reciente y respuesta de formato inválido -> responde HTTP 502 (NUNCA 200 ni fallback)",
+    statusIs502 && never200 && noCachedDataReturned && errorMatches,
+    `Status recibido: ${res.statusCode} (esperado 502, nunca 200) | Categoría: ${res._jsonData?.category}`
+  );
+})();
+
+(function testRecentCacheWithInvalidJsonReturns502Never200() {
+  // Sembrar la memoria con caché reciente (1 minuto de antigüedad)
+  const freshData = [{ posicion: 1, nombre: "COMERCIAL CACHE RECIENTE", puntos: 888, objetivo: 16, pendientes: 0 }];
+  const oneMinuteAgo = Date.now() - (60 * 1000);
+  apiRanking.setMemoryCache(freshData, oneMinuteAgo);
+
+  // Simular error no transitorio de JSON malformado
+  apiRanking._setFetchPrivateRankingForTesting((url, secret, cb) => {
+    cb(new apiRanking.RankingError("Error parseando respuesta JSON de Google Apps Script: Unexpected token <", {
+      category: apiRanking.ERROR_CATEGORIES.INVALID_JSON,
+      isTransient: false,
+      httpStatus: 502
+    }));
+  });
+
+  const { req, res } = createMockHttp({ query: {} });
+  apiRanking(req, res);
+
+  const statusIs502 = res.statusCode === 502;
+  const never200 = res.statusCode !== 200;
+  const noCachedDataReturned = !Array.isArray(res._jsonData);
+  const errorMatches = res._jsonData &&
+                       res._jsonData.success === false &&
+                       res._jsonData.code === 502 &&
+                       res._jsonData.category === apiRanking.ERROR_CATEGORIES.INVALID_JSON;
+
+  report(
+    "Caché reciente y JSON inválido -> responde HTTP 502 (NUNCA 200 ni fallback)",
+    statusIs502 && never200 && noCachedDataReturned && errorMatches,
+    `Status recibido: ${res.statusCode} (esperado 502, nunca 200) | Categoría: ${res._jsonData?.category}`
+  );
+})();
+
 // ----------------------------------------------------------------------------
 // CASO 3: Ausencia de hoja de ranking en Google Apps Script
 // ----------------------------------------------------------------------------
