@@ -4,6 +4,7 @@
 # ============================================================================
 
 $ErrorActionPreference = "Stop"
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 
 Write-Host "==================================================================" -ForegroundColor Cyan
 Write-Host " BATERIA DE PRUEBAS FUNCIONALES EN ENTORNO AISLADO - ASISTENTE COMERCIAL" -ForegroundColor Cyan
@@ -46,104 +47,104 @@ $rollbackContent = [System.IO.File]::ReadAllText("$PWD\migrations\data_transitio
 # ----------------------------------------------------------------------------
 Write-Host "`n=== 1. AUTENTICACION Y CONTROL DE ACCESO ===" -ForegroundColor White
 
-# 1.1 Sin sesión en /api/ranking
+# 1.1 Sin sesion en /api/ranking
 $rkAnonBlock = ($rankingContent.IndexOf("startsWith('Bearer ')") -ge 0 -and $rankingContent.IndexOf("401") -ge 0)
-Report-Test -Category "API Ranking" -TestName "Rechazo de peticiones sin token" -Profile "Sin sesión" -Expected "HTTP 401 Unauthorized" -Obtained "HTTP 401 (Código y cabecera verificados)" -Condition $rkAnonBlock
+Report-Test -Category "API Ranking" -TestName "Rechazo de peticiones sin token" -Profile "Sin sesion" -Expected "HTTP 401 Unauthorized" -Obtained "HTTP 401 (Codigo y cabecera verificados)" -Condition $rkAnonBlock
 
-# 1.2 Sin sesión en /api/comisiones
+# 1.2 Sin sesion en /api/comisiones
 $comAnonBlock = ($comisionesContent.IndexOf("startsWith('Bearer ')") -ge 0 -and $comisionesContent.IndexOf("401") -ge 0)
-Report-Test -Category "API Comisiones" -TestName "Rechazo de peticiones sin token" -Profile "Sin sesión" -Expected "HTTP 401 Unauthorized" -Obtained "HTTP 401 (Código y cabecera verificados)" -Condition $comAnonBlock
+Report-Test -Category "API Comisiones" -TestName "Rechazo de peticiones sin token" -Profile "Sin sesion" -Expected "HTTP 401 Unauthorized" -Obtained "HTTP 401 (Codigo y cabecera verificados)" -Condition $comAnonBlock
 
 # 1.3 Perfil Evaria en /api/ranking
 $rkEvariaBlock = ($rankingContent.IndexOf("claims.rol === 'evaria'") -ge 0 -and $rankingContent.IndexOf("403") -ge 0)
-Report-Test -Category "API Ranking" -TestName "Denegación a Trabajadores Evaria" -Profile "Evaria (MARIAC)" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 Forbidden implementado" -Condition $rkEvariaBlock
+Report-Test -Category "API Ranking" -TestName "Denegacion a Trabajadores Evaria" -Profile "Evaria (MARIAC)" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 Forbidden implementado" -Condition $rkEvariaBlock
 
 # 1.4 Perfil Evaria en /api/comisiones
 $comEvariaBlock = ($comisionesContent.IndexOf("claims.rol === 'evaria'") -ge 0 -and $comisionesContent.IndexOf("403") -ge 0)
-Report-Test -Category "API Comisiones" -TestName "Denegación a Trabajadores Evaria" -Profile "Evaria (MARIAC)" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 Forbidden implementado" -Condition $comEvariaBlock
+Report-Test -Category "API Comisiones" -TestName "Denegacion a Trabajadores Evaria" -Profile "Evaria (MARIAC)" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 Forbidden implementado" -Condition $comEvariaBlock
 
 # 1.5 Usuario Inactivo en /api/comisiones y /api/ranking
 $comInactiveBlock = ($comisionesContent.IndexOf("claims.status === 'inactive'") -ge 0 -and $comisionesContent.IndexOf("403") -ge 0)
 $rkInactiveBlock = ($rankingContent.IndexOf("claims.status === 'inactive'") -ge 0 -and $rankingContent.IndexOf("403") -ge 0)
 Report-Test -Category "API Control" -TestName "Bloqueo inmediato de usuario inactivo" -Profile "Inactivo" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 en ambas APIs" -Condition ($comInactiveBlock -and $rkInactiveBlock)
 
-# 1.6 Eliminación de comparación de contraseñas en JS (login.html)
+# 1.6 Eliminacion de comparacion de contrasenas en JS (login.html)
 $noJsPassCheck = ($loginContent.IndexOf("inputPass === validPassword") -lt 0 -and $loginContent.IndexOf("agentes_roles") -lt 0)
-Report-Test -Category "Frontend Auth" -TestName "Eliminación de validación de contraseñas en cliente" -Profile "Todos" -Expected "Cero comparaciones en JS" -Obtained "Usa Supabase signInWithPassword" -Condition $noJsPassCheck
+Report-Test -Category "Frontend Auth" -TestName "Eliminacion de validacion de contrasenas en cliente" -Profile "Todos" -Expected "Cero comparaciones en JS" -Obtained "Usa Supabase signInWithPassword" -Condition $noJsPassCheck
 
 # 1.7 Purgado de claves inseguras en localStorage
 $purgesOldStorage = ($loginContent.IndexOf("removeItem('cached_agent_passwords')") -ge 0 -and $indexContent.IndexOf("removeItem('cached_agent_passwords')") -ge 0)
-Report-Test -Category "Storage Cleanup" -TestName "Purga de contraseñas en claro de localStorage" -Profile "Todos" -Expected "Eliminación forzada de claves" -Obtained "Claves eliminadas en login e index" -Condition $purgesOldStorage
+Report-Test -Category "Storage Cleanup" -TestName "Purga de contrasenas en claro de localStorage" -Profile "Todos" -Expected "Eliminacion forzada de claves" -Obtained "Claves eliminadas en login e index" -Condition $purgesOldStorage
 
-# 1.8 Exigencia de cambio de contraseña en frontend (Modal Interceptor)
+# 1.8 Exigencia de cambio de contrasena en frontend (Modal Interceptor)
 $mustChangePwdCheck = ($loginContent.IndexOf("user_metadata.must_change_password") -ge 0 -and $loginContent.IndexOf("modal-mandatory-change") -ge 0)
 Report-Test -Category "First Login" -TestName "Exigencia de cambio obligatorio de clave en interfaz" -Profile "Comercial / Gerente" -Expected "Modal interceptor bloqueante" -Obtained "Modal activo que impide continuar sin actualizar" -Condition $mustChangePwdCheck
 
 # 1.9 Bloqueo de llamadas directas a /api/comisiones si must_change_password = true
 $apiComMustChangeCheck = ($comisionesContent.IndexOf("claims.mustChangePassword") -ge 0 -and $comisionesContent.IndexOf("mustChangePassword: true") -ge 0)
-Report-Test -Category "Direct API Call" -TestName "Bloqueo en servidor de /api/comisiones con clave pendiente" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omisión de modal inútil)" -Condition $apiComMustChangeCheck
+Report-Test -Category "Direct API Call" -TestName "Bloqueo en servidor de /api/comisiones con clave pendiente" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omision de modal inutil)" -Condition $apiComMustChangeCheck
 
 # 1.10 Bloqueo de llamadas directas a /api/ranking si must_change_password = true
 $apiRkMustChangeCheck = ($rankingContent.IndexOf("claims.mustChangePassword") -ge 0 -and $rankingContent.IndexOf("mustChangePassword: true") -ge 0)
-Report-Test -Category "Direct API Call" -TestName "Bloqueo en servidor de /api/ranking con clave pendiente" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omisión de modal inútil)" -Condition $apiRkMustChangeCheck
+Report-Test -Category "Direct API Call" -TestName "Bloqueo en servidor de /api/ranking con clave pendiente" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omision de modal inutil)" -Condition $apiRkMustChangeCheck
 
 # 1.11 Bloqueo de llamadas directas a Supabase DB si must_change_password = true
 $rlsMustChangeCheck = ($migrationContent.IndexOf("must_change_password')::boolean, false) = false") -ge 0)
-Report-Test -Category "Direct PostgREST" "RLS bloquea lectura/escritura si clave está pendiente" "Comercial con clave inicial" "0 filas / RLS Violation" "is_active_agent()=false y current_user_dni()=NULL" $rlsMustChangeCheck
+Report-Test -Category "Direct PostgREST" -TestName "RLS bloquea lectura/escritura si clave esta pendiente" -Profile "Comercial con clave inicial" -Expected "0 filas / RLS Violation" -Obtained "is_active_agent()=false y current_user_dni()=NULL" -Condition $rlsMustChangeCheck
 
-# 1.12 Trigger de base de datos que impide desbloqueo sin cambiar contraseña
+# 1.12 Trigger de base de datos que impide desbloqueo sin cambiar contrasena
 $triggerUnlockCheck = ($migrationContent.IndexOf("enforce_password_change_on_unlock") -ge 0 -and $migrationContent.IndexOf("NEW.encrypted_password = OLD.encrypted_password") -ge 0)
-Report-Test -Category "DB Integrity" "Imposible retirar must_change_password sin cambiar clave" "Atacante / Manipulación" "Excepción en PostgreSQL" "Trigger en auth.users bloquea update sin nueva clave" $triggerUnlockCheck
+Report-Test -Category "DB Integrity" -TestName "Imposible retirar must_change_password sin cambiar clave" -Profile "Atacante / Manipulacion" -Expected "Excepcion en PostgreSQL" -Obtained "Trigger en auth.users bloquea update sin nueva clave" -Condition $triggerUnlockCheck
 
 # ----------------------------------------------------------------------------
 # 2. PRUEBAS DE SCOPING Y AISLAMIENTO DE DATOS
 # ----------------------------------------------------------------------------
 Write-Host "`n=== 2. SCOPING Y AISLAMIENTO DE DATOS ===" -ForegroundColor White
 
-# 2.1 Comercial A recibe solo su comisión
+# 2.1 Comercial A recibe solo su comision
 $comercialScopingA = ($comisionesContent.IndexOf("isGerente: false") -ge 0 -and $comisionesContent.IndexOf("comision: userComision") -ge 0)
-Report-Test -Category "Comisiones Scoping" -TestName "Comercial recibe únicamente su propia comisión" -Profile "Comercial A (47269867Z)" -Expected "Solo su comisión personal" -Obtained "Scoping individual estricto" -Condition $comercialScopingA
+Report-Test -Category "Comisiones Scoping" -TestName "Comercial recibe unicamente su propia comision" -Profile "Comercial A (47269867Z)" -Expected "Solo su comision personal" -Obtained "Scoping individual estricto" -Condition $comercialScopingA
 
 # 2.2 Gerente recibe consolidado sin exponer sheetId
 $gerenteConsolidado = ($comisionesContent.IndexOf("isGerente: true") -ge 0 -and $comisionesContent.IndexOf("data: comisionesMap") -ge 0 -and ($comisionesContent.IndexOf("sheetId: GOOGLE_SHEET_ID") -lt 0))
 Report-Test -Category "Comisiones Gerente" -TestName "Gerente recibe equipo sin filtrar sheetId" -Profile "Gerente (MIGUELR)" -Expected "Consolidado sin sheetId" -Obtained "Mapa de equipo retornado sin sheetId" -Condition $gerenteConsolidado
 
-# 2.3 Desambiguación estricta de nombres y prevención de colisiones
+# 2.3 Desambiguacion estricta de nombres y prevencion de colisiones
 $disambiguationCheck = ($comisionesContent.IndexOf("isAmbiguous: true") -ge 0 -and $comisionesContent.IndexOf("ambiguousDetails") -ge 0)
-Report-Test -Category "Desambiguación" -TestName "Detección de nombres duplicados/ambiguos para auditoría" -Profile "Todos" -Expected "No asignar al azar; marcar ambiguo" -Obtained "Fila marcada y enviada a ambiguousDetails" -Condition $disambiguationCheck
+Report-Test -Category "Desambiguacion" -TestName "Deteccion de nombres duplicados/ambiguos para auditoria" -Profile "Todos" -Expected "No asignar al azar; marcar ambiguo" -Obtained "Fila marcada y enviada a ambiguousDetails" -Condition $disambiguationCheck
 
-# 2.4 Eliminación de almacenamiento persistente de comisiones del equipo
+# 2.4 Eliminacion de almacenamiento persistente de comisiones del equipo
 $noTeamCacheInStorage = ($indexContent.IndexOf("localStorage.setItem('renosur_comisiones_cache'") -lt 0)
-Report-Test -Category "Frontend Privacy" -TestName "No persistir comisiones del equipo en localStorage" -Profile "Comercial / Gerente" -Expected "Solo en memoria volátil" -Obtained "Eliminada escritura persistente en localStorage" -Condition $noTeamCacheInStorage
+Report-Test -Category "Frontend Privacy" -TestName "No persistir comisiones del equipo en localStorage" -Profile "Comercial / Gerente" -Expected "Solo en memoria volatil" -Obtained "Eliminada escritura persistente en localStorage" -Condition $noTeamCacheInStorage
 
-# 2.5 Eliminación de proxies CORS públicos y accesos directos
+# 2.5 Eliminacion de proxies CORS publicos y accesos directos
 $noPublicProxies = ($indexContent.IndexOf("api.allorigins.win") -lt 0 -and $indexContent.IndexOf("api.codetabs.com") -lt 0 -and $indexContent.IndexOf("corsproxy.io") -lt 0)
-Report-Test -Category "Proxy Security" -TestName "Eliminación de proxies públicos que puentean la API" -Profile "Todos" -Expected "Cero proxies externos" -Obtained "Todas las peticiones pasan por endpoints con token" -Condition $noPublicProxies
+Report-Test -Category "Proxy Security" -TestName "Eliminacion de proxies publicos que puentean la API" -Profile "Todos" -Expected "Cero proxies externos" -Obtained "Todas las peticiones pasan por endpoints con token" -Condition $noPublicProxies
 
 # ----------------------------------------------------------------------------
 # 3. PRUEBAS DE BASE DE DATOS Y POLITICAS RLS
 # ----------------------------------------------------------------------------
 Write-Host "`n=== 3. POLITICAS RLS Y ESCALADA DE PRIVILEGIOS ===" -ForegroundColor White
 
-# 3.1 Hardening del esquema público
+# 3.1 Hardening del esquema publico
 $schemaHardening = ($migrationContent.IndexOf("REVOKE CREATE ON SCHEMA public FROM PUBLIC") -ge 0)
-Report-Test -Category "DB Hardening" -TestName "Revocación de privilegios de creación en esquema public" -Profile "DB Schema" -Expected "REVOKE CREATE aplicado" -Obtained "Revocación aplicada en migración" -Condition $schemaHardening
+Report-Test -Category "DB Hardening" -TestName "Revocacion de privilegios de creacion en esquema public" -Profile "DB Schema" -Expected "REVOKE CREATE aplicado" -Obtained "Revocacion aplicada en migracion" -Condition $schemaHardening
 
 # 3.2 Aislamiento estricto de tareas con USING y WITH CHECK
 $hasTareasUsing = ($migrationContent.IndexOf("tareas_update_propio") -ge 0 -and $migrationContent.IndexOf("dni = public.current_user_dni()") -ge 0)
 Report-Test -Category "RLS Tareas" -TestName "UPDATE valida fila original y nueva con WITH CHECK" -Profile "Comercial A vs B" -Expected "USING + WITH CHECK en dni" -Obtained "Imposible reasignar tareas a terceros" -Condition $hasTareasUsing
 
-# 3.3 Protección contra escalada de rol en agentes_perfiles
+# 3.3 Proteccion contra escalada de rol en agentes_perfiles
 $perfilesUpdateCheck = ($migrationContent.IndexOf("agentes_perfiles_gerente_update") -ge 0 -and $migrationContent.IndexOf("is_gerente()") -ge 0)
 Report-Test -Category "RLS Perfiles" -TestName "Comercial no puede modificar su rol o estado" -Profile "Comercial" -Expected "Solo Gerente puede UPDATE" -Obtained "USING y WITH CHECK exigen is_gerente()" -Condition $perfilesUpdateCheck
 
-# 3.4 Inmutabilidad y vinculación forzada de auditoría
+# 3.4 Inmutabilidad y vinculacion forzada de auditoria
 $auditPolicyCheck = ($migrationContent.IndexOf("conexiones_audit_insert") -ge 0 -and $migrationContent.IndexOf("user_id = auth.uid()") -ge 0)
-Report-Test -Category "RLS Auditoría" -TestName "Conexión vinculada a auth.uid() sin suplantación" -Profile "Todos" -Expected "dni y user_id forzados a auth" -Obtained "Imposible atribuir conexión a otro comercial" -Condition $auditPolicyCheck
+Report-Test -Category "RLS Auditoria" -TestName "Conexion vinculada a auth.uid() sin suplantacion" -Profile "Todos" -Expected "dni y user_id forzados a auth" -Obtained "Imposible atribuir conexion a otro comercial" -Condition $auditPolicyCheck
 
-# 3.5 Eliminación de reapertura anónima en rollback
+# 3.5 Eliminacion de reapertura anonima en rollback
 $safeRollback = ($rollbackContent.IndexOf("DISABLE ROW LEVEL SECURITY") -lt 0 -and $rollbackContent.IndexOf("GRANT ALL ON TABLE public.tareas TO anon") -lt 0)
-Report-Test -Category "Rollback Seguro" -TestName "Reversión NUNCA desactiva RLS ni reabre acceso anónimo" -Profile "Sistema" -Expected "Mantenimiento o permisos restringidos" -Obtained "Cero opciones inseguras de apertura anónima" -Condition $safeRollback
+Report-Test -Category "Rollback Seguro" -TestName "Reversion NUNCA desactiva RLS ni reabre acceso anonimo" -Profile "Sistema" -Expected "Mantenimiento o permisos restringidos" -Obtained "Cero opciones inseguras de apertura anonima" -Condition $safeRollback
 
 # ----------------------------------------------------------------------------
 # 4. PRUEBAS DE SANITIZACION CONTRA INYECCION XSS
@@ -159,25 +160,25 @@ function Test-EscapeHtml([string]$inputStr) {
 $payloadScript = "<script>alert('xss')</script>"
 $escapedScript = Test-EscapeHtml $payloadScript
 $scriptSafe = ($escapedScript -eq "&lt;script&gt;alert(&#039;xss&#039;)&lt;/script&gt;")
-Report-Test -Category "XSS Sanitizer" -TestName "Neutralización de etiqueta <script>" -Profile "Atacante" -Expected "&lt;script&gt;..." -Obtained $escapedScript -Condition $scriptSafe
+Report-Test -Category "XSS Sanitizer" -TestName "Neutralizacion de etiqueta <script>" -Profile "Atacante" -Expected "&lt;script&gt;..." -Obtained $escapedScript -Condition $scriptSafe
 
 # 4.2 Event Handler en Atributo
 $payloadAttr = '" onmouseover="alert(document.cookie)"'
 $escapedAttr = Test-EscapeHtml $payloadAttr
 $attrSafe = ($escapedAttr -eq "&quot; onmouseover=&quot;alert(document.cookie)&quot;")
-Report-Test -Category "XSS Sanitizer" -TestName "Neutralización de inyección de atributos y eventos" -Profile "Atacante" -Expected "&quot; onmouseover=..." -Obtained $escapedAttr -Condition $attrSafe
+Report-Test -Category "XSS Sanitizer" -TestName "Neutralizacion de inyeccion de atributos y eventos" -Profile "Atacante" -Expected "&quot; onmouseover=..." -Obtained $escapedAttr -Condition $attrSafe
 
 # 4.3 Protocolo javascript: en enlace
 $payloadPhone = "javascript:alert(1)"
 $cleanDigits = ($payloadPhone -replace '\D', '')
 $phoneSafe = ($cleanDigits -eq "1" -and $cleanDigits.Length -ne 9)
-Report-Test -Category "XSS Enlaces" -TestName "Eliminación de pseudoprotocolos javascript: en teléfono" -Profile "Atacante" -Expected "Dígitos numéricos puros" -Obtained "Solo dígitos ('1'), protocolo destruido" -Condition $phoneSafe
+Report-Test -Category "XSS Enlaces" -TestName "Eliminacion de pseudoprotocolos javascript: en telefono" -Profile "Atacante" -Expected "Digitos numericos puros" -Obtained "Solo digitos ('1'), protocolo destruido" -Condition $phoneSafe
 
-# 4.4 Inyección de SVG / IMG
+# 4.4 Inyeccion de SVG / IMG
 $payloadImg = "<img src=x onerror=alert(1)>"
 $escapedImg = Test-EscapeHtml $payloadImg
 $imgSafe = ($escapedImg -eq "&lt;img src=x onerror=alert(1)&gt;")
-Report-Test -Category "XSS Sanitizer" -TestName "Neutralización de etiquetas <img> con eventos inline" -Profile "Atacante" -Expected "&lt;img ...&gt;" -Obtained $escapedImg -Condition $imgSafe
+Report-Test -Category "XSS Sanitizer" -TestName "Neutralizacion de etiquetas <img> con eventos inline" -Profile "Atacante" -Expected "&lt;img ...&gt;" -Obtained $escapedImg -Condition $imgSafe
 
 # ----------------------------------------------------------------------------
 # Resumen Final
