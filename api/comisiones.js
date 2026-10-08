@@ -300,6 +300,13 @@ function extractUserClaims(user) {
     status = user.app_metadata.status.toLowerCase();
   }
 
+  let mustChangePassword = false;
+  if (user.user_metadata && user.user_metadata.must_change_password === true) {
+    mustChangePassword = true;
+  } else if (user.app_metadata && user.app_metadata.must_change_password === true) {
+    mustChangePassword = true;
+  }
+
   let nombre = '';
   if (user.user_metadata && user.user_metadata.nombre) {
     nombre = user.user_metadata.nombre;
@@ -308,7 +315,7 @@ function extractUserClaims(user) {
     if (matched) nombre = matched.name;
   }
 
-  return { dni, rol, status, nombre, id: user.id };
+  return { dni, rol, status, nombre, mustChangePassword, id: user.id };
 }
 
 module.exports = function (req, res) {
@@ -360,6 +367,15 @@ module.exports = function (req, res) {
       return res.status(403).json({
         success: false,
         error: "Tu cuenta de usuario ha sido desactivada por gerencia."
+      });
+    }
+
+    // 4. Comprobación obligatoria de cambio de contraseña pendiente (Protección de llamada directa)
+    if (claims.mustChangePassword) {
+      return res.status(403).json({
+        success: false,
+        error: "Acceso bloqueado: Cambio obligatorio de contraseña pendiente. Debes actualizar tu contraseña personal antes de consultar las comisiones.",
+        mustChangePassword: true
       });
     }
 

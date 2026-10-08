@@ -117,7 +117,14 @@ function extractUserClaims(user) {
     status = user.app_metadata.status.toLowerCase();
   }
 
-  return { dni, rol, status, id: user.id };
+  let mustChangePassword = false;
+  if (user.user_metadata && user.user_metadata.must_change_password === true) {
+    mustChangePassword = true;
+  } else if (user.app_metadata && user.app_metadata.must_change_password === true) {
+    mustChangePassword = true;
+  }
+
+  return { dni, rol, status, mustChangePassword, id: user.id };
 }
 
 module.exports = function (req, res) {
@@ -170,7 +177,16 @@ module.exports = function (req, res) {
       });
     }
 
-    // 4. Scoping por rol: Evaria denegado
+    // 4. Comprobación de cambio obligatorio de contraseña (Protección de llamada directa)
+    if (claims.mustChangePassword) {
+      return res.status(403).json({
+        success: false,
+        error: "Acceso bloqueado: Cambio obligatorio de contraseña pendiente. Debes actualizar tu contraseña personal antes de consultar el ranking.",
+        mustChangePassword: true
+      });
+    }
+
+    // 5. Scoping por rol: Evaria denegado
     if (claims.rol === 'evaria') {
       return res.status(403).json({
         success: false,

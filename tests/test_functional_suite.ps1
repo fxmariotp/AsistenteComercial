@@ -75,9 +75,25 @@ Report-Test -Category "Frontend Auth" -TestName "Eliminación de validación de 
 $purgesOldStorage = ($loginContent.IndexOf("removeItem('cached_agent_passwords')") -ge 0 -and $indexContent.IndexOf("removeItem('cached_agent_passwords')") -ge 0)
 Report-Test -Category "Storage Cleanup" -TestName "Purga de contraseñas en claro de localStorage" -Profile "Todos" -Expected "Eliminación forzada de claves" -Obtained "Claves eliminadas en login e index" -Condition $purgesOldStorage
 
-# 1.8 Exigencia de cambio de contraseña en primer acceso
+# 1.8 Exigencia de cambio de contraseña en frontend (Modal Interceptor)
 $mustChangePwdCheck = ($loginContent.IndexOf("user_metadata.must_change_password") -ge 0 -and $loginContent.IndexOf("modal-mandatory-change") -ge 0)
-Report-Test -Category "First Login" -TestName "Exigencia de cambio obligatorio de clave antes de acceder" -Profile "Comercial / Gerente" -Expected "Modal interceptor bloqueante" -Obtained "Modal activo que impide continuar sin actualizar" -Condition $mustChangePwdCheck
+Report-Test -Category "First Login" -TestName "Exigencia de cambio obligatorio de clave en interfaz" -Profile "Comercial / Gerente" -Expected "Modal interceptor bloqueante" -Obtained "Modal activo que impide continuar sin actualizar" -Condition $mustChangePwdCheck
+
+# 1.9 Bloqueo de llamadas directas a /api/comisiones si must_change_password = true
+$apiComMustChangeCheck = ($comisionesContent.IndexOf("claims.mustChangePassword") -ge 0 -and $comisionesContent.IndexOf("mustChangePassword: true") -ge 0)
+Report-Test -Category "Direct API Call" -TestName "Bloqueo en servidor de /api/comisiones con clave pendiente" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omisión de modal inútil)" -Condition $apiComMustChangeCheck
+
+# 1.10 Bloqueo de llamadas directas a /api/ranking si must_change_password = true
+$apiRkMustChangeCheck = ($rankingContent.IndexOf("claims.mustChangePassword") -ge 0 -and $rankingContent.IndexOf("mustChangePassword: true") -ge 0)
+Report-Test -Category "Direct API Call" -TestName "Bloqueo en servidor de /api/ranking con clave pendiente" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omisión de modal inútil)" -Condition $apiRkMustChangeCheck
+
+# 1.11 Bloqueo de llamadas directas a Supabase DB si must_change_password = true
+$rlsMustChangeCheck = ($migrationContent.IndexOf("must_change_password')::boolean, false) = false") -ge 0)
+Report-Test -Category "Direct PostgREST" "RLS bloquea lectura/escritura si clave está pendiente" "Comercial con clave inicial" "0 filas / RLS Violation" "is_active_agent()=false y current_user_dni()=NULL" $rlsMustChangeCheck
+
+# 1.12 Trigger de base de datos que impide desbloqueo sin cambiar contraseña
+$triggerUnlockCheck = ($migrationContent.IndexOf("enforce_password_change_on_unlock") -ge 0 -and $migrationContent.IndexOf("NEW.encrypted_password = OLD.encrypted_password") -ge 0)
+Report-Test -Category "DB Integrity" "Imposible retirar must_change_password sin cambiar clave" "Atacante / Manipulación" "Excepción en PostgreSQL" "Trigger en auth.users bloquea update sin nueva clave" $triggerUnlockCheck
 
 # ----------------------------------------------------------------------------
 # 2. PRUEBAS DE SCOPING Y AISLAMIENTO DE DATOS

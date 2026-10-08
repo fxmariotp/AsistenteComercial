@@ -84,10 +84,15 @@ STABLE
 SECURITY DEFINER
 SET search_path = public, auth
 AS $$
-    SELECT dni FROM public.agentes_perfiles WHERE user_id = auth.uid() AND activo = true LIMIT 1;
+    SELECT p.dni FROM public.agentes_perfiles p
+    WHERE p.user_id = auth.uid() 
+      AND p.activo = true
+      AND COALESCE((auth.jwt() -> 'user_metadata' ->> 'must_change_password')::boolean, false) = false
+      AND COALESCE((auth.jwt() -> 'app_metadata' ->> 'must_change_password')::boolean, false) = false
+    LIMIT 1;
 $$;
 
--- Comprueba si el usuario autenticado tiene rol 'gerente' activo
+-- Comprueba si el usuario autenticado tiene rol 'gerente' activo y sin cambio pendiente
 CREATE OR REPLACE FUNCTION public.is_gerente()
 RETURNS BOOLEAN
 LANGUAGE sql
@@ -96,14 +101,16 @@ SECURITY DEFINER
 SET search_path = public, auth
 AS $$
     SELECT EXISTS (
-        SELECT 1 FROM public.agentes_perfiles 
-        WHERE user_id = auth.uid() 
-          AND rol = 'gerente' 
-          AND activo = true
+        SELECT 1 FROM public.agentes_perfiles p
+        WHERE p.user_id = auth.uid() 
+          AND p.rol = 'gerente' 
+          AND p.activo = true
+          AND COALESCE((auth.jwt() -> 'user_metadata' ->> 'must_change_password')::boolean, false) = false
+          AND COALESCE((auth.jwt() -> 'app_metadata' ->> 'must_change_password')::boolean, false) = false
     );
 $$;
 
--- Comprueba si el usuario autenticado es un agente activo
+-- Comprueba si el usuario autenticado es un agente activo sin cambio pendiente
 CREATE OR REPLACE FUNCTION public.is_active_agent()
 RETURNS BOOLEAN
 LANGUAGE sql
@@ -112,11 +119,37 @@ SECURITY DEFINER
 SET search_path = public, auth
 AS $$
     SELECT EXISTS (
-        SELECT 1 FROM public.agentes_perfiles 
-        WHERE user_id = auth.uid() 
-          AND activo = true
+        SELECT 1 FROM public.agentes_perfiles p
+        WHERE p.user_id = auth.uid() 
+          AND p.activo = true
+          AND COALESCE((auth.jwt() -> 'user_metadata' ->> 'must_change_password')::boolean, false) = false
+          AND COALESCE((auth.jwt() -> 'app_metadata' ->> 'must_change_password')::boolean, false) = false
     );
 $$;
+
+-- Trigger de integridad en auth.users: Impide retirar must_change_password sin alterar la contraseña cifrada
+CREATE OR REPLACE FUNCTION public.enforce_password_change_on_unlock()
+RETURNS TRIGGER
+LANGUAGE plpgsql
+SECURITY DEFINER
+SET search_path = public, auth
+AS $$
+BEGIN
+    IF (OLD.raw_user_meta_data ->> 'must_change_password')::boolean = true 
+       AND (NEW.raw_user_meta_data ->> 'must_change_password')::boolean = false THEN
+        IF NEW.encrypted_password = OLD.encrypted_password THEN
+            RAISE EXCEPTION 'Operación denegada: Es obligatorio actualizar la contraseña para retirar la restricción de primer acceso.';
+        END IF;
+    END IF;
+    RETURN NEW;
+END;
+$$;
+
+DROP TRIGGER IF EXISTS trigger_enforce_password_change ON auth.users;
+CREATE TRIGGER trigger_enforce_password_change
+    BEFORE UPDATE ON auth.users
+    FOR EACH ROW
+    EXECUTE FUNCTION public.enforce_password_change_on_unlock();
 
 -- Restringir permisos de ejecución en funciones de seguridad
 REVOKE ALL ON FUNCTION public.current_user_dni() FROM PUBLIC, anon;
