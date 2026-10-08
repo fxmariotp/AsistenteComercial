@@ -35,18 +35,6 @@ let memoryCache = {
 const CACHE_TTL_MS = 30 * 1000; // 30s de caché en memoria interna del servidor
 
 function verifySupabaseToken(token, callback) {
-  if (process.env.NODE_ENV === 'test' && token.startsWith('TEST_MOCK_TOKEN_')) {
-    const parts = token.split('_');
-    const mockRole = parts[3] || 'comercial';
-    const mockDni = parts[4] || '47269867Z';
-    return callback(null, {
-      id: 'mock-uuid-' + mockDni,
-      email: `${mockDni.toLowerCase()}@asistente.internal`,
-      user_metadata: { dni: mockDni, rol: mockRole, status: 'active' },
-      app_metadata: { role: mockRole }
-    });
-  }
-
   try {
     const authUrl = new URL('/auth/v1/user', SUPABASE_URL);
     const options = {
@@ -206,15 +194,24 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
         res.on('end', () => {
           try {
             const data = JSON.parse(raw);
+            // Interpretar contrato de respuesta explícito de Google Apps Script
+            if (data && (data.ok === false || data.success === false)) {
+              const code = Number(data.code) || 502;
+              const msg = data.error || "Error reportado por el receptor de ranking";
+              return callback(new Error(`APPS_SCRIPT_ERROR:${code}:${msg}`));
+            }
             if (Array.isArray(data)) {
               return callback(null, data);
             }
             if (data && data.ranking && Array.isArray(data.ranking)) {
               return callback(null, data.ranking);
             }
+            if (data && data.data && Array.isArray(data.data)) {
+              return callback(null, data.data);
+            }
             return callback(new Error("Formato de respuesta de ranking no válido"));
           } catch (e) {
-            return callback(new Error("Error parseando respuesta JSON de Google Apps Script"));
+            return callback(new Error("Error parseando respuesta JSON de Google Apps Script: " + e.message));
           }
         });
       });
@@ -254,9 +251,8 @@ module.exports = function (req, res) {
 
   // 1. Verificación obligatoria de variables de entorno (Cero valores por defecto a producción)
   const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-  const isMockTest = process.env.NODE_ENV === 'test' && authHeader && authHeader.includes('TEST_MOCK_TOKEN_');
 
-  if (!isMockTest && (!SUPABASE_URL || !SUPABASE_ANON_KEY || !RANKING_APPS_SCRIPT_URL || !RANKING_SHARED_SECRET)) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !RANKING_APPS_SCRIPT_URL || !RANKING_SHARED_SECRET) {
     return res.status(503).json({
       success: false,
       error: "Configuración incompleta: Se requieren SUPABASE_URL, SUPABASE_ANON_KEY, RANKING_APPS_SCRIPT_URL y RANKING_SHARED_SECRET en las variables de entorno del servidor."
@@ -344,25 +340,23 @@ module.exports = function (req, res) {
         return res.status(200).json(memoryCache.data);
       }
 
-      // Si es entorno de test con token mock:
-      if (isMockTest) {
-        const mockRanking = [
-          { posicion: 1, nombre: "CHRISTIAN CABRERA MARQUEZ", puntos: 1540 },
-          { posicion: 2, nombre: "BEGOÑA CABANILLAS PIQUERO", puntos: 1320 },
-          { posicion: 3, nombre: "JOSE MIGUEL CABRERA MARQUEZ", puntos: 1190 }
-        ];
-        memoryCache.data = mockRanking;
-        memoryCache.timestamp = Date.now();
-        res.setHeader('X-Cache-Status', 'MISS');
-        return res.status(200).json(mockRanking);
-      }
-
       // Petición privada Servidor a Servidor con secreto compartido
       fetchPrivateRanking(RANKING_APPS_SCRIPT_URL, RANKING_SHARED_SECRET, (err, rankingData) => {
         if (err) {
           if (memoryCache.data) {
             res.setHeader('X-Cache-Fallback', 'true');
             return res.status(200).json(memoryCache.data);
+          }
+          // Traducir contrato de error de Google Apps Script a código HTTP real
+          if (err.message && err.message.startsWith('APPS_SCRIPT_ERROR:')) {
+            const parts = err.message.split(':');
+            const httpCode = parseInt(parts[1], 10) || 502;
+            const msg = parts.slice(2).join(':');
+            return res.status(httpCode).json({
+              success: false,
+              code: httpCode,
+              error: msg
+            });
           }
           return res.status(502).json({
             success: false,

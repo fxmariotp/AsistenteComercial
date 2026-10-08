@@ -14,11 +14,20 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="config.js"></script>
 <script src="js/tramos-alert.js"></script>
 <script src="js/retrocomision.js"></script>
 <script>
   (function() {
     const COMERCIALES = {
+      // Cuentas de Staging aisladas (ficticias)
+      "00000001A": "COMERCIAL TEST A",
+      "00000002B": "COMERCIAL TEST B",
+      "00000003G": "GERENTE TEST",
+      "00000004E": "EVARIA TEST",
+      "00000005I": "INACTIVO TEST",
+      "00000006X": "CAMBIO PENDIENTE TEST",
+      // Catálogo operativo
       "47539234M": "ANA ROCIO GALERA MORILLO",
       "28727453Q": "BEGOÑA CABANILLAS PIQUERO",
       "47269867Z": "CHRISTIAN CABRERA MARQUEZ",
@@ -9399,6 +9408,8 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 15000, forceFresh = fals
     if (res.ok) {
       const data = await res.json();
       if (Array.isArray(data) && data.length > 0) return data;
+      if (data && data.ranking && Array.isArray(data.ranking)) return data.ranking;
+      if (data && data.data && Array.isArray(data.data)) return data.data;
     }
   } catch (e) {
     if (e.message && e.message.includes("Sesión requerida")) throw e;
@@ -9410,13 +9421,39 @@ async function fetchGoogleScript(targetUrl, timeoutMs = 15000, forceFresh = fals
 
 let rankingInFlightPromise = null;
 
+// Contrato único de datos de ranking: compatible tanto con propiedades de objeto (.nombre, .puntos)
+// como con índices de desestructuración de array [nombre, puntos, objetivo, pendientes]
+function normalizeRankingRow(row, index) {
+  let nombre = '', puntos = 0, objetivo = 16.0, pendientes = 0, posicion = index + 1;
+  if (Array.isArray(row)) {
+    nombre = (row[0] || '').toString().trim();
+    puntos = parseFloat(row[1]) || 0;
+    objetivo = (row[2] !== undefined && row[2] !== '') ? (parseFloat(row[2]) || 0) : 16.0;
+    pendientes = (row[3] !== undefined && row[3] !== '') ? (parseFloat(row[3]) || 0) : 0;
+    posicion = Number(row[4]) || (index + 1);
+  } else if (row && typeof row === 'object') {
+    nombre = (row.nombre || row.name || row[0] || '').toString().trim();
+    puntos = parseFloat(row.puntos !== undefined ? row.puntos : row[1]) || 0;
+    objetivo = (row.objetivo !== undefined && row.objetivo !== '') ? (parseFloat(row.objetivo) || 0) : 16.0;
+    pendientes = (row.pendientes !== undefined && row.pendientes !== '') ? (parseFloat(row.pendientes) || 0) : 0;
+    posicion = Number(row.posicion) || (index + 1);
+  }
+  const item = [nombre, puntos, objetivo, pendientes, posicion];
+  item.nombre = nombre;
+  item.puntos = puntos;
+  item.objetivo = objetivo;
+  item.pendientes = pendientes;
+  item.posicion = posicion;
+  return item;
+}
+
 function getCachedRankingData() {
   try {
     const raw = localStorage.getItem('renosur_ranking_raw_cache');
     if (raw) {
       const parsed = JSON.parse(raw);
       if (Array.isArray(parsed) && parsed.length > 0) {
-        return parsed;
+        return parsed.map((r, idx) => normalizeRankingRow(r, idx));
       }
     }
   } catch (e) {}
@@ -9424,7 +9461,7 @@ function getCachedRankingData() {
 }
 
 async function loadNativeRanking(isUserAction = false) {
-  const url = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
+  const url = "/api/ranking";
   const nativeContainer = document.getElementById('ranking-native-container');
   const iframeContainer = document.getElementById('ranking-iframe-container');
   const listContainer = document.getElementById('ranking-list-container');
@@ -9476,8 +9513,9 @@ async function loadNativeRanking(isUserAction = false) {
   rankingInFlightPromise = (async () => {
     try {
       const data = await fetchGoogleScript(url, 15000, isUserAction);
-      if (Array.isArray(data)) {
-        const validRows = data.filter(r => r && r[0]);
+      const dataList = Array.isArray(data) ? data : (data && Array.isArray(data.ranking) ? data.ranking : (data && Array.isArray(data.data) ? data.data : null));
+      if (Array.isArray(dataList)) {
+        const validRows = dataList.map((r, idx) => normalizeRankingRow(r, idx)).filter(r => r && r[0]);
         if (validRows.length > 0) {
           rawRankingData = validRows;
           localStorage.setItem('renosur_ranking_raw_cache', JSON.stringify(rawRankingData));
@@ -12386,6 +12424,14 @@ function openNaturgy() {
 
 // ── BASE DE DATOS DE COMERCIALES (DNI -> NOMBRE) ──
 const COMERCIALES = {
+  // Cuentas de Staging aisladas (ficticias)
+  "00000001A": "COMERCIAL TEST A",
+  "00000002B": "COMERCIAL TEST B",
+  "00000003G": "GERENTE TEST",
+  "00000004E": "EVARIA TEST",
+  "00000005I": "INACTIVO TEST",
+  "00000006X": "CAMBIO PENDIENTE TEST",
+  // Catálogo operativo
   "47539234M": "ANA ROCIO GALERA MORILLO",
   "28727453Q": "BEGOÑA CABANILLAS PIQUERO",
   "47269867Z": "CHRISTIAN CABRERA MARQUEZ",
@@ -12430,12 +12476,28 @@ const DEFAULT_VACATIONS = {
 const DEFAULT_VACATION_MOTIVES = {};
 
 
-const APP_CONFIG = window.APP_CONFIG || {
-  SUPABASE_URL: "https://bxgdtdzlijeaetlekbub.supabase.co",
-  SUPABASE_KEY: "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap"
-};
+const APP_CONFIG = window.APP_CONFIG;
+if (!APP_CONFIG || !APP_CONFIG.SUPABASE_URL || !(APP_CONFIG.SUPABASE_ANON_KEY || APP_CONFIG.SUPABASE_KEY)) {
+  console.error("Falta APP_CONFIG: La aplicación requiere config.js con SUPABASE_URL y SUPABASE_ANON_KEY válidos.");
+  document.body.innerHTML = `
+    <div style="font-family: sans-serif; display: flex; align-items: center; justify-content: center; height: 100vh; background: #0f172a; color: #f8fafc; padding: 20px; box-sizing: border-box;">
+      <div style="background: #1e293b; border: 1px solid #ef4444; border-radius: 16px; padding: 32px; max-width: 520px; text-align: center;">
+        <div style="font-size: 40px; margin-bottom: 16px;">⚠️</div>
+        <h2 style="margin: 0 0 12px 0; color: #f87171; font-size: 20px;">Configuración de Entorno Requerida</h2>
+        <p style="color: #94a3b8; font-size: 14px; line-height: 1.5; margin-bottom: 20px;">
+          No se ha detectado el archivo <code>config.js</code> o faltan las credenciales públicas de Supabase para este entorno.
+        </p>
+        <p style="color: #64748b; font-size: 12.5px; line-height: 1.4; margin: 0;">
+          Copia <code>config.example.js</code> como <code>config.js</code> y configura las variables antes de continuar.
+        </p>
+      </div>
+    </div>
+  `;
+  throw new Error("Inicialización detenida: falta APP_CONFIG");
+}
+
 const SUPABASE_URL = APP_CONFIG.SUPABASE_URL;
-const SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY || APP_CONFIG.SUPABASE_ANON_KEY;
+const SUPABASE_KEY = APP_CONFIG.SUPABASE_ANON_KEY || APP_CONFIG.SUPABASE_KEY;
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 // Cargar roles desde la nube al cargar la pagina
 if (typeof fetchAgentRolesFromCloud === 'function') {

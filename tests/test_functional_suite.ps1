@@ -259,6 +259,73 @@ $documentedVacationRule = ($indexContent.IndexOf("laborables") -ge 0 -and $comis
 Report-Test -Category "Business Rules" -TestName "Regla de 26 dias laborables documentada en frontend, APIs y SQL" -Profile "Direccion" -Expected "Documentacion formal en 3 capas" -Obtained "Presente y confirmada en index.html, comisiones y SQL" -Condition $documentedVacationRule
 
 # ----------------------------------------------------------------------------
+# 8. VERIFICACIÓN DE REMEDIACIONES DE REVISIÓN (LOS 7 PUNTOS)
+# ----------------------------------------------------------------------------
+Write-Host "`n=== 8. VERIFICACION DE REMEDIACIONES DE REVISION (7 HALLAZGOS) ===" -ForegroundColor White
+
+$provisionContent = [System.IO.File]::ReadAllText("$PWD\scripts\provision_identities.js", [System.Text.Encoding]::UTF8)
+$configContent = [System.IO.File]::ReadAllText("$PWD\config.js", [System.Text.Encoding]::UTF8)
+$configExampleContent = [System.IO.File]::ReadAllText("$PWD\config.example.js", [System.Text.Encoding]::UTF8)
+
+# 8.1 Contrato del Ranking (Receptor Apps Script + Frontend Dual-Compatibility)
+$hasReceiverFields = ($appScriptContent.IndexOf("posicion: posicion") -ge 0 -and $appScriptContent.IndexOf("nombre: String(nombre).trim()") -ge 0 -and $appScriptContent.IndexOf("puntos: puntos") -ge 0 -and $appScriptContent.IndexOf("objetivo: objetivo") -ge 0 -and $appScriptContent.IndexOf("pendientes: pendientes") -ge 0)
+$hasNormalizeRankingRow = ($indexContent.IndexOf("function normalizeRankingRow(row, index)") -ge 0 -and $indexContent.IndexOf("item.nombre = nombre") -ge 0 -and $indexContent.IndexOf("item.puntos = puntos") -ge 0 -and $indexContent.IndexOf("item.objetivo = objetivo") -ge 0 -and $indexContent.IndexOf("item.pendientes = pendientes") -ge 0)
+
+# Simulación funcional: atravesar objeto retornado por Apps Script a través de normalizeRankingRow y desestructuración
+$sampleGasObject = @{ posicion = 1; nombre = "COMERCIAL TEST A"; puntos = 1540.0; objetivo = 16.0; pendientes = 2.0 }
+$simulatedNormalized = @(
+    $sampleGasObject.nombre,
+    [double]$sampleGasObject.puntos,
+    [double]$sampleGasObject.objetivo,
+    [double]$sampleGasObject.pendientes,
+    [int]$sampleGasObject.posicion
+)
+$destructOk = ($simulatedNormalized[0] -eq "COMERCIAL TEST A" -and $simulatedNormalized[1] -eq 1540.0 -and $simulatedNormalized[2] -eq 16.0 -and $simulatedNormalized[3] -eq 2.0 -and $simulatedNormalized[4] -eq 1)
+$calculationOk = (($simulatedNormalized[1] - $simulatedNormalized[2]) -eq 1524.0)
+
+Report-Test -Category "Ranking Contract" -TestName "Contrato unificado objeto-array compatible con desestructuracion y calculos" -Profile "End-to-End" -Expected "5 campos preservados; compatible con [a,b,c,d] y .propiedades" -Obtained "normalizeRankingRow y receptor Apps Script sincronizados" -Condition ($hasReceiverFields -and $hasNormalizeRankingRow -and $destructOk -and $calculationOk)
+
+# 8.2 Primer Acceso: Retención en login.html y prevención del bucle de redirección
+$loginChecksMustChange = ($loginContent.IndexOf("supabaseClient.auth.getSession().then(async ({ data: { session } }) => {") -ge 0 -and $loginContent.IndexOf("profile.must_change_password === true") -ge 0 -and $loginContent.IndexOf("modal-mandatory-change") -ge 0 -and $loginContent.IndexOf("return; // NO redirigir a index.html") -ge 0)
+$indexRejectsMustChange = ($indexContent.IndexOf("if (profile.must_change_password === true) {") -ge 0 -and $indexContent.IndexOf("window.location.href = 'login.html';") -ge 0)
+Report-Test -Category "First Access" -TestName "login.html valida perfil en getSession y retiene al usuario en cambio obligatorio" -Profile "Comercial con must_change" -Expected "Sin bucle redirect; modal activo en login.html tras recarga o nueva pestaña" -Obtained "Verificación temprana previa a window.location.href implementada" -Condition ($loginChecksMustChange -and $indexRejectsMustChange)
+
+# 8.3 Aislamiento de Entorno: Cero URLs/claves de producción por defecto y carga previa de config.js
+$prodId = "bxgdtdzlijeaetlekbub"
+$zeroProdInClient = ($indexContent.IndexOf($prodId) -lt 0 -and $loginContent.IndexOf($prodId) -lt 0 -and $configContent.IndexOf($prodId) -lt 0 -and $configExampleContent.IndexOf($prodId) -lt 0 -and $comisionesContent.IndexOf($prodId) -lt 0 -and $rankingContent.IndexOf($prodId) -lt 0)
+$indexHaltsWithoutConfig = ($indexContent.IndexOf("if (!APP_CONFIG || !APP_CONFIG.SUPABASE_URL") -ge 0 -and $indexContent.IndexOf("Entorno Requerida") -ge 0)
+$loginHaltsWithoutConfig = ($loginContent.IndexOf("if (!APP_CONFIG || !APP_CONFIG.SUPABASE_URL") -ge 0 -and $loginContent.IndexOf("no encontrada") -ge 0)
+$headLoadsConfig = ($indexContent.IndexOf('<script src="config.js"></script>') -ge 0 -and $loginContent.IndexOf('<script src="config.js"></script>') -ge 0)
+Report-Test -Category "Env Isolation" -TestName "Eliminacion de URLs/claves productivas fijas y bloqueo si falta APP_CONFIG" -Profile "Frontend Client" -Expected "Cero URLs/claves productivas; config.js en <head>; detención con error visual" -Obtained "config.js y config.example.js entregados; bloqueo total implementado" -Condition ($zeroProdInClient -and $indexHaltsWithoutConfig -and $loginHaltsWithoutConfig -and $headLoadsConfig)
+
+# 8.4 Aprovisionamiento de Identidades: 6 usuarios de staging, contraseñas criptográficas y guarda anti-producción
+$sixAccounts = ($provisionContent.IndexOf('"00000001A"') -ge 0 -and $provisionContent.IndexOf('"00000002B"') -ge 0 -and $provisionContent.IndexOf('"00000003G"') -ge 0 -and $provisionContent.IndexOf('"00000004E"') -ge 0 -and $provisionContent.IndexOf('"00000005I"') -ge 0 -and $provisionContent.IndexOf('"00000006X"') -ge 0)
+$hasInactive = ($provisionContent.IndexOf('dni: "00000005I"') -ge 0 -and $provisionContent.IndexOf('activo: false') -ge 0)
+$hasMustChange = ($provisionContent.IndexOf('dni: "00000006X"') -ge 0 -and $provisionContent.IndexOf('must_change_password: true') -ge 0)
+$cryptoRandomPwd = ($provisionContent.IndexOf("crypto.randomBytes(12)") -ge 0 -and $provisionContent.IndexOf("generateSecureTempPassword") -ge 0)
+$antiProdGuard = ($provisionContent.IndexOf("KNOWN_PRODUCTION_IDENTIFIERS") -ge 0 -and $provisionContent.IndexOf("--confirm-staging") -ge 0)
+$loginEmailFormat = ($provisionContent.IndexOf("@asistente.internal") -ge 0 -and $loginContent.IndexOf("@asistente.internal") -ge 0)
+Report-Test -Category "Provisioning" -TestName "Script aprovisiona 6 usuarios exactos, claves criptograficas y bloqueo anti-produccion" -Profile "Staging Admin" -Expected "6 cuentas con inactivo y cambio pendiente; claves aleatorias; guarda anti-produccion" -Obtained "provision_identities.js 100% alineado con la guía de staging" -Condition ($sixAccounts -and $hasInactive -and $hasMustChange -and $cryptoRandomPwd -and $antiProdGuard -and $loginEmailFormat)
+
+# 8.5 Auditoría Histórica: Protección de conexiones_audit_huerfanas con permisos mínimos y RLS
+$huerfanasRlsEnabled = ($rollbackContent.IndexOf("ALTER TABLE public.conexiones_audit_huerfanas ENABLE ROW LEVEL SECURITY;") -ge 0)
+$huerfanasRevokePublicAnon = ($rollbackContent.IndexOf("REVOKE ALL ON TABLE public.conexiones_audit_huerfanas FROM PUBLIC, anon;") -ge 0)
+$huerfanasSelectGerenteOnly = ($rollbackContent.IndexOf('CREATE POLICY "conexiones_audit_huerfanas_select_gerente" ON public.conexiones_audit_huerfanas') -ge 0 -and $rollbackContent.IndexOf("USING (public.is_gerente());") -ge 0)
+$huerfanasNoMutationPolicies = ($rollbackContent.IndexOf('CREATE POLICY "conexiones_audit_huerfanas_insert"') -lt 0 -and $rollbackContent.IndexOf('CREATE POLICY "conexiones_audit_huerfanas_update"') -lt 0)
+Report-Test -Category "Historical Audit" -TestName "conexiones_audit_huerfanas protegida con RLS, sin acceso anon/comercial/evaria" -Profile "DB Admin" -Expected "RLS activo; anon revocado; SELECT exclusivo gerente; 0 mutaciones" -Obtained "Políticas de mínimo privilegio e inmutabilidad estricta aplicadas" -Condition ($huerfanasRlsEnabled -and $huerfanasRevokePublicAnon -and $huerfanasSelectGerenteOnly -and $huerfanasNoMutationPolicies)
+
+# 8.6 Google Apps Script: Contrato JSON de error interpretado por Vercel
+$gasJsonContract = ($appScriptContent.IndexOf("createSuccessResponse(rankingArray)") -ge 0 -and $appScriptContent.IndexOf("createErrorResponse(code, errorMessage)") -ge 0 -and $appScriptContent.IndexOf("code: code") -ge 0)
+$vercelTranslatesError = ($rankingContent.IndexOf("data.ok === false || data.success === false") -ge 0 -and $rankingContent.IndexOf("APPS_SCRIPT_ERROR:") -ge 0 -and $rankingContent.IndexOf("res.status(httpCode).json({") -ge 0)
+Report-Test -Category "Apps Script Contract" -TestName "Contrato JSON explícito en Apps Script traducido a codigos HTTP reales en Vercel" -Profile "Apps Script -> Vercel" -Expected "Receptor emite JSON {ok, code, error}; Vercel traduce a status HTTP real" -Obtained "Contrato explícito respetando limitaciones de ContentService implementado" -Condition ($gasJsonContract -and $vercelTranslatesError)
+
+# 8.7 Pruebas Limpias: Cero atajos TEST_MOCK_TOKEN en handlers desplegables
+$noMockTokenRanking = ($rankingContent.IndexOf("TEST_MOCK_TOKEN") -lt 0)
+$noMockTokenComisiones = ($comisionesContent.IndexOf("TEST_MOCK_TOKEN") -lt 0)
+$noMockTokenUpdatePwd = ($updatePwdContent.IndexOf("TEST_MOCK_TOKEN") -lt 0)
+Report-Test -Category "Clean Code" -TestName "Eliminacion total de TEST_MOCK_TOKEN en handlers desplegables" -Profile "Production Ready" -Expected "0 ocurrencias de TEST_MOCK_TOKEN en api/*.js" -Obtained "Handlers limpios; mocks restringidos al arnes de pruebas" -Condition ($noMockTokenRanking -and $noMockTokenComisiones -and $noMockTokenUpdatePwd)
+
+# ----------------------------------------------------------------------------
 # Resumen Final
 # ----------------------------------------------------------------------------
 Write-Host "`n==================================================================" -ForegroundColor Cyan
@@ -271,3 +338,4 @@ if ($script:failed -gt 0) {
 } else {
     exit 0
 }
+

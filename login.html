@@ -7,8 +7,8 @@
   <link rel="icon" type="image/png" href="favicon.png?v=2">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="config.js"></script>
   <style>
     :root {
       --bg: #141a3b;
@@ -283,6 +283,14 @@
 
 <script>
 const COMERCIALES = {
+  // Cuentas de Staging aisladas (ficticias)
+  "00000001A": "COMERCIAL TEST A",
+  "00000002B": "COMERCIAL TEST B",
+  "00000003G": "GERENTE TEST",
+  "00000004E": "EVARIA TEST",
+  "00000005I": "INACTIVO TEST",
+  "00000006X": "CAMBIO PENDIENTE TEST",
+  // Catálogo operativo
   "47539234M": "ANA ROCIO GALERA MORILLO",
   "28727453Q": "BEGOÑA CABANILLAS PIQUERO",
   "47269867Z": "CHRISTIAN CABRERA MARQUEZ",
@@ -303,19 +311,63 @@ const COMERCIALES = {
   "53770728V": "FRANCISCO JAVIER MORA ANDREU"
 };
 
-const APP_CONFIG = window.APP_CONFIG || {
-  SUPABASE_URL: "https://bxgdtdzlijeaetlekbub.supabase.co",
-  SUPABASE_KEY: "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap"
-};
+// Cero URLs ni claves por defecto a producción. Requiere config.js / APP_CONFIG explícito
+const APP_CONFIG = window.APP_CONFIG;
+if (!APP_CONFIG || !APP_CONFIG.SUPABASE_URL || !(APP_CONFIG.SUPABASE_ANON_KEY || APP_CONFIG.SUPABASE_KEY)) {
+  console.error("Falta APP_CONFIG: La aplicación requiere config.js con SUPABASE_URL y SUPABASE_ANON_KEY válidos.");
+  const loginCard = document.querySelector('.login-card');
+  if (loginCard) {
+    loginCard.innerHTML = `
+      <div style="text-align: center; padding: 10px;">
+        <div style="font-size: 36px; margin-bottom: 12px;">⚠️</div>
+        <h3 style="color: #ef4444; font-size: 17px; margin-bottom: 8px;">Configuración no encontrada</h3>
+        <p style="color: #64748b; font-size: 13px; line-height: 1.5; margin-bottom: 16px;">
+          No se ha detectado el archivo <code>config.js</code> o faltan las claves públicas del entorno.
+        </p>
+        <p style="color: #94a3b8; font-size: 11.5px; line-height: 1.4;">
+          Copia <code>config.example.js</code> como <code>config.js</code> y añade las credenciales de tu proyecto de Supabase.
+        </p>
+      </div>
+    `;
+  }
+  throw new Error("Inicialización detenida: falta APP_CONFIG");
+}
+
 const SUPABASE_URL = APP_CONFIG.SUPABASE_URL;
-const SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY || APP_CONFIG.SUPABASE_ANON_KEY;
+const SUPABASE_KEY = APP_CONFIG.SUPABASE_ANON_KEY || APP_CONFIG.SUPABASE_KEY;
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-// Verificación criptográfica de sesión real (NO basada en localStorage inseguro)
+// Verificación criptográfica de sesión real: comprueba el perfil ANTES de redirigir para evitar bucles infinitos
 if (supabaseClient) {
-  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+  supabaseClient.auth.getSession().then(async ({ data: { session } }) => {
     if (session && session.user) {
-      window.location.href = 'index.html';
+      try {
+        const { data: profile } = await supabaseClient
+          .from('agentes_perfiles')
+          .select('dni, nombre, rol, activo, must_change_password')
+          .eq('user_id', session.user.id)
+          .maybeSingle();
+
+        if (!profile || profile.activo === false) {
+          await supabaseClient.auth.signOut();
+          return;
+        }
+
+        // Si tiene cambio obligatorio pendiente, retener en login.html y mostrar el modal
+        if (profile.must_change_password === true) {
+          pendingAuthUser = session.user;
+          pendingDni = profile.dni;
+          pendingMatchedName = profile.nombre || COMERCIALES[profile.dni] || 'Agente';
+          const modal = document.getElementById('modal-mandatory-change');
+          if (modal) modal.style.display = 'flex';
+          return; // NO redirigir a index.html
+        }
+
+        // Cuenta activa y al día
+        window.location.href = 'index.html';
+      } catch (err) {
+        console.warn("Aviso en validación temprana de sesión:", err);
+      }
     }
   });
 }

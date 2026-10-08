@@ -183,6 +183,9 @@ BEGIN
     IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'promociones') THEN
         ALTER TABLE public.promociones ENABLE ROW LEVEL SECURITY;
     END IF;
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'conexiones_audit_huerfanas') THEN
+        ALTER TABLE public.conexiones_audit_huerfanas ENABLE ROW LEVEL SECURITY;
+    END IF;
 END $$;
 
 -- ----------------------------------------------------------------------------
@@ -198,7 +201,7 @@ BEGIN
         SELECT schemaname, tablename, policyname
         FROM pg_policies
         WHERE schemaname = 'public'
-          AND tablename IN ('agentes_perfiles', 'conexiones_audit', 'tareas', 'vacaciones', 'promociones', 'agentes_roles')
+          AND tablename IN ('agentes_perfiles', 'conexiones_audit', 'conexiones_audit_huerfanas', 'tareas', 'vacaciones', 'promociones', 'agentes_roles')
     LOOP
         EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I;', pol.policyname, pol.schemaname, pol.tablename);
     END LOOP;
@@ -306,6 +309,13 @@ BEGIN
             USING (public.is_gerente())
             WITH CHECK (public.is_gerente());
     END IF;
+
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'conexiones_audit_huerfanas') THEN
+        DROP POLICY IF EXISTS "conexiones_audit_huerfanas_select_gerente" ON public.conexiones_audit_huerfanas;
+        CREATE POLICY "conexiones_audit_huerfanas_select_gerente" ON public.conexiones_audit_huerfanas
+            FOR SELECT TO authenticated
+            USING (public.is_gerente());
+    END IF;
 END $$;
 
 -- ----------------------------------------------------------------------------
@@ -324,6 +334,10 @@ BEGIN
     END IF;
     IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'promociones') THEN
         REVOKE ALL ON TABLE public.promociones FROM anon;
+    END IF;
+    IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'conexiones_audit_huerfanas') THEN
+        REVOKE ALL ON TABLE public.conexiones_audit_huerfanas FROM PUBLIC, anon;
+        GRANT SELECT ON TABLE public.conexiones_audit_huerfanas TO authenticated;
     END IF;
     IF EXISTS (SELECT FROM pg_tables WHERE schemaname = 'public' AND tablename = 'agentes_roles') THEN
         REVOKE ALL ON TABLE public.agentes_roles FROM PUBLIC, anon, authenticated;

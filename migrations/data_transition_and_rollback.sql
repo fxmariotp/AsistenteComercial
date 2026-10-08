@@ -64,6 +64,19 @@ CREATE TABLE IF NOT EXISTS public.conexiones_audit_huerfanas (
     migrated_at TIMESTAMPTZ DEFAULT now()
 );
 
+-- Hardening y RLS en conexiones_audit_huerfanas desde su creación
+ALTER TABLE public.conexiones_audit_huerfanas ENABLE ROW LEVEL SECURITY;
+REVOKE ALL ON TABLE public.conexiones_audit_huerfanas FROM PUBLIC, anon;
+GRANT SELECT ON TABLE public.conexiones_audit_huerfanas TO authenticated;
+
+-- RLS: Exclusivamente gerentes activos pueden consultar registros huérfanos
+DROP POLICY IF EXISTS "conexiones_audit_huerfanas_select_gerente" ON public.conexiones_audit_huerfanas;
+CREATE POLICY "conexiones_audit_huerfanas_select_gerente" ON public.conexiones_audit_huerfanas
+    FOR SELECT TO authenticated
+    USING (public.is_gerente());
+
+-- CERO políticas de INSERT, UPDATE o DELETE para usuarios (inmutabilidad estricta)
+
 -- PASO 3: Transacción atómica protegida con verificación estricta de recuentos e integridad
 DO $$
 DECLARE

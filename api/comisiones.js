@@ -212,18 +212,6 @@ function parseComisionValue(raw) {
  * Valida el token Bearer contra el endpoint /auth/v1/user de Supabase.
  */
 function verifySupabaseToken(token, callback) {
-  if (process.env.NODE_ENV === 'test' && token.startsWith('TEST_MOCK_TOKEN_')) {
-    const parts = token.split('_');
-    const mockRole = parts[3] || 'comercial';
-    const mockDni = parts[4] || '47269867Z';
-    return callback(null, {
-      id: 'mock-uuid-' + mockDni,
-      email: `${mockDni.toLowerCase()}@asistente.internal`,
-      user_metadata: { dni: mockDni, rol: mockRole, status: 'active' },
-      app_metadata: { role: mockRole }
-    });
-  }
-
   try {
     const authUrl = new URL('/auth/v1/user', SUPABASE_URL);
     const options = {
@@ -442,9 +430,8 @@ module.exports = function (req, res) {
 
   // 1. Verificación obligatoria de variables de entorno (Cero valores por defecto a producción)
   const authHeader = req.headers['authorization'] || req.headers['Authorization'];
-  const isMockTest = process.env.NODE_ENV === 'test' && authHeader && authHeader.includes('TEST_MOCK_TOKEN_');
 
-  if (!isMockTest && (!SUPABASE_URL || !SUPABASE_ANON_KEY || !GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || !GOOGLE_SHEET_ID)) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || !GOOGLE_SHEET_ID) {
     return res.status(503).json({
       success: false,
       error: "Configuración incompleta: Se requieren SUPABASE_URL, SUPABASE_ANON_KEY, GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY y GOOGLE_SHEET_ID en las variables de entorno del servidor."
@@ -630,17 +617,6 @@ module.exports = function (req, res) {
             comision: userComision
           });
         }
-      }
-
-      // Si es una ejecución de prueba local con mock token:
-      if (isMockTest) {
-        const mockRows = [
-          ["AGENTE", "COMISION"],
-          ["CHRISTIAN CABRERA MARQUEZ", "1250,50"],
-          ["BEGOÑA CABANILLAS PIQUERO", "980,00"],
-          ["JOSE MIGUEL CABRERA MARQUEZ", "1100,00"]
-        ];
-        return processSheetRows(mockRows);
       }
 
       // Flujo seguro en servidor: OAuth 2.0 con Service Account y Google Sheets API v4
