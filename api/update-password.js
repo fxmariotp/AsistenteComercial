@@ -19,6 +19,11 @@ function sendJson(res, statusCode, payload) {
   res.status(statusCode).json(payload);
 }
 
+let verifySupabaseTokenImpl = verifySupabaseToken;
+let fetchUserProfileImpl = fetchUserProfile;
+let updateSupabaseAuthPasswordImpl = updateSupabaseAuthPassword;
+let liftRestrictionInDatabaseImpl = liftRestrictionInDatabase;
+
 function verifySupabaseToken(token, callback) {
   try {
     const authUrl = new URL('/auth/v1/user', SUPABASE_URL);
@@ -262,7 +267,7 @@ module.exports = function (req, res) {
     }
 
     // 4. Autenticar identidad del usuario con Supabase Auth
-    verifySupabaseToken(token, (authErr, user) => {
+    verifySupabaseTokenImpl(token, (authErr, user) => {
       if (authErr || !user || !user.id) {
         return sendJson(res, 401, {
           success: false,
@@ -274,7 +279,7 @@ module.exports = function (req, res) {
       const userId = user.id;
 
       // 5. Comprobar perfil y estado activo en la base de datos ANTES de efectuar cambios
-      fetchUserProfile(userId, (profileErr, profile) => {
+      fetchUserProfileImpl(userId, (profileErr, profile) => {
         if (profileErr || !profile) {
           return sendJson(res, 403, {
             success: false,
@@ -298,7 +303,7 @@ module.exports = function (req, res) {
         }
 
         // 6. Actualizar la contraseña en Supabase Auth con Service Role Key
-        updateSupabaseAuthPassword(userId, newPassword, (updateErr) => {
+        updateSupabaseAuthPasswordImpl(userId, newPassword, (updateErr) => {
           if (updateErr) {
             return sendJson(res, 400, {
               success: false,
@@ -307,7 +312,7 @@ module.exports = function (req, res) {
           }
 
           // 7. SOLO TRAS CONFIRMAR que Auth actualizó la contraseña, levantar la restricción en la base de datos
-          liftRestrictionInDatabase(userId, (dbErr, updatedProfile) => {
+          liftRestrictionInDatabaseImpl(userId, (dbErr, updatedProfile) => {
             if (dbErr || !updatedProfile) {
               // Contemplar fallo posterior en base de datos sin declarar éxito
               console.error(`[CRÍTICO] Contraseña actualizada en Auth para user_id=${userId} pero falló desbloqueo en BD:`, dbErr);
@@ -367,3 +372,9 @@ module.exports = function (req, res) {
     return sendJson(res, 500, { success: false, error: "Error en el flujo de entrada de la petición." });
   });
 };
+
+module.exports._setVerifySupabaseTokenForTesting = (fn) => { verifySupabaseTokenImpl = fn || verifySupabaseToken; };
+module.exports._setFetchUserProfileForTesting = (fn) => { fetchUserProfileImpl = fn || fetchUserProfile; };
+module.exports._setUpdateSupabaseAuthPasswordForTesting = (fn) => { updateSupabaseAuthPasswordImpl = fn || updateSupabaseAuthPassword; };
+module.exports._setLiftRestrictionInDatabaseForTesting = (fn) => { liftRestrictionInDatabaseImpl = fn || liftRestrictionInDatabase; };
+

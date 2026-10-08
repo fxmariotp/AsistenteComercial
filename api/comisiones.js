@@ -34,6 +34,23 @@ const GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = process.env.GOOGLE_SERVICE_ACCOUNT_PR
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID || "";
 
 const RENOSUR_AGENTS = [
+  // Cuentas de Staging aisladas (sintéticas)
+  {
+    dni: "00000001A",
+    name: "COMERCIAL TEST A",
+    keywords: ["COMERCIAL TEST A", "TEST A"]
+  },
+  {
+    dni: "00000002B",
+    name: "COMERCIAL TEST B",
+    keywords: ["COMERCIAL TEST B", "TEST B"]
+  },
+  {
+    dni: "00000003G",
+    name: "GERENTE TEST",
+    keywords: ["GERENTE TEST"]
+  },
+  // Catálogo operativo
   {
     dni: "28727453Q",
     name: "BEGOÑA CABANILLAS PIQUERO",
@@ -413,6 +430,11 @@ function fetchPrivateSheetValues(accessToken, sheetId, callback) {
   }
 }
 
+let verifySupabaseTokenImpl = verifySupabaseToken;
+let fetchUserProfileImpl = fetchUserProfile;
+let getGoogleAccessTokenImpl = getGoogleAccessToken;
+let fetchPrivateSheetValuesImpl = fetchPrivateSheetValues;
+
 module.exports = function (req, res) {
   // CORS estricto
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -455,7 +477,7 @@ module.exports = function (req, res) {
   }
 
   // 3. Verificación criptográfica del token con Supabase Auth
-  verifySupabaseToken(token, (authErr, user) => {
+  verifySupabaseTokenImpl(token, (authErr, user) => {
     if (authErr || !user) {
       return res.status(401).json({
         success: false,
@@ -465,7 +487,7 @@ module.exports = function (req, res) {
     }
 
     // 4. Consulta de la fuente de verdad en servidor: agentes_perfiles
-    fetchUserProfile(token, user, (profileErr, profile) => {
+    fetchUserProfileImpl(token, user, (profileErr, profile) => {
       if (profileErr || !profile) {
         return res.status(403).json({
           success: false,
@@ -620,7 +642,7 @@ module.exports = function (req, res) {
       }
 
       // Flujo seguro en servidor: OAuth 2.0 con Service Account y Google Sheets API v4
-      getGoogleAccessToken(GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, (tokenErr, accessToken) => {
+      getGoogleAccessTokenImpl(GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, (tokenErr, accessToken) => {
         if (tokenErr || !accessToken) {
           return res.status(502).json({
             success: false,
@@ -629,7 +651,7 @@ module.exports = function (req, res) {
           });
         }
 
-        fetchPrivateSheetValues(accessToken, GOOGLE_SHEET_ID, (fetchErr, sheetRows) => {
+        fetchPrivateSheetValuesImpl(accessToken, GOOGLE_SHEET_ID, (fetchErr, sheetRows) => {
           if (fetchErr) {
             return res.status(502).json({
               success: false,
@@ -644,3 +666,9 @@ module.exports = function (req, res) {
     });
   });
 };
+
+module.exports._setVerifySupabaseTokenForTesting = (fn) => { verifySupabaseTokenImpl = fn || verifySupabaseToken; };
+module.exports._setFetchUserProfileForTesting = (fn) => { fetchUserProfileImpl = fn || fetchUserProfile; };
+module.exports._setGetGoogleAccessTokenForTesting = (fn) => { getGoogleAccessTokenImpl = fn || getGoogleAccessToken; };
+module.exports._setFetchPrivateSheetValuesForTesting = (fn) => { fetchPrivateSheetValuesImpl = fn || fetchPrivateSheetValues; };
+

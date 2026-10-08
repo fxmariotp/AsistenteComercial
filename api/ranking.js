@@ -32,7 +32,22 @@ let memoryCache = {
   data: null,
   timestamp: 0
 };
-const CACHE_TTL_MS = 30 * 1000; // 30s de caché en memoria interna del servidor
+const CACHE_TTL_MS = 30 * 1000; // 30s de caché fresca en memoria interna del servidor
+const MAX_STALE_CACHE_MS = 5 * 60 * 1000; // 5 minutos de antigüedad máxima para fallback por fallo transitorio
+
+// Lista permitida de códigos de estado HTTP válidos traducibles desde Apps Script
+const ALLOWED_HTTP_STATUS_CODES = new Set([
+  400, // Bad Request
+  401, // Unauthorized
+  403, // Forbidden
+  404, // Not Found
+  405, // Method Not Allowed
+  429, // Too Many Requests
+  500, // Internal Server Error
+  502, // Bad Gateway
+  503, // Service Unavailable
+  504  // Gateway Timeout
+]);
 
 function verifySupabaseToken(token, callback) {
   try {
@@ -235,6 +250,10 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
   executeRequest(targetUrl, 'POST', postData, 0);
 }
 
+let verifySupabaseTokenImpl = verifySupabaseToken;
+let fetchUserProfileImpl = fetchUserProfile;
+let fetchPrivateRankingImpl = fetchPrivateRanking;
+
 module.exports = function (req, res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -276,7 +295,7 @@ module.exports = function (req, res) {
   }
 
   // 3. Validación de token con Supabase Auth
-  verifySupabaseToken(token, (authErr, user) => {
+  verifySupabaseTokenImpl(token, (authErr, user) => {
     if (authErr || !user) {
       return res.status(401).json({
         success: false,
@@ -285,7 +304,7 @@ module.exports = function (req, res) {
     }
 
     // 4. Consulta de la fuente de verdad en servidor: agentes_perfiles
-    fetchUserProfile(token, user, (profileErr, profile) => {
+    fetchUserProfileImpl(token, user, (profileErr, profile) => {
       if (profileErr || !profile) {
         return res.status(403).json({
           success: false,
@@ -341,16 +360,15 @@ module.exports = function (req, res) {
       }
 
       // Petición privada Servidor a Servidor con secreto compartido
-      fetchPrivateRanking(RANKING_APPS_SCRIPT_URL, RANKING_SHARED_SECRET, (err, rankingData) => {
+      fetchPrivateRankingImpl(RANKING_APPS_SCRIPT_URL, RANKING_SHARED_SECRET, (err, rankingData) => {
         if (err) {
-          if (memoryCache.data) {
-            res.setHeader('X-Cache-Fallback', 'true');
-            return res.status(200).json(memoryCache.data);
-          }
-          // Traducir contrato de error de Google Apps Script a código HTTP real
+          // 1. PROCESAR ERRORES EXPLÍCITOS DE APPS SCRIPT ANTES DE CUALQUIER FALLBACK DE CACHÉ
+          // Un rechazo de autenticación (401), configuración (503) o petición inválida (400)
+          // NUNCA debe convertirse en HTTP 200 con datos antiguos de caché.
           if (err.message && err.message.startsWith('APPS_SCRIPT_ERROR:')) {
             const parts = err.message.split(':');
-            const httpCode = parseInt(parts[1], 10) || 502;
+            const rawCode = parseInt(parts[1], 10);
+            const httpCode = ALLOWED_HTTP_STATUS_CODES.has(rawCode) ? rawCode : 502;
             const msg = parts.slice(2).join(':');
             return res.status(httpCode).json({
               success: false,
@@ -358,8 +376,22 @@ module.exports = function (req, res) {
               error: msg
             });
           }
+
+          // 2. FALLBACK DE CACHÉ LIMITADO ESTRICTAMENTE A FALLOS TRANSITORIOS (red, timeout, DNS)
+          // Exige que la antigüedad no supere MAX_STALE_CACHE_MS y marca claramente la respuesta como STALE.
+          const cacheAge = now - memoryCache.timestamp;
+          if (!isForce && memoryCache.data && cacheAge <= MAX_STALE_CACHE_MS) {
+            res.setHeader('X-Cache-Status', 'STALE');
+            res.setHeader('X-Cache-Fallback', 'true');
+            res.setHeader('X-Cache-Age-Seconds', Math.round(cacheAge / 1000).toString());
+            res.setHeader('Warning', '110 - "Response is Stale: upstream connection failure"');
+            return res.status(200).json(memoryCache.data);
+          }
+
+          // 3. Fallo transitorio con caché caducada (> MAX_STALE_CACHE_MS) o sin datos
           return res.status(502).json({
             success: false,
+            code: 502,
             error: "Error al consultar el servicio privado de Ranking",
             details: err.message
           });
@@ -375,4 +407,21 @@ module.exports = function (req, res) {
 };
 
 module.exports.fetchPrivateRanking = fetchPrivateRanking;
+module.exports.ALLOWED_HTTP_STATUS_CODES = ALLOWED_HTTP_STATUS_CODES;
+module.exports.MAX_STALE_CACHE_MS = MAX_STALE_CACHE_MS;
+module.exports.CACHE_TTL_MS = CACHE_TTL_MS;
+module.exports.getMemoryCache = () => memoryCache;
+module.exports.setMemoryCache = (data, timestamp) => {
+  memoryCache = {
+    data: data,
+    timestamp: typeof timestamp === 'number' ? timestamp : Date.now()
+  };
+};
+module.exports.resetMemoryCache = () => {
+  memoryCache = { data: null, timestamp: 0 };
+};
+module.exports._setVerifySupabaseTokenForTesting = (fn) => { verifySupabaseTokenImpl = fn || verifySupabaseToken; };
+module.exports._setFetchUserProfileForTesting = (fn) => { fetchUserProfileImpl = fn || fetchUserProfile; };
+module.exports._setFetchPrivateRankingForTesting = (fn) => { fetchPrivateRankingImpl = fn || fetchPrivateRanking; };
+
 

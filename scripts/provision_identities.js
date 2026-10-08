@@ -15,11 +15,24 @@ const { URL } = require('url');
 const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-// 1. GUARDA DE SEGURIDAD ANTI-PRODUCCIÓN
+// 1. GUARDA DE SEGURIDAD OBLIGATORIA: EXIGIR ESTRICTAMENTE EL FLAG CLI --confirm-staging
+// Se elimina cualquier alternativa mediante NODE_ENV. Solo la confirmación explícita por CLI es válida.
+const hasConfirmFlag = process.argv.includes('--confirm-staging');
+if (!hasConfirmFlag) {
+  console.error("\n==================================================================");
+  console.error(" [BLOQUEO PREVENTIVO] CONFIRMACIÓN DE ENTORNO REQUERIDA");
+  console.error(" Para evitar ejecuciones accidentales contra bases de datos equivocadas,");
+  console.error(" este script exige estrictamente el flag CLI --confirm-staging.");
+  console.error(" No se admite ninguna alternativa mediante variables de entorno (NODE_ENV).");
+  console.error("");
+  console.error("   node scripts/provision_identities.js --confirm-staging");
+  console.error("==================================================================\n");
+  process.exit(1);
+}
+
+// 2. GUARDA ANTI-PRODUCCIÓN
 const KNOWN_PRODUCTION_IDENTIFIERS = ['bxgdtdzlijeaetlekbub', 'renosur.com'];
 const hasProductionUrl = SUPABASE_URL && KNOWN_PRODUCTION_IDENTIFIERS.some(id => SUPABASE_URL.includes(id));
-const hasConfirmFlag = process.argv.includes('--confirm-staging') || process.env.NODE_ENV === 'staging';
-
 if (hasProductionUrl) {
   console.error("\n==================================================================");
   console.error(" [ERROR FATAL] DETECTADA URL DE PRODUCCIÓN.");
@@ -29,20 +42,52 @@ if (hasProductionUrl) {
   process.exit(1);
 }
 
-if (!hasConfirmFlag) {
+if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
+  console.error("ERROR: Debes definir las variables de entorno SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY.");
+  console.error("Ejemplo: SUPABASE_URL=https://<staging>.supabase.co SUPABASE_SERVICE_ROLE_KEY=secret node scripts/provision_identities.js --confirm-staging");
+  process.exit(1);
+}
+
+// 3. VERIFICACIÓN DE DESTINO EXACTO CONTRA EL PROYECTO DE STAGING CONFIGURADO
+function getStagingUrlFromConfig() {
+  try {
+    const fs = require('fs');
+    const path = require('path');
+    const configPath = path.resolve(__dirname, '../config.js');
+    if (fs.existsSync(configPath)) {
+      const content = fs.readFileSync(configPath, 'utf8');
+      const match = content.match(/SUPABASE_URL\s*:\s*["']([^"']+)["']/);
+      if (match && match[1] && !match[1].includes('<tu-proyecto-supabase>') && match[1].trim() !== '') {
+        return match[1].trim();
+      }
+    }
+  } catch (_) {}
+  return "";
+}
+
+const configuredStagingUrl = process.env.EXPECTED_STAGING_URL || 
+                             process.env.STAGING_SUPABASE_URL || 
+                             getStagingUrlFromConfig();
+
+if (!configuredStagingUrl) {
   console.error("\n==================================================================");
-  console.error(" [BLOQUEO PREVENTIVO] CONFIRMACIÓN DE ENTORNO REQUERIDA");
-  console.error(" Para evitar ejecuciones accidentales contra bases de datos equivocadas,");
-  console.error(" debes ejecutar este script con el flag --confirm-staging o NODE_ENV=staging:");
-  console.error("");
-  console.error("   node scripts/provision_identities.js --confirm-staging");
+  console.error(" [ERROR] PROYECTO DE STAGING NO CONFIGURADO");
+  console.error(" Se exige comprobar que el destino coincida exactamente con el proyecto");
+  console.error(" de staging configurado antes de cualquier escritura.");
+  console.error(" Define EXPECTED_STAGING_URL (o STAGING_SUPABASE_URL o SUPABASE_URL en config.js).");
   console.error("==================================================================\n");
   process.exit(1);
 }
 
-if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {
-  console.error("ERROR: Debes definir las variables de entorno SUPABASE_URL y SUPABASE_SERVICE_ROLE_KEY.");
-  console.error("Ejemplo: SUPABASE_URL=https://<staging>.supabase.co SUPABASE_SERVICE_ROLE_KEY=secret node scripts/provision_identities.js --confirm-staging");
+const normalizeUrl = (u) => (u || '').trim().replace(/\/+$/, '').toLowerCase();
+if (normalizeUrl(SUPABASE_URL) !== normalizeUrl(configuredStagingUrl)) {
+  console.error("\n==================================================================");
+  console.error(" [ERROR FATAL] DISCREPANCIA EN EL DESTINO DE STAGING");
+  console.error(` SUPABASE_URL destino:          ${SUPABASE_URL}`);
+  console.error(` Staging configurado esperado:  ${configuredStagingUrl}`);
+  console.error(" El destino no coincide exactamente con el proyecto de staging configurado.");
+  console.error(" Abortando cualquier operación de escritura para evitar modificaciones erróneas.");
+  console.error("==================================================================\n");
   process.exit(1);
 }
 

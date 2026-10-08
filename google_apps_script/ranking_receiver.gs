@@ -89,9 +89,13 @@ function doPost(e) {
 
     // 6. Obtener datos del ranking desde la hoja de cálculo con el contrato unificado completo
     var spreadsheetId = scriptProps.getProperty("SPREADSHEET_ID");
-    var rankingData = getRankingFromSheet(spreadsheetId);
+    var rankingResult = getRankingFromSheet(spreadsheetId);
 
-    return createSuccessResponse(rankingData);
+    if (rankingResult && rankingResult.error) {
+      return createErrorResponse(rankingResult.code || 503, rankingResult.error);
+    }
+
+    return createSuccessResponse(rankingResult);
 
   } catch (err) {
     return createErrorResponse(500, "Error interno al procesar el ranking: " + err.message);
@@ -123,25 +127,38 @@ function safeCompare(a, b) {
 /**
  * Lectura de datos de ranking preservando el contrato unificado:
  * [ { posicion, nombre, puntos, objetivo, pendientes }, ... ]
+ * Si no existe hoja vinculada o configurada, retorna un objeto con error 503 explícito.
  */
 function getRankingFromSheet(spreadsheetId) {
-  var ss;
-  if (spreadsheetId) {
-    ss = SpreadsheetApp.openById(spreadsheetId);
-  } else {
-    ss = SpreadsheetApp.getActiveSpreadsheet();
+  var ss = null;
+  try {
+    if (spreadsheetId) {
+      ss = SpreadsheetApp.openById(spreadsheetId);
+    } else {
+      ss = SpreadsheetApp.getActiveSpreadsheet();
+    }
+  } catch (openErr) {
+    return {
+      error: "Configuración incompleta: No se pudo abrir la hoja de cálculo de ranking: " + openErr.message,
+      code: 503
+    };
   }
 
   if (!ss) {
-    // Si no hay hoja vinculada (entorno de pruebas/desarrollo), retornar datos estructurados de staging
-    return [
-      { posicion: 1, nombre: "COMERCIAL TEST A", puntos: 1540.0, objetivo: 16.0, pendientes: 2.0 },
-      { posicion: 2, nombre: "COMERCIAL TEST B", puntos: 1320.0, objetivo: 16.0, pendientes: 0.0 },
-      { posicion: 3, nombre: "GERENTE TEST", puntos: 1190.0, objetivo: 16.0, pendientes: 1.0 }
-    ];
+    return {
+      error: "Configuración incompleta: Hoja de cálculo de ranking no vinculada o no disponible.",
+      code: 503
+    };
   }
 
-  var sheet = ss.getSheetByName("Ranking") || ss.getSheets()[0];
+  var sheet = ss.getSheetByName("Ranking") || (ss.getSheets().length > 0 ? ss.getSheets()[0] : null);
+  if (!sheet) {
+    return {
+      error: "Configuración incompleta: No se encontró la hoja 'Ranking' en el documento.",
+      code: 503
+    };
+  }
+
   var data = sheet.getDataRange().getValues();
   if (!data || data.length < 2) {
     return [];

@@ -326,6 +326,25 @@ $noMockTokenUpdatePwd = ($updatePwdContent.IndexOf("TEST_MOCK_TOKEN") -lt 0)
 Report-Test -Category "Clean Code" -TestName "Eliminacion total de TEST_MOCK_TOKEN en handlers desplegables" -Profile "Production Ready" -Expected "0 ocurrencias de TEST_MOCK_TOKEN en api/*.js" -Obtained "Handlers limpios; mocks restringidos al arnes de pruebas" -Condition ($noMockTokenRanking -and $noMockTokenComisiones -and $noMockTokenUpdatePwd)
 
 # ----------------------------------------------------------------------------
+# 9. EJECUCIÓN REAL (RUNTIME) DE COMPROBACIONES CLAVE
+# ----------------------------------------------------------------------------
+Write-Host "`n=== 9. EJECUCION REAL (RUNTIME) DE CASOS CRITICOS ===" -ForegroundColor White
+
+$nodeCmd = Get-Command "agy-node" -ErrorAction SilentlyContinue
+if (-not $nodeCmd) {
+    $nodeCmd = Get-Command "node" -ErrorAction SilentlyContinue
+}
+
+if ($nodeCmd) {
+    $runtimeOutput = & $nodeCmd.Source "$PWD\tests\test_runtime_verifications.js"
+    $runtimeExit = $LASTEXITCODE
+    $runtimeCondition = ($runtimeExit -eq 0)
+    Report-Test -Category "Runtime Suite" -TestName "Bateria de 16 pruebas en tiempo real ejecutando codigo de servidor y apps script" -Profile "Runtime Engine" -Expected "Exit code 0; 16 pruebas superadas; 0 fallidas" -Obtained "Ejecucion completada con exito en tiempo real" -Condition $runtimeCondition
+} else {
+    Write-Host " [SKIP] [Runtime Suite] Node/agy-node no detectado en el PATH para ejecucion directa" -ForegroundColor Yellow
+}
+
+# ----------------------------------------------------------------------------
 # Resumen Final
 # ----------------------------------------------------------------------------
 Write-Host "`n==================================================================" -ForegroundColor Cyan
