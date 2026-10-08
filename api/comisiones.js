@@ -26,7 +26,9 @@ const https = require('https');
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://bxgdtdzlijeaetlekbub.supabase.co";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
 
-// Configuración privada de la hoja de comisiones (no exponer sheetId a clientes)
+// Configuración unificada de acceso a Google Sheets y origen privado
+const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || "";
+const GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || process.env.GOOGLE_PRIVATE_KEY || "";
 const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID || "1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI";
 
 const RENOSUR_AGENTS = [
@@ -267,55 +269,49 @@ function verifySupabaseToken(token, callback) {
 }
 
 /**
- * Extrae claims de identidad y rol del usuario autenticado.
+ * Consulta el perfil del usuario directamente en la base de datos (agentes_perfiles)
+ * para garantizar que el estado proviene de una fuente controlada por servidor
+ * y NUNCA de user_metadata modificable por el cliente.
  */
-function extractUserClaims(user) {
-  let dni = '';
-  if (user.user_metadata && user.user_metadata.dni) {
-    dni = user.user_metadata.dni.trim().toUpperCase();
-  } else if (user.app_metadata && user.app_metadata.dni) {
-    dni = user.app_metadata.dni.trim().toUpperCase();
-  } else if (user.email) {
-    const emailParts = user.email.split('@');
-    if (emailParts.length === 2 && emailParts[1] === 'asistente.internal') {
-      dni = emailParts[0].toUpperCase();
-    }
-  }
+function fetchUserProfile(token, user, callback) {
+  try {
+    const profileUrl = new URL(`/rest/v1/agentes_perfiles?user_id=eq.${user.id}&select=dni,nombre,rol,activo,must_change_password`, SUPABASE_URL);
+    const options = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      timeout: 8000
+    };
 
-  let rol = 'comercial';
-  if (user.app_metadata && user.app_metadata.role) {
-    rol = user.app_metadata.role.toLowerCase();
-  } else if (user.user_metadata && user.user_metadata.rol) {
-    rol = user.user_metadata.rol.toLowerCase();
-  } else if (KNOWN_GERENTES.includes(dni)) {
-    rol = 'gerente';
-  } else if (KNOWN_EVARIA.includes(dni)) {
-    rol = 'evaria';
-  }
+    const req = https.get(profileUrl, options, (res) => {
+      let raw = '';
+      res.on('data', chunk => raw += chunk);
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          try {
+            const rows = JSON.parse(raw);
+            if (Array.isArray(rows) && rows.length > 0) {
+              return callback(null, rows[0]);
+            }
+            return callback(new Error("Perfil no encontrado en agentes_perfiles"));
+          } catch (e) {
+            return callback(new Error("Error parseando perfil"));
+          }
+        }
+        return callback(new Error(`Error al consultar perfil (HTTP ${res.statusCode})`));
+      });
+    });
 
-  let status = 'active';
-  if (user.user_metadata && user.user_metadata.status) {
-    status = user.user_metadata.status.toLowerCase();
-  } else if (user.app_metadata && user.app_metadata.status) {
-    status = user.app_metadata.status.toLowerCase();
-  }
+    req.on('timeout', () => {
+      req.destroy();
+      return callback(new Error("Timeout al consultar agentes_perfiles"));
+    });
 
-  let mustChangePassword = false;
-  if (user.user_metadata && user.user_metadata.must_change_password === true) {
-    mustChangePassword = true;
-  } else if (user.app_metadata && user.app_metadata.must_change_password === true) {
-    mustChangePassword = true;
+    req.on('error', err => callback(err));
+  } catch (err) {
+    return callback(err);
   }
-
-  let nombre = '';
-  if (user.user_metadata && user.user_metadata.nombre) {
-    nombre = user.user_metadata.nombre;
-  } else {
-    const matched = RENOSUR_AGENTS.find(a => a.dni === dni);
-    if (matched) nombre = matched.name;
-  }
-
-  return { dni, rol, status, nombre, mustChangePassword, id: user.id };
 }
 
 module.exports = function (req, res) {
@@ -360,40 +356,55 @@ module.exports = function (req, res) {
       });
     }
 
-    const claims = extractUserClaims(user);
+    // 3. Consulta de la fuente de verdad en servidor: agentes_perfiles
+    fetchUserProfile(token, user, (profileErr, profile) => {
+      if (profileErr || !profile) {
+        return res.status(403).json({
+          success: false,
+          error: "Acceso denegado: Perfil de usuario no registrado o no autorizado en el sistema."
+        });
+      }
 
-    // 3. Comprobación de estado activo del usuario
-    if (claims.status === 'inactive') {
-      return res.status(403).json({
-        success: false,
-        error: "Tu cuenta de usuario ha sido desactivada por gerencia."
-      });
-    }
+      const dni = (profile.dni || '').trim().toUpperCase();
+      const rol = (profile.rol || '').toLowerCase();
+      const activo = profile.activo === true;
+      const mustChangePassword = profile.must_change_password === true;
+      const nombre = profile.nombre || '';
 
-    // 4. Comprobación obligatoria de cambio de contraseña pendiente (Protección de llamada directa)
-    if (claims.mustChangePassword) {
-      return res.status(403).json({
-        success: false,
-        error: "Acceso bloqueado: Cambio obligatorio de contraseña pendiente. Debes actualizar tu contraseña personal antes de consultar las comisiones.",
-        mustChangePassword: true
-      });
-    }
+      // Comprobación de estado activo del usuario
+      if (!activo) {
+        return res.status(403).json({
+          success: false,
+          error: "Tu cuenta de usuario ha sido desactivada por gerencia."
+        });
+      }
 
-    // 4. Scoping por rol: Trabajadores Evaria no tienen acceso
-    if (claims.rol === 'evaria') {
-      return res.status(403).json({
-        success: false,
-        error: "Acceso denegado: El perfil Evaria no tiene acceso a las comisiones de Renosur."
-      });
-    }
+      // Comprobación obligatoria de cambio de contraseña pendiente (servidor)
+      if (mustChangePassword) {
+        return res.status(403).json({
+          success: false,
+          error: "Acceso bloqueado: Cambio obligatorio de contraseña pendiente. Debes actualizar tu contraseña personal antes de consultar las comisiones.",
+          mustChangePassword: true
+        });
+      }
 
-    // Solo roles autorizados: 'comercial' o 'gerente'
-    if (claims.rol !== 'comercial' && claims.rol !== 'gerente') {
-      return res.status(403).json({
-        success: false,
-        error: "Acceso denegado: Rol de usuario no autorizado."
-      });
-    }
+      // Scoping por rol: Trabajadores Evaria no tienen acceso
+      if (rol === 'evaria') {
+        return res.status(403).json({
+          success: false,
+          error: "Acceso denegado: El perfil Evaria no tiene acceso a las comisiones de Renosur."
+        });
+      }
+
+      // Solo roles autorizados: 'comercial' o 'gerente'
+      if (rol !== 'comercial' && rol !== 'gerente') {
+        return res.status(403).json({
+          success: false,
+          error: "Acceso denegado: Rol de usuario no autorizado."
+        });
+      }
+
+      const claims = { dni, rol, status: activo ? 'active' : 'inactive', nombre, mustChangePassword, id: user.id };
 
     const targetUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&t=${Date.now()}`;
 
@@ -538,6 +549,7 @@ module.exports = function (req, res) {
       });
     }
 
-    fetchUrl(targetUrl);
+      fetchUrl(targetUrl);
+    });
   });
 };

@@ -31,7 +31,9 @@ function Assert-Check {
 
 # Carga de archivos con codificación UTF-8 explícita
 $indexContent = [System.IO.File]::ReadAllText("$PWD\index.html", [System.Text.Encoding]::UTF8)
+$loginContent = [System.IO.File]::ReadAllText("$PWD\login.html", [System.Text.Encoding]::UTF8)
 $comisionesContent = [System.IO.File]::ReadAllText("$PWD\api\comisiones.js", [System.Text.Encoding]::UTF8)
+$rankingContent = [System.IO.File]::ReadAllText("$PWD\api\ranking.js", [System.Text.Encoding]::UTF8)
 
 # ----------------------------------------------------------------------------
 # 1. Regla de negocio de vacaciones
@@ -76,10 +78,10 @@ Assert-Check -testName "api/comisiones exige cabecera Authorization Bearer" -con
 $hasSupabaseAuthVerification = ($comisionesContent -match "/auth/v1/user")
 Assert-Check -testName "api/comisiones valida criptograficamente el token con Supabase Auth" -condition $hasSupabaseAuthVerification
 
-$hasEvariaCheck = ($comisionesContent -match "claims\.rol === 'evaria'" -and $comisionesContent -match "403")
+$hasEvariaCheck = ($comisionesContent -match "rol === 'evaria'" -and $comisionesContent -match "403")
 Assert-Check -testName "api/comisiones deniega acceso a perfil Evaria con HTTP 403" -condition $hasEvariaCheck
 
-$hasComercialScoping = ($comisionesContent -match "claims\.rol === 'gerente'" -and $comisionesContent -match "userComision")
+$hasComercialScoping = ($comisionesContent -match "rol === 'gerente'" -and $comisionesContent -match "userComision")
 Assert-Check -testName "api/comisiones aplica scoping estricto: comercial solo recibe su comision" -condition $hasComercialScoping
 
 $noSheetIdLeak = -not ($comisionesContent -match "sheetId:\s*GOOGLE_SHEET_ID" -or $comisionesContent -match "sheetId:\s*sheetId")
@@ -89,7 +91,7 @@ $hasStrictAntiCache = ($comisionesContent -match "private, no-cache, no-store, m
 Assert-Check -testName "api/comisiones establece cabeceras anti-cache privadas estrictas" -condition $hasStrictAntiCache
 
 # ----------------------------------------------------------------------------
-# 5. Scripts de Migración SQL y RLS
+# 5. Scripts de Migracion SQL y RLS
 # ----------------------------------------------------------------------------
 Write-Host "`n--- 5. SCRIPTS SQL DE MIGRACION Y RLS ---" -ForegroundColor White
 
@@ -120,29 +122,18 @@ $hasTransitionRollback = (Test-Path "migrations/data_transition_and_rollback.sql
 Assert-Check -testName "Script de transicion de datos y reversion segura creado" -condition $hasTransitionRollback
 
 # ----------------------------------------------------------------------------
-# 6. Comprobaciones de Red en Modo Solo Lectura
+# 6. Aislamiento de Entorno y Configurabilidad (Sin peticiones a produccion)
 # ----------------------------------------------------------------------------
-Write-Host "`n--- 6. COMPROBACIONES EN MODO SOLO LECTURA ---" -ForegroundColor White
+Write-Host "`n--- 6. AISLAMIENTO DE ENTORNO Y CONFIGURABILIDAD ---" -ForegroundColor White
 
-# Comprobación de Google Sheets público (Evidencia empírica)
-try {
-    $sheetUrl = "https://docs.google.com/spreadsheets/d/1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI/gviz/tq?tqx=out:csv"
-    $sheetRes = Invoke-WebRequest -Uri $sheetUrl -Method Head -TimeoutSec 10 -ErrorAction Stop
-    $sheetIsExposed = ($sheetRes.StatusCode -eq 200)
-    Assert-Check -testName "EVIDENCIA CONFIRMADA: Google Sheets responde HTTP 200 sin autenticacion (Riesgo en origen)" -condition $sheetIsExposed -details "Acceso publico confirmado. Requiere restriccion por parte de gerencia."
-} catch {
-    Write-Host " [INFO] No se pudo conectar a Google Sheets en este momento: $($_.Exception.Message)" -ForegroundColor Yellow
-}
+$frontendConfigurable = ($loginContent.IndexOf("window.APP_CONFIG") -ge 0 -and $indexContent.IndexOf("window.APP_CONFIG") -ge 0)
+Assert-Check -testName "Frontend configurable por entorno (window.APP_CONFIG implementado)" -condition $frontendConfigurable -details "Evita llamadas fijas a produccion en staging o pruebas"
 
-# Comprobación de Supabase REST API con anon key
-try {
-    $spUrl = "https://bxgdtdzlijeaetlekbub.supabase.co/rest/v1/"
-    $spRes = Invoke-WebRequest -Uri $spUrl -Headers @{ "apikey" = "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap" } -Method Get -TimeoutSec 10 -SkipHttpErrorCheck
-    $is401 = ($spRes.StatusCode -eq 401)
-    Assert-Check -testName "EVIDENCIA CONFIRMADA: PostgREST rechaza inspeccion anonima directa de metadatos (HTTP 401)" -condition $is401 -details "Justifica la necesidad del script SQL verify_rls_policies_readonly.sql"
-} catch {
-    Write-Host " [INFO] Conexion a Supabase REST API completada" -ForegroundColor Gray
-}
+$backendConfigurable = ($comisionesContent.IndexOf("process.env.SUPABASE_URL") -ge 0 -and $rankingContent.IndexOf("process.env.SUPABASE_URL") -ge 0)
+Assert-Check -testName "Backend configurable por variables de entorno (process.env)" -condition $backendConfigurable -details "Permite redirigir llamadas a staging o mocks locales"
+
+$unifiedGoogleVars = ($comisionesContent.IndexOf("GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY") -ge 0 -and $rankingContent.IndexOf("RANKING_APPS_SCRIPT_URL") -ge 0)
+Assert-Check -testName "Variables de entorno de Google unificadas sin claves en codigo" -condition $unifiedGoogleVars
 
 # ----------------------------------------------------------------------------
 # Resumen Final

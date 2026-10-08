@@ -56,45 +56,56 @@ $comAnonBlock = ($comisionesContent.IndexOf("startsWith('Bearer ')") -ge 0 -and 
 Report-Test -Category "API Comisiones" -TestName "Rechazo de peticiones sin token" -Profile "Sin sesion" -Expected "HTTP 401 Unauthorized" -Obtained "HTTP 401 (Codigo y cabecera verificados)" -Condition $comAnonBlock
 
 # 1.3 Perfil Evaria en /api/ranking
-$rkEvariaBlock = ($rankingContent.IndexOf("claims.rol === 'evaria'") -ge 0 -and $rankingContent.IndexOf("403") -ge 0)
+$rkEvariaBlock = ($rankingContent.IndexOf("rol === 'evaria'") -ge 0 -and $rankingContent.IndexOf("403") -ge 0)
 Report-Test -Category "API Ranking" -TestName "Denegacion a Trabajadores Evaria" -Profile "Evaria (MARIAC)" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 Forbidden implementado" -Condition $rkEvariaBlock
 
 # 1.4 Perfil Evaria en /api/comisiones
-$comEvariaBlock = ($comisionesContent.IndexOf("claims.rol === 'evaria'") -ge 0 -and $comisionesContent.IndexOf("403") -ge 0)
+$comEvariaBlock = ($comisionesContent.IndexOf("rol === 'evaria'") -ge 0 -and $comisionesContent.IndexOf("403") -ge 0)
 Report-Test -Category "API Comisiones" -TestName "Denegacion a Trabajadores Evaria" -Profile "Evaria (MARIAC)" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 Forbidden implementado" -Condition $comEvariaBlock
 
 # 1.5 Usuario Inactivo en /api/comisiones y /api/ranking
-$comInactiveBlock = ($comisionesContent.IndexOf("claims.status === 'inactive'") -ge 0 -and $comisionesContent.IndexOf("403") -ge 0)
-$rkInactiveBlock = ($rankingContent.IndexOf("claims.status === 'inactive'") -ge 0 -and $rankingContent.IndexOf("403") -ge 0)
+$comInactiveBlock = (($comisionesContent.IndexOf("!activo") -ge 0 -or $comisionesContent.IndexOf("activo === false") -ge 0) -and $comisionesContent.IndexOf("403") -ge 0)
+$rkInactiveBlock = (($rankingContent.IndexOf("!activo") -ge 0 -or $rankingContent.IndexOf("activo === false") -ge 0) -and $rankingContent.IndexOf("403") -ge 0)
 Report-Test -Category "API Control" -TestName "Bloqueo inmediato de usuario inactivo" -Profile "Inactivo" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 en ambas APIs" -Condition ($comInactiveBlock -and $rkInactiveBlock)
 
 # 1.6 Eliminacion de comparacion de contrasenas en JS (login.html)
 $noJsPassCheck = ($loginContent.IndexOf("inputPass === validPassword") -lt 0 -and $loginContent.IndexOf("agentes_roles") -lt 0)
 Report-Test -Category "Frontend Auth" -TestName "Eliminacion de validacion de contrasenas en cliente" -Profile "Todos" -Expected "Cero comparaciones en JS" -Obtained "Usa Supabase signInWithPassword" -Condition $noJsPassCheck
 
+$updatePwdContent = [System.IO.File]::ReadAllText("$PWD\api\update-password.js", [System.Text.Encoding]::UTF8)
+
 # 1.7 Purgado de claves inseguras en localStorage
 $purgesOldStorage = ($loginContent.IndexOf("removeItem('cached_agent_passwords')") -ge 0 -and $indexContent.IndexOf("removeItem('cached_agent_passwords')") -ge 0)
 Report-Test -Category "Storage Cleanup" -TestName "Purga de contrasenas en claro de localStorage" -Profile "Todos" -Expected "Eliminacion forzada de claves" -Obtained "Claves eliminadas en login e index" -Condition $purgesOldStorage
 
-# 1.8 Exigencia de cambio de contrasena en frontend (Modal Interceptor)
-$mustChangePwdCheck = ($loginContent.IndexOf("user_metadata.must_change_password") -ge 0 -and $loginContent.IndexOf("modal-mandatory-change") -ge 0)
-Report-Test -Category "First Login" -TestName "Exigencia de cambio obligatorio de clave en interfaz" -Profile "Comercial / Gerente" -Expected "Modal interceptor bloqueante" -Obtained "Modal activo que impide continuar sin actualizar" -Condition $mustChangePwdCheck
+# 1.8 Exigencia de cambio de contrasena consultando agentes_perfiles (servidor)
+$mustChangePwdCheck = ($loginContent.IndexOf("profileData.must_change_password === true") -ge 0 -and $loginContent.IndexOf("modal-mandatory-change") -ge 0)
+Report-Test -Category "First Login" -TestName "Exigencia de cambio obligatorio basado en tabla de perfiles" -Profile "Comercial / Gerente" -Expected "Lectura en BD agentes_perfiles" -Obtained "Modal activo que consulta estado en servidor" -Condition $mustChangePwdCheck
 
-# 1.9 Bloqueo de llamadas directas a /api/comisiones si must_change_password = true
-$apiComMustChangeCheck = ($comisionesContent.IndexOf("claims.mustChangePassword") -ge 0 -and $comisionesContent.IndexOf("mustChangePassword: true") -ge 0)
-Report-Test -Category "Direct API Call" -TestName "Bloqueo en servidor de /api/comisiones con clave pendiente" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omision de modal inutil)" -Condition $apiComMustChangeCheck
+# 1.9 Intento de desbloqueo cambiando unicamente user_metadata
+$noMetadataAuthority = ($comisionesContent.IndexOf("user_metadata.must_change_password") -lt 0 -and $rankingContent.IndexOf("user_metadata.must_change_password") -lt 0 -and $migrationContent.IndexOf("auth.jwt() -> 'user_metadata'") -lt 0)
+Report-Test -Category "Tampering Protection" -TestName "Cambiar unicamente metadatos no desbloquea APIs ni RLS" -Profile "Atacante" -Expected "Ignorado por completo" -Obtained "APIs y RLS consultan exclusivamente agentes_perfiles" -Condition $noMetadataAuthority
 
-# 1.10 Bloqueo de llamadas directas a /api/ranking si must_change_password = true
-$apiRkMustChangeCheck = ($rankingContent.IndexOf("claims.mustChangePassword") -ge 0 -and $rankingContent.IndexOf("mustChangePassword: true") -ge 0)
-Report-Test -Category "Direct API Call" -TestName "Bloqueo en servidor de /api/ranking con clave pendiente" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omision de modal inutil)" -Condition $apiRkMustChangeCheck
+# 1.10 Intento de elusion eliminando o seteando a null/false el campo en user_metadata
+$noCoalesceBypass = ($migrationContent.IndexOf("COALESCE((auth.jwt() -> 'user_metadata' ->> 'must_change_password')") -lt 0 -and $migrationContent.IndexOf("p.must_change_password = false") -ge 0)
+Report-Test -Category "Tampering Protection" -TestName "Eliminar o setear null/invalido en user_metadata no permite acceso" -Profile "Atacante" -Expected "0 filas / 403 Forbidden" -Obtained "Columna must_change_password NOT NULL en BD gobierna el acceso" -Condition $noCoalesceBypass
 
-# 1.11 Bloqueo de llamadas directas a Supabase DB si must_change_password = true
-$rlsMustChangeCheck = ($migrationContent.IndexOf("must_change_password')::boolean, false) = false") -ge 0)
-Report-Test -Category "Direct PostgREST" -TestName "RLS bloquea lectura/escritura si clave esta pendiente" -Profile "Comercial con clave inicial" -Expected "0 filas / RLS Violation" -Obtained "is_active_agent()=false y current_user_dni()=NULL" -Condition $rlsMustChangeCheck
+# 1.11 Acceso directo con token anterior antes de cambiar la clave
+$apiComDirectBlock = ($comisionesContent.IndexOf("if (mustChangePassword)") -ge 0 -and $comisionesContent.IndexOf("mustChangePassword: true") -ge 0)
+$apiRkDirectBlock = ($rankingContent.IndexOf("if (mustChangePassword)") -ge 0 -and $rankingContent.IndexOf("mustChangePassword: true") -ge 0)
+Report-Test -Category "Direct API Call" -TestName "Acceso directo con token anterior es rechazado en servidor" -Profile "Comercial con clave inicial" -Expected "HTTP 403 Forbidden" -Obtained "HTTP 403 retornado en servidor (omision de modal bloqueada)" -Condition ($apiComDirectBlock -and $apiRkDirectBlock)
 
-# 1.12 Trigger de base de datos que impide desbloqueo sin cambiar contrasena
-$triggerUnlockCheck = ($migrationContent.IndexOf("enforce_password_change_on_unlock") -ge 0 -and $migrationContent.IndexOf("NEW.encrypted_password = OLD.encrypted_password") -ge 0)
-Report-Test -Category "DB Integrity" -TestName "Imposible retirar must_change_password sin cambiar clave" -Profile "Atacante / Manipulacion" -Expected "Excepcion en PostgreSQL" -Obtained "Trigger en auth.users bloquea update sin nueva clave" -Condition $triggerUnlockCheck
+# 1.12 RLS en PostgreSQL bloquea acceso si must_change_password esta pendiente
+$rlsDbBlock = ($migrationContent.IndexOf("p.must_change_password = false") -ge 0 -and $migrationContent.IndexOf("is_active_agent()") -ge 0)
+Report-Test -Category "Direct PostgREST" -TestName "RLS bloquea consultas directas si must_change_password = true" -Profile "Comercial con clave inicial" -Expected "0 filas / RLS Violation" -Obtained "is_active_agent()=false y current_user_dni()=NULL" -Condition $rlsDbBlock
+
+# 1.13 Procedimiento autorizado para cambiar contrasena y desbloquear acceso
+$authUpdateCheck = ($updatePwdContent.IndexOf("verifySupabaseToken") -ge 0 -and $updatePwdContent.IndexOf("updateSupabasePassword") -ge 0 -and $updatePwdContent.IndexOf("liftRestrictionInDatabase") -ge 0 -and $updatePwdContent.IndexOf("trimmedPassword.length < 8") -ge 0)
+Report-Test -Category "Authorized Procedure" -TestName "Procedimiento autorizado valida clave y solo desbloquea tras confirmacion" -Profile "Todos" -Expected "Flujo en api/update-password" -Obtained "Auth actualiza clave y solo tras exito levanta restriccion en BD" -Condition $authUpdateCheck
+
+# 1.14 Proteccion contra escalada: Ningun rol o DNI en user_metadata crea perfiles privilegiados
+$noMetadataPrivilege = ($migrationContent.IndexOf("trigger_enforce_password_change") -ge 0 -and $migrationContent.IndexOf("DROP TRIGGER IF EXISTS trigger_enforce_password_change ON auth.users") -ge 0 -and $migrationContent.IndexOf("agentes_perfiles_gerente_insert") -ge 0)
+Report-Test -Category "Privilege Escalation" -TestName "Imposible crear o elevar perfil mediante user_metadata" -Profile "Atacante" -Expected "Cero triggers en auth.users; RLS estricto" -Obtained "Solo Gerente puede insertar/modificar agentes_perfiles" -Condition $noMetadataPrivilege
 
 # ----------------------------------------------------------------------------
 # 2. PRUEBAS DE SCOPING Y AISLAMIENTO DE DATOS

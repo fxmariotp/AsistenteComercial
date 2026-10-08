@@ -31,9 +31,32 @@ CREATE TABLE IF NOT EXISTS public.agentes_perfiles (
     nombre VARCHAR(150) NOT NULL,
     rol VARCHAR(20) NOT NULL CHECK (rol IN ('gerente', 'comercial', 'evaria')),
     activo BOOLEAN NOT NULL DEFAULT true,
+    must_change_password BOOLEAN NOT NULL DEFAULT true,
+    password_changed_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
     updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
 );
+
+-- Si la tabla ya existía, asegurar la columna must_change_password
+DO $$
+BEGIN
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+          AND table_name = 'agentes_perfiles' 
+          AND column_name = 'must_change_password'
+    ) THEN
+        ALTER TABLE public.agentes_perfiles ADD COLUMN must_change_password BOOLEAN NOT NULL DEFAULT true;
+    END IF;
+    IF NOT EXISTS (
+        SELECT 1 FROM information_schema.columns 
+        WHERE table_schema = 'public' 
+          AND table_name = 'agentes_perfiles' 
+          AND column_name = 'password_changed_at'
+    ) THEN
+        ALTER TABLE public.agentes_perfiles ADD COLUMN password_changed_at TIMESTAMPTZ;
+    END IF;
+END $$;
 
 -- Índices de consulta rápida
 CREATE INDEX IF NOT EXISTS idx_agentes_perfiles_user_id ON public.agentes_perfiles(user_id);
@@ -75,8 +98,9 @@ CREATE INDEX IF NOT EXISTS idx_conexiones_audit_fecha ON public.conexiones_audit
 -- ----------------------------------------------------------------------------
 -- 4. FUNCIONES DE SEGURIDAD (SECURITY DEFINER con search_path blindado)
 -- ----------------------------------------------------------------------------
+-- Fuente de autoridad 100% en public.agentes_perfiles (NO depende de user_metadata)
 
--- Devuelve el DNI del usuario autenticado actual a partir de su auth.uid()
+-- Devuelve el DNI del usuario autenticado actual a partir de su auth.uid() si está activo y al día
 CREATE OR REPLACE FUNCTION public.current_user_dni()
 RETURNS VARCHAR(20)
 LANGUAGE sql
@@ -87,8 +111,7 @@ AS $$
     SELECT p.dni FROM public.agentes_perfiles p
     WHERE p.user_id = auth.uid() 
       AND p.activo = true
-      AND COALESCE((auth.jwt() -> 'user_metadata' ->> 'must_change_password')::boolean, false) = false
-      AND COALESCE((auth.jwt() -> 'app_metadata' ->> 'must_change_password')::boolean, false) = false
+      AND p.must_change_password = false
     LIMIT 1;
 $$;
 
@@ -105,8 +128,7 @@ AS $$
         WHERE p.user_id = auth.uid() 
           AND p.rol = 'gerente' 
           AND p.activo = true
-          AND COALESCE((auth.jwt() -> 'user_metadata' ->> 'must_change_password')::boolean, false) = false
-          AND COALESCE((auth.jwt() -> 'app_metadata' ->> 'must_change_password')::boolean, false) = false
+          AND p.must_change_password = false
     );
 $$;
 
@@ -122,34 +144,13 @@ AS $$
         SELECT 1 FROM public.agentes_perfiles p
         WHERE p.user_id = auth.uid() 
           AND p.activo = true
-          AND COALESCE((auth.jwt() -> 'user_metadata' ->> 'must_change_password')::boolean, false) = false
-          AND COALESCE((auth.jwt() -> 'app_metadata' ->> 'must_change_password')::boolean, false) = false
+          AND p.must_change_password = false
     );
 $$;
 
--- Trigger de integridad en auth.users: Impide retirar must_change_password sin alterar la contraseña cifrada
-CREATE OR REPLACE FUNCTION public.enforce_password_change_on_unlock()
-RETURNS TRIGGER
-LANGUAGE plpgsql
-SECURITY DEFINER
-SET search_path = public, auth
-AS $$
-BEGIN
-    IF (OLD.raw_user_meta_data ->> 'must_change_password')::boolean = true 
-       AND (NEW.raw_user_meta_data ->> 'must_change_password')::boolean = false THEN
-        IF NEW.encrypted_password = OLD.encrypted_password THEN
-            RAISE EXCEPTION 'Operación denegada: Es obligatorio actualizar la contraseña para retirar la restricción de primer acceso.';
-        END IF;
-    END IF;
-    RETURN NEW;
-END;
-$$;
-
+-- Limpieza preventiva: NO se añaden triggers sobre auth.users para evitar incompatibilidades con Supabase Auth
 DROP TRIGGER IF EXISTS trigger_enforce_password_change ON auth.users;
-CREATE TRIGGER trigger_enforce_password_change
-    BEFORE UPDATE ON auth.users
-    FOR EACH ROW
-    EXECUTE FUNCTION public.enforce_password_change_on_unlock();
+DROP FUNCTION IF EXISTS public.enforce_password_change_on_unlock();
 
 -- Restringir permisos de ejecución en funciones de seguridad
 REVOKE ALL ON FUNCTION public.current_user_dni() FROM PUBLIC, anon;
@@ -189,7 +190,7 @@ END $$;
 DROP POLICY IF EXISTS "agentes_perfiles_select" ON public.agentes_perfiles;
 CREATE POLICY "agentes_perfiles_select" ON public.agentes_perfiles
     FOR SELECT TO authenticated
-    USING (public.is_active_agent() AND (user_id = auth.uid() OR public.is_gerente()));
+    USING (user_id = auth.uid() OR (public.is_active_agent() AND public.is_gerente()));
 
 DROP POLICY IF EXISTS "agentes_perfiles_gerente_insert" ON public.agentes_perfiles;
 CREATE POLICY "agentes_perfiles_gerente_insert" ON public.agentes_perfiles

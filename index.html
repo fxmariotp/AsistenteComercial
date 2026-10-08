@@ -12432,8 +12432,12 @@ const DEFAULT_VACATIONS = {
 const DEFAULT_VACATION_MOTIVES = {};
 
 
-const SUPABASE_URL = "https://bxgdtdzlijeaetlekbub.supabase.co";
-const SUPABASE_KEY = "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
+const APP_CONFIG = window.APP_CONFIG || {
+  SUPABASE_URL: "https://bxgdtdzlijeaetlekbub.supabase.co",
+  SUPABASE_KEY: "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap"
+};
+const SUPABASE_URL = APP_CONFIG.SUPABASE_URL;
+const SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY || APP_CONFIG.SUPABASE_ANON_KEY;
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 // Cargar roles desde la nube al cargar la pagina
 if (typeof fetchAgentRolesFromCloud === 'function') {
@@ -12673,21 +12677,42 @@ async function loadSession() {
   let status = 'active';
 
   if (sessionUser) {
-    dni = (sessionUser.user_metadata && sessionUser.user_metadata.dni) || (sessionUser.email ? sessionUser.email.split('@')[0].toUpperCase() : '');
-    name = (sessionUser.user_metadata && sessionUser.user_metadata.nombre) || COMERCIALES[dni] || 'Agente';
-    role = (sessionUser.app_metadata && sessionUser.app_metadata.role) || (sessionUser.user_metadata && sessionUser.user_metadata.rol) || (dni === 'MIGUELR' ? 'gerente' : 'comercial');
-    status = (sessionUser.user_metadata && sessionUser.user_metadata.status) || 'active';
-
-    if (status === 'inactive') {
-      if (supabaseClient) await supabaseClient.auth.signOut();
-      alert('Tu cuenta de agente está desactivada por la gerencia.');
-      logout();
-      return;
+    // Consulta autoritativa en public.agentes_perfiles (servidor)
+    let profile = null;
+    try {
+      const { data, error } = await supabaseClient
+        .from('agentes_perfiles')
+        .select('dni, nombre, rol, activo, must_change_password')
+        .eq('user_id', sessionUser.id)
+        .maybeSingle();
+      if (!error && data) profile = data;
+    } catch (e) {
+      console.warn("Error consultando agentes_perfiles en loadSession:", e);
     }
 
-    if (sessionUser.user_metadata && sessionUser.user_metadata.must_change_password) {
-      window.location.href = 'login.html';
-      return;
+    if (profile) {
+      dni = (profile.dni || '').trim().toUpperCase();
+      name = profile.nombre || COMERCIALES[dni] || 'Agente';
+      role = (profile.rol || 'comercial').toLowerCase();
+      status = profile.activo ? 'active' : 'inactive';
+
+      if (profile.activo === false) {
+        if (supabaseClient) await supabaseClient.auth.signOut();
+        alert('Tu cuenta de agente está desactivada por la gerencia.');
+        logout();
+        return;
+      }
+
+      if (profile.must_change_password === true) {
+        window.location.href = 'login.html';
+        return;
+      }
+    } else {
+      // Determinación estricta por identidad de correo en caso de transición previa
+      dni = sessionUser.email ? sessionUser.email.split('@')[0].toUpperCase() : '';
+      name = COMERCIALES[dni] || 'Agente';
+      role = (dni === 'MIGUELR' ? 'gerente' : 'comercial');
+      status = 'active';
     }
   } else {
     dni = localStorage.getItem('comercial_dni');

@@ -27,22 +27,19 @@
 --     email_confirm: true,
 --     user_metadata: {
 --       dni: a.dni,
---       nombre: a.nombre,
---       rol: a.rol,
---       status: 'active',
---       must_change_password: true // Forzar cambio en primer acceso
---     },
---     app_metadata: { role: a.rol, dni: a.dni }
+--       nombre: a.nombre
+--     }
 --   });
 --   
---   // Crear perfil vinculado
+--   // Crear perfil autoritativo en base de datos con must_change_password = true
 --   if (authUser && authUser.user) {
 --     await adminClient.from('agentes_perfiles').upsert({
 --       user_id: authUser.user.id,
 --       dni: a.dni,
 --       nombre: a.nombre,
 --       rol: a.rol,
---       activo: true
+--       activo: true,
+--       must_change_password: true // Estado controlado por el servidor
 --     });
 --   }
 -- }

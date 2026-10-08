@@ -23,29 +23,17 @@ const https = require('https');
 const SUPABASE_URL = process.env.SUPABASE_URL || "https://bxgdtdzlijeaetlekbub.supabase.co";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
 
+// Configuración unificada de origen Google Apps Script (Servidor a Servidor)
+const RANKING_APPS_SCRIPT_URL = process.env.RANKING_APPS_SCRIPT_URL || process.env.GOOGLE_APPS_SCRIPT_URL || "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec";
+const RANKING_SHARED_SECRET = process.env.RANKING_SHARED_SECRET || "";
+
 let memoryCache = {
   data: null,
   timestamp: 0
 };
 const CACHE_TTL_MS = 30 * 1000; // 30s de caché fresca en memoria interna del servidor
 
-const KNOWN_GERENTES = ["MIGUELR"];
-const KNOWN_EVARIA = ["MARIAC", "28750523V"];
-
 function verifySupabaseToken(token, callback) {
-  // Soporte para entornos de prueba locales controlados
-  if (process.env.NODE_ENV === 'test' && token.startsWith('TEST_MOCK_TOKEN_')) {
-    const parts = token.split('_');
-    const mockRole = parts[3] || 'comercial';
-    const mockDni = parts[4] || '47269867Z';
-    return callback(null, {
-      id: 'mock-uuid-' + mockDni,
-      email: `${mockDni.toLowerCase()}@asistente.internal`,
-      user_metadata: { dni: mockDni, rol: mockRole, status: 'active' },
-      app_metadata: { role: mockRole }
-    });
-  }
-
   try {
     const authUrl = new URL('/auth/v1/user', SUPABASE_URL);
     const options = {
@@ -86,45 +74,50 @@ function verifySupabaseToken(token, callback) {
   }
 }
 
-function extractUserClaims(user) {
-  let dni = '';
-  if (user.user_metadata && user.user_metadata.dni) {
-    dni = user.user_metadata.dni.trim().toUpperCase();
-  } else if (user.app_metadata && user.app_metadata.dni) {
-    dni = user.app_metadata.dni.trim().toUpperCase();
-  } else if (user.email) {
-    const emailParts = user.email.split('@');
-    if (emailParts.length === 2 && emailParts[1] === 'asistente.internal') {
-      dni = emailParts[0].toUpperCase();
-    }
-  }
+/**
+ * Consulta el perfil del usuario directamente en la base de datos (agentes_perfiles)
+ * para garantizar que el estado proviene de una fuente controlada por servidor
+ * y NUNCA de user_metadata modificable por el cliente.
+ */
+function fetchUserProfile(token, user, callback) {
+  try {
+    const profileUrl = new URL(`/rest/v1/agentes_perfiles?user_id=eq.${user.id}&select=dni,nombre,rol,activo,must_change_password`, SUPABASE_URL);
+    const options = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      timeout: 8000
+    };
 
-  let rol = 'comercial';
-  if (user.app_metadata && user.app_metadata.role) {
-    rol = user.app_metadata.role.toLowerCase();
-  } else if (user.user_metadata && user.user_metadata.rol) {
-    rol = user.user_metadata.rol.toLowerCase();
-  } else if (KNOWN_GERENTES.includes(dni)) {
-    rol = 'gerente';
-  } else if (KNOWN_EVARIA.includes(dni)) {
-    rol = 'evaria';
-  }
+    const req = https.get(profileUrl, options, (res) => {
+      let raw = '';
+      res.on('data', chunk => raw += chunk);
+      res.on('end', () => {
+        if (res.statusCode >= 200 && res.statusCode < 300) {
+          try {
+            const rows = JSON.parse(raw);
+            if (Array.isArray(rows) && rows.length > 0) {
+              return callback(null, rows[0]);
+            }
+            return callback(new Error("Perfil no encontrado en agentes_perfiles"));
+          } catch (e) {
+            return callback(new Error("Error parseando perfil"));
+          }
+        }
+        return callback(new Error(`Error al consultar perfil (HTTP ${res.statusCode})`));
+      });
+    });
 
-  let status = 'active';
-  if (user.user_metadata && user.user_metadata.status) {
-    status = user.user_metadata.status.toLowerCase();
-  } else if (user.app_metadata && user.app_metadata.status) {
-    status = user.app_metadata.status.toLowerCase();
-  }
+    req.on('timeout', () => {
+      req.destroy();
+      return callback(new Error("Timeout al consultar agentes_perfiles"));
+    });
 
-  let mustChangePassword = false;
-  if (user.user_metadata && user.user_metadata.must_change_password === true) {
-    mustChangePassword = true;
-  } else if (user.app_metadata && user.app_metadata.must_change_password === true) {
-    mustChangePassword = true;
+    req.on('error', err => callback(err));
+  } catch (err) {
+    return callback(err);
   }
-
-  return { dni, rol, status, mustChangePassword, id: user.id };
 }
 
 module.exports = function (req, res) {
@@ -167,49 +160,61 @@ module.exports = function (req, res) {
       });
     }
 
-    const claims = extractUserClaims(user);
+    // 3. Consulta de la fuente de verdad en servidor: agentes_perfiles
+    fetchUserProfile(token, user, (profileErr, profile) => {
+      if (profileErr || !profile) {
+        return res.status(403).json({
+          success: false,
+          error: "Acceso denegado: Perfil de usuario no registrado o no autorizado en el sistema."
+        });
+      }
 
-    // 3. Comprobación de usuario inactivo
-    if (claims.status === 'inactive') {
-      return res.status(403).json({
-        success: false,
-        error: "Cuenta desactivada por gerencia."
-      });
-    }
+      const dni = (profile.dni || '').trim().toUpperCase();
+      const rol = (profile.rol || '').toLowerCase();
+      const activo = profile.activo === true;
+      const mustChangePassword = profile.must_change_password === true;
 
-    // 4. Comprobación de cambio obligatorio de contraseña (Protección de llamada directa)
-    if (claims.mustChangePassword) {
-      return res.status(403).json({
-        success: false,
-        error: "Acceso bloqueado: Cambio obligatorio de contraseña pendiente. Debes actualizar tu contraseña personal antes de consultar el ranking.",
-        mustChangePassword: true
-      });
-    }
+      // Comprobación de usuario inactivo
+      if (!activo) {
+        return res.status(403).json({
+          success: false,
+          error: "Cuenta desactivada por gerencia."
+        });
+      }
 
-    // 5. Scoping por rol: Evaria denegado
-    if (claims.rol === 'evaria') {
-      return res.status(403).json({
-        success: false,
-        error: "Acceso denegado: El perfil Evaria no tiene acceso al módulo de ranking."
-      });
-    }
+      // Comprobación de cambio obligatorio de contraseña (servidor)
+      if (mustChangePassword) {
+        return res.status(403).json({
+          success: false,
+          error: "Acceso bloqueado: Cambio obligatorio de contraseña pendiente. Debes actualizar tu contraseña personal antes de consultar el ranking.",
+          mustChangePassword: true
+        });
+      }
 
-    // Roles permitidos: 'comercial' y 'gerente'
-    if (claims.rol !== 'comercial' && claims.rol !== 'gerente') {
-      return res.status(403).json({
-        success: false,
-        error: "Acceso denegado: Rol no autorizado."
-      });
-    }
+      // Scoping por rol: Evaria denegado
+      if (rol === 'evaria') {
+        return res.status(403).json({
+          success: false,
+          error: "Acceso denegado: El perfil Evaria no tiene acceso al módulo de ranking."
+        });
+      }
 
-    const now = Date.now();
-    const isForce = req.query && (req.query.force === 'true' || req.query.fresh === '1');
+      // Roles permitidos: 'comercial' y 'gerente'
+      if (rol !== 'comercial' && rol !== 'gerente') {
+        return res.status(403).json({
+          success: false,
+          error: "Acceso denegado: Rol no autorizado."
+        });
+      }
 
-    // Servir desde caché fresca interna solo a usuarios ya autenticados
-    if (!isForce && memoryCache.data && (now - memoryCache.timestamp < CACHE_TTL_MS)) {
-      res.setHeader('X-Cache-Status', 'HIT');
-      return res.status(200).json(memoryCache.data);
-    }
+      const now = Date.now();
+      const isForce = req.query && (req.query.force === 'true' || req.query.fresh === '1');
+
+      // Servir desde caché fresca interna solo a usuarios ya autenticados
+      if (!isForce && memoryCache.data && (now - memoryCache.timestamp < CACHE_TTL_MS)) {
+        res.setHeader('X-Cache-Status', 'HIT');
+        return res.status(200).json(memoryCache.data);
+      }
 
     const targetUrl = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
     let isResolved = false;
@@ -293,6 +298,7 @@ module.exports = function (req, res) {
       });
     }
 
-    fetchUrl(targetUrl);
+      fetchUrl(targetUrl);
+    });
   });
 };

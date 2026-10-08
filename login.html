@@ -303,8 +303,12 @@ const COMERCIALES = {
   "53770728V": "FRANCISCO JAVIER MORA ANDREU"
 };
 
-const SUPABASE_URL = "https://bxgdtdzlijeaetlekbub.supabase.co";
-const SUPABASE_KEY = "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
+const APP_CONFIG = window.APP_CONFIG || {
+  SUPABASE_URL: "https://bxgdtdzlijeaetlekbub.supabase.co",
+  SUPABASE_KEY: "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap"
+};
+const SUPABASE_URL = APP_CONFIG.SUPABASE_URL;
+const SUPABASE_KEY = APP_CONFIG.SUPABASE_KEY || APP_CONFIG.SUPABASE_ANON_KEY;
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
 // Verificación criptográfica de sesión real (NO basada en localStorage inseguro)
@@ -412,8 +416,15 @@ async function attemptLogin() {
     }
 
     const user = data.user;
-    const userStatus = user.user_metadata?.status || user.app_metadata?.status || 'active';
-    if (userStatus === 'inactive') {
+
+    // Consultar estado autoritativo en agentes_perfiles (servidor)
+    const { data: profileData } = await supabaseClient
+      .from('agentes_perfiles')
+      .select('dni, nombre, rol, activo, must_change_password')
+      .eq('user_id', user.id)
+      .maybeSingle();
+
+    if (profileData && profileData.activo === false) {
       await supabaseClient.auth.signOut();
       submitBtn.disabled = false;
       submitBtn.textContent = "Acceder";
@@ -421,8 +432,8 @@ async function attemptLogin() {
       return;
     }
 
-    // Comprobación de cambio obligatorio de contraseña en primer acceso
-    if (user.user_metadata && user.user_metadata.must_change_password) {
+    // Comprobación autoritativa de cambio obligatorio de contraseña en base de datos
+    if (profileData && profileData.must_change_password === true) {
       pendingAuthUser = user;
       pendingMatchedName = matchedName;
       pendingDni = inputDni;
@@ -459,6 +470,10 @@ async function submitMandatoryPasswordChange() {
     errDiv.textContent = "La contraseña debe tener al menos 8 caracteres.";
     return;
   }
+  if (!/[A-Za-z]/.test(newPass) || !/[0-9]/.test(newPass)) {
+    errDiv.textContent = "La contraseña debe incluir al menos una letra y un número.";
+    return;
+  }
   if (newPass !== confirmPass) {
     errDiv.textContent = "Las contraseñas no coinciden.";
     return;
@@ -468,15 +483,30 @@ async function submitMandatoryPasswordChange() {
   btn.textContent = "Guardando...";
 
   try {
-    const { error } = await supabaseClient.auth.updateUser({
-      password: newPass,
-      data: { must_change_password: false }
-    });
-
-    if (error) {
+    const sessionRes = await supabaseClient.auth.getSession();
+    const token = sessionRes?.data?.session?.access_token;
+    if (!token) {
       btn.disabled = false;
       btn.textContent = "Actualizar y Acceder";
-      errDiv.textContent = "Error al actualizar contraseña: " + error.message;
+      errDiv.textContent = "Sesión no válida. Por favor, vuelve a iniciar sesión.";
+      return;
+    }
+
+    // Procedimiento autorizado del lado del servidor (/api/update-password)
+    const updateRes = await fetch('/api/update-password', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify({ newPassword: newPass })
+    });
+
+    const updateJson = await updateRes.json();
+    if (!updateRes.ok || !updateJson.success) {
+      btn.disabled = false;
+      btn.textContent = "Actualizar y Acceder";
+      errDiv.textContent = updateJson.error || "No se pudo actualizar la contraseña.";
       return;
     }
 
@@ -493,7 +523,7 @@ async function submitMandatoryPasswordChange() {
   } catch (e) {
     btn.disabled = false;
     btn.textContent = "Actualizar y Acceder";
-    errDiv.textContent = "Excepción al actualizar la contraseña.";
+    errDiv.textContent = "Excepción al actualizar la contraseña: " + e.message;
   }
 }
 
