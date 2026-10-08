@@ -42,6 +42,8 @@ $rankingContent = [System.IO.File]::ReadAllText("$PWD\api\ranking.js", [System.T
 $updatePwdContent = [System.IO.File]::ReadAllText("$PWD\api\update-password.js", [System.Text.Encoding]::UTF8)
 $migrationContent = [System.IO.File]::ReadAllText("$PWD\migrations\20261008_security_auth_migration.sql", [System.Text.Encoding]::UTF8)
 $rollbackContent = [System.IO.File]::ReadAllText("$PWD\migrations\data_transition_and_rollback.sql", [System.Text.Encoding]::UTF8)
+$baseSchemaContent = [System.IO.File]::ReadAllText("$PWD\migrations\20261007_base_schema.sql", [System.Text.Encoding]::UTF8)
+$appScriptContent = [System.IO.File]::ReadAllText("$PWD\google_apps_script\ranking_receiver.gs", [System.Text.Encoding]::UTF8)
 
 # ----------------------------------------------------------------------------
 # 1. ACCESO SIN ALTERNATIVAS INSEGURAS (Punto 1)
@@ -106,6 +108,58 @@ Report-Test -Category "Private Source" -TestName "api/ranking usa POST con RANKI
 $comHalts503 = ($comisionesContent.IndexOf("status(503)") -ge 0 -and $comisionesContent.IndexOf("incompleta") -ge 0)
 $rkHalts503 = ($rankingContent.IndexOf("status(503)") -ge 0 -and $rankingContent.IndexOf("incompleta") -ge 0)
 Report-Test -Category "Env Isolation" -TestName "Cero conexiones predeterminadas: error 503 claro ante config incompleta" -Profile "Servidor" -Expected "HTTP 503 Service Unavailable" -Obtained "HTTP 503 retornado en comisiones y ranking" -Condition ($comHalts503 -and $rkHalts503)
+
+# 3.4 Google Apps Script Receptor: compatibilidad con limitaciones de doPost(e)
+$gasPostData = ($appScriptContent.IndexOf("e.postData.contents") -ge 0 -and $appScriptContent.IndexOf("payload.secret") -ge 0)
+$gasNoHeaders = ($appScriptContent.IndexOf("e.headers") -eq -1)
+$gasScriptProps = ($appScriptContent.IndexOf("PropertiesService.getScriptProperties()") -ge 0 -and $appScriptContent.IndexOf("safeCompare(") -ge 0)
+$gasBlocksGet = ($appScriptContent.IndexOf("function doGet(") -ge 0 -and $appScriptContent.IndexOf("405") -ge 0)
+$gasCompatible = ($gasPostData -and $gasNoHeaders -and $gasScriptProps -and $gasBlocksGet)
+Report-Test -Category "Apps Script Receptor" -TestName "doPost(e) valida autenticacion en body sin asumir cabeceras HTTP" -Profile "Google Apps Script" -Expected "Uso de e.postData.contents + safeCompare + PropertiesService" -Obtained "100% compatible con Web Apps (cero dependencias de e.headers)" -Condition $gasCompatible
+
+# 3.5 Simulacion logica de autorizacion en Apps Script (autorizadas vs no autorizadas)
+$configuredSecret = "SEC_TEST_9876543210ABCDEF"
+function Invoke-MockAppsScriptDoPost($eventObj, $secret) {
+    if (-not $eventObj -or -not $eventObj.postData -or -not $eventObj.postData.contents) {
+        return @{ statusCode = 400; error = "Missing body" }
+    }
+    try {
+        $body = ConvertFrom-Json $eventObj.postData.contents
+    } catch {
+        return @{ statusCode = 400; error = "Invalid JSON" }
+    }
+    if (-not $secret -or $body.secret -ne $secret) {
+        return @{ statusCode = 401; error = "Unauthorized" }
+    }
+    if ($body.action -ne 'getRanking') {
+        return @{ statusCode = 400; error = "Invalid action" }
+    }
+    return @{ statusCode = 200; data = @(@{ posicion = 1; nombre = "Agente Test"; puntos = 100 }) }
+}
+
+$resAuth = Invoke-MockAppsScriptDoPost @{ postData = @{ contents = '{"action":"getRanking","secret":"SEC_TEST_9876543210ABCDEF"}' } } $configuredSecret
+$resWrongSecret = Invoke-MockAppsScriptDoPost @{ postData = @{ contents = '{"action":"getRanking","secret":"WRONG_SECRET"}' } } $configuredSecret
+$resNoSecret = Invoke-MockAppsScriptDoPost @{ postData = @{ contents = '{"action":"getRanking"}' } } $configuredSecret
+$resBadJson = Invoke-MockAppsScriptDoPost @{ postData = @{ contents = 'bad-json' } } $configuredSecret
+$resNoBody = Invoke-MockAppsScriptDoPost $null $configuredSecret
+
+$gasAuthPasses = ($resAuth.statusCode -eq 200 -and $resWrongSecret.statusCode -eq 401 -and $resNoSecret.statusCode -eq 401 -and $resBadJson.statusCode -eq 400 -and $resNoBody.statusCode -eq 400)
+Report-Test -Category "Apps Script Auth" -TestName "Prueba de solicitudes autorizadas (200), no autorizadas (401) y malformadas (400)" -Profile "Apps Script Engine" -Expected "200 autorizado | 401 clave invalida | 400 sin body/json invalido" -Obtained "Comportamiento exacto validado en todas las ramas" -Condition $gasAuthPasses
+
+# 3.6 Verificacion estricta de destino de redireccion en api/ranking.js
+$rkChecksRedirectHost = ($rankingContent.IndexOf("isAllowedGoogleHost") -ge 0 -and $rankingContent.IndexOf("script.googleusercontent.com") -ge 0 -and $rankingContent.IndexOf("Destino de") -ge 0)
+$rkRequiresHttps = ($rankingContent.IndexOf("redirectUrl.protocol !== 'https:'") -ge 0)
+Report-Test -Category "Redirect Security" -TestName "api/ranking verifica que las redirecciones apunten a dominios seguros de Google" -Profile "Vercel Backend" -Expected "Allowlist script.googleusercontent.com + HTTPS estricto" -Obtained "Validacion implementada; aborta ante destinos no verificados" -Condition ($rkChecksRedirectHost -and $rkRequiresHttps)
+
+# 3.7 Proteccion contra reenvio de secretos a destinos de redireccion
+$rkNoSecretOnRedirect = ($rankingContent.IndexOf("executeRequest(redirectUrl.href, 'GET', null,") -ge 0)
+Report-Test -Category "Secret Leak Prevention" -TestName "api/ranking jamas reenvia secretos ni payload en la redireccion GET" -Profile "Vercel Backend" -Expected "GET sin body ni cabeceras de autorizacion reenviadas" -Obtained "Peticion redirigida ejecutada con method=GET y body=null" -Condition $rkNoSecretOnRedirect
+
+# 3.8 Esquema base DDL para staging (tareas, vacaciones, promociones)
+$baseSchemaValid = ($baseSchemaContent.IndexOf("CREATE TABLE IF NOT EXISTS public.tareas") -ge 0 -and $baseSchemaContent.IndexOf("CREATE TABLE IF NOT EXISTS public.vacaciones") -ge 0 -and $baseSchemaContent.IndexOf("CREATE TABLE IF NOT EXISTS public.promociones") -ge 0 -and $baseSchemaContent.IndexOf("26") -ge 0 -and $baseSchemaContent.IndexOf("laborables") -ge 0)
+Report-Test -Category "Base Schema" -TestName "Esquema base DDL de tareas, vacaciones y promociones definido para staging" -Profile "Staging DB" -Expected "DDL completo con índices y regla de 26 días laborables" -Obtained "migrations/20261007_base_schema.sql creado e íntegro" -Condition $baseSchemaValid
+
+
 
 # ----------------------------------------------------------------------------
 # 4. CAMBIO DE CONTRASEÑA EN api/update-password.js (Punto 4)

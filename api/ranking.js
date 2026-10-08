@@ -170,8 +170,31 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
         // Redirección de Google Apps Script (301, 302, 303, 307, 308)
         if (statusCode >= 300 && statusCode < 400 && res.headers.location) {
           const redirectLocation = res.headers.location;
-          // Google Apps Script redirige a script.googleusercontent.com donde el contenido se lee con GET
-          return executeRequest(redirectLocation, 'GET', null, redirectCount + 1);
+          let redirectUrl;
+          try {
+            redirectUrl = new URL(redirectLocation, urlStr);
+          } catch (urlErr) {
+            return callback(new Error("URL de redirección malformada: " + urlErr.message));
+          }
+
+          // Validación estricta del protocolo
+          if (redirectUrl.protocol !== 'https:') {
+            return callback(new Error("Protocolo de redirección inseguro: se requiere HTTPS"));
+          }
+
+          // Verificación de destino confiable (Allowlist estricta de dominios de ejecución de Google)
+          const host = redirectUrl.hostname.toLowerCase();
+          const isAllowedGoogleHost = host === 'script.googleusercontent.com' ||
+                                     host.endsWith('.googleusercontent.com') ||
+                                     host === 'script.google.com';
+
+          if (!isAllowedGoogleHost) {
+            return callback(new Error(`Destino de redirección no verificado o no confiable: ${host}. Abortando para proteger la integridad.`));
+          }
+
+          // Google Apps Script exige leer el resultado del doPost mediante GET en script.googleusercontent.com
+          // SEGURIDAD: Se invoca estrictamente con GET, body = null y sin reenviar secretos ni cabeceras sensibles
+          return executeRequest(redirectUrl.href, 'GET', null, redirectCount + 1);
         }
 
         if (statusCode !== 200) {
@@ -356,3 +379,6 @@ module.exports = function (req, res) {
     });
   });
 };
+
+module.exports.fetchPrivateRanking = fetchPrivateRanking;
+
