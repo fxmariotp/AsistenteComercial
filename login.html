@@ -11,9 +11,9 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     :root {
-      --bg: #141a3b; /* Renosur Navy background */
-      --blue: #357FBF; /* Renosur Blue */
-      --blue2: #5aa5df; /* Renosur Sky Blue */
+      --bg: #141a3b;
+      --blue: #357FBF;
+      --blue2: #5aa5df;
       --rs: 10px;
     }
     * {
@@ -32,7 +32,6 @@
       overflow: hidden;
       position: relative;
     }
-    /* Ambient glows for warm premium feel */
     body::before {
       content: '';
       position: absolute;
@@ -164,14 +163,57 @@
       transform: translateY(-1px);
       box-shadow: 0 6px 16px rgba(53, 127, 191, 0.25);
     }
-    .btn-primary:active {
-      transform: translateY(0);
-    }
     .btn-primary:disabled {
       opacity: 0.7;
       cursor: not-allowed;
       transform: none;
       box-shadow: none;
+    }
+    .login-links {
+      margin-top: 16px;
+      font-size: 12.5px;
+    }
+    .login-links a {
+      color: var(--blue);
+      text-decoration: none;
+      font-weight: 600;
+    }
+    .login-links a:hover {
+      text-decoration: underline;
+    }
+
+    /* Modal de cambio obligatorio o recuperación */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      padding: 20px;
+    }
+    .modal-card {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 420px;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+      text-align: left;
+    }
+    .modal-card h3 {
+      font-size: 20px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      color: #0f172a;
+    }
+    .modal-card p {
+      font-size: 13.5px;
+      color: #475569;
+      margin-bottom: 20px;
+      line-height: 1.5;
     }
   </style>
 </head>
@@ -197,6 +239,45 @@
     
     <button class="btn-primary" id="login-submit" onclick="attemptLogin()">Acceder</button>
     <div class="login-error" id="login-error-msg"></div>
+
+    <div class="login-links">
+      <a href="#" onclick="showRecoveryNotice(event)">¿Has olvidado tu contraseña?</a>
+    </div>
+  </div>
+</div>
+
+<!-- Modal: Cambio Obligatorio de Contraseña (Primer Acceso o Reseteo) -->
+<div class="modal-overlay" id="modal-mandatory-change">
+  <div class="modal-card">
+    <h3>Cambio obligatorio de contraseña</h3>
+    <p>Por seguridad, es obligatorio establecer una nueva contraseña personal antes de acceder a la información comercial.</p>
+    
+    <div class="login-field">
+      <label for="new-password">Nueva Contraseña (mínimo 8 caracteres)</label>
+      <input type="password" id="new-password" placeholder="Introduce tu nueva contraseña">
+    </div>
+
+    <div class="login-field">
+      <label for="confirm-password">Confirmar Nueva Contraseña</label>
+      <input type="password" id="confirm-password" placeholder="Repite la nueva contraseña">
+    </div>
+
+    <button class="btn-primary" id="btn-save-new-pwd" onclick="submitMandatoryPasswordChange()">Actualizar y Acceder</button>
+    <div class="login-error" id="modal-pwd-error"></div>
+  </div>
+</div>
+
+<!-- Modal: Información de Recuperación de Identificadores Internos -->
+<div class="modal-overlay" id="modal-recovery-info">
+  <div class="modal-card">
+    <h3>Recuperación de Acceso</h3>
+    <p>
+      Los identificadores de usuario utilizan dominios internos protegidos (<code>@asistente.internal</code>) y no disponen de buzón de correo público externo para prevenir filtraciones.
+    </p>
+    <p>
+      Para restablecer tu contraseña o activar tu cuenta, contacta con la <strong>Gerencia de Renosur</strong> para generar un enlace temporal o ticket administrativo de recuperación.
+    </p>
+    <button class="btn-primary" onclick="closeRecoveryNotice()">Entendido</button>
   </div>
 </div>
 
@@ -226,163 +307,65 @@ const SUPABASE_URL = "https://bxgdtdzlijeaetlekbub.supabase.co";
 const SUPABASE_KEY = "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
 const supabaseClient = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY) : null;
 
-// Check if user is already logged in
-const dni = localStorage.getItem('comercial_dni');
-const name = localStorage.getItem('comercial_nombre');
-if (dni && name && COMERCIALES[dni] === name) {
-  window.location.href = 'index.html';
+// Verificación criptográfica de sesión real (NO basada en localStorage inseguro)
+if (supabaseClient) {
+  supabaseClient.auth.getSession().then(({ data: { session } }) => {
+    if (session && session.user) {
+      window.location.href = 'index.html';
+    }
+  });
 }
 
 async function detectClientDeviceInfo() {
   let publicIp = 'Desconocida';
-  
-  // 1. Consultar múltiples proveedores de IP pública en paralelo con fallback inmediato y seguro
-  const fetchIpHelper = (url, parseJson = true) => {
-    return new Promise(resolve => {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
-      fetch(url, { signal: controller.signal })
-        .then(res => {
-          if (!res.ok) throw new Error('HTTP ' + res.status);
-          return parseJson ? res.json() : res.text();
-        })
-        .then(data => {
-          clearTimeout(timeoutId);
-          if (parseJson) {
-            const ip = data && (data.ip || data.query);
-            if (ip && typeof ip === 'string') resolve(ip.trim());
-            else resolve(null);
-          } else {
-            if (data && typeof data === 'string' && data.trim()) resolve(data.trim());
-            else resolve(null);
-          }
-        })
-        .catch(() => {
-          clearTimeout(timeoutId);
-          resolve(null);
-        });
-    });
-  };
-
   try {
-    const results = await Promise.allSettled([
-      fetchIpHelper('https://api.ipify.org?format=json', true),
-      fetchIpHelper('https://api64.ipify.org?format=json', true),
-      fetchIpHelper('https://ipwho.is', true),
-      fetchIpHelper('https://api.my-ip.io/v2/ip.json', true),
-      fetchIpHelper('https://icanhazip.com', false)
-    ]);
-
-    for (const r of results) {
-      if (r.status === 'fulfilled' && r.value) {
-        publicIp = r.value;
-        break;
-      }
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2000);
+    const res = await fetch('https://api.ipify.org?format=json', { signal: controller.signal });
+    clearTimeout(timeoutId);
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.ip) publicIp = data.ip;
     }
   } catch (_) {}
-
-  let userAgent = navigator.userAgent || 'Desconocido';
-  if (userAgent.length > 150) {
-    userAgent = userAgent.substring(0, 150) + '...';
-  }
-
-  const screenRes = (window.screen && window.screen.width && window.screen.height) 
-    ? `${window.screen.width}x${window.screen.height}` 
-    : '';
-
-  const dpr = window.devicePixelRatio ? Math.round(window.devicePixelRatio * 10) / 10 : 1;
-  const touchPoints = navigator.maxTouchPoints || 0;
-
-  // Detección de Safe Area (Notch vs Isla Dinámica en iPhone 14 Pro / 15 / 16)
-  let safeAreaTop = 0;
-  try {
-    if (document.body) {
-      const testDiv = document.createElement('div');
-      testDiv.style.cssText = 'position:fixed;top:0;left:-9999px;padding-top:env(safe-area-inset-top, 0px);visibility:hidden;pointer-events:none;';
-      document.body.appendChild(testDiv);
-      const computed = window.getComputedStyle(testDiv).paddingTop;
-      safeAreaTop = parseInt(computed, 10) || 0;
-      document.body.removeChild(testDiv);
-    }
-  } catch (_) {}
-
-  let gpuRenderer = '';
-  try {
-    const canvas = document.createElement('canvas');
-    const gl = canvas.getContext('webgl') || canvas.getContext('experimental-webgl');
-    if (gl) {
-      const debugInfo = gl.getExtension('WEBGL_debug_renderer_info');
-      if (debugInfo) {
-        gpuRenderer = gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL) || '';
-      }
-    }
-  } catch (_) {}
-
-  let clientModel = '';
-  if (navigator.userAgentData && typeof navigator.userAgentData.getHighEntropyValues === 'function') {
-    try {
-      const entropy = await navigator.userAgentData.getHighEntropyValues(['model', 'platform', 'platformVersion']);
-      if (entropy && entropy.model) {
-        clientModel = entropy.model;
-      }
-    } catch (_) {}
-  }
 
   return {
-    publicIp: publicIp || 'Desconocida',
-    userAgent: userAgent,
-    screenRes: screenRes,
-    dpr: dpr,
-    safeAreaTop: safeAreaTop,
-    touchPoints: touchPoints,
-    gpuRenderer: gpuRenderer,
-    clientModel: clientModel
+    publicIp,
+    userAgent: (navigator.userAgent || 'Desconocido').substring(0, 150)
   };
 }
 
-function getTodayIsoDate(d = new Date()) {
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
-
-async function writeLoginLogToSupabase(dni, name) {
+async function writeLoginLogToSupabase(dni, name, userId) {
   if (!supabaseClient) return;
-  
   try {
     const clientInfo = await detectClientDeviceInfo();
     const now = new Date();
-    const dateStr = getTodayIsoDate(now);
+    const dateStr = now.toISOString().split('T')[0];
     const timeStr = now.toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
     const logId = 'login_log_' + dni + '_' + Date.now();
-    
-    let notesStr = clientInfo.userAgent;
-    if (clientInfo.screenRes) notesStr += ` ###SCREEN###:${clientInfo.screenRes}`;
-    if (clientInfo.dpr) notesStr += ` ###DPR###:${clientInfo.dpr}`;
-    if (clientInfo.safeAreaTop) notesStr += ` ###INSET###:${clientInfo.safeAreaTop}`;
-    if (clientInfo.clientModel) notesStr += ` ###MODEL###:${clientInfo.clientModel}`;
-    if (clientInfo.gpuRenderer) notesStr += ` ###GPU###:${clientInfo.gpuRenderer}`;
-    if (clientInfo.touchPoints > 0) notesStr += ` ###TOUCH###:${clientInfo.touchPoints}`;
 
-    const { error } = await supabaseClient.from('tareas').insert({
+    // Intentar inserción segura en conexiones_audit vinculada a auth.uid()
+    const { error } = await supabaseClient.from('conexiones_audit').insert({
       id: logId,
-      dni: 'SYSTEM_LOGIN_LOG',
-      title: dni,
-      type: name,
-      phone: clientInfo.publicIp,
-      date: dateStr,
-      time: timeStr,
-      notes: notesStr,
-      completed: true,
-      notified: false,
-      created_at: Date.now()
+      user_id: userId,
+      dni: dni,
+      nombre: name,
+      ip: clientInfo.publicIp,
+      fecha: dateStr,
+      hora: timeStr,
+      detalles: { userAgent: clientInfo.userAgent }
     });
-    if (error) console.error("Error writing login log to Supabase:", error);
+    if (error) {
+      console.warn("Audit log en conexiones_audit no disponible aún, registrando en log local:", error.message);
+    }
   } catch (e) {
-    console.error("Exception writing login log to Supabase:", e);
+    console.error("Error registrando auditoría:", e);
   }
 }
+
+let pendingAuthUser = null;
+let pendingMatchedName = null;
+let pendingDni = null;
 
 async function attemptLogin() {
   const submitBtn = document.getElementById('login-submit');
@@ -404,72 +387,131 @@ async function attemptLogin() {
   
   submitBtn.disabled = true;
   submitBtn.textContent = "Accediendo...";
-  
-  let validPassword = inputDni;
-  let userStatus = 'active';
-  
-  if (supabaseClient) {
-    try {
-      const { data, error } = await supabaseClient
-        .from('agentes_roles')
-        .select('rol')
-        .eq('dni', inputDni)
-        .maybeSingle();
-      
-      if (!error && data && data.rol) {
-        const roleStr = data.rol;
-        if (roleStr.includes(':')) {
-          const parts = roleStr.split(':');
-          const lastPart = parts[parts.length - 1];
-          if (lastPart === 'active' || lastPart === 'inactive') {
-            userStatus = lastPart;
-            validPassword = parts.slice(1, parts.length - 1).join(':') || inputDni;
-          } else {
-            validPassword = parts.slice(1).join(':');
-          }
-        }
-      }
-    } catch (e) {
-      console.error("Error connecting to Supabase for auth:", e);
-    }
-  }
-  
-  submitBtn.disabled = false;
-  submitBtn.textContent = "Acceder";
-  
-  if (userStatus === 'inactive') {
-    errorMsg.textContent = "Tu cuenta de agente está desactivada. Contacta con gerencia.";
+  errorMsg.textContent = "";
+
+  if (!supabaseClient) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Acceder";
+    errorMsg.textContent = "Error de conexión con el servicio de autenticación.";
     return;
   }
-  
-  if (inputPass === validPassword) {
-    const now = Date.now();
-    const todayStr = getTodayIsoDate();
-    localStorage.setItem('comercial_dni', inputDni);
-    localStorage.setItem('comercial_nombre', matchedName);
-    localStorage.setItem('last_user_activity_' + inputDni, String(now));
-    localStorage.setItem('last_connection_date_' + inputDni, todayStr);
-    sessionStorage.setItem('session_logged_' + inputDni, String(now));
-    errorMsg.textContent = "";
-    
-    writeLoginLogToSupabase(inputDni, matchedName).finally(() => {
-      window.location.href = 'index.html';
+
+  try {
+    // Autenticación segura mediante Supabase Auth con dominio interno determinista
+    const authEmail = `${inputDni.toLowerCase()}@asistente.internal`;
+    const { data, error } = await supabaseClient.auth.signInWithPassword({
+      email: authEmail,
+      password: inputPass
     });
-  } else {
-    errorMsg.textContent = "La contraseña introducida es incorrecta.";
+
+    if (error || !data || !data.user) {
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Acceder";
+      errorMsg.textContent = "Credenciales incorrectas o usuario no registrado.";
+      return;
+    }
+
+    const user = data.user;
+    const userStatus = user.user_metadata?.status || user.app_metadata?.status || 'active';
+    if (userStatus === 'inactive') {
+      await supabaseClient.auth.signOut();
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Acceder";
+      errorMsg.textContent = "Tu cuenta de agente está desactivada. Contacta con gerencia.";
+      return;
+    }
+
+    // Comprobación de cambio obligatorio de contraseña en primer acceso
+    if (user.user_metadata && user.user_metadata.must_change_password) {
+      pendingAuthUser = user;
+      pendingMatchedName = matchedName;
+      pendingDni = inputDni;
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Acceder";
+      document.getElementById('modal-mandatory-change').style.display = 'flex';
+      return;
+    }
+
+    // Purgar inmediatamente cualquier residuo de contraseñas o cachés antiguas en claro
+    localStorage.removeItem('cached_agent_passwords');
+    localStorage.removeItem('renosur_agent_roles');
+    localStorage.removeItem('renosur_comisiones_cache');
+
+    await writeLoginLogToSupabase(inputDni, matchedName, user.id);
+    window.location.href = 'index.html';
+  } catch (err) {
+    console.error("Error en autenticación:", err);
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Acceder";
+    errorMsg.textContent = "Ocurrió un error inesperado al iniciar sesión.";
   }
+}
+
+async function submitMandatoryPasswordChange() {
+  const newPass = document.getElementById('new-password').value;
+  const confirmPass = document.getElementById('confirm-password').value;
+  const errDiv = document.getElementById('modal-pwd-error');
+  const btn = document.getElementById('btn-save-new-pwd');
+
+  errDiv.textContent = "";
+
+  if (!newPass || newPass.length < 8) {
+    errDiv.textContent = "La contraseña debe tener al menos 8 caracteres.";
+    return;
+  }
+  if (newPass !== confirmPass) {
+    errDiv.textContent = "Las contraseñas no coinciden.";
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = "Guardando...";
+
+  try {
+    const { error } = await supabaseClient.auth.updateUser({
+      password: newPass,
+      data: { must_change_password: false }
+    });
+
+    if (error) {
+      btn.disabled = false;
+      btn.textContent = "Actualizar y Acceder";
+      errDiv.textContent = "Error al actualizar contraseña: " + error.message;
+      return;
+    }
+
+    // Purgar cachés
+    localStorage.removeItem('cached_agent_passwords');
+    localStorage.removeItem('renosur_agent_roles');
+    localStorage.removeItem('renosur_comisiones_cache');
+
+    if (pendingDni && pendingMatchedName && pendingAuthUser) {
+      await writeLoginLogToSupabase(pendingDni, pendingMatchedName, pendingAuthUser.id);
+    }
+
+    window.location.href = 'index.html';
+  } catch (e) {
+    btn.disabled = false;
+    btn.textContent = "Actualizar y Acceder";
+    errDiv.textContent = "Excepción al actualizar la contraseña.";
+  }
+}
+
+function showRecoveryNotice(e) {
+  if (e) e.preventDefault();
+  document.getElementById('modal-recovery-info').style.display = 'flex';
+}
+
+function closeRecoveryNotice() {
+  document.getElementById('modal-recovery-info').style.display = 'none';
 }
 
 // Bind enter key
 document.getElementById('login-dni').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    attemptLogin();
-  }
+  if (e.key === 'Enter') attemptLogin();
 });
 document.getElementById('login-password').addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') {
-    attemptLogin();
-  }
+  if (e.key === 'Enter') attemptLogin();
 });
 </script>
 </body>

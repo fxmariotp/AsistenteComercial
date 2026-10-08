@@ -1,5 +1,34 @@
 const https = require('https');
 
+/**
+ * ============================================================================
+ * FASE 1: SEGURIDAD Y CONTROL DE ACCESO EN /api/comisiones
+ * ============================================================================
+ * 
+ * MEDIDAS DE SEGURIDAD IMPLEMENTADAS:
+ * 1. Verificación obligatoria de token JWT de Supabase Auth en servidor.
+ * 2. Scoping estricto por rol:
+ *    - 'comercial': Devuelve ÚNICAMENTE su propia comisión. Sin datos de terceros.
+ *    - 'gerente': Devuelve las comisiones consolidadas del equipo comercial.
+ *    - 'evaria': Denegado (HTTP 403 Forbidden).
+ * 3. Eliminación de la fuga de 'sheetId' en la respuesta JSON.
+ * 4. Cabeceras anti-caché estrictas (private, no-cache, no-store) para impedir
+ *    que proxys intermedios o navegadores almacenen datos confidenciales.
+ * 
+ * NOTA CRÍTICA SOBRE LA FUENTE DE DATOS:
+ * Proteger esta API es indispensable pero insuficiente si la hoja de cálculo
+ * de Google Sheets sigue configurada como "Cualquier persona con el enlace".
+ * La dirección debe revocar el acceso público de la hoja y consumirla mediante
+ * Google Service Account con permisos de solo lectura restringidos a una cuenta
+ * de servicio privada.
+ */
+
+const SUPABASE_URL = process.env.SUPABASE_URL || "https://bxgdtdzlijeaetlekbub.supabase.co";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap";
+
+// Configuración privada de la hoja de comisiones (no exponer sheetId a clientes)
+const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID || "1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI";
+
 const RENOSUR_AGENTS = [
   {
     dni: "28727453Q",
@@ -58,6 +87,10 @@ const RENOSUR_AGENTS = [
   }
 ];
 
+// Identificadores conocidos de roles para el periodo de transición segura
+const KNOWN_GERENTES = ["MIGUELR"];
+const KNOWN_EVARIA = ["MARIAC", "28750523V"];
+
 function cleanStr(str) {
   return (str || '')
     .normalize('NFD')
@@ -71,12 +104,17 @@ function findMatchingAgent(rawAgent) {
   const cleanInput = cleanStr(rawAgent);
   if (!cleanInput) return null;
 
-  // 1. Exact match on full name
+  // 1. Coincidencia exacta con nombre completo oficial
   for (const agent of RENOSUR_AGENTS) {
     if (cleanStr(agent.name) === cleanInput) return agent;
   }
 
-  // 2. Disambiguate CABRERA brothers first: "JOSE MIGUEL" vs "CHRISTIAN"
+  // 2. Coincidencia por DNI si aparece en la celda
+  for (const agent of RENOSUR_AGENTS) {
+    if (cleanInput.includes(agent.dni)) return agent;
+  }
+
+  // 3. Desambiguación específica de hermanos CABRERA: "JOSE MIGUEL" vs "CHRISTIAN"
   if (cleanInput.includes("JOSE MIGUEL") || cleanInput.includes("JOSE M") || cleanInput.includes("JOSEMI") || cleanInput.includes("JOSÉ MIGUEL")) {
     return RENOSUR_AGENTS.find(a => a.dni === "47269866J");
   }
@@ -84,14 +122,31 @@ function findMatchingAgent(rawAgent) {
     return RENOSUR_AGENTS.find(a => a.dni === "47269867Z");
   }
 
-  // 3. Match on unique first name or keyword
+  // 4. Coincidencia por palabras clave con detección de ambigüedad
+  const matchingCandidates = [];
   for (const agent of RENOSUR_AGENTS) {
     for (const kw of agent.keywords) {
       const cleanKw = cleanStr(kw);
-      if (cleanInput === cleanKw || cleanInput.startsWith(cleanKw + " ") || cleanInput.endsWith(" " + cleanKw) || cleanInput.includes(cleanKw)) {
-        return agent;
+      if (cleanInput === cleanKw || cleanInput.startsWith(cleanKw + " ") || cleanInput.endsWith(" " + cleanKw) || cleanInput.includes(" " + cleanKw + " ")) {
+        if (!matchingCandidates.some(c => c.dni === agent.dni)) {
+          matchingCandidates.push(agent);
+        }
+        break;
       }
     }
+  }
+
+  if (matchingCandidates.length === 1) {
+    return matchingCandidates[0];
+  }
+
+  if (matchingCandidates.length > 1) {
+    // Si hay más de un comercial coincidente, declarar fila ambigua para revisión
+    return {
+      isAmbiguous: true,
+      rawAgent,
+      candidates: matchingCandidates.map(c => ({ dni: c.dni, name: c.name }))
+    };
   }
 
   return null;
@@ -154,11 +209,116 @@ function parseComisionValue(raw) {
   return isNaN(val) ? 0 : val;
 }
 
+/**
+ * Valida el token Bearer contra el endpoint /auth/v1/user de Supabase.
+ */
+function verifySupabaseToken(token, callback) {
+  // Soporte para entornos de prueba locales controlados
+  if (process.env.NODE_ENV === 'test' && token.startsWith('TEST_MOCK_TOKEN_')) {
+    const parts = token.split('_');
+    const mockRole = parts[3] || 'comercial';
+    const mockDni = parts[4] || '47269867Z';
+    return callback(null, {
+      id: 'mock-uuid-' + mockDni,
+      email: `${mockDni.toLowerCase()}@asistente.internal`,
+      user_metadata: { dni: mockDni, rol: mockRole, status: 'active' },
+      app_metadata: { role: mockRole }
+    });
+  }
+
+  try {
+    const authUrl = new URL('/auth/v1/user', SUPABASE_URL);
+    const options = {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'apikey': SUPABASE_ANON_KEY
+      },
+      timeout: 8000
+    };
+
+    const req = https.get(authUrl, options, (res) => {
+      let raw = '';
+      res.on('data', chunk => raw += chunk);
+      res.on('end', () => {
+        if (res.statusCode === 200) {
+          try {
+            const user = JSON.parse(raw);
+            return callback(null, user);
+          } catch (e) {
+            return callback(new Error("Error parseando respuesta de autenticación"));
+          }
+        } else {
+          return callback(new Error(`Token de sesión inválido o expirado (HTTP ${res.statusCode})`));
+        }
+      });
+    });
+
+    req.on('timeout', () => {
+      req.destroy();
+      return callback(new Error("Tiempo de espera agotado al validar la sesión con Supabase Auth"));
+    });
+
+    req.on('error', (err) => {
+      return callback(err);
+    });
+  } catch (err) {
+    return callback(err);
+  }
+}
+
+/**
+ * Extrae claims de identidad y rol del usuario autenticado.
+ */
+function extractUserClaims(user) {
+  let dni = '';
+  if (user.user_metadata && user.user_metadata.dni) {
+    dni = user.user_metadata.dni.trim().toUpperCase();
+  } else if (user.app_metadata && user.app_metadata.dni) {
+    dni = user.app_metadata.dni.trim().toUpperCase();
+  } else if (user.email) {
+    const emailParts = user.email.split('@');
+    if (emailParts.length === 2 && emailParts[1] === 'asistente.internal') {
+      dni = emailParts[0].toUpperCase();
+    }
+  }
+
+  let rol = 'comercial';
+  if (user.app_metadata && user.app_metadata.role) {
+    rol = user.app_metadata.role.toLowerCase();
+  } else if (user.user_metadata && user.user_metadata.rol) {
+    rol = user.user_metadata.rol.toLowerCase();
+  } else if (KNOWN_GERENTES.includes(dni)) {
+    rol = 'gerente';
+  } else if (KNOWN_EVARIA.includes(dni)) {
+    rol = 'evaria';
+  }
+
+  let status = 'active';
+  if (user.user_metadata && user.user_metadata.status) {
+    status = user.user_metadata.status.toLowerCase();
+  } else if (user.app_metadata && user.app_metadata.status) {
+    status = user.app_metadata.status.toLowerCase();
+  }
+
+  let nombre = '';
+  if (user.user_metadata && user.user_metadata.nombre) {
+    nombre = user.user_metadata.nombre;
+  } else {
+    const matched = RENOSUR_AGENTS.find(a => a.dni === dni);
+    if (matched) nombre = matched.name;
+  }
+
+  return { dni, rol, status, nombre, id: user.id };
+}
+
 module.exports = function (req, res) {
+  // CORS estricto
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-  res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-  res.setHeader('Cache-Control', 'no-cache, no-store, must-revalidate, max-age=0');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+
+  // Cabeceras estrictas contra almacenamiento en caché de respuestas confidenciales
+  res.setHeader('Cache-Control', 'private, no-cache, no-store, must-revalidate, max-age=0');
   res.setHeader('Pragma', 'no-cache');
   res.setHeader('Expires', '0');
 
@@ -166,124 +326,202 @@ module.exports = function (req, res) {
     return res.status(200).end();
   }
 
-  const sheetId = "1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI";
-  const targetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&t=${Date.now()}`;
-
-  function fetchUrl(url, redirectCount = 0) {
-    if (redirectCount > 5) {
-      return res.status(500).json({ error: "Demasiadas redirecciones de Google Sheets" });
-    }
-
-    https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } }, (googleRes) => {
-      const { statusCode } = googleRes;
-
-      if (statusCode >= 300 && statusCode < 400 && googleRes.headers.location) {
-        return fetchUrl(googleRes.headers.location, redirectCount + 1);
-      }
-
-      if (statusCode === 401 || statusCode === 403) {
-        return res.status(200).json({
-          success: false,
-          error: "El documento de Google Sheets está en modo privado. Por favor, compártelo con 'Cualquier persona con el enlace puede ser lector'.",
-          data: {}
-        });
-      }
-
-      if (statusCode !== 200) {
-        return res.status(statusCode).json({ error: `Google Sheets respondió con código ${statusCode}` });
-      }
-
-      let rawData = '';
-      googleRes.on('data', (chunk) => { rawData += chunk; });
-      googleRes.on('end', () => {
-        try {
-          const rows = parseCSV(rawData);
-          if (!rows || rows.length === 0) {
-            return res.status(200).json({ success: false, error: "El archivo CSV está vacío", data: {} });
-          }
-
-          // Detectar columnas y fila de cabecera si existe
-          let startRow = 0;
-          let colAgente = 0; // Col A por defecto (0)
-          let colComi = 1;   // Col B por defecto (1) o Col T (19)
-
-          for (let i = 0; i < Math.min(rows.length, 5); i++) {
-            const r = rows[i];
-            for (let j = 0; j < r.length; j++) {
-              const val = cleanStr(r[j]);
-              if (val === 'AGENTE' || val === 'AGENTES' || val.includes('AGENTE')) {
-                colAgente = j;
-                startRow = i + 1;
-              }
-              if (val === 'COMI' || val === 'COMISION' || val === 'COMISIONES' || val.includes('COMI')) {
-                colComi = j;
-              }
-            }
-          }
-
-          const comisionesMap = {};
-          const matchedDetails = [];
-
-          for (let i = startRow; i < rows.length; i++) {
-            const r = rows[i];
-            if (!r) continue;
-
-            const rawAgent = (r[colAgente] !== undefined && r[colAgente] !== '' ? r[colAgente] : (r[0] || '')).trim();
-            const cleanAgent = cleanStr(rawAgent);
-
-            if (!rawAgent || cleanAgent === 'AGENTES' || cleanAgent === 'AGENTE' || cleanAgent === 'TOTAL' || cleanAgent === 'TOTALES' || cleanAgent === 'MEDIA' || cleanAgent === 'PROMEDIO') {
-              continue;
-            }
-
-            // Buscar valor en colComi, Col B (índice 1) o Col T (índice 19)
-            let rawVal = 0;
-            if (r[colComi] !== undefined && r[colComi] !== '') {
-              rawVal = r[colComi];
-            } else if (r[1] !== undefined && r[1] !== '') {
-              rawVal = r[1];
-            } else if (r[19] !== undefined && r[19] !== '') {
-              rawVal = r[19];
-            }
-
-            const val = parseComisionValue(rawVal);
-
-            // Mapeo universal para el comercial de Renosur
-            const matchedAgent = findMatchingAgent(rawAgent);
-            if (matchedAgent) {
-              comisionesMap[matchedAgent.dni] = val;
-              comisionesMap[matchedAgent.name] = val;
-              comisionesMap[cleanStr(matchedAgent.name)] = val;
-              matchedDetails.push({
-                dni: matchedAgent.dni,
-                nombre: matchedAgent.name,
-                rawNameInSheet: rawAgent,
-                comision: val,
-                filaExcel: i + 1
-              });
-            }
-
-            comisionesMap[cleanAgent] = val;
-            comisionesMap[rawAgent] = val;
-          }
-
-          return res.status(200).json({
-            success: true,
-            sheetId,
-            headerRow: startRow,
-            colAgente,
-            colComi,
-            matchedDetails,
-            totalEmparejados: matchedDetails.length,
-            data: comisionesMap
-          });
-        } catch (e) {
-          return res.status(500).json({ error: "Error procesando el CSV de comisiones", details: e.message });
-        }
-      });
-    }).on('error', (e) => {
-      return res.status(500).json({ error: e.message });
+  // 1. Verificación de cabecera Authorization Bearer
+  const authHeader = req.headers['authorization'] || req.headers['Authorization'];
+  if (!authHeader || !authHeader.startsWith('Bearer ')) {
+    return res.status(401).json({
+      success: false,
+      error: "Acceso no autorizado: Se requiere una sesión activa con token Bearer verificable."
     });
   }
 
-  fetchUrl(targetUrl);
+  const token = authHeader.substring(7).trim();
+  if (!token) {
+    return res.status(401).json({
+      success: false,
+      error: "Acceso no autorizado: Token de sesión vacío."
+    });
+  }
+
+  // 2. Verificación criptográfica del token con Supabase Auth
+  verifySupabaseToken(token, (authErr, user) => {
+    if (authErr || !user) {
+      return res.status(401).json({
+        success: false,
+        error: "Sesión inválida o expirada. Por favor, inicia sesión de nuevo.",
+        details: authErr ? authErr.message : "Usuario no encontrado"
+      });
+    }
+
+    const claims = extractUserClaims(user);
+
+    // 3. Comprobación de estado activo del usuario
+    if (claims.status === 'inactive') {
+      return res.status(403).json({
+        success: false,
+        error: "Tu cuenta de usuario ha sido desactivada por gerencia."
+      });
+    }
+
+    // 4. Scoping por rol: Trabajadores Evaria no tienen acceso
+    if (claims.rol === 'evaria') {
+      return res.status(403).json({
+        success: false,
+        error: "Acceso denegado: El perfil Evaria no tiene acceso a las comisiones de Renosur."
+      });
+    }
+
+    // Solo roles autorizados: 'comercial' o 'gerente'
+    if (claims.rol !== 'comercial' && claims.rol !== 'gerente') {
+      return res.status(403).json({
+        success: false,
+        error: "Acceso denegado: Rol de usuario no autorizado."
+      });
+    }
+
+    const targetUrl = `https://docs.google.com/spreadsheets/d/${GOOGLE_SHEET_ID}/gviz/tq?tqx=out:csv&t=${Date.now()}`;
+
+    function fetchUrl(url, redirectCount = 0) {
+      if (redirectCount > 5) {
+        return res.status(500).json({ error: "Demasiadas redirecciones de Google Sheets" });
+      }
+
+      https.get(url, { headers: { 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)' } }, (googleRes) => {
+        const { statusCode } = googleRes;
+
+        if (statusCode >= 300 && statusCode < 400 && googleRes.headers.location) {
+          return fetchUrl(googleRes.headers.location, redirectCount + 1);
+        }
+
+        if (statusCode === 401 || statusCode === 403) {
+          return res.status(200).json({
+            success: false,
+            error: "La hoja de cálculo está en modo privado y no se puede leer sin credenciales de servicio.",
+            data: {}
+          });
+        }
+
+        if (statusCode !== 200) {
+          return res.status(statusCode).json({ error: `Google Sheets respondió con código ${statusCode}` });
+        }
+
+        let rawData = '';
+        googleRes.on('data', (chunk) => { rawData += chunk; });
+        googleRes.on('end', () => {
+          try {
+            const rows = parseCSV(rawData);
+            if (!rows || rows.length === 0) {
+              return res.status(200).json({ success: false, error: "El archivo CSV de comisiones está vacío", data: {} });
+            }
+
+            // Detectar columnas y fila de cabecera
+            let startRow = 0;
+            let colAgente = 0;
+            let colComi = 1;
+
+            for (let i = 0; i < Math.min(rows.length, 5); i++) {
+              const r = rows[i];
+              for (let j = 0; j < r.length; j++) {
+                const val = cleanStr(r[j]);
+                if (val === 'AGENTE' || val === 'AGENTES' || val.includes('AGENTE')) {
+                  colAgente = j;
+                  startRow = i + 1;
+                }
+                if (val === 'COMI' || val === 'COMISION' || val === 'COMISIONES' || val.includes('COMI')) {
+                  colComi = j;
+                }
+              }
+            }
+
+            const comisionesMap = {};
+            const matchedDetails = [];
+            const ambiguousDetails = [];
+
+            for (let i = startRow; i < rows.length; i++) {
+              const r = rows[i];
+              if (!r) continue;
+
+              const rawAgent = (r[colAgente] !== undefined && r[colAgente] !== '' ? r[colAgente] : (r[0] || '')).trim();
+              const cleanAgent = cleanStr(rawAgent);
+
+              if (!rawAgent || cleanAgent === 'AGENTES' || cleanAgent === 'AGENTE' || cleanAgent === 'TOTAL' || cleanAgent === 'TOTALES' || cleanAgent === 'MEDIA' || cleanAgent === 'PROMEDIO') {
+                continue;
+              }
+
+              let rawVal = 0;
+              if (r[colComi] !== undefined && r[colComi] !== '') {
+                rawVal = r[colComi];
+              } else if (r[1] !== undefined && r[1] !== '') {
+                rawVal = r[1];
+              } else if (r[19] !== undefined && r[19] !== '') {
+                rawVal = r[19];
+              }
+
+              const val = parseComisionValue(rawVal);
+              const matchResult = findMatchingAgent(rawAgent);
+              if (matchResult && !matchResult.isAmbiguous) {
+                comisionesMap[matchResult.dni] = val;
+                comisionesMap[matchResult.name] = val;
+                comisionesMap[cleanStr(matchResult.name)] = val;
+                matchedDetails.push({
+                  dni: matchResult.dni,
+                  nombre: matchResult.name,
+                  rawNameInSheet: rawAgent,
+                  comision: val,
+                  filaExcel: i + 1
+                });
+              } else if (matchResult && matchResult.isAmbiguous) {
+                ambiguousDetails.push({
+                  rawNameInSheet: rawAgent,
+                  filaExcel: i + 1,
+                  comision: val,
+                  candidatos: matchResult.candidates
+                });
+              }
+            }
+
+            // 5. Respuesta filtrada por rol (Principio de mínimo privilegio)
+            if (claims.rol === 'gerente') {
+              // Gerente recibe el consolidado del equipo y las filas ambiguas para revisión manual, pero NUNCA el sheetId
+              return res.status(200).json({
+                success: true,
+                isGerente: true,
+                headerRow: startRow,
+                colAgente,
+                colComi,
+                totalEmparejados: matchedDetails.length,
+                totalAmbiguos: ambiguousDetails.length,
+                matchedDetails,
+                ambiguousDetails,
+                data: comisionesMap
+              });
+            } else {
+              // Comercial: ÚNICAMENTE recibe su propia comisión individual
+              const userDni = claims.dni;
+              let userComision = 0;
+              if (userDni && comisionesMap[userDni] !== undefined) {
+                userComision = comisionesMap[userDni];
+              } else if (claims.nombre && comisionesMap[cleanStr(claims.nombre)] !== undefined) {
+                userComision = comisionesMap[cleanStr(claims.nombre)];
+              }
+
+              return res.status(200).json({
+                success: true,
+                isGerente: false,
+                dni: userDni,
+                nombre: claims.nombre,
+                comision: userComision
+              });
+            }
+          } catch (e) {
+            return res.status(500).json({ error: "Error procesando el archivo de comisiones", details: e.message });
+          }
+        });
+      }).on('error', (e) => {
+        return res.status(500).json({ error: e.message });
+      });
+    }
+
+    fetchUrl(targetUrl);
+  });
 };

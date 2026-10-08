@@ -38,9 +38,12 @@
       "53343101Y": "NURIA CEBALLOS DURAN",
       "53770728V": "FRANCISCO JAVIER MORA ANDREU"
     };
+    // Verificación temprana: si no existe sesión activa registrada, redirigir a login
+    // La validación criptográfica del token la ejecuta loadSession() con supabaseClient
+    const hasSbToken = Object.keys(localStorage).some(k => k.startsWith('sb-') && k.endsWith('-auth-token'));
     const dni = localStorage.getItem('comercial_dni');
     const name = localStorage.getItem('comercial_nombre');
-    if (!dni || !name || COMERCIALES[dni] !== name) {
+    if (!hasSbToken && (!dni || !name || COMERCIALES[dni] !== name)) {
       window.location.href = 'login.html';
     }
   })();
@@ -7661,6 +7664,25 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
 <div id="print-report-container"></div>
 
 <script>
+// ══════════════════════════════════════════════════════════════════════════════
+// SEGURIDAD: UTILIDAD GLOBAL DE ESCAPADO XSS
+// ══════════════════════════════════════════════════════════════════════════════
+function escapeHtml(str) {
+  if (str === null || str === undefined) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// ══════════════════════════════════════════════════════════════════════════════
+// REGLA DE NEGOCIO (CONFIRMADA POR DIRECCIÓN - OCTUBRE 2026):
+// El cupo anual de vacaciones de Comerciales Renosur es de 26 días laborables.
+// En esta fase de seguridad no se alteran cálculos ni saldos vigentes.
+// ══════════════════════════════════════════════════════════════════════════════
+
 // ══════════════════════════════════
 // DATOS BASE (PVP 2026, de los PDFs)
 // ══════════════════════════════════
@@ -9336,69 +9358,56 @@ function checkAndTrackRankingChanges(newData) {
   return false;
 }
 
-// Helper to fetch Google Script with multi-tier strategy (Edge Vercel Proxy -> Direct CORS -> Concurrent Proxies)
+// Helper to fetch Ranking with server verification (Edge Vercel Proxy with Supabase Auth Bearer token)
 async function fetchGoogleScript(targetUrl, timeoutMs = 15000, forceFresh = false) {
   const timestamp = Date.now();
   
-  // 1. Probar primero el proxy serverless de Vercel en el mismo origen (ultra-rápido con Edge CDN & memoria)
-  try {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), 8000);
-    const vercelUrl = `/api/ranking${forceFresh ? '?force=true&t=' + timestamp : ''}`;
-    const res = await fetch(vercelUrl, { signal: controller.signal });
-    clearTimeout(id);
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) return data;
-    }
-  } catch (e) {
-    // Si no está en Vercel o la API no responde, continuar inmediatamente a llamada directa
+  let authToken = '';
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    try {
+      const session = (await supabaseClient.auth.getSession())?.data?.session;
+      if (session) authToken = session.access_token;
+    } catch (_) {}
   }
 
-  // 2. Llamada directa a Google Apps Script (Google devuelve Access-Control-Allow-Origin: *)
+  // 1. Invocar proxy serverless de Vercel con cabecera de autorización Bearer
   try {
-    const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
-    const directUrl = forceFresh ? `${targetUrl}&_t=${timestamp}` : targetUrl;
-    const res = await fetch(directUrl, { signal: controller.signal, credentials: 'omit', mode: 'cors' });
-    clearTimeout(id);
-    if (res.ok) {
-      const data = await res.json();
-      if (Array.isArray(data) && data.length > 0) return data;
-    }
-  } catch (e) {
-    console.warn("Llamada directa a Google Script falló, probando proxies concurrentes...", e);
-  }
-  
-  // 3. Carrera concurrente de proxies CORS de respaldo (Promise.any: el más rápido gana sin esperas secuenciales)
-  const proxyEndpoints = [
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(targetUrl)}`,
-    `https://corsproxy.io/?${encodeURIComponent(targetUrl)}`
-  ];
-
-  const proxyPromises = proxyEndpoints.map(async (pUrl) => {
     const controller = new AbortController();
     const id = setTimeout(() => controller.abort(), 10000);
-    try {
-      const res = await fetch(pUrl, { signal: controller.signal });
-      clearTimeout(id);
-      if (res.ok) {
-        const text = await res.text();
-        const data = JSON.parse(text);
-        if (Array.isArray(data) && data.length > 0) return data;
-      }
-    } catch (err) {}
-    throw new Error("Proxy error: " + pUrl);
-  });
+    const vercelUrl = `/api/ranking${forceFresh ? '?force=true&t=' + timestamp : ''}`;
+    const headers = {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    };
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
 
-  try {
-    const fastestResult = await Promise.any(proxyPromises);
-    if (fastestResult) return fastestResult;
+    const res = await fetch(vercelUrl, { 
+      signal: controller.signal,
+      headers
+    });
+    clearTimeout(id);
+
+    if (res.status === 401) {
+      console.warn("Ranking: Sesión no válida o expirada.");
+      throw new Error("Sesión requerida para consultar ranking.");
+    }
+    if (res.status === 403) {
+      console.warn("Ranking: Acceso restringido para el perfil actual.");
+      return [];
+    }
+
+    if (res.ok) {
+      const data = await res.json();
+      if (Array.isArray(data) && data.length > 0) return data;
+    }
   } catch (e) {
-    // Todos los proxies fallaron
+    if (e.message && e.message.includes("Sesión requerida")) throw e;
+    console.warn("Error consultando /api/ranking:", e);
   }
 
-  throw new Error("No se pudo obtener datos del ranking de ninguna fuente remota");
+  throw new Error("No se pudo obtener datos del ranking de la API autorizada");
 }
 
 let rankingInFlightPromise = null;
@@ -10524,9 +10533,19 @@ function filterDistribuidoras() {
 // ── NAV ──
 function showPanel(id, btn){
   // Permisos de rol para Trabajadores Evaria
-  const userRole = AGENT_ROLES[currentAgentDni] || 'comercial';
+  const userRole = (typeof AGENT_ROLES !== 'undefined' && typeof currentAgentDni !== 'undefined')
+    ? (AGENT_ROLES[currentAgentDni] || 'comercial')
+    : 'comercial';
+
   if (userRole === 'evaria' && (id === 'ranking' || id === 'calendario')) {
     alert('Acceso denegado: Tu usuario pertenece al grupo "Trabajadores Evaria" y tiene bloqueado el acceso a esta seccion.');
+    return;
+  }
+
+  // Permisos de rol para paneles exclusivos de Gerencia
+  const gerentePanels = ['gerenteHub', 'gruposAgentes', 'controlVacaciones', 'registroConexiones'];
+  if (gerentePanels.includes(id) && userRole !== 'gerente') {
+    alert('Acceso denegado: Solo los usuarios con rol de Gerencia pueden acceder a este panel.');
     return;
   }
 
@@ -12625,67 +12644,117 @@ function getTodayIsoDate(d = new Date()) {
   return `${year}-${month}-${day}`;
 }
 
-function loadSession() {
-  const dni = localStorage.getItem('comercial_dni');
-  const name = localStorage.getItem('comercial_nombre');
-  if (dni && name && COMERCIALES[dni] === name) {
-    currentAgentDni = dni;
-    currentAgentName = name;
-    
-    // ── GESTIÓN DE REGISTRO DE CONEXIÓN Y RECONEXIÓN ──
-    const now = Date.now();
-    const todayStr = getTodayIsoDate();
-    const sessionKey = 'session_logged_' + currentAgentDni;
-    const dateKey = 'last_connection_date_' + currentAgentDni;
-    const activityKey = 'last_user_activity_' + currentAgentDni;
-    
-    const isNewTabSession = !sessionStorage.getItem(sessionKey);
-    const isNewDay = localStorage.getItem(dateKey) !== todayStr;
-    const storedLastActivity = Number(localStorage.getItem(activityKey) || 0);
-    const isLongInactivity = storedLastActivity > 0 && (now - storedLastActivity) >= INACTIVITY_RECONNECTION_THRESHOLD_MS;
-    
-    localStorage.setItem(activityKey, String(now));
-    
-    if (isNewTabSession || isNewDay || isLongInactivity) {
-      const isReconnection = isLongInactivity && !isNewTabSession && !isNewDay;
-      console.log(`[Registro de conexión] Agente: ${name} (${dni}) | Nueva sesión: ${isNewTabSession} | Nuevo día: ${isNewDay} | Reconexión: ${isReconnection}`);
-      writeConnectionLog(currentAgentDni, currentAgentName, isReconnection);
-    }
-    
-    // Seed default vacations only once
-    const initializedKey = 'vacaciones_inicializadas_' + currentAgentDni;
-    if (localStorage.getItem(initializedKey) === null) {
-      if (localStorage.getItem('vacaciones_' + currentAgentDni) !== null) {
-        localStorage.setItem(initializedKey, 'true');
-        agentVacations = JSON.parse(localStorage.getItem('vacaciones_' + currentAgentDni) || '[]');
-      } else {
-        agentVacations = DEFAULT_VACATIONS[currentAgentDni] || [];
-        localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
-        localStorage.setItem(initializedKey, 'true');
+async function loadSession() {
+  let sessionUser = null;
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    try {
+      const { data: { session }, error } = await supabaseClient.auth.getSession();
+      if (session && session.user) {
+        sessionUser = session.user;
       }
-    } else {
-      agentVacations = JSON.parse(localStorage.getItem('vacaciones_' + currentAgentDni) || '[]');
+    } catch (e) {
+      console.warn("Error comprobando sesión en Supabase Auth:", e);
     }
-    
-    // Load or initialize motives
-    const motivesKey = 'vacaciones_motivos_' + currentAgentDni;
-    if (localStorage.getItem(motivesKey) === null) {
-      agentVacationMotives = DEFAULT_VACATION_MOTIVES[currentAgentDni] || {};
-      localStorage.setItem(motivesKey, JSON.stringify(agentVacationMotives));
-    } else {
-      agentVacationMotives = JSON.parse(localStorage.getItem(motivesKey) || '{}');
-    }
-    
-    if (typeof fetchVacationsFromCloud === 'function') {
-      fetchVacationsFromCloud(currentAgentDni);
-    }
-    onLoginSuccess();
-  } else {
-    logout();
   }
+
+  // Si no hay sesión válida en Supabase Auth y tampoco credencial legacy en entorno local
+  if (!sessionUser) {
+    const legacyDni = localStorage.getItem('comercial_dni');
+    const legacyName = localStorage.getItem('comercial_nombre');
+    if (!legacyDni || !legacyName || COMERCIALES[legacyDni] !== legacyName) {
+      logout();
+      return;
+    }
+  }
+
+  let dni = '';
+  let name = '';
+  let role = 'comercial';
+  let status = 'active';
+
+  if (sessionUser) {
+    dni = (sessionUser.user_metadata && sessionUser.user_metadata.dni) || (sessionUser.email ? sessionUser.email.split('@')[0].toUpperCase() : '');
+    name = (sessionUser.user_metadata && sessionUser.user_metadata.nombre) || COMERCIALES[dni] || 'Agente';
+    role = (sessionUser.app_metadata && sessionUser.app_metadata.role) || (sessionUser.user_metadata && sessionUser.user_metadata.rol) || (dni === 'MIGUELR' ? 'gerente' : 'comercial');
+    status = (sessionUser.user_metadata && sessionUser.user_metadata.status) || 'active';
+
+    if (status === 'inactive') {
+      if (supabaseClient) await supabaseClient.auth.signOut();
+      alert('Tu cuenta de agente está desactivada por la gerencia.');
+      logout();
+      return;
+    }
+
+    if (sessionUser.user_metadata && sessionUser.user_metadata.must_change_password) {
+      window.location.href = 'login.html';
+      return;
+    }
+  } else {
+    dni = localStorage.getItem('comercial_dni');
+    name = localStorage.getItem('comercial_nombre');
+    role = AGENT_ROLES[dni] || (dni === 'MIGUELR' ? 'gerente' : 'comercial');
+  }
+
+  currentAgentDni = dni;
+  currentAgentName = name;
+  AGENT_ROLES[dni] = role;
+  AGENT_STATUSES[dni] = status;
+
+  // Purgar inmediatamente cualquier residuo de contraseñas de versiones anteriores
+  localStorage.removeItem('cached_agent_passwords');
+  localStorage.removeItem('renosur_agent_roles');
+  localStorage.removeItem('renosur_comisiones_cache');
+
+  // Gestión de registro de conexión y reconexión
+  const now = Date.now();
+  const todayStr = getTodayIsoDate();
+  const sessionKey = 'session_logged_' + currentAgentDni;
+  const dateKey = 'last_connection_date_' + currentAgentDni;
+  const activityKey = 'last_user_activity_' + currentAgentDni;
+  
+  const isNewTabSession = !sessionStorage.getItem(sessionKey);
+  const isNewDay = localStorage.getItem(dateKey) !== todayStr;
+  const storedLastActivity = Number(localStorage.getItem(activityKey) || 0);
+  const isLongInactivity = storedLastActivity > 0 && (now - storedLastActivity) >= INACTIVITY_RECONNECTION_THRESHOLD_MS;
+  
+  localStorage.setItem(activityKey, String(now));
+  
+  if (isNewTabSession || isNewDay || isLongInactivity) {
+    const isReconnection = isLongInactivity && !isNewTabSession && !isNewDay;
+    writeConnectionLog(currentAgentDni, currentAgentName, isReconnection);
+  }
+  
+  // Seed default vacations only once
+  const initializedKey = 'vacaciones_inicializadas_' + currentAgentDni;
+  if (localStorage.getItem(initializedKey) === null) {
+    if (localStorage.getItem('vacaciones_' + currentAgentDni) !== null) {
+      localStorage.setItem(initializedKey, 'true');
+      agentVacations = JSON.parse(localStorage.getItem('vacaciones_' + currentAgentDni) || '[]');
+    } else {
+      agentVacations = DEFAULT_VACATIONS[currentAgentDni] || [];
+      localStorage.setItem('vacaciones_' + currentAgentDni, JSON.stringify(agentVacations));
+      localStorage.setItem(initializedKey, 'true');
+    }
+  } else {
+    agentVacations = JSON.parse(localStorage.getItem('vacaciones_' + currentAgentDni) || '[]');
+  }
+  
+  // Load motives
+  const motivesKey = 'vacaciones_motivos_' + currentAgentDni;
+  if (localStorage.getItem(motivesKey) === null) {
+    agentVacationMotives = DEFAULT_VACATION_MOTIVES[currentAgentDni] || {};
+    localStorage.setItem(motivesKey, JSON.stringify(agentVacationMotives));
+  } else {
+    agentVacationMotives = JSON.parse(localStorage.getItem(motivesKey) || '{}');
+  }
+  
+  if (typeof fetchVacationsFromCloud === 'function') {
+    fetchVacationsFromCloud(currentAgentDni);
+  }
+  onLoginSuccess();
 }
 
-function logout() {
+async function logout() {
   if (typeof agentStatusCheckInterval !== 'undefined' && agentStatusCheckInterval) {
     clearInterval(agentStatusCheckInterval);
     agentStatusCheckInterval = null;
@@ -12693,8 +12762,16 @@ function logout() {
   if (typeof clearComparisonInputs === 'function') {
     clearComparisonInputs();
   }
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
+    try {
+      await supabaseClient.auth.signOut();
+    } catch (_) {}
+  }
   localStorage.removeItem('comercial_dni');
   localStorage.removeItem('comercial_nombre');
+  localStorage.removeItem('cached_agent_passwords');
+  localStorage.removeItem('renosur_agent_roles');
+  localStorage.removeItem('renosur_comisiones_cache');
   currentAgentDni = null;
   currentAgentName = "";
   agentVacations = [];
@@ -12703,103 +12780,28 @@ function logout() {
 }
 
 let AGENT_ROLES = {};
-let AGENT_PASSWORDS = {};
 let AGENT_STATUSES = {};
-try {
-  const cachedRoles = localStorage.getItem('renosur_agent_roles');
-  if (cachedRoles) {
-    const rawRoles = JSON.parse(cachedRoles);
-    Object.keys(rawRoles).forEach(dni => {
-      let role = rawRoles[dni];
-      let pwd = dni;
-      let status = 'active';
-      if (role && role.includes(':')) {
-        const parts = role.split(':');
-        role = parts[0];
-        const lastPart = parts[parts.length - 1];
-        if (lastPart === 'active' || lastPart === 'inactive') {
-          status = lastPart;
-          pwd = parts.slice(1, parts.length - 1).join(':') || dni;
-        } else {
-          pwd = parts.slice(1).join(':');
-        }
-      }
-      AGENT_ROLES[dni] = role;
-      AGENT_PASSWORDS[dni] = pwd;
-      AGENT_STATUSES[dni] = status;
-    });
-  }
-} catch (e) {
-  console.error("Error loading cached agent roles", e);
-}
-// Default manager roles if undefined
-if (AGENT_ROLES['77860623B'] === undefined) {
-  AGENT_ROLES['77860623B'] = 'gerente';
-}
-if (AGENT_ROLES['MIGUELR'] === undefined) {
-  AGENT_ROLES['MIGUELR'] = 'gerente';
-}
-if (AGENT_ROLES['MARIAC'] === undefined) {
-  AGENT_ROLES['MARIAC'] = 'gerente';
-}
 
-// Preasignar rol a Ana Rocio Galera Morillo a Comercial
-if (AGENT_ROLES['47539234M'] === undefined) {
-  AGENT_ROLES['47539234M'] = 'comercial';
-}
-
-// Preasignar rol a Olga Villa a Trabajadores Evaria
-if (AGENT_ROLES['28750523V'] === undefined) {
-  AGENT_ROLES['28750523V'] = 'evaria';
-}
-
-// Preasignar rol a Librero a Trabajadores Evaria
-if (AGENT_ROLES['29502580C'] === undefined) {
-  AGENT_ROLES['29502580C'] = 'evaria';
-}
-
-// Preasignar rol a Nuria Ceballos Durán a Trabajadores Evaria
-if (AGENT_ROLES['53343101Y'] === undefined) {
-  AGENT_ROLES['53343101Y'] = 'evaria';
-}
-
-// Preasignar rol a Francisco Javier Mora Andreu a Comercial Renosur
-if (AGENT_ROLES['53770728V'] === undefined) {
-  AGENT_ROLES['53770728V'] = 'comercial';
-}
+// Roles predefinidos seguros
+AGENT_ROLES['MIGUELR'] = 'gerente';
+AGENT_ROLES['MARIAC'] = 'evaria';
+AGENT_ROLES['28750523V'] = 'evaria';
+AGENT_ROLES['29502580C'] = 'evaria';
+AGENT_ROLES['53343101Y'] = 'evaria';
 
 async function fetchAgentRolesFromCloud() {
   if (!supabaseClient) return;
   try {
+    // Consultar tabla segura de perfiles (sin contraseñas)
     const { data, error } = await supabaseClient
-      .from('agentes_roles')
-      .select('*');
+      .from('agentes_perfiles')
+      .select('dni, rol, activo');
     if (!error && data) {
-      const rawRolesToCache = {};
       data.forEach(row => {
-        rawRolesToCache[row.dni] = row.rol;
-        let role = row.rol;
-        let password = row.dni;
-        let status = 'active';
-        if (role && role.includes(':')) {
-          const parts = role.split(':');
-          role = parts[0];
-          const lastPart = parts[parts.length - 1];
-          if (lastPart === 'active' || lastPart === 'inactive') {
-            status = lastPart;
-            password = parts.slice(1, parts.length - 1).join(':') || row.dni;
-          } else {
-            password = parts.slice(1).join(':');
-          }
-        }
-        AGENT_ROLES[row.dni] = role;
-        AGENT_PASSWORDS[row.dni] = password;
-        AGENT_STATUSES[row.dni] = status;
+        AGENT_ROLES[row.dni] = row.rol;
+        AGENT_STATUSES[row.dni] = row.activo ? 'active' : 'inactive';
       });
 
-      
-      localStorage.setItem('renosur_agent_roles', JSON.stringify(rawRolesToCache));
-      
       // Update UI roles in real-time
       if (typeof applyAgentPermissions === 'function') {
         applyAgentPermissions();
@@ -12822,7 +12824,7 @@ async function fetchAgentRolesFromCloud() {
       }
     }
   } catch (e) {
-    console.error("Error fetching agent roles from cloud", e);
+    console.warn("fetchAgentRolesFromCloud seguro:", e);
   }
 }
 
@@ -13498,36 +13500,44 @@ function renderLoginLogs(logs) {
 
     const isReconnection = (log.notes || '').includes('###RECONEXION###');
 
+    const safeName = escapeHtml(name);
+    const safeDate = escapeHtml(dateFormatted);
+    const safeTime = escapeHtml(time);
+    const safeIp = escapeHtml(displayPublicIp);
+    const safeDevLabel = escapeHtml(devInfo.label || 'Dispositivo');
+    const safeTooltip = escapeHtml(alertTooltip);
+    const safeLogId = escapeHtml(log.id || '');
+
     return `<tr style="border-bottom: 1px solid var(--border); font-size: 13.5px; color: var(--text); background: ${rowBg}; transition: background 0.15s;">
       <td style="padding: 10px 14px; font-weight: 600;">
-        ${name}
+        ${safeName}
         ${isReconnection ? `<span style="display: inline-flex; align-items: center; gap: 3.5px; font-size: 10.5px; font-weight: 700; color: var(--blue); background: rgba(13, 92, 158, 0.08); border: 1px solid rgba(13, 92, 158, 0.22); padding: 1px 6px; border-radius: 4px; margin-left: 6px; vertical-align: middle;" title="Reconexión tras más de 2 horas de inactividad">
           <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="23 4 23 10 17 10"></polyline><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path></svg>
           Reconexión
         </span>` : ''}
       </td>
-      <td style="padding: 10px 14px;">${dateFormatted}</td>
-      <td style="padding: 10px 14px;">${time}</td>
+      <td style="padding: 10px 14px;">${safeDate}</td>
+      <td style="padding: 10px 14px;">${safeTime}</td>
       <td style="padding: 10px 14px;">
         ${isSuspicious ? `
-          <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.35); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-family: monospace; font-size: 13px; cursor: help;" title="${alertTooltip}">
+          <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(239, 68, 68, 0.1); color: #dc2626; border: 1px solid rgba(239, 68, 68, 0.35); padding: 4px 10px; border-radius: 6px; font-weight: 800; font-family: monospace; font-size: 13px; cursor: help;" title="${safeTooltip}">
             <span style="font-size: 13px; line-height: 1;">⚠️</span>
-            <span style="color: #dc2626; letter-spacing: 0.3px;">${displayPublicIp}</span>
+            <span style="color: #dc2626; letter-spacing: 0.3px;">${safeIp}</span>
           </span>
         ` : `
-          <span style="display: inline-flex; align-items: center; color: var(--blue); font-weight: 600; font-family: monospace; font-size: 13px;" title="${alertTooltip}">
-            <span>${displayPublicIp}</span>
+          <span style="display: inline-flex; align-items: center; color: var(--blue); font-weight: 600; font-family: monospace; font-size: 13px;" title="${safeTooltip}">
+            <span>${safeIp}</span>
           </span>
         `}
       </td>
       <td style="padding: 10px 14px;">
         <span style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0,0,0,0.03); color: var(--text); padding: 3px 9px; border-radius: 6px; border: 1px solid var(--border); font-size: 12.5px; font-weight: 500;">
           ${devInfo.iconSvg}
-          <span>${devInfo.label}</span>
+          <span>${safeDevLabel}</span>
         </span>
       </td>
       <td style="padding: 10px 14px; text-align: center;">
-        <button onclick="deleteLoginLog('${log.id}', event)" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); color: #dc2626; border-radius: 6px; padding: 5px 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Eliminar este registro de conexión" onmouseover="this.style.background='#dc2626';this.style.color='#fff';" onmouseout="this.style.background='rgba(239, 68, 68, 0.08)';this.style.color='#dc2626';">
+        <button onclick="deleteLoginLog('${safeLogId}', event)" style="background: rgba(239, 68, 68, 0.08); border: 1px solid rgba(239, 68, 68, 0.25); color: #dc2626; border-radius: 6px; padding: 5px 8px; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; transition: all 0.2s;" title="Eliminar este registro de conexión" onmouseover="this.style.background='#dc2626';this.style.color='#fff';" onmouseout="this.style.background='rgba(239, 68, 68, 0.08)';this.style.color='#dc2626';">
           <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
         </button>
       </td>
@@ -13622,7 +13632,10 @@ function initGruposAgentes() {
     
     const userFieldHtml = `<input type="text" id="user-dni-${agent.dni}" value="${agent.dni}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-family: monospace; font-size: 13px; width: 110px; outline: none;">`;
       
-    const pwdFieldHtml = `<input type="text" id="user-pwd-${agent.dni}" value="${agent.pwd}" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 13px; width: 100%; max-width: 140px; outline: none;">`;
+    const pwdFieldHtml = `<div style="display: flex; align-items: center; gap: 6px;">
+      <span style="font-size: 12px; color: var(--t2); font-family: monospace; letter-spacing: 2px;">••••••••</span>
+      <button type="button" onclick="gerenteTriggerPasswordReset('${agent.dni}')" style="padding: 3px 8px; font-size: 11px; border: 1px solid var(--border); border-radius: 4px; background: rgba(53,127,191,0.08); color: var(--blue); cursor: pointer; font-weight: 600;">Restablecer</button>
+    </div>`;
     
     const statusSwitchHtml = `
       <label class="switch-container">
@@ -13643,6 +13656,10 @@ function initGruposAgentes() {
   });
   
   tbody.innerHTML = html;
+}
+
+function gerenteTriggerPasswordReset(dni) {
+  alert(`Restablecimiento seguro para ${dni}: En la arquitectura protegida con Supabase Auth, las contraseñas nunca se gestionan en texto claro. Para restablecer o activar este usuario, se genera un enlace/clave administrativa temporal que forzará al comercial a definir su contraseña privada en el primer acceso.`);
 }
 
 async function saveAllAgentUsersByGerente() {
@@ -14417,65 +14434,59 @@ async function loadComisionesData(force = false) {
   
   if (userRole !== 'comercial' && userRole !== 'gerente') return;
 
-  // Load from cache first if available
-  if (!force) {
+  const timestamp = Date.now();
+  let authToken = '';
+  if (typeof supabaseClient !== 'undefined' && supabaseClient) {
     try {
-      const cached = localStorage.getItem('renosur_comisiones_cache');
-      if (cached) {
-        renosurComisionesData = JSON.parse(cached);
-      }
-    } catch (e) {}
+      const session = (await supabaseClient.auth.getSession())?.data?.session;
+      if (session) authToken = session.access_token;
+    } catch (_) {}
   }
 
-  const timestamp = Date.now();
-
-  // 1. Try Vercel Serverless API (/api/comisiones) with cache-busting
+  // 1. Invocación autorizada a Vercel Serverless API (/api/comisiones) con Bearer token
   try {
+    const headers = {
+      'Cache-Control': 'no-cache',
+      'Pragma': 'no-cache'
+    };
+    if (authToken) {
+      headers['Authorization'] = `Bearer ${authToken}`;
+    }
+
     const res = await fetch(`/api/comisiones?t=${timestamp}`, {
       cache: 'no-store',
-      headers: { 'Cache-Control': 'no-cache', 'Pragma': 'no-cache' }
+      headers
     });
+
+    if (res.status === 401) {
+      console.warn("Comisiones: Sesión no válida o expirada.");
+      return;
+    }
+    if (res.status === 403) {
+      console.warn("Comisiones: Acceso denegado para el perfil actual.");
+      return;
+    }
+
     if (res.ok) {
       const json = await res.json();
-      if (json && json.success && json.data) {
-        renosurComisionesData = json.data;
-        localStorage.setItem('renosur_comisiones_cache', JSON.stringify(renosurComisionesData));
+      if (json && json.success) {
+        if (json.isGerente && json.data) {
+          // Gerente: recibe mapa consolidado para gestión de equipo (solo memoria volátil)
+          renosurComisionesData = json.data;
+        } else if (json.comision !== undefined) {
+          // Comercial: recibe exclusivamente su propia comisión individual
+          renosurComisionesData = {};
+          if (json.dni) renosurComisionesData[json.dni] = json.comision;
+          if (json.nombre) renosurComisionesData[json.nombre] = json.comision;
+          if (currentAgentDni) renosurComisionesData[currentAgentDni] = json.comision;
+        }
+        // Erradicar almacenamiento persistente de comisiones en el navegador
+        localStorage.removeItem('renosur_comisiones_cache');
         return;
       }
     }
   } catch (e) {
-    console.warn("Comisiones API not reachable, trying direct fallback...", e);
-  }
-
-  // 2. Direct Fallback to Google Sheets CSV / CORS proxies with cache-busting
-  const sheetId = "1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI";
-  const directUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&t=${timestamp}`;
-  const proxies = [
-    directUrl,
-    `https://api.allorigins.win/raw?url=${encodeURIComponent(directUrl)}`,
-    `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(directUrl)}`
-  ];
-
-  for (const pUrl of proxies) {
-    try {
-      const controller = new AbortController();
-      const id = setTimeout(() => controller.abort(), 6000);
-      const res = await fetch(pUrl, { signal: controller.signal, credentials: 'omit', cache: 'no-store' });
-      clearTimeout(id);
-      if (res.ok) {
-        const text = await res.text();
-        if (text && (text.includes('?') || text.includes('€') || text.includes(',') || text.includes('.'))) {
-          const map = parseComisionesCSV(text);
-          if (Object.keys(map).length > 0) {
-            renosurComisionesData = map;
-            localStorage.setItem('renosur_comisiones_cache', JSON.stringify(renosurComisionesData));
-            return;
-          }
-        }
-      }
-    } catch (e) {
-      // Continue to next fallback
-    }
+    console.warn("Error al consultar API segura de comisiones:", e);
   }
 }
 
@@ -15298,7 +15309,7 @@ function renderAgenda() {
     const metaParts = [];
     if (item.type === 'call') {
       metaParts.push('<span style="color: var(--blue); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path></svg>Llamada</span>');
-      if (item.phone) metaParts.push(item.phone);
+      if (item.phone) metaParts.push(escapeHtml(item.phone));
     } else if (item.type === 'task') {
       metaParts.push('<span style="color: var(--t2); font-weight: 600; display: inline-flex; align-items: center; gap: 4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>Tarea</span>');
     } else if (item.type === 'note') {
@@ -15307,28 +15318,31 @@ function renderAgenda() {
     
     if (dateLabel) {
       if (item.time) {
-        metaParts.push(`${dateLabel} a las ${item.time}`);
+        metaParts.push(`${dateLabel} a las ${escapeHtml(item.time)}`);
       } else {
         metaParts.push(dateLabel);
       }
     }
     
     const metaHtml = metaParts.join(' • ');
-    const notesHtml = (item.type === 'call' && item.notes) ? `<div class="agenda-item-notes">${item.notes}</div>` : '';
+    const notesHtml = (item.type === 'call' && item.notes) ? `<div class="agenda-item-notes">${escapeHtml(item.notes)}</div>` : '';
+    
+    const cleanPhoneDigits = (item.phone || '').replace(/\D/g, '');
+    const waPhone = cleanPhoneDigits.length === 9 ? '34' + cleanPhoneDigits : cleanPhoneDigits;
     
     return `
-      <div class="agenda-item ${item.completed ? 'completed' : ''}" id="agenda-item-${item.id}">
+      <div class="agenda-item ${item.completed ? 'completed' : ''}" id="agenda-item-${escapeHtml(item.id)}">
         <div class="agenda-item-left">
           <div class="agenda-status-dot ${statusColor}"></div>
           <div class="agenda-item-content">
-            <h5 class="agenda-item-title">${item.title}</h5>
+            <h5 class="agenda-item-title">${escapeHtml(item.title)}</h5>
             <div class="agenda-item-meta">${metaHtml}</div>
             ${notesHtml}
           </div>
         </div>
         <div class="agenda-item-actions">
-          ${item.type === 'call' && item.phone ? `
-            <a href="https://web.whatsapp.com/send?phone=${item.phone.replace(/\D/g, '').length === 9 ? '34' + item.phone.replace(/\D/g, '') : item.phone.replace(/\D/g, '')}" target="_blank" title="Contactar por WhatsApp Web" style="color: #25D366; display: inline-flex; align-items: center; justify-content: center; padding: 6px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.background='rgba(37, 211, 102, 0.1)'" onmouseout="this.style.background='transparent'">
+          ${item.type === 'call' && cleanPhoneDigits ? `
+            <a href="https://web.whatsapp.com/send?phone=${encodeURIComponent(waPhone)}" target="_blank" rel="noopener noreferrer" title="Contactar por WhatsApp Web" style="color: #25D366; display: inline-flex; align-items: center; justify-content: center; padding: 6px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.background='rgba(37, 211, 102, 0.1)'" onmouseout="this.style.background='transparent'">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.324 5.328 0 11.894 0c3.18.001 6.167 1.24 8.42 3.494 2.253 2.254 3.491 5.24 3.488 8.421-.003 6.571-5.328 11.895-11.895 11.895-2.007-.001-3.98-.51-5.731-1.483L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.725 1.45 5.511 0 9.998-4.486 10-9.999.003-2.67-1.037-5.18-2.932-7.076C16.486 1.636 13.978 1.5 11.898 1.5c-5.513 0-10 4.487-10.003 10-.001 1.79.48 3.535 1.39 5.097L2.25 21.75l5.397-1.416zM17.47 14.397c-.3-.149-1.777-.876-2.047-.975-.27-.1-.466-.149-.663.15-.197.299-.761.95-.933 1.149-.172.199-.344.225-.644.075-.3-.15-1.268-.467-2.417-1.493-.893-.797-1.496-1.782-1.672-2.08-.176-.3-.019-.462.13-.61.135-.133.3-.349.45-.523.15-.174.2-.299.3-.499.1-.2.05-.375-.025-.524-.075-.15-.663-1.597-.909-2.193-.24-.576-.484-.497-.663-.506-.172-.008-.368-.01-.565-.01-.196 0-.517.074-.787.374-.27.3-.1.583-.1 1.161.002.576.42 1.132.479 1.21.059.078.82 1.252 1.987 1.756.278.12.494.19.664.244.279.088.532.076.733.046.224-.033.727-.298.83-.585.103-.287.103-.532.072-.585-.03-.053-.113-.085-.413-.235z"/>
               </svg>
@@ -16009,7 +16023,7 @@ function updateDashboardAgendaWidget() {
     const metaParts = [];
     if (item.type === 'call') {
       metaParts.push('Llamada');
-      if (item.phone) metaParts.push(item.phone);
+      if (item.phone) metaParts.push(escapeHtml(item.phone));
     } else if (item.type === 'task') {
       metaParts.push('Tarea');
     } else if (item.type === 'note') {
@@ -16017,7 +16031,7 @@ function updateDashboardAgendaWidget() {
     }
     if (dateLabel) {
       if (item.time) {
-        metaParts.push(`${dateLabel} ${item.time}`);
+        metaParts.push(`${dateLabel} ${escapeHtml(item.time)}`);
       } else {
         metaParts.push(dateLabel);
       }
@@ -16031,16 +16045,19 @@ function updateDashboardAgendaWidget() {
       ? `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="3" style="color:#10b981;"><polyline points="20 6 9 17 4 12"></polyline></svg>`
       : `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle></svg>`;
       
+    const cleanPhoneDigits = (item.phone || '').replace(/\D/g, '');
+    const waPhone = cleanPhoneDigits.length === 9 ? '34' + cleanPhoneDigits : cleanPhoneDigits;
+
     return `
       <div style="display: flex; align-items: center; justify-content: space-between; padding: 5px 10px; background: rgba(255, 255, 255, 0.6); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.85); border-radius: 9px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); transition: all 0.2s; opacity: ${opacityVal};">
         <div style="display: flex; align-items: center; gap: 7px; flex: 1; min-width: 0;">
           <div class="agenda-status-dot ${statusColor}" style="width: 7px; height: 7px; flex-shrink: 0; border-radius: 50%;"></div>
-          <span style="font-size: 12px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: ${textDecoration};">${item.title}</span>
+          <span style="font-size: 12px; font-weight: 700; color: var(--text); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; text-decoration: ${textDecoration};">${escapeHtml(item.title)}</span>
           <span style="font-size: 10.5px; color: var(--t2); flex-shrink: 0; margin-left: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;">${metaText}</span>
         </div>
         <div style="display: flex; align-items: center; gap: 4px;">
-          ${item.type === 'call' && item.phone ? `
-            <a href="https://web.whatsapp.com/send?phone=${item.phone.replace(/\D/g, '').length === 9 ? '34' + item.phone.replace(/\D/g, '') : item.phone.replace(/\D/g, '')}" target="_blank" title="Contactar por WhatsApp Web" style="color: #25D366; display: inline-flex; padding: 4px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.background='rgba(37, 211, 102, 0.1)'" onmouseout="this.style.background='transparent'">
+          ${item.type === 'call' && cleanPhoneDigits ? `
+            <a href="https://web.whatsapp.com/send?phone=${encodeURIComponent(waPhone)}" target="_blank" rel="noopener noreferrer" title="Contactar por WhatsApp Web" style="color: #25D366; display: inline-flex; padding: 4px; border-radius: 4px; transition: all 0.2s;" onmouseover="this.style.background='rgba(37, 211, 102, 0.1)'" onmouseout="this.style.background='transparent'">
               <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
                 <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.003 5.324 5.328 0 11.894 0c3.18.001 6.167 1.24 8.42 3.494 2.253 2.254 3.491 5.24 3.488 8.421-.003 6.571-5.328 11.895-11.895 11.895-2.007-.001-3.98-.51-5.731-1.483L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.725 1.45 5.511 0 9.998-4.486 10-9.999.003-2.67-1.037-5.18-2.932-7.076C16.486 1.636 13.978 1.5 11.898 1.5c-5.513 0-10 4.487-10.003 10-.001 1.79.48 3.535 1.39 5.097L2.25 21.75l5.397-1.416zM17.47 14.397c-.3-.149-1.777-.876-2.047-.975-.27-.1-.466-.149-.663.15-.197.299-.761.95-.933 1.149-.172.199-.344.225-.644.075-.3-.15-1.268-.467-2.417-1.493-.893-.797-1.496-1.782-1.672-2.08-.176-.3-.019-.462.13-.61.135-.133.3-.349.45-.523.15-.174.2-.299.3-.499.1-.2.05-.375-.025-.524-.075-.15-.663-1.597-.909-2.193-.24-.576-.484-.497-.663-.506-.172-.008-.368-.01-.565-.01-.196 0-.517.074-.787.374-.27.3-.1.583-.1 1.161.002.576.42 1.132.479 1.21.059.078.82 1.252 1.987 1.756.278.12.494.19.664.244.279.088.532.076.733.046.224-.033.727-.298.83-.585.103-.287.103-.532.072-.585-.03-.053-.113-.085-.413-.235z"/>
               </svg>
