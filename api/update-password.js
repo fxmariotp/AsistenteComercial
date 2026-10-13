@@ -7,6 +7,7 @@ const https = require('https');
 const { URL } = require('url');
 
 const SUPABASE_URL = process.env.SUPABASE_URL;
+const EXPECTED_STAGING_URL = process.env.EXPECTED_STAGING_URL;
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
@@ -221,12 +222,22 @@ module.exports = function (req, res) {
     return sendJson(res, 405, { success: false, error: "Método no permitido. Utiliza POST." });
   }
 
-  // 1. Verificación explícita de configuración del servidor
+  // 1. Verificación explícita de configuración del servidor y blindaje de destino
   if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !SUPABASE_SERVICE_ROLE_KEY) {
     return sendJson(res, 503, {
       success: false,
       error: "Configuración incompleta: Se requiere definir SUPABASE_URL, SUPABASE_ANON_KEY y SUPABASE_SERVICE_ROLE_KEY en el servidor."
     });
+  }
+
+  if (EXPECTED_STAGING_URL) {
+    const normalizeUrl = (u) => (u || '').trim().replace(/\/+$/, '');
+    if (normalizeUrl(SUPABASE_URL) !== normalizeUrl(EXPECTED_STAGING_URL)) {
+      return sendJson(res, 500, {
+        success: false,
+        error: "Conflicto de configuración de seguridad: SUPABASE_URL no coincide con EXPECTED_STAGING_URL en el servidor."
+      });
+    }
   }
 
   // 2. Verificación de cabecera Authorization Bearer
