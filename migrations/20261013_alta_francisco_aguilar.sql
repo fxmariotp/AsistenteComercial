@@ -1,5 +1,5 @@
 -- ============================================================================
--- ALTA SEGURA EN BASE DE DATOS: FRANCISCO JAVIER AGUILAR CHAVES (78105181D)
+-- ALTA SEGURA EN BASE DE DATOS: FRANCISCO JAVIER AGUILAR CHAVES (78105180D)
 -- Archivo: migrations/20261013_alta_francisco_aguilar.sql
 -- Rama: security-phase1-prep
 -- ============================================================================
@@ -22,12 +22,12 @@ BEGIN
 
   -- 2. Comprobar duplicados por DNI
   IF EXISTS (
-    SELECT 1 FROM public.agentes_perfiles WHERE dni = '78105181D'
+    SELECT 1 FROM public.agentes_perfiles WHERE dni = '78105180D'
   ) THEN
-    RAISE NOTICE 'El agente con DNI 78105181D ya existe en public.agentes_perfiles. No se duplica.';
+    RAISE NOTICE 'El agente con DNI 78105180D ya existe en public.agentes_perfiles. No se duplica.';
   ELSE
     -- 3. Vincular perfil si el usuario ya existe en auth.users (creado previamente por la API admin o Dashboard)
-    -- Si auth.users contiene 78105181d@asistente.internal:
+    -- Si auth.users contiene 78105180d@asistente.internal:
     INSERT INTO public.agentes_perfiles (
       user_id,
       dni,
@@ -40,7 +40,7 @@ BEGIN
     )
     SELECT 
       u.id,
-      '78105181D',
+      '78105180D',
       'FRANCISCO JAVIER AGUILAR CHAVES',
       'comercial',
       true,
@@ -48,13 +48,13 @@ BEGIN
       NOW(),
       NOW()
     FROM auth.users u
-    WHERE u.email = '78105181d@asistente.internal'
+    WHERE u.email = '78105180d@asistente.internal'
     ON CONFLICT (dni) DO NOTHING;
 
     IF FOUND THEN
       RAISE NOTICE 'Alta de FRANCISCO JAVIER AGUILAR CHAVES completada exitosamente en public.agentes_perfiles.';
     ELSE
-      RAISE NOTICE 'Aviso: La identidad auth.users (78105181d@asistente.internal) aún no ha sido creada. Ejecute scripts/provision_alta_aguilar.js para crear usuario en Auth y perfil de forma atómica.';
+      RAISE NOTICE 'Aviso: La identidad auth.users (78105180d@asistente.internal) aún no ha sido creada. Ejecute scripts/provision_alta_aguilar.js para crear usuario en Auth y perfil de forma atómica.';
     END IF;
   END IF;
 END $$;

@@ -623,7 +623,7 @@ console.log("\n\x1b[37m=== CASO 5: Validación completa de perfiles en staging a
 })();
 
 // ----------------------------------------------------------------------------
-// CASO 6: Alta y correspondencias de FRANCISCO JAVIER AGUILAR CHAVES (78105181D)
+// CASO 6: Alta y correspondencias de FRANCISCO JAVIER AGUILAR CHAVES (78105180D)
 // ----------------------------------------------------------------------------
 console.log("\n\x1b[37m=== CASO 6: Alta y correspondencias de FRANCISCO JAVIER AGUILAR CHAVES ===\x1b[0m");
 
@@ -637,11 +637,11 @@ console.log("\n\x1b[37m=== CASO 6: Alta y correspondencias de FRANCISCO JAVIER A
 
   // 6.1 Desambiguación y emparejamiento exacto de comisiones
   apiComisiones._setVerifySupabaseTokenForTesting((token, cb) => {
-    cb(null, { id: 'uid-78105181D', email: '78105181d@asistente.internal' });
+    cb(null, { id: 'uid-78105180D', email: '78105180d@asistente.internal' });
   });
   apiComisiones._setFetchUserProfileForTesting((token, u, cb) => {
     cb(null, {
-      dni: '78105181D',
+      dni: '78105180D',
       nombre: 'FRANCISCO JAVIER AGUILAR CHAVES',
       rol: 'comercial',
       activo: true,
@@ -657,11 +657,11 @@ console.log("\n\x1b[37m=== CASO 6: Alta y correspondencias de FRANCISCO JAVIER A
   const dataAguilar = reqAguilar.res._jsonData || {};
   const matchesAguilar = reqAguilar.res.statusCode === 200 &&
                          dataAguilar.isGerente === false &&
-                         dataAguilar.dni === "78105181D" &&
+                         dataAguilar.dni === "78105180D" &&
                          dataAguilar.comision === 640.50;
 
   report(
-    "FRANCISCO JAVIER AGUILAR CHAVES (78105181D) -> Emparejamiento correcto en comisiones (640.50 €) e isGerente=false",
+    "FRANCISCO JAVIER AGUILAR CHAVES (78105180D) -> Emparejamiento correcto en comisiones (640.50 €) e isGerente=false",
     matchesAguilar,
     `Comisión: ${dataAguilar.comision} | DNI: ${dataAguilar.dni} | isGerente: ${dataAguilar.isGerente}`
   );

@@ -4,8 +4,8 @@
 // ============================================================================
 // DATOS DEL ALTA:
 // - Nombre: FRANCISCO JAVIER AGUILAR CHAVES
-// - DNI: 78105181D
-// - Email de acceso: 78105181d@asistente.internal
+// - DNI: 78105180D
+// - Email de acceso: 78105180d@asistente.internal
 // - Rol: comercial
 // - Activo: true
 // - must_change_password: true
@@ -55,9 +55,9 @@ const SUPABASE_URL = process.env.SUPABASE_URL;
 const SUPABASE_SERVICE_ROLE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
 const AGENT_DATA = {
-  dni: '78105181D',
+  dni: '78105180D',
   nombre: 'FRANCISCO JAVIER AGUILAR CHAVES',
-  email: '78105181d@asistente.internal',
+  email: '78105180d@asistente.internal',
   rol: 'comercial',
   activo: true,
   must_change_password: true
@@ -114,7 +114,7 @@ function httpsRequest(urlStr, options, bodyData) {
 
 async function run() {
   console.log("==================================================================");
-  console.log(" ALTA SEGURA: FRANCISCO JAVIER AGUILAR CHAVES (78105181D)");
+  console.log(" ALTA SEGURA: FRANCISCO JAVIER AGUILAR CHAVES (78105180D)");
   console.log("==================================================================");
 
   if (!SUPABASE_URL || !SUPABASE_SERVICE_ROLE_KEY) {

@@ -40,7 +40,7 @@ cmdkey /list
    - **URL real de Preview:** `https://asistente-comercial-j1nwf05l8-fxmariotps-projects.vercel.app`
    - **Comportamiento HTTP verificado:** Todas las peticiones a la URL de Preview devuelven `HTTP 302` con cabecera `server: Vercel` y cuerpo `"Protected by Vercel Authentication"`. Esto certifica que el despliegue existe y está activo, pero protegido por la autenticación SSO / Deployment Protection de Vercel para entornos Preview.
 
-4. **Alta de FRANCISCO JAVIER AGUILAR CHAVES (78105181D):**
+4. **Alta de FRANCISCO JAVIER AGUILAR CHAVES (78105180D):**
    - **Estado:** ✅ Preparada en catálogos y script de migración; bloqueada para escritura inmediata en producción.
    - **Comprobación de producción:** `GET https://bxgdtdzlijeaetlekbub.supabase.co/rest/v1/agentes_perfiles` devuelve `HTTP 404 (PGRST205: Could not find table public.agentes_perfiles)`. Producción aún opera con el esquema legacy `agentes_roles`.
    - **Acción adoptada:** Para no restaurar almacenamiento inseguro en texto plano ni escribir en tablas inexistentes, se ha integrado al agente en todos los catálogos (`api/comisiones.js`, `index.html`, `login.html`, `Comerciales`), con 26 días laborables de vacaciones iniciales y script de aprovisionamiento `scripts/provision_alta_aguilar.js`.
