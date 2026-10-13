@@ -711,6 +711,22 @@ console.log("\n\x1b[37m=== CASO 6: Alta y correspondencias de FRANCISCO JAVIER A
     blocksWithoutEnv,
     `Exit code: ${runNoEnv.status} | Bloqueo preventivo: ${blocksWithoutEnv}`
   );
+
+  // 6.4 Script provision_alta_aguilar.js bloquea con Exit Code 2 ante esquema destino no migrado (sin agentes_perfiles)
+  const runLegacyDest = spawnSync(process.execPath, [scriptPath], {
+    env: Object.assign({}, process.env, {
+      SUPABASE_URL: 'https://bxgdtdzlijeaetlekbub.supabase.co',
+      SUPABASE_SERVICE_ROLE_KEY: 'sb_publishable_DlLT2Rz1npEXSuxpM9__tQ_WF-Q0-Ap'
+    }),
+    encoding: 'utf8'
+  });
+
+  const blocksLegacy = runLegacyDest.status === 2 && (runLegacyDest.stderr || '').includes('[BLOQUEO TÉCNICO] ESQUEMA DESTINO NO COMPATIBLE');
+  report(
+    "provision_alta_aguilar.js -> Bloquea con Exit Code 2 ante base no migrada (protege contra contraseñas en texto plano)",
+    blocksLegacy,
+    `Exit code: ${runLegacyDest.status} | Detección de esquema incompatible: ${blocksLegacy}`
+  );
 })();
 
 // ----------------------------------------------------------------------------

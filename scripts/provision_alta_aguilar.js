@@ -136,7 +136,10 @@ async function run() {
       }
     });
 
-    if (testPerfiles.statusCode === 404) {
+    const isTableMissing = testPerfiles.statusCode === 404 || 
+                           (testPerfiles.data && (testPerfiles.data.code === 'PGRST205' || (testPerfiles.data.message && testPerfiles.data.message.includes('agentes_perfiles'))));
+
+    if (isTableMissing) {
       console.error("\n==================================================================");
       console.error(" [BLOQUEO TÉCNICO] ESQUEMA DESTINO NO COMPATIBLE");
       console.error(" El proyecto destino aún depende del sistema antiguo (agentes_roles) y NO");
@@ -148,6 +151,17 @@ async function run() {
       console.error("   aplicación de migrations/20261008_security_auth_migration.sql.");
       console.error("==================================================================\n");
       process.exit(2);
+    }
+
+    if (testPerfiles.statusCode === 401 || testPerfiles.statusCode === 403) {
+      console.error(`\n[ERROR DE AUTENTICACIÓN] SUPABASE_SERVICE_ROLE_KEY rechazada por Supabase (HTTP ${testPerfiles.statusCode}).`);
+      console.error("Comprueba que la clave administrativa (service_role) sea la correcta.");
+      process.exit(1);
+    }
+
+    if (testPerfiles.statusCode !== 200) {
+      console.error(`\n[ERROR INESPERADO] Respuesta HTTP ${testPerfiles.statusCode} al verificar agentes_perfiles:`, testPerfiles.data);
+      process.exit(1);
     }
   } catch (err) {
     console.error("Error al comprobar agentes_perfiles:", err.message);
