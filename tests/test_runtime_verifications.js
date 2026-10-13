@@ -623,6 +623,97 @@ console.log("\n\x1b[37m=== CASO 5: Validación completa de perfiles en staging a
 })();
 
 // ----------------------------------------------------------------------------
+// CASO 6: Alta y correspondencias de FRANCISCO JAVIER AGUILAR CHAVES (78105181D)
+// ----------------------------------------------------------------------------
+console.log("\n\x1b[37m=== CASO 6: Alta y correspondencias de FRANCISCO JAVIER AGUILAR CHAVES ===\x1b[0m");
+
+(function testAltaAguilarChaves() {
+  const sheetRows = [
+    ["AGENTE", "COMI"],
+    ["FRANCISCO JAVIER MORA ANDREU", "510.00"],
+    ["FRANCISCO JAVIER AGUILAR CHAVES", "640.50"],
+    ["COMERCIAL TEST A", "350.50"]
+  ];
+
+  // 6.1 Desambiguación y emparejamiento exacto de comisiones
+  apiComisiones._setVerifySupabaseTokenForTesting((token, cb) => {
+    cb(null, { id: 'uid-78105181D', email: '78105181d@asistente.internal' });
+  });
+  apiComisiones._setFetchUserProfileForTesting((token, u, cb) => {
+    cb(null, {
+      dni: '78105181D',
+      nombre: 'FRANCISCO JAVIER AGUILAR CHAVES',
+      rol: 'comercial',
+      activo: true,
+      must_change_password: false
+    });
+  });
+  apiComisiones._setGetGoogleAccessTokenForTesting((email, key, cb) => cb(null, "mock-token"));
+  apiComisiones._setFetchPrivateSheetValuesForTesting((token, sheetId, cb) => cb(null, sheetRows));
+
+  const reqAguilar = createMockHttp();
+  apiComisiones(reqAguilar.req, reqAguilar.res);
+
+  const dataAguilar = reqAguilar.res._jsonData || {};
+  const matchesAguilar = reqAguilar.res.statusCode === 200 &&
+                         dataAguilar.isGerente === false &&
+                         dataAguilar.dni === "78105181D" &&
+                         dataAguilar.comision === 640.50;
+
+  report(
+    "FRANCISCO JAVIER AGUILAR CHAVES (78105181D) -> Emparejamiento correcto en comisiones (640.50 €) e isGerente=false",
+    matchesAguilar,
+    `Comisión: ${dataAguilar.comision} | DNI: ${dataAguilar.dni} | isGerente: ${dataAguilar.isGerente}`
+  );
+
+  // 6.2 Desambiguación: MORA ANDREU no colisiona y recibe su propia comisión
+  apiComisiones._setVerifySupabaseTokenForTesting((token, cb) => {
+    cb(null, { id: 'uid-53770728V', email: '53770728v@asistente.internal' });
+  });
+  apiComisiones._setFetchUserProfileForTesting((token, u, cb) => {
+    cb(null, {
+      dni: '53770728V',
+      nombre: 'FRANCISCO JAVIER MORA ANDREU',
+      rol: 'comercial',
+      activo: true,
+      must_change_password: false
+    });
+  });
+
+  const reqMora = createMockHttp();
+  apiComisiones(reqMora.req, reqMora.res);
+
+  const dataMora = reqMora.res._jsonData || {};
+  const matchesMora = reqMora.res.statusCode === 200 &&
+                      dataMora.isGerente === false &&
+                      dataMora.dni === "53770728V" &&
+                      dataMora.comision === 510.00;
+
+  report(
+    "Desambiguación Francisco Javier -> MORA ANDREU (53770728V) recibe 510.00 € sin colisión con AGUILAR CHAVES",
+    matchesMora,
+    `Comisión Mora: ${dataMora.comision} | DNI: ${dataMora.dni}`
+  );
+
+  // 6.3 Script provision_alta_aguilar.js bloquea si faltan variables de entorno
+  const scriptPath = path.resolve(__dirname, '../scripts/provision_alta_aguilar.js');
+  const runNoEnv = spawnSync(process.execPath, [scriptPath], {
+    env: Object.assign({}, process.env, {
+      SUPABASE_URL: '',
+      SUPABASE_SERVICE_ROLE_KEY: ''
+    }),
+    encoding: 'utf8'
+  });
+
+  const blocksWithoutEnv = runNoEnv.status === 1 && (runNoEnv.stderr || '').includes('[BLOQUEO DE ENTORNO]');
+  report(
+    "provision_alta_aguilar.js -> Bloquea con Exit Code 1 si faltan variables administrativas de servidor",
+    blocksWithoutEnv,
+    `Exit code: ${runNoEnv.status} | Bloqueo preventivo: ${blocksWithoutEnv}`
+  );
+})();
+
+// ----------------------------------------------------------------------------
 // RESUMEN FINAL
 // ----------------------------------------------------------------------------
 console.log("\n\x1b[36m==================================================================\x1b[0m");

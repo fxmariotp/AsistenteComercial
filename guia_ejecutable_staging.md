@@ -27,20 +27,23 @@ cmdkey /list
 1. **Supabase:**
    - **Estado:** ❌ Creación automatizada de proyecto bloqueada por falta de credenciales de gestión.
    - **Permiso que falta:** Token de Personal Access (`SUPABASE_ACCESS_TOKEN`) y `organization_id` para invocar la API de gestión (`POST https://api.supabase.com/v1/projects`).
-   - **Aviso de coste / Facturación:** En el plan gratuito de Supabase (Free Tier) existe un límite estricto de **2 proyectos activos por organización**. Si la cuenta ya cuenta con 2 proyectos (ej. producción o desarrollos previos), la creación del proyecto aislado `asistente-comercial-staging` requiere obligatoriamente contratar el plan **Supabase Pro (25 $/mes + impuestos)**. No se realiza ninguna contratación sin autorización expresa previa.
+   - **Comprobación de acceso:** La clave disponible es la anon key del proyecto `bxgdtdzlijeaetlekbub`. Intentos de consultar la Management API (`GET https://api.supabase.com/v1/projects` y `/organizations`) devuelven `HTTP 401: JWT could not be decoded`.
+   - **Permiso que falta:** Personal Access Token (`SUPABASE_ACCESS_TOKEN` / `sbp_...`) para invocar la API de gestión de Supabase o ejecutar `supabase projects create`. Al no disponer de token de organización, no es posible inspeccionar el plan de la cuenta ni crear proyectos por API sin intervención humana.
 
 2. **Google Cloud / Sheets / Apps Script:**
    - **Estado:** ❌ Creación automatizada de recursos bloqueada.
    - **Permiso que falta:** Credencial de Service Account (`GOOGLE_APPLICATION_CREDENTIALS` / JSON con roles `roles/sheets.editor`, `roles/resourcemanager.projectCreator`) y sesión OAuth de Apps Script (`clasp login`) para desplegar Web Apps mediante API.
 
 3. **Vercel / GitHub:**
-   - **Estado:** ✅ Despliegue Preview por Git disponible y ejecutado.
-   - **Permiso verificado:** Acceso Git autenticado a `origin` (`https://github.com/fxmariotp/AsistenteComercial.git`).
-   - **Comando ejecutado:**
-     ```bash
-     git push origin security-phase1-prep
-     ```
-     La rama `security-phase1-prep` (commit `fddf916`) fue publicada con éxito en GitHub, lo que activa el pipeline automático de Vercel Preview asociado al repositorio.
+   - **Estado:** ✅ Despliegue Preview verificado empíricamente.
+   - **Pipeline GitHub / Vercel:** El commit `8868410` disparó el deployment ID `6938357693` con estado `success` creado por `vercel[bot]`.
+   - **URL real de Preview:** `https://asistente-comercial-j1nwf05l8-fxmariotps-projects.vercel.app`
+   - **Comportamiento HTTP verificado:** Todas las peticiones a la URL de Preview devuelven `HTTP 302` con cabecera `server: Vercel` y cuerpo `"Protected by Vercel Authentication"`. Esto certifica que el despliegue existe y está activo, pero protegido por la autenticación SSO / Deployment Protection de Vercel para entornos Preview.
+
+4. **Alta de FRANCISCO JAVIER AGUILAR CHAVES (78105181D):**
+   - **Estado:** ✅ Preparada en catálogos y script de migración; bloqueada para escritura inmediata en producción.
+   - **Comprobación de producción:** `GET https://bxgdtdzlijeaetlekbub.supabase.co/rest/v1/agentes_perfiles` devuelve `HTTP 404 (PGRST205: Could not find table public.agentes_perfiles)`. Producción aún opera con el esquema legacy `agentes_roles`.
+   - **Acción adoptada:** Para no restaurar almacenamiento inseguro en texto plano ni escribir en tablas inexistentes, se ha integrado al agente en todos los catálogos (`api/comisiones.js`, `index.html`, `login.html`, `Comerciales`), con 26 días laborables de vacaciones iniciales y script de aprovisionamiento `scripts/provision_alta_aguilar.js`.
 
 ---
 
