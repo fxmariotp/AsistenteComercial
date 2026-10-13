@@ -36,7 +36,8 @@
       "28750523V": "OLGA VILLA",
       "29502580C": "LIBRERO",
       "53343101Y": "NURIA CEBALLOS DURAN",
-      "53770728V": "FRANCISCO JAVIER MORA ANDREU"
+      "53770728V": "FRANCISCO JAVIER MORA ANDREU",
+      "78105181D": "FRANCISCO JAVIER AGUILAR CHAVES"
     };
     const dni = localStorage.getItem('comercial_dni');
     const name = localStorage.getItem('comercial_nombre');
@@ -12386,10 +12387,12 @@ const COMERCIALES = {
   "28750523V": "OLGA VILLA",
   "29502580C": "LIBRERO",
   "53343101Y": "NURIA CEBALLOS DURAN",
-  "53770728V": "FRANCISCO JAVIER MORA ANDREU"
+  "53770728V": "FRANCISCO JAVIER MORA ANDREU",
+  "78105181D": "FRANCISCO JAVIER AGUILAR CHAVES"
 };
 
 const DEFAULT_VACATIONS = {
+  "78105181D": [],
   "47539234M": ["2026-03-02", "2026-04-01", "2026-06-05", "2026-08-12", "2026-08-13", "2026-08-14", "2026-08-17", "2026-08-18", "2026-08-19", "2026-10-06", "2026-10-07", "2026-10-08", "2026-10-09"],
   "28727453Q": ["2026-03-20", "2026-03-30", "2026-03-31", "2026-05-05", "2026-06-05"],
   "47269867Z": ["2026-02-05", "2026-02-06", "2026-02-25", "2026-02-26", "2026-03-02", "2026-03-30", "2026-03-31", "2026-04-01", "2026-04-20", "2026-04-21", "2026-04-23", "2026-04-24", "2026-05-05", "2026-05-06", "2026-06-05"],
@@ -12763,9 +12766,12 @@ if (AGENT_ROLES['53343101Y'] === undefined) {
   AGENT_ROLES['53343101Y'] = 'evaria';
 }
 
-// Preasignar rol a Francisco Javier Mora Andreu a Comercial Renosur
+// Preasignar rol a Francisco Javier Mora Andreu y Francisco Javier Aguilar Chaves a Comercial Renosur
 if (AGENT_ROLES['53770728V'] === undefined) {
   AGENT_ROLES['53770728V'] = 'comercial';
+}
+if (AGENT_ROLES['78105181D'] === undefined) {
+  AGENT_ROLES['78105181D'] = 'comercial';
 }
 
 async function fetchAgentRolesFromCloud() {
@@ -14206,7 +14212,12 @@ const RENOSUR_ROSTER = [
   {
     dni: "53770728V",
     name: "FRANCISCO JAVIER MORA ANDREU",
-    keywords: ["FRANCISCO JAVIER", "JAVIER MORA", "FRANCISCO JAVIER MORA", "MORA ANDREU", "JAVI"]
+    keywords: ["FRANCISCO JAVIER MORA", "FRANCISCO JAVIER MORA ANDREU", "JAVIER MORA", "MORA ANDREU", "MORA"]
+  },
+  {
+    dni: "78105181D",
+    name: "FRANCISCO JAVIER AGUILAR CHAVES",
+    keywords: ["FRANCISCO JAVIER AGUILAR", "FRANCISCO JAVIER AGUILAR CHAVES", "JAVIER AGUILAR", "AGUILAR CHAVES", "AGUILAR"]
   },
   {
     dni: "47269866J",
