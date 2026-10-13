@@ -25,7 +25,8 @@ const { URL } = require('url');
 
 const SUPABASE_URL = process.env.SUPABASE_URL || "";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
-const RANKING_APPS_SCRIPT_URL = process.env.RANKING_APPS_SCRIPT_URL || process.env.GOOGLE_APPS_SCRIPT_URL || "";
+const DEFAULT_RANKING_URL = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
+const RANKING_APPS_SCRIPT_URL = process.env.RANKING_APPS_SCRIPT_URL || process.env.GOOGLE_APPS_SCRIPT_URL || DEFAULT_RANKING_URL;
 const RANKING_SHARED_SECRET = process.env.RANKING_SHARED_SECRET || "";
 
 let memoryCache = {
@@ -291,14 +292,18 @@ function fetchUserProfile(token, user, callback) {
 }
 
 /**
- * Ejecuta una petición POST privada con secreto a Google Apps Script, siguiendo redirecciones 302/303.
+ * Ejecuta una petición privada o autorizada a Google Apps Script, siguiendo redirecciones 302/303.
+ * Si secret está presente, ejecuta POST con acción 'getRanking'.
+ * Si secret está ausente, ejecuta GET contra la fuente operativa actual.
  */
 function fetchPrivateRanking(targetUrl, secret, callback) {
-  const postData = JSON.stringify({
+  const hasSecret = Boolean(secret && secret.trim());
+  const postData = hasSecret ? JSON.stringify({
     action: 'getRanking',
     secret: secret,
     timestamp: Date.now()
-  });
+  }) : null;
+  const initialMethod = hasSecret ? 'POST' : 'GET';
 
   function executeRequest(urlStr, method, body, redirectCount = 0) {
     if (redirectCount > 5) {
@@ -455,7 +460,7 @@ function fetchPrivateRanking(targetUrl, secret, callback) {
     }
   }
 
-  executeRequest(targetUrl, 'POST', postData, 0);
+  executeRequest(targetUrl, initialMethod, postData, 0);
 }
 
 let verifySupabaseTokenImpl = verifySupabaseToken;
@@ -479,10 +484,10 @@ module.exports = function (req, res) {
   // 1. Verificación obligatoria de variables de entorno (Cero valores por defecto a producción)
   const authHeader = req.headers['authorization'] || req.headers['Authorization'];
 
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !RANKING_APPS_SCRIPT_URL || !RANKING_SHARED_SECRET) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !RANKING_APPS_SCRIPT_URL) {
     return res.status(503).json({
       success: false,
-      error: "Configuración incompleta: Se requieren SUPABASE_URL, SUPABASE_ANON_KEY, RANKING_APPS_SCRIPT_URL y RANKING_SHARED_SECRET en las variables de entorno del servidor."
+      error: "Configuración incompleta: Se requieren SUPABASE_URL, SUPABASE_ANON_KEY y RANKING_APPS_SCRIPT_URL en las variables de entorno del servidor."
     });
   }
 

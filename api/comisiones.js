@@ -27,11 +27,12 @@ const { URL } = require('url');
  */
 
 // Variables de entorno estrictas (sin valores de producción predeterminados)
+const DEFAULT_SHEET_ID = "1ZFTf8S0Gvsq1UNOhhZ5cUbwyKpVTpAdlbbvyhUcp1lI";
 const SUPABASE_URL = process.env.SUPABASE_URL || "";
 const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
 const GOOGLE_SERVICE_ACCOUNT_EMAIL = process.env.GOOGLE_SERVICE_ACCOUNT_EMAIL || "";
 const GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY = process.env.GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || process.env.GOOGLE_PRIVATE_KEY || "";
-const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID || "";
+const GOOGLE_SHEET_ID = process.env.GOOGLE_SHEET_ID || DEFAULT_SHEET_ID;
 
 const RENOSUR_AGENTS = [
   // Cuentas de Staging aisladas (sintéticas)
@@ -435,10 +436,92 @@ function fetchPrivateSheetValues(accessToken, sheetId, callback) {
   }
 }
 
+/**
+ * Consulta la hoja de Google Sheets en formato CSV directamente (fuente operativa actual).
+ */
+function fetchCsvSheetValues(sheetId, callback) {
+  const targetUrl = `https://docs.google.com/spreadsheets/d/${sheetId}/gviz/tq?tqx=out:csv&t=${Date.now()}`;
+
+  function executeRequest(urlStr, redirectCount = 0) {
+    if (redirectCount > 5) {
+      return callback(new Error("Demasiadas redirecciones de Google Sheets"));
+    }
+
+    try {
+      const parsedUrl = new URL(urlStr);
+      if (parsedUrl.protocol !== 'https:') {
+        return callback(new Error("Protocolo de redirección inseguro: se requiere HTTPS"));
+      }
+
+      const host = parsedUrl.hostname.toLowerCase();
+      const isAllowedGoogleHost = host === 'docs.google.com' ||
+                                 host.endsWith('.google.com') ||
+                                 host.endsWith('.googleusercontent.com');
+
+      if (!isAllowedGoogleHost) {
+        return callback(new Error(`Destino no verificado: ${host}`));
+      }
+
+      const options = {
+        headers: {
+          'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+          'Accept': 'text/csv, text/plain, */*'
+        },
+        timeout: 12000
+      };
+
+      const req = https.get(parsedUrl, options, (res) => {
+        const { statusCode } = res;
+
+        if (statusCode >= 300 && statusCode < 400 && res.headers.location) {
+          const redirectLocation = res.headers.location;
+          let redirectUrl;
+          try {
+            redirectUrl = new URL(redirectLocation, urlStr);
+          } catch (urlErr) {
+            return callback(new Error("URL de redirección malformada: " + urlErr.message));
+          }
+          return executeRequest(redirectUrl.href, redirectCount + 1);
+        }
+
+        if (statusCode === 401 || statusCode === 403) {
+          return callback(new Error("La hoja de Google Sheets está en modo privado y requiere permisos de lectura."));
+        }
+
+        if (statusCode !== 200) {
+          return callback(new Error(`Google Sheets respondió con código HTTP ${statusCode}`));
+        }
+
+        let raw = '';
+        res.on('data', chunk => raw += chunk);
+        res.on('end', () => {
+          try {
+            const rows = parseCSV(raw);
+            return callback(null, rows);
+          } catch (e) {
+            return callback(new Error("Error parseando CSV de comisiones: " + e.message));
+          }
+        });
+      });
+
+      req.on('timeout', () => {
+        req.destroy();
+        callback(new Error("Timeout al consultar Google Sheets CSV"));
+      });
+      req.on('error', err => callback(err));
+    } catch (err) {
+      callback(err);
+    }
+  }
+
+  executeRequest(targetUrl, 0);
+}
+
 let verifySupabaseTokenImpl = verifySupabaseToken;
 let fetchUserProfileImpl = fetchUserProfile;
 let getGoogleAccessTokenImpl = getGoogleAccessToken;
 let fetchPrivateSheetValuesImpl = fetchPrivateSheetValues;
+let fetchCsvSheetValuesImpl = fetchCsvSheetValues;
 
 module.exports = function (req, res) {
   // CORS estricto
@@ -458,10 +541,10 @@ module.exports = function (req, res) {
   // 1. Verificación obligatoria de variables de entorno (Cero valores por defecto a producción)
   const authHeader = req.headers['authorization'] || req.headers['Authorization'];
 
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !GOOGLE_SERVICE_ACCOUNT_EMAIL || !GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY || !GOOGLE_SHEET_ID) {
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || !GOOGLE_SHEET_ID) {
     return res.status(503).json({
       success: false,
-      error: "Configuración incompleta: Se requieren SUPABASE_URL, SUPABASE_ANON_KEY, GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY y GOOGLE_SHEET_ID en las variables de entorno del servidor."
+      error: "Configuración incompleta: Se requieren SUPABASE_URL, SUPABASE_ANON_KEY y GOOGLE_SHEET_ID en las variables de entorno del servidor."
     });
   }
 
@@ -646,28 +729,45 @@ module.exports = function (req, res) {
         }
       }
 
-      // Flujo seguro en servidor: OAuth 2.0 con Service Account y Google Sheets API v4
-      getGoogleAccessTokenImpl(GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, (tokenErr, accessToken) => {
-        if (tokenErr || !accessToken) {
-          return res.status(502).json({
-            success: false,
-            error: "Error de autenticación con la cuenta de servicio de Google Sheets",
-            details: tokenErr ? tokenErr.message : "No se obtuvo token"
-          });
-        }
+      const hasServiceAccount = Boolean(GOOGLE_SERVICE_ACCOUNT_EMAIL && GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY);
 
-        fetchPrivateSheetValuesImpl(accessToken, GOOGLE_SHEET_ID, (fetchErr, sheetRows) => {
+      if (hasServiceAccount) {
+        // Flujo seguro en servidor: OAuth 2.0 con Service Account y Google Sheets API v4
+        getGoogleAccessTokenImpl(GOOGLE_SERVICE_ACCOUNT_EMAIL, GOOGLE_SERVICE_ACCOUNT_PRIVATE_KEY, (tokenErr, accessToken) => {
+          if (tokenErr || !accessToken) {
+            return res.status(502).json({
+              success: false,
+              error: "Error de autenticación con la cuenta de servicio de Google Sheets",
+              details: tokenErr ? tokenErr.message : "No se obtuvo token"
+            });
+          }
+
+          fetchPrivateSheetValuesImpl(accessToken, GOOGLE_SHEET_ID, (fetchErr, sheetRows) => {
+            if (fetchErr) {
+              return res.status(502).json({
+                success: false,
+                error: "Error al consultar la API v4 de Google Sheets",
+                details: fetchErr.message
+              });
+            }
+
+            processSheetRows(sheetRows);
+          });
+        });
+      } else {
+        // Flujo directo seguro en servidor: Google Sheets CSV (fuente operativa actual)
+        fetchCsvSheetValuesImpl(GOOGLE_SHEET_ID, (fetchErr, sheetRows) => {
           if (fetchErr) {
             return res.status(502).json({
               success: false,
-              error: "Error al consultar la API v4 de Google Sheets",
+              error: "Error al consultar la fuente de Google Sheets de comisiones",
               details: fetchErr.message
             });
           }
 
           processSheetRows(sheetRows);
         });
-      });
+      }
     });
   });
 };
@@ -676,4 +776,5 @@ module.exports._setVerifySupabaseTokenForTesting = (fn) => { verifySupabaseToken
 module.exports._setFetchUserProfileForTesting = (fn) => { fetchUserProfileImpl = fn || fetchUserProfile; };
 module.exports._setGetGoogleAccessTokenForTesting = (fn) => { getGoogleAccessTokenImpl = fn || getGoogleAccessToken; };
 module.exports._setFetchPrivateSheetValuesForTesting = (fn) => { fetchPrivateSheetValuesImpl = fn || fetchPrivateSheetValues; };
+module.exports._setFetchCsvSheetValuesForTesting = (fn) => { fetchCsvSheetValuesImpl = fn || fetchCsvSheetValues; };
 
