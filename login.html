@@ -436,12 +436,6 @@ async function attemptLogin() {
     return;
   }
   
-  const matchedName = COMERCIALES[inputDni];
-  if (!matchedName) {
-    errorMsg.textContent = "El DNI introducido no corresponde a ningún comercial.";
-    return;
-  }
-  
   submitBtn.disabled = true;
   submitBtn.textContent = "Accediendo...";
   errorMsg.textContent = "";
@@ -477,7 +471,15 @@ async function attemptLogin() {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    if (profileData && profileData.activo === false) {
+    if (!profileData) {
+      await supabaseClient.auth.signOut();
+      submitBtn.disabled = false;
+      submitBtn.textContent = "Acceder";
+      errorMsg.textContent = "Acceso denegado: Usuario sin perfil registrado en el sistema.";
+      return;
+    }
+
+    if (profileData.activo === false) {
       await supabaseClient.auth.signOut();
       submitBtn.disabled = false;
       submitBtn.textContent = "Acceder";
@@ -485,11 +487,13 @@ async function attemptLogin() {
       return;
     }
 
+    const agentName = profileData.nombre || (typeof COMERCIALES !== 'undefined' && COMERCIALES[inputDni]) || inputDni;
+
     // Comprobación autoritativa de cambio obligatorio de contraseña en base de datos
-    if (profileData && profileData.must_change_password === true) {
+    if (profileData.must_change_password === true) {
       pendingAuthUser = user;
-      pendingMatchedName = matchedName;
-      pendingDni = inputDni;
+      pendingMatchedName = agentName;
+      pendingDni = profileData.dni || inputDni;
       submitBtn.disabled = false;
       submitBtn.textContent = "Acceder";
       document.getElementById('modal-mandatory-change').style.display = 'flex';
@@ -501,7 +505,7 @@ async function attemptLogin() {
     localStorage.removeItem('renosur_agent_roles');
     localStorage.removeItem('renosur_comisiones_cache');
 
-    await writeLoginLogToSupabase(inputDni, matchedName, user.id);
+    await writeLoginLogToSupabase(inputDni, agentName, user.id);
     window.location.href = 'index.html';
   } catch (err) {
     console.error("Error en autenticación:", err);
