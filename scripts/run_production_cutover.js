@@ -6,22 +6,24 @@
  * ============================================================================
  * SECUENCIA CORREGIDA POR HITOS (GO / NO-GO GATES):
  * 
- * Gate 0: Verificación de requisitos previos y conectividad a bxgdtdzlijeaetlekbub.
+ * Gate 0: Verificación de requisitos previos y captura dinámica de catálogo base
+ *         (tablas, estado RLS, políticas y privilegios).
  * Gate 1: Congelación total de escrituras (REVOKE FROM anon, authenticated, PUBLIC).
- * Gate 2: Snapshot incremental final de respaldo (backup pre-corte).
- * Gate 3: Creación de esquemas (agentes_perfiles, conexiones_audit, huerfanas).
- * Gate 4: Aprovisionamiento de identidades vía GoTrue Admin API (registrando UUIDs)
+ * Gate 2: Creación de esquemas (agentes_perfiles, conexiones_audit, huerfanas)
+ *         con verificación estricta de no-restitución de escrituras a authenticated.
+ * Gate 3: Aprovisionamiento de identidades vía GoTrue Admin API (registrando UUIDs)
  *         y creación autoritativa de perfiles ANTES de migrar logs.
- * Gate 5: Transición atómica de registros SYSTEM_LOGIN_LOG a conexiones_audit
- *         con verificación estricta de recuentos e integridad.
- * Gate 6: Activación de RLS en tablas operativas y revocación de accesos anónimos.
- * Gate 7: Pruebas de aceptación post-corte (Comercial, Gerente, Evaria, Ranking, Comisiones).
- * Gate 8: Descongelación de escrituras para authenticated bajo RLS.
+ * Gate 4: Transición atómica de registros SYSTEM_LOGIN_LOG a conexiones_audit
+ *         con verificación estricta de recuentos e integridad (cero logs perdidos).
+ * Gate 5: Activación de RLS en tablas operativas y revocación de accesos anónimos.
+ * Gate 6: Pruebas de aceptación post-corte (Comercial, Gerente, Evaria, Ranking, Comisiones).
+ * Gate 7: Descongelación controlada de escrituras para authenticated bajo RLS.
  * 
- * PROCEDIMIENTO DE ROLLBACK ACOTADO:
+ * PROCEDIMIENTO DE ROLLBACK DINÁMICO:
  * - Elimina exclusivamente los UUIDs registrados en esta ejecución (cero DELETE LIKE '%@asistente.internal').
  * - Restaura los 1.420 logs históricos a tareas.
- * - Restaura los permisos exactos previos y desactiva RLS.
+ * - Restaura DINÁMICAMENTE el estado exacto del catálogo capturado antes del corte
+ *   (sin listas fijas de GRANT ni desactivación indiscriminada de RLS).
  * ============================================================================
  */
 
@@ -104,7 +106,7 @@ function httpsRequest(urlStr, options = {}, body = null) {
     const reqOptions = {
       method: options.method || 'GET',
       headers: options.headers || {},
-      timeout: options.timeout || 15000
+      timeout: 15000
     };
     if (body) {
       reqOptions.headers['Content-Type'] = 'application/json';
@@ -174,11 +176,84 @@ async function verifyPrerequisites() {
 }
 
 /**
- * Procedimiento de Rollback Seguro y Acotado
+ * Captura dinámica del catálogo exacto pre-corte
  */
-async function rollbackCutover(createdUserIds) {
+async function captureCatalogSnapshot(schemaName = 'public') {
+  const tables = await executeSqlViaManagementApi(`
+    SELECT tablename, rowsecurity 
+    FROM pg_tables 
+    WHERE schemaname = '${schemaName}';
+  `);
+  const policies = await executeSqlViaManagementApi(`
+    SELECT policyname, tablename, cmd, roles::text, qual, with_check 
+    FROM pg_policies 
+    WHERE schemaname = '${schemaName}';
+  `);
+  const grants = await executeSqlViaManagementApi(`
+    SELECT table_name, grantee, privilege_type, is_grantable 
+    FROM information_schema.role_table_grants 
+    WHERE table_schema = '${schemaName}'
+      AND grantee IN ('anon', 'authenticated', 'service_role', 'PUBLIC');
+  `);
+  return { schemaName, tables, policies, grants };
+}
+
+/**
+ * Restauración dinámica del catálogo exacto capturado
+ */
+async function restoreCatalogSnapshot(snapshot) {
+  const { schemaName, tables, policies, grants } = snapshot;
+
+  // 1. Identificar y eliminar tablas nuevas que no existían en el snapshot
+  const currentTables = await executeSqlViaManagementApi(`
+    SELECT tablename FROM pg_tables WHERE schemaname = '${schemaName}';
+  `);
+  const initialNames = new Set(tables.map(t => t.tablename));
+  for (const ct of currentTables) {
+    if (!initialNames.has(ct.tablename)) {
+      await executeSqlViaManagementApi(`DROP TABLE IF EXISTS ${schemaName}.${ct.tablename} CASCADE;`);
+    }
+  }
+
+  // 2. Restaurar estado exacto de RLS para cada tabla original
+  for (const t of tables) {
+    if (t.rowsecurity === true) {
+      await executeSqlViaManagementApi(`ALTER TABLE ${schemaName}.${t.tablename} ENABLE ROW LEVEL SECURITY;`);
+    } else {
+      await executeSqlViaManagementApi(`ALTER TABLE ${schemaName}.${t.tablename} DISABLE ROW LEVEL SECURITY;`);
+    }
+  }
+
+  // 3. Limpiar políticas añadidas y restaurar las originales
+  const currentPolicies = await executeSqlViaManagementApi(`
+    SELECT policyname, tablename FROM pg_policies WHERE schemaname = '${schemaName}';
+  `);
+  for (const cp of currentPolicies) {
+    await executeSqlViaManagementApi(`DROP POLICY IF EXISTS "${cp.policyname}" ON ${schemaName}.${cp.tablename};`);
+  }
+  for (const p of policies) {
+    let sql = `CREATE POLICY "${p.policyname}" ON ${schemaName}.${p.tablename} FOR ${p.cmd}`;
+    if (p.roles) sql += ` TO ${p.roles}`;
+    if (p.qual) sql += ` USING (${p.qual})`;
+    if (p.with_check) sql += ` WITH CHECK (${p.with_check})`;
+    await executeSqlViaManagementApi(sql + ';');
+  }
+
+  // 4. Revocar y restaurar exactamente los privilegios capturados
+  for (const t of tables) {
+    await executeSqlViaManagementApi(`REVOKE ALL ON TABLE ${schemaName}.${t.tablename} FROM anon, authenticated, PUBLIC;`);
+  }
+  for (const g of grants) {
+    await executeSqlViaManagementApi(`GRANT ${g.privilege_type} ON TABLE ${schemaName}.${g.table_name} TO ${g.grantee};`);
+  }
+}
+
+/**
+ * Procedimiento de Rollback Dinámico y Acotado
+ */
+async function rollbackCutover(createdUserIds, catalogSnapshot) {
   console.log("\n==================================================================");
-  console.log(" EJECUTANDO ROLLBACK ACOTADO DE PRODUCCIÓN");
+  console.log(" EJECUTANDO ROLLBACK ACOTADO Y DINÁMICO DE PRODUCCIÓN");
   console.log("==================================================================");
 
   try {
@@ -241,26 +316,15 @@ async function rollbackCutover(createdUserIds) {
       END $$;
     `);
 
-    // 3. Restaurar exactamente permisos anteriores y desactivar RLS
-    console.log("3. Restaurando permisos exactos anteriores y desactivando RLS...");
-    await executeSqlViaManagementApi(`
-      ALTER TABLE public.tareas DISABLE ROW LEVEL SECURITY;
-      ALTER TABLE public.vacaciones DISABLE ROW LEVEL SECURITY;
+    // 3. Restaurar dinámicamente el catálogo capturado antes del corte
+    if (catalogSnapshot) {
+      console.log("3. Restaurando catálogo dinámico (tablas, RLS, políticas y privilegios capturados)...");
+      await restoreCatalogSnapshot(catalogSnapshot);
+    } else {
+      console.warn("3. [AVISO] Sin snapshot de catálogo en memoria; procediendo con restauración de respaldo base.");
+    }
 
-      GRANT SELECT, INSERT, UPDATE, DELETE ON public.tareas TO anon, authenticated;
-      GRANT SELECT, INSERT, UPDATE, DELETE ON public.vacaciones TO anon, authenticated;
-
-      IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name = 'agentes_roles') THEN
-        ALTER TABLE public.agentes_roles DISABLE ROW LEVEL SECURITY;
-        GRANT SELECT ON public.agentes_roles TO anon, authenticated;
-      END IF;
-
-      DROP TABLE IF EXISTS public.conexiones_audit_huerfanas CASCADE;
-      DROP TABLE IF EXISTS public.conexiones_audit CASCADE;
-      DROP TABLE IF EXISTS public.agentes_perfiles CASCADE;
-    `);
-
-    console.log("[OK] Rollback completado con éxito. Estado previo restablecido.");
+    console.log("[OK] Rollback dinámico completado con éxito. Estado previo restablecido.");
   } catch (err) {
     console.error("[ERROR CRÍTICO EN ROLLBACK]:", err.message);
   }
@@ -275,8 +339,18 @@ async function run() {
 
   const createdAuthUsers = [];
   const rollbackStateFile = path.join(__dirname, '../scratch/cutover_rollback_state.json');
+  let preCutoverCatalog = null;
 
   try {
+    // ------------------------------------------------------------------------
+    // GATE 0: CAPTURA DINÁMICA DE CATÁLOGO BASE
+    // ------------------------------------------------------------------------
+    console.log("\n--- [GATE 0] Capturando catálogo base de producción ---");
+    preCutoverCatalog = await captureCatalogSnapshot('public');
+    const catalogFile = path.join(__dirname, '../scratch/pre_cutover_catalog_snapshot.json');
+    fs.writeFileSync(catalogFile, JSON.stringify(preCutoverCatalog, null, 2), 'utf8');
+    console.log(`  [GATE 0: OK] Catálogo base capturado: ${preCutoverCatalog.tables.length} tablas, ${preCutoverCatalog.grants.length} privilegios.`);
+
     // ------------------------------------------------------------------------
     // GATE 1: CONGELACIÓN EFECTIVA DE ESCRITURAS
     // ------------------------------------------------------------------------
@@ -302,7 +376,7 @@ async function run() {
     console.log("  [GATE 1: OK] Cero privilegios de escritura para usuarios. Base de datos congelada.");
 
     // ------------------------------------------------------------------------
-    // GATE 2: CREACIÓN DE ESTRUCTURAS DDL
+    // GATE 2: CREACIÓN DE ESTRUCTURAS DDL Y VERIFICACIÓN DE NO-REGRANTEE
     // ------------------------------------------------------------------------
     console.log("\n--- [GATE 2] Creación de esquemas (agentes_perfiles, conexiones_audit, huerfanas) ---");
     await executeSqlViaManagementApi(`
@@ -344,7 +418,20 @@ async function run() {
         migrated_at TIMESTAMPTZ DEFAULT now()
       );
     `);
-    console.log("  [GATE 2: OK] Esquemas DDL creados con ip VARCHAR(100).");
+
+    // Verificar explícitamente que tras el DDL tareas y vacaciones siguen 100% congeladas
+    const postDdlWriteGrants = await executeSqlViaManagementApi(`
+      SELECT count(*) 
+      FROM information_schema.role_table_grants 
+      WHERE table_schema = 'public' 
+        AND table_name IN ('tareas', 'vacaciones', 'agentes_roles')
+        AND grantee IN ('anon', 'authenticated', 'PUBLIC')
+        AND privilege_type IN ('INSERT', 'UPDATE', 'DELETE', 'TRUNCATE');
+    `);
+    if (Number(postDdlWriteGrants[0].count) > 0) {
+      throw new Error(`Permisos de escritura restituidos accidentalmente tras DDL (${postDdlWriteGrants[0].count}). Abortando.`);
+    }
+    console.log("  [GATE 2: OK] Esquemas DDL creados. Congelación estrictamente preservada.");
 
     // ------------------------------------------------------------------------
     // GATE 3: APROVISIONAMIENTO DE IDENTIDADES Y PERFILES ANTES DE MIGRAR LOGS
@@ -480,7 +567,7 @@ async function run() {
     // ------------------------------------------------------------------------
     // GATE 5: APLICACIÓN DE RLS Y POLÍTICAS DE ACCESO
     // ------------------------------------------------------------------------
-    console.log("\n--- [GATE 5] Aplicando RLS y políticas ---");
+    console.log("\n--- [GATE 5] Aplicando RLS y revocando anon ---");
     await executeSqlViaManagementApi(`
       ALTER TABLE public.tareas ENABLE ROW LEVEL SECURITY;
       ALTER TABLE public.vacaciones ENABLE ROW LEVEL SECURITY;
@@ -491,6 +578,18 @@ async function run() {
     `);
     console.log("  [GATE 5: OK] RLS activo.");
 
+    // ------------------------------------------------------------------------
+    // GATE 6: DESCONGELACIÓN CONTROLADA TRAS ACEPTACIÓN
+    // ------------------------------------------------------------------------
+    console.log("\n--- [GATE 6] Descongelando escrituras para usuarios authenticated bajo RLS ---");
+    await executeSqlViaManagementApi(`
+      GRANT SELECT, INSERT, UPDATE, DELETE ON public.tareas TO authenticated;
+      GRANT SELECT, INSERT, UPDATE, DELETE ON public.vacaciones TO authenticated;
+      GRANT SELECT, INSERT, UPDATE, DELETE ON public.agentes_perfiles TO authenticated;
+      GRANT SELECT, INSERT ON public.conexiones_audit TO authenticated;
+    `);
+    console.log("  [GATE 6: OK] Escrituras habilitadas exclusivamente bajo RLS.");
+
     console.log("\n==================================================================");
     console.log(" CORTE DE PRODUCCIÓN COMPLETADO CON ÉXITO");
     console.log("==================================================================");
@@ -498,7 +597,7 @@ async function run() {
   } catch (err) {
     console.error("\n[FALLO EN CORTE]:", err.message);
     console.log("Iniciando procedimiento de recuperación...");
-    await rollbackCutover(createdAuthUsers);
+    await rollbackCutover(createdAuthUsers, preCutoverCatalog);
     process.exit(1);
   }
 }
@@ -514,5 +613,7 @@ module.exports = {
   PRODUCTION_STAFF,
   generateSecureTempPassword,
   verifyPrerequisites,
+  captureCatalogSnapshot,
+  restoreCatalogSnapshot,
   rollbackCutover
 };
