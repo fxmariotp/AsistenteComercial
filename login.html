@@ -448,8 +448,15 @@ async function attemptLogin() {
   }
 
   try {
+    // Normalización de alias históricos a identificadores canónicos (sin duplicar perfiles)
+    const CANONICAL_ALIASES = {
+      "MARIA": "MARIAC",
+      "MIGUEL": "MIGUELR"
+    };
+    const resolvedDni = CANONICAL_ALIASES[inputDni] || inputDni;
+
     // Autenticación segura mediante Supabase Auth con dominio interno determinista
-    const authEmail = `${inputDni.toLowerCase()}@asistente.internal`;
+    const authEmail = `${resolvedDni.toLowerCase()}@asistente.internal`;
     const { data, error } = await supabaseClient.auth.signInWithPassword({
       email: authEmail,
       password: inputPass
@@ -503,9 +510,8 @@ async function attemptLogin() {
     // Purgar inmediatamente cualquier residuo de contraseñas o cachés antiguas en claro
     localStorage.removeItem('cached_agent_passwords');
     localStorage.removeItem('renosur_agent_roles');
-    localStorage.removeItem('renosur_comisiones_cache');
-
-    await writeLoginLogToSupabase(inputDni, agentName, user.id);
+    const canonicalDni = profileData.dni || resolvedDni;
+    await writeLoginLogToSupabase(canonicalDni, agentName, user.id);
     window.location.href = 'index.html';
   } catch (err) {
     console.error("Error en autenticación:", err);
