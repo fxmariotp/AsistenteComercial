@@ -14993,21 +14993,45 @@ async function fetchAllVacationsFromCloud() {
   }
 }
 
+function showCloudSyncWarning(msg) {
+  let warnEl = document.getElementById('cloud-sync-warning-banner');
+  if (!warnEl) {
+    warnEl = document.createElement('div');
+    warnEl.id = 'cloud-sync-warning-banner';
+    warnEl.style.cssText = 'position:fixed;top:16px;left:50%;transform:translateX(-50%);background:#dc2626;color:#ffffff;padding:12px 24px;border-radius:8px;font-size:14px;font-weight:600;z-index:999999;box-shadow:0 6px 16px rgba(0,0,0,0.35);text-align:center;max-width:90%;border:1px solid #b91c1c;';
+    document.body.appendChild(warnEl);
+  }
+  warnEl.textContent = msg || '⚠️ Aviso del sistema: No se pudo guardar en la nube (Mantenimiento en curso o sesión caducada). Por favor, recarga la página.';
+  setTimeout(() => {
+    if (warnEl && warnEl.parentNode) warnEl.parentNode.removeChild(warnEl);
+  }, 9000);
+}
+
 async function addVacationDayToCloud(dni, dateStr) {
   if (!supabaseClient) return;
   try {
-    await supabaseClient.from('vacaciones').insert({ dni, fecha: dateStr });
+    const { error } = await supabaseClient.from('vacaciones').insert({ dni, fecha: dateStr });
+    if (error) {
+      console.error("Error adding vacation day to cloud:", error);
+      showCloudSyncWarning();
+    }
   } catch (e) {
     console.error("Error adding vacation day to cloud", e);
+    showCloudSyncWarning();
   }
 }
 
 async function deleteVacationDayFromCloud(dni, dateStr) {
   if (!supabaseClient) return;
   try {
-    await supabaseClient.from('vacaciones').delete().eq('dni', dni).eq('fecha', dateStr);
+    const { error } = await supabaseClient.from('vacaciones').delete().eq('dni', dni).eq('fecha', dateStr);
+    if (error) {
+      console.error("Error deleting vacation day from cloud:", error);
+      showCloudSyncWarning();
+    }
   } catch (e) {
     console.error("Error deleting vacation day from cloud", e);
+    showCloudSyncWarning();
   }
 }
 
@@ -15102,9 +15126,11 @@ async function saveAgendaItemToCloud(item) {
     const { error } = await supabaseClient.from('tareas').upsert(payload);
     if (error) {
       console.error("Error saving agenda item to cloud:", error);
+      showCloudSyncWarning();
     }
   } catch (e) {
     console.error("Exception saving agenda item to cloud:", e);
+    showCloudSyncWarning();
   }
 }
 
@@ -15114,9 +15140,11 @@ async function deleteAgendaItemFromCloud(id) {
     const { error } = await supabaseClient.from('tareas').delete().eq('id', id.toString());
     if (error) {
       console.error("Error deleting agenda item from cloud:", error);
+      showCloudSyncWarning();
     }
   } catch (e) {
     console.error("Exception deleting agenda item from cloud:", e);
+    showCloudSyncWarning();
   }
 }
 

@@ -89,7 +89,7 @@ CREATE TABLE IF NOT EXISTS public.conexiones_audit (
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     dni VARCHAR(20) NOT NULL,
     nombre VARCHAR(150) NOT NULL,
-    ip VARCHAR(50) NOT NULL DEFAULT 'Desconocida',
+    ip VARCHAR(100) NOT NULL DEFAULT 'Desconocida',
     fecha DATE NOT NULL DEFAULT CURRENT_DATE,
     hora TIME NOT NULL DEFAULT CURRENT_TIME,
     detalles JSONB DEFAULT '{}'::jsonb,

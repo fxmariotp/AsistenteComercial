@@ -55,7 +55,7 @@ CREATE TABLE IF NOT EXISTS public.conexiones_audit_huerfanas (
     id VARCHAR(100) PRIMARY KEY,
     raw_dni VARCHAR(50),
     raw_nombre VARCHAR(150),
-    ip VARCHAR(50),
+    ip VARCHAR(100),
     fecha DATE,
     hora TIME,
     detalles JSONB,
