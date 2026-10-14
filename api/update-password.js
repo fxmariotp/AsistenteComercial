@@ -25,6 +25,23 @@ let fetchUserProfileImpl = fetchUserProfile;
 let updateSupabaseAuthPasswordImpl = updateSupabaseAuthPassword;
 let liftRestrictionInDatabaseImpl = liftRestrictionInDatabase;
 
+/**
+ * Genera cabeceras administrativas compatibles tanto con claves legacy JWT (ey...)
+ * como con claves modernas opacas (sb_secret_...).
+ * Evita inyectar Bearer token inválido en Authorization cuando la clave es sb_secret.
+ */
+function getAdminHeaders(extraHeaders = {}) {
+  const isJwt = typeof SUPABASE_SERVICE_ROLE_KEY === 'string' && SUPABASE_SERVICE_ROLE_KEY.startsWith('ey');
+  const headers = {
+    'apikey': SUPABASE_SERVICE_ROLE_KEY,
+    ...extraHeaders
+  };
+  if (isJwt) {
+    headers['Authorization'] = `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`;
+  }
+  return headers;
+}
+
 function verifySupabaseToken(token, callback) {
   try {
     const authUrl = new URL('/auth/v1/user', SUPABASE_URL);
@@ -68,10 +85,7 @@ function fetchUserProfile(userId, callback) {
   try {
     const profileUrl = new URL(`/rest/v1/agentes_perfiles?user_id=eq.${userId}&select=id,dni,nombre,rol,activo,must_change_password`, SUPABASE_URL);
     const options = {
-      headers: {
-        'apikey': SUPABASE_SERVICE_ROLE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`
-      },
+      headers: getAdminHeaders(),
       timeout: 8000
     };
 
@@ -112,12 +126,10 @@ function updateSupabaseAuthPassword(userId, newPassword, callback) {
     
     const options = {
       method: 'PUT',
-      headers: {
+      headers: getAdminHeaders({
         'Content-Type': 'application/json',
-        'Content-Length': Buffer.byteLength(postData),
-        'apikey': SUPABASE_SERVICE_ROLE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`
-      },
+        'Content-Length': Buffer.byteLength(postData)
+      }),
       timeout: 8000
     };
 
@@ -162,13 +174,11 @@ function liftRestrictionInDatabase(userId, callback) {
 
     const options = {
       method: 'PATCH',
-      headers: {
+      headers: getAdminHeaders({
         'Content-Type': 'application/json',
         'Content-Length': Buffer.byteLength(postData),
-        'apikey': SUPABASE_SERVICE_ROLE_KEY,
-        'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE_KEY}`,
         'Prefer': 'return=representation'
-      },
+      }),
       timeout: 8000
     };
 
