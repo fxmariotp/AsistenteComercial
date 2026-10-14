@@ -437,9 +437,24 @@ async function run() {
     // GATE 3: APROVISIONAMIENTO DE IDENTIDADES Y PERFILES ANTES DE MIGRAR LOGS
     // ------------------------------------------------------------------------
     console.log("\n--- [GATE 3] Aprovisionamiento de identidades vía GoTrue Admin API ---");
+    const credentialsRows = [
+      ["DNI", "NOMBRE", "ROL", "EMAIL_ACCESO", "PASSWORD_TEMPORAL", "DEBE_CAMBIAR_PASS"]
+    ];
+    const staffCredentialsMap = {};
+
     for (const staff of PRODUCTION_STAFF) {
       const email = `${staff.dni.toLowerCase()}@asistente.internal`;
       const tempPassword = generateSecureTempPassword();
+      staffCredentialsMap[staff.dni] = { email, tempPassword, rol: staff.rol, nombre: staff.nombre };
+
+      credentialsRows.push([
+        staff.dni,
+        `"${staff.nombre}"`,
+        staff.rol,
+        email,
+        `"${tempPassword}"`,
+        "true"
+      ]);
 
       // Crear usuario en GoTrue Admin API
       const createRes = await httpsRequest(`${PROD_URL}/auth/v1/admin/users`, {
@@ -464,7 +479,7 @@ async function run() {
         createdAuthUsers.push({ id: userId, email, dni: staff.dni });
         console.log(`  + Usuario GoTrue creado: ${staff.nombre} (${staff.dni}) -> ${userId}`);
       } else {
-        // Si ya existía, obtener su id
+        // Si ya existía, obtener su id y actualizar contraseña
         const listRes = await httpsRequest(`${PROD_URL}/auth/v1/admin/users`, {
           method: 'GET',
           headers: {
@@ -477,7 +492,15 @@ async function run() {
           throw new Error(`Fallo al crear usuario ${staff.dni}: ${createRes.raw}`);
         }
         userId = existing.id;
-        console.log(`  = Usuario GoTrue preexistente detectado: ${staff.nombre} (${staff.dni}) -> ${userId}`);
+        // Actualizar contraseña al valor temporal generado
+        await httpsRequest(`${PROD_URL}/auth/v1/admin/users/${userId}`, {
+          method: 'PUT',
+          headers: {
+            'Authorization': `Bearer ${PROD_SERVICE_ROLE_KEY}`,
+            'apikey': PROD_SERVICE_ROLE_KEY
+          }
+        }, JSON.stringify({ password: tempPassword }));
+        console.log(`  = Usuario GoTrue preexistente actualizado: ${staff.nombre} (${staff.dni}) -> ${userId}`);
       }
 
       // Guardar perfil en agentes_perfiles
@@ -494,8 +517,11 @@ async function run() {
       `);
     }
 
+    // Exportar CSV confidencial de distribución
+    const credentialsCsvPath = path.join(__dirname, '../scratch/production_credentials_distribution.csv');
+    fs.writeFileSync(credentialsCsvPath, credentialsRows.map(r => r.join(",")).join("\n"), 'utf8');
     fs.writeFileSync(rollbackStateFile, JSON.stringify(createdAuthUsers, null, 2), 'utf8');
-    console.log(`  [GATE 3: OK] 20 perfiles aprovisionados ANTES de migrar logs.`);
+    console.log(`  [GATE 3: OK] 20 perfiles aprovisionados. Credenciales guardadas en: ${credentialsCsvPath}`);
 
     // ------------------------------------------------------------------------
     // GATE 4: TRANSICIÓN ATÓMICA DE LOGS DE CONEXIÓN
@@ -505,7 +531,7 @@ async function run() {
       SELECT count(*) FROM public.tareas WHERE dni = 'SYSTEM_LOGIN_LOG';
     `);
     const totalOriginal = Number(countRes[0].count);
-    console.log(`  Total original en tareas: ${totalOriginal}`);
+    console.log(`  Total original de logs en tareas: ${totalOriginal}`);
 
     await executeSqlViaManagementApi(`
       INSERT INTO public.conexiones_audit (id, user_id, dni, nombre, ip, fecha, hora, detalles, created_at)
@@ -549,7 +575,7 @@ async function run() {
     const huerfanos = Number(auditCounts.find(r => r.tbl === 'conexiones_audit_huerfanas').count);
     const totalPreservados = migrados + huerfanos;
 
-    console.log(`  Migrados con perfil: ${migrados}, Huérfanos históricos: ${huerfanos}, Total: ${totalPreservados}`);
+    console.log(`  Migrados con perfil: ${migrados}, Huérfanos históricos: ${huerfanos}, Total preservados: ${totalPreservados}`);
     if (totalPreservados !== totalOriginal) {
       throw new Error(`ABORTANDO: Recuento desigual. Original: ${totalOriginal}, Preservados: ${totalPreservados}`);
     }
@@ -562,36 +588,282 @@ async function run() {
           OR id IN (SELECT id FROM public.conexiones_audit_huerfanas)
         );
     `);
-    console.log(`  [GATE 4: OK] Transición completada. Cero logs perdidos.`);
+
+    const remainingTasks = await executeSqlViaManagementApi(`SELECT count(*) FROM public.tareas;`);
+    console.log(`  Tareas reales de agenda restantes: ${remainingTasks[0].count} (esperadas: 118)`);
+    if (Number(remainingTasks[0].count) !== 118) {
+      throw new Error(`ABORTANDO: Tareas restantes (${remainingTasks[0].count}) difiere de 118.`);
+    }
+    console.log(`  [GATE 4: OK] Transición completada. Cero logs perdidos, agendas intactas.`);
 
     // ------------------------------------------------------------------------
-    // GATE 5: APLICACIÓN DE RLS Y POLÍTICAS DE ACCESO
+    // GATE 5: FUNCIONES DE SEGURIDAD, POLÍTICAS RLS Y REVOCACIONES
     // ------------------------------------------------------------------------
-    console.log("\n--- [GATE 5] Aplicando RLS y revocando anon ---");
+    console.log("\n--- [GATE 5] Creación de funciones SECURITY DEFINER, RLS y políticas ---");
     await executeSqlViaManagementApi(`
-      ALTER TABLE public.tareas ENABLE ROW LEVEL SECURITY;
-      ALTER TABLE public.vacaciones ENABLE ROW LEVEL SECURITY;
+      -- 1. Hardening esquema
+      REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+      REVOKE CREATE ON SCHEMA public FROM anon;
+
+      -- 2. Trigger updated_at
+      CREATE OR REPLACE FUNCTION public.handle_updated_at()
+      RETURNS TRIGGER AS $$
+      BEGIN
+          NEW.updated_at = now();
+          RETURN NEW;
+      END;
+      $$ LANGUAGE plpgsql;
+
+      DROP TRIGGER IF EXISTS trigger_agentes_perfiles_updated_at ON public.agentes_perfiles;
+      CREATE TRIGGER trigger_agentes_perfiles_updated_at
+          BEFORE UPDATE ON public.agentes_perfiles
+          FOR EACH ROW
+          EXECUTE FUNCTION public.handle_updated_at();
+
+      -- 3. Funciones SECURITY DEFINER
+      CREATE OR REPLACE FUNCTION public.current_user_dni()
+      RETURNS VARCHAR(20)
+      LANGUAGE sql
+      STABLE
+      SECURITY DEFINER
+      SET search_path = public, auth
+      AS $$
+          SELECT p.dni FROM public.agentes_perfiles p
+          WHERE p.user_id = auth.uid() 
+            AND p.activo = true
+            AND p.must_change_password = false
+          LIMIT 1;
+      $$;
+
+      CREATE OR REPLACE FUNCTION public.is_gerente()
+      RETURNS BOOLEAN
+      LANGUAGE sql
+      STABLE
+      SECURITY DEFINER
+      SET search_path = public, auth
+      AS $$
+          SELECT EXISTS (
+              SELECT 1 FROM public.agentes_perfiles p
+              WHERE p.user_id = auth.uid() 
+                AND p.rol = 'gerente' 
+                AND p.activo = true
+                AND p.must_change_password = false
+          );
+      $$;
+
+      CREATE OR REPLACE FUNCTION public.is_active_agent()
+      RETURNS BOOLEAN
+      LANGUAGE sql
+      STABLE
+      SECURITY DEFINER
+      SET search_path = public, auth
+      AS $$
+          SELECT EXISTS (
+              SELECT 1 FROM public.agentes_perfiles p
+              WHERE p.user_id = auth.uid() 
+                AND p.activo = true
+                AND p.must_change_password = false
+          );
+      $$;
+
+      REVOKE ALL ON FUNCTION public.current_user_dni() FROM PUBLIC, anon;
+      GRANT EXECUTE ON FUNCTION public.current_user_dni() TO authenticated;
+
+      REVOKE ALL ON FUNCTION public.is_gerente() FROM PUBLIC, anon;
+      GRANT EXECUTE ON FUNCTION public.is_gerente() TO authenticated;
+
+      REVOKE ALL ON FUNCTION public.is_active_agent() FROM PUBLIC, anon;
+      GRANT EXECUTE ON FUNCTION public.is_active_agent() TO authenticated;
+
+      -- 4. Activar RLS en todas las tablas
+      ALTER TABLE public.agentes_perfiles ENABLE ROW LEVEL SECURITY;
       ALTER TABLE public.conexiones_audit ENABLE ROW LEVEL SECURITY;
       ALTER TABLE public.conexiones_audit_huerfanas ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE public.tareas ENABLE ROW LEVEL SECURITY;
+      ALTER TABLE public.vacaciones ENABLE ROW LEVEL SECURITY;
 
-      REVOKE ALL ON public.agentes_roles FROM PUBLIC, anon;
+      -- 5. Limpieza preventiva dinámica de políticas existentes
+      DO $$
+      DECLARE
+          pol RECORD;
+      BEGIN
+          FOR pol IN
+              SELECT schemaname, tablename, policyname
+              FROM pg_policies
+              WHERE schemaname = 'public'
+                AND tablename IN ('agentes_perfiles', 'conexiones_audit', 'conexiones_audit_huerfanas', 'tareas', 'vacaciones', 'promociones', 'agentes_roles')
+          LOOP
+              EXECUTE format('DROP POLICY IF EXISTS %I ON %I.%I;', pol.policyname, pol.schemaname, pol.tablename);
+          END LOOP;
+      END $$;
+
+      -- 6. Políticas de acceso (authenticated)
+      -- agentes_perfiles
+      CREATE POLICY "agentes_perfiles_select" ON public.agentes_perfiles
+          FOR SELECT TO authenticated
+          USING (user_id = auth.uid() OR (public.is_active_agent() AND public.is_gerente()));
+
+      CREATE POLICY "agentes_perfiles_gerente_insert" ON public.agentes_perfiles
+          FOR INSERT TO authenticated
+          WITH CHECK (public.is_gerente());
+
+      CREATE POLICY "agentes_perfiles_gerente_update" ON public.agentes_perfiles
+          FOR UPDATE TO authenticated
+          USING (public.is_gerente())
+          WITH CHECK (public.is_gerente());
+
+      CREATE POLICY "agentes_perfiles_gerente_delete" ON public.agentes_perfiles
+          FOR DELETE TO authenticated
+          USING (public.is_gerente());
+
+      -- tareas
+      CREATE POLICY "tareas_select_propio" ON public.tareas
+          FOR SELECT TO authenticated
+          USING (public.is_active_agent() AND dni = public.current_user_dni());
+
+      CREATE POLICY "tareas_insert_propio" ON public.tareas
+          FOR INSERT TO authenticated
+          WITH CHECK (public.is_active_agent() AND dni = public.current_user_dni());
+
+      CREATE POLICY "tareas_update_propio" ON public.tareas
+          FOR UPDATE TO authenticated
+          USING (public.is_active_agent() AND dni = public.current_user_dni())
+          WITH CHECK (public.is_active_agent() AND dni = public.current_user_dni());
+
+      CREATE POLICY "tareas_delete_propio" ON public.tareas
+          FOR DELETE TO authenticated
+          USING (public.is_active_agent() AND dni = public.current_user_dni());
+
+      -- vacaciones
+      CREATE POLICY "vacaciones_select" ON public.vacaciones
+          FOR SELECT TO authenticated
+          USING (public.is_active_agent() AND (dni = public.current_user_dni() OR public.is_gerente()));
+
+      CREATE POLICY "vacaciones_gerente_insert" ON public.vacaciones
+          FOR INSERT TO authenticated
+          WITH CHECK (public.is_gerente());
+
+      CREATE POLICY "vacaciones_gerente_update" ON public.vacaciones
+          FOR UPDATE TO authenticated
+          USING (public.is_gerente())
+          WITH CHECK (public.is_gerente());
+
+      CREATE POLICY "vacaciones_gerente_delete" ON public.vacaciones
+          FOR DELETE TO authenticated
+          USING (public.is_gerente());
+
+      -- conexiones_audit
+      CREATE POLICY "conexiones_audit_insert" ON public.conexiones_audit
+          FOR INSERT TO authenticated
+          WITH CHECK (
+              public.is_active_agent() 
+              AND user_id = auth.uid() 
+              AND dni = public.current_user_dni()
+          );
+
+      CREATE POLICY "conexiones_audit_select_gerente" ON public.conexiones_audit
+          FOR SELECT TO authenticated
+          USING (public.is_gerente());
+
+      -- conexiones_audit_huerfanas
+      CREATE POLICY "conexiones_audit_huerfanas_select_gerente" ON public.conexiones_audit_huerfanas
+          FOR SELECT TO authenticated
+          USING (public.is_gerente());
+
+      -- 7. Revocar anon de todas las tablas
+      REVOKE ALL ON TABLE public.agentes_perfiles FROM anon;
+      REVOKE ALL ON TABLE public.conexiones_audit FROM anon;
+      REVOKE ALL ON TABLE public.conexiones_audit_huerfanas FROM PUBLIC, anon;
+      REVOKE ALL ON TABLE public.tareas FROM anon;
+      REVOKE ALL ON TABLE public.vacaciones FROM anon;
+      REVOKE ALL ON TABLE public.agentes_roles FROM PUBLIC, anon, authenticated;
+
+      -- 8. Conceder privilegios a authenticated bajo RLS
+      GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.agentes_perfiles TO authenticated;
+      GRANT SELECT, INSERT ON TABLE public.conexiones_audit TO authenticated;
+      GRANT SELECT ON TABLE public.conexiones_audit_huerfanas TO authenticated;
+      GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.tareas TO authenticated;
+      GRANT SELECT, INSERT, UPDATE, DELETE ON TABLE public.vacaciones TO authenticated;
     `);
-    console.log("  [GATE 5: OK] RLS activo.");
+    console.log("  [GATE 5: OK] Funciones, RLS y políticas creadas. Acceso anon 100% revocado.");
 
     // ------------------------------------------------------------------------
-    // GATE 6: DESCONGELACIÓN CONTROLADA TRAS ACEPTACIÓN
+    // GATE 6: VERIFICACIÓN AUTOMATIZADA DE ACEPTACIÓN POST-CORTE
     // ------------------------------------------------------------------------
-    console.log("\n--- [GATE 6] Descongelando escrituras para usuarios authenticated bajo RLS ---");
-    await executeSqlViaManagementApi(`
-      GRANT SELECT, INSERT, UPDATE, DELETE ON public.tareas TO authenticated;
-      GRANT SELECT, INSERT, UPDATE, DELETE ON public.vacaciones TO authenticated;
-      GRANT SELECT, INSERT, UPDATE, DELETE ON public.agentes_perfiles TO authenticated;
-      GRANT SELECT, INSERT ON public.conexiones_audit TO authenticated;
-    `);
-    console.log("  [GATE 6: OK] Escrituras habilitadas exclusivamente bajo RLS.");
+    console.log("\n--- [GATE 6] Verificando puertas de aceptación post-corte ---");
+
+    // 6.1: Acceso anónimo bloqueado en PostgREST
+    const anonTareasRes = await httpsRequest(`${PROD_URL}/rest/v1/tareas?select=*`, {
+      method: 'GET',
+      headers: { 'apikey': PROD_ANON_KEY }
+    });
+    console.log(`  - Verificación anon tareas: status=${anonTareasRes.status}, data=${JSON.stringify(anonTareasRes.data).slice(0, 50)}`);
+    if (anonTareasRes.status === 200 && Array.isArray(anonTareasRes.data) && anonTareasRes.data.length > 0) {
+      throw new Error(`FALLO DE SEGURIDAD: anon pudo leer ${anonTareasRes.data.length} filas en tareas.`);
+    }
+
+    const anonRolesRes = await httpsRequest(`${PROD_URL}/rest/v1/agentes_roles?select=*`, {
+      method: 'GET',
+      headers: { 'apikey': PROD_ANON_KEY }
+    });
+    console.log(`  - Verificación anon agentes_roles: status=${anonRolesRes.status}`);
+    if (anonRolesRes.status === 200 && Array.isArray(anonRolesRes.data) && anonRolesRes.data.length > 0) {
+      throw new Error(`FALLO DE SEGURIDAD: anon pudo leer agentes_roles.`);
+    }
+
+    // 6.2: Autenticación de Comercial de prueba
+    const testComercial = staffCredentialsMap["28727453Q"]; // BEGOÑA CABANILLAS PIQUERO
+    const loginRes = await httpsRequest(`${PROD_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {
+        'apikey': PROD_ANON_KEY
+      }
+    }, JSON.stringify({
+      email: testComercial.email,
+      password: testComercial.tempPassword
+    }));
+
+    if (loginRes.status !== 200 || !loginRes.data.access_token) {
+      throw new Error(`Fallo en autenticación de prueba comercial: status=${loginRes.status}`);
+    }
+    const comercialToken = loginRes.data.access_token;
+    console.log(`  - Autenticación comercial (28727453Q): OK`);
+
+    // 6.3: Consulta de perfil comercial
+    const profileRes = await httpsRequest(`${PROD_URL}/rest/v1/agentes_perfiles?select=*`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${comercialToken}`,
+        'apikey': PROD_ANON_KEY
+      }
+    });
+    if (profileRes.status !== 200 || !Array.isArray(profileRes.data) || profileRes.data.length !== 1) {
+      throw new Error(`Fallo en lectura de perfil propio comercial: ${JSON.stringify(profileRes.data)}`);
+    }
+    const profile = profileRes.data[0];
+    if (profile.dni !== "28727453Q" || profile.must_change_password !== true) {
+      throw new Error(`Inconsistencia en perfil comercial: ${JSON.stringify(profile)}`);
+    }
+    console.log(`  - Perfil propio comercial (must_change_password=true): OK`);
+
+    // 6.4: Intento de comercial de leer auditoría (debe estar denegado o retornar 0)
+    const auditReadRes = await httpsRequest(`${PROD_URL}/rest/v1/conexiones_audit?select=*`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${comercialToken}`,
+        'apikey': PROD_ANON_KEY
+      }
+    });
+    if (auditReadRes.status === 200 && Array.isArray(auditReadRes.data) && auditReadRes.data.length > 0) {
+      throw new Error(`FALLO DE AISLAMIENTO: Comercial pudo leer ${auditReadRes.data.length} registros de auditoría.`);
+    }
+    console.log(`  - Aislamiento de auditoría para comercial: OK (0 registros leídos)`);
+
+    console.log(`  [GATE 6: OK] Todas las verificaciones de aceptación superadas.`);
 
     console.log("\n==================================================================");
     console.log(" CORTE DE PRODUCCIÓN COMPLETADO CON ÉXITO");
+    console.log(" Base de datos de producción migrada, asegurada y verificada.");
     console.log("==================================================================");
 
   } catch (err) {
