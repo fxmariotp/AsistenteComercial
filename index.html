@@ -7793,7 +7793,7 @@ const BASE = {
     name:'Iberdrola', color:'#008B3C',
     tp1:0.12, tp2:0.12,
     te_sin:0.0999, te_con:0.094,
-    precio_excedente:0.05,
+    precio_excedente:0.06,
     sva_luz:4.48, sva_gas:9.95,
     gas_rl1:{tf:0.2112, tv:0.1024},
     gas_rl2:{tf:0.3606, tv:0.1013},
@@ -11567,6 +11567,7 @@ function calcComp(){
         r.te_con = 0.094;
         r.desc_sin = 0.15;
         r.desc_con = 0.20;
+        r.precio_excedente = 0.06;
         r.tarifas_luz = [
           {
             n: 'Plan Ahora',
@@ -12083,7 +12084,7 @@ function renderSummary(results, actual){
           <td>
             <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
               ${logoHtml}
-              <span><strong>${r.r.name.split(' (')[0]}</strong> <span style="font-size:11.5px;color:#b45309;font-weight:700;background:rgba(245,158,11,0.12);padding:2px 6px;border-radius:4px;border:1px solid rgba(245,158,11,0.25);">${r.tariffName || r.r.name}</span></span>
+              <span><strong>${RATES[r.cia]?.name || r.r.name.split(' ')[0]}</strong> <span style="font-size:11.5px;color:#b45309;font-weight:700;background:rgba(245,158,11,0.12);padding:2px 6px;border-radius:4px;border:1px solid rgba(245,158,11,0.25);">${r.tariffName || r.r.name}</span></span>
               ${isPlanAhora ? '<span style="font-size:10.5px;color:#b45309;font-weight:800;background:rgba(245,158,11,0.15);padding:1px 6px;border-radius:4px;border:1px solid rgba(245,158,11,0.3);">⚡ Plan Ahora</span>' : ''}
               ${isPlanAhora ? '<span style="font-size:10.5px;color:#dc2626;font-weight:700;background:rgba(220,38,38,0.08);padding:1px 5px;border-radius:4px;border:1px solid rgba(220,38,38,0.18);">🚫 Sin tarjetas</span>' : ''}
               <span style="font-size:10.5px;color:#dc2626;font-weight:800;background:rgba(220,38,38,0.08);padding:1px 6px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);">🔒 Requiere SVA</span>
@@ -12100,7 +12101,7 @@ function renderSummary(results, actual){
         <td>
           <div style="display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap;">
             ${logoHtml}
-            <span><strong>${r.r.name.split(' (')[0]}</strong> <span style="font-size:11.5px;color:var(--blue);font-weight:700;background:rgba(13,92,158,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(13,92,158,0.15);">${r.tariffName || r.r.name}</span></span>
+            <span><strong>${RATES[r.cia]?.name || r.r.name.split(' ')[0]}</strong> <span style="font-size:11.5px;color:var(--blue);font-weight:700;background:rgba(13,92,158,0.08);padding:2px 6px;border-radius:4px;border:1px solid rgba(13,92,158,0.15);">${r.tariffName || r.r.name}</span></span>
             ${isPlanAhora ? '<span style="font-size:10.5px;color:#059669;font-weight:800;background:rgba(5,150,105,0.1);padding:1px 6px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);">⚡ Plan Ahora</span>' : ''}
             ${isPlanAhora ? '<span style="font-size:10.5px;color:#dc2626;font-weight:700;background:rgba(220,38,38,0.08);padding:1px 5px;border-radius:4px;border:1px solid rgba(220,38,38,0.18);">🚫 Sin tarjetas</span>' : ''}
             ${r.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:10.5px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:1px 5px;border-radius:4px;">(+2€/mes BV)</span>' : ''}
@@ -12275,7 +12276,7 @@ function printCompanyOffer(key) {
     });
     if (svaLuzAmt > 0) {
       rows.push({
-        concept: `Servicio Mantenimiento (${r.name})`,
+        concept: `Servicio Mantenimiento (${RATES[cia]?.name || r.name})`,
         calc: `Prorrateado ${dias} dias`,
         val: `${f2(svaLuzAmt)} €`
       });
@@ -12293,7 +12294,7 @@ function printCompanyOffer(key) {
     });
     if (svaGasAmt > 0) {
       rows.push({
-        concept: `Servicio Mantenimiento Gas (${r.name})`,
+        concept: `Servicio Mantenimiento Gas (${RATES[cia]?.name || r.name})`,
         calc: `Prorrateado ${dias} dias`,
         val: `${f2(svaGasAmt)} €`
       });
@@ -12474,11 +12475,25 @@ function printCompanyOffer(key) {
   
   if (typeof html2pdf !== 'undefined') {
     const cleanClientName = clientNameVal.replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
-    const cleanCompanyName = r.name.replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
-    const cleanTariffName = (targetRes.tariffName || r.name).replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
-    const pdfFilename = cleanClientName 
-      ? `COMPARATIVA ${cleanClientName} ${cleanCompanyName} ${cleanTariffName}.pdf` 
-      : `COMPARATIVA ${cleanCompanyName} ${cleanTariffName}.pdf`;
+    const baseCia = (RATES[cia]?.name || r.name.split(' (')[0]).replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
+    let cleanTariff = (targetRes.tariffName || r.name).replace(/[\\\/:\*\?"<>\|]/g, '').toUpperCase().trim();
+    
+    // Evitar duplicar el nombre de la compañía si la tarifa ya lo incluye al principio
+    if (cleanTariff.startsWith(baseCia)) {
+      cleanTariff = cleanTariff.substring(baseCia.length).trim();
+    }
+    const companyAndTariff = cleanTariff ? `${baseCia} ${cleanTariff}` : baseCia;
+
+    let clientPart = cleanClientName;
+    if (clientPart.startsWith('COMPARATIVA ')) {
+      clientPart = clientPart.substring(12).trim();
+    } else if (clientPart === 'COMPARATIVA') {
+      clientPart = '';
+    }
+
+    const pdfFilename = (clientPart 
+      ? `COMPARATIVA ${clientPart} ${companyAndTariff}.pdf` 
+      : `COMPARATIVA ${companyAndTariff}.pdf`).replace(/\s+/g, ' ');
 
     const opt = {
       margin:       [8, 8, 8, 8],
@@ -17420,7 +17435,7 @@ function getRenosurChatResponse(query) {
           descuento_con_mantenimiento: "20%",
           descuento_general: "❌ Prohibido sin mantenimiento / 20% con mantenimiento (precio final 0,094 €/kWh)",
           potencia: "TP1: 0,1200 €/kW-día | TP2: 0,1200 €/kW-día",
-          excedentes: "0,05 €/kWh",
+          excedentes: "0,06 €/kWh",
           mantenimiento: "4,48 €/mes (Pack Iberdrola Hogar obligatorio)",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%",
@@ -17436,7 +17451,7 @@ function getRenosurChatResponse(query) {
           descuento_con_mantenimiento: "30%",
           descuento_general: "20% sin mantenimiento / 30% con mantenimiento",
           potencia: "TP1: 0,1240 €/kW-día | TP2: 0,0710 €/kW-día",
-          excedentes: "0,05 €/kWh",
+          excedentes: "0,06 €/kWh",
           mantenimiento: "4,48 €/mes",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
@@ -17450,7 +17465,7 @@ function getRenosurChatResponse(query) {
           descuento_con_mantenimiento: "25%",
           descuento_general: "20% sin mantenimiento / 25% con mantenimiento",
           potencia: "TP1: 0,1090 €/kW-día | TP2: 0,0790 €/kW-día",
-          excedentes: "0,05 €/kWh",
+          excedentes: "0,06 €/kWh",
           mantenimiento: "4,48 €/mes",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
@@ -17594,7 +17609,7 @@ function getRenosurChatResponse(query) {
            "  - Con Mantenimiento (20% dto. - Precio Final): <strong>0,094 €/kWh</strong><br><br>" +
            "• <strong>Término de Potencia:</strong><br>" +
            "  - TP1 (Punta): <strong>0,1200 €/kW·día</strong> | TP2 (Valle): <strong>0,1200 €/kW·día</strong><br><br>" +
-           "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
+           "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
            "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes (obligatorio)<br>" +
            "• <strong>Permanencia:</strong> Sin permanencia<br>" +
            "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
@@ -17609,7 +17624,7 @@ function getRenosurChatResponse(query) {
       "  - Con Mantenimiento (30% dto.): <strong>0,1306 €/kWh</strong><br><br>" +
       "• <strong>Término de Potencia:</strong><br>" +
       "  - TP1 (Punta): <strong>0,1240 €/kW·día</strong> | TP2 (Valle): <strong>0,0710 €/kW·día</strong><br><br>" +
-      "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
       "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
@@ -17624,7 +17639,7 @@ function getRenosurChatResponse(query) {
       "  - Con Mantenimiento (25% dto.): <strong>0,1312 €/kWh</strong><br><br>" +
       "• <strong>Término de Potencia:</strong><br>" +
       "  - TP1 (Punta): <strong>0,1090 €/kW·día</strong> | TP2 (Valle): <strong>0,0790 €/kW·día</strong><br><br>" +
-      "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
       "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
