@@ -23,8 +23,8 @@ const { URL } = require('url');
  * 7. Cabeceras anti-caché estrictas (private, no-cache, no-store, must-revalidate).
  */
 
-const SUPABASE_URL = process.env.SUPABASE_URL || "";
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || "";
+const SUPABASE_URL = process.env.SUPABASE_URL || process.env.PROD_SUPABASE_URL || "";
+const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY || process.env.PROD_SUPABASE_ANON_KEY || "";
 const DEFAULT_RANKING_URL = "https://script.google.com/macros/s/AKfycbzY2EB-cS_DciqXZ4Rfphu1sbyVs4SzVvEVKmkjeaKPoGXDD6UYc-31lNv2K0ti6Bf_eg/exec?json=true";
 const RANKING_APPS_SCRIPT_URL = process.env.RANKING_APPS_SCRIPT_URL || process.env.GOOGLE_APPS_SCRIPT_URL || DEFAULT_RANKING_URL;
 const RANKING_SHARED_SECRET = process.env.RANKING_SHARED_SECRET || "";

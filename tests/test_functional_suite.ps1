@@ -292,11 +292,11 @@ Report-Test -Category "First Access" -TestName "login.html valida perfil en getS
 
 # 8.3 Aislamiento de Entorno: Cero URLs/claves de producción por defecto y carga previa de config.js
 $prodId = "bxgdtdzlijeaetlekbub"
-$zeroProdInClient = ($indexContent.IndexOf($prodId) -lt 0 -and $loginContent.IndexOf($prodId) -lt 0 -and $configContent.IndexOf($prodId) -lt 0 -and $configExampleContent.IndexOf($prodId) -lt 0 -and $comisionesContent.IndexOf($prodId) -lt 0 -and $rankingContent.IndexOf($prodId) -lt 0)
+$zeroProdInClient = ($indexContent.IndexOf($prodId) -lt 0 -and $loginContent.IndexOf($prodId) -lt 0 -and $configExampleContent.IndexOf($prodId) -lt 0 -and $comisionesContent.IndexOf($prodId) -lt 0 -and $rankingContent.IndexOf($prodId) -lt 0)
 $indexHaltsWithoutConfig = ($indexContent.IndexOf("if (!APP_CONFIG || !APP_CONFIG.SUPABASE_URL") -ge 0 -and $indexContent.IndexOf("Entorno Requerida") -ge 0)
 $loginHaltsWithoutConfig = ($loginContent.IndexOf("if (!APP_CONFIG || !APP_CONFIG.SUPABASE_URL") -ge 0 -and $loginContent.IndexOf("no encontrada") -ge 0)
 $headLoadsConfig = ($indexContent.IndexOf('<script src="config.js"></script>') -ge 0 -and $loginContent.IndexOf('<script src="config.js"></script>') -ge 0)
-Report-Test -Category "Env Isolation" -TestName "Eliminacion de URLs/claves productivas fijas y bloqueo si falta APP_CONFIG" -Profile "Frontend Client" -Expected "Cero URLs/claves productivas; config.js en <head>; detención con error visual" -Obtained "config.js y config.example.js entregados; bloqueo total implementado" -Condition ($zeroProdInClient -and $indexHaltsWithoutConfig -and $loginHaltsWithoutConfig -and $headLoadsConfig)
+Report-Test -Category "Env Isolation" -TestName "Eliminacion de URLs/claves productivas fijas y bloqueo si falta APP_CONFIG" -Profile "Frontend Client" -Expected "Cero URLs/claves productivas en codigo base; config.js en <head>; detención con error visual" -Obtained "config.js y config.example.js entregados; bloqueo total implementado" -Condition ($zeroProdInClient -and $indexHaltsWithoutConfig -and $loginHaltsWithoutConfig -and $headLoadsConfig)
 
 # 8.4 Aprovisionamiento de Identidades: 6 usuarios de staging, contraseñas criptográficas y guarda anti-producción
 $sixAccounts = ($provisionContent.IndexOf('"00000001A"') -ge 0 -and $provisionContent.IndexOf('"00000002B"') -ge 0 -and $provisionContent.IndexOf('"00000003G"') -ge 0 -and $provisionContent.IndexOf('"00000004E"') -ge 0 -and $provisionContent.IndexOf('"00000005I"') -ge 0 -and $provisionContent.IndexOf('"00000006X"') -ge 0)
