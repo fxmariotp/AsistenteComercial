@@ -581,7 +581,114 @@ console.log("\n\x1b[37m=== CASO 5: Validación completa de perfiles en staging a
     `Status: ${badPwdHttp.res.statusCode} | Error: ${badPwdHttp.res._jsonData ? badPwdHttp.res._jsonData.error : null}`
   );
 
-  // Intento 2: Nueva contraseña válida -> Debe actualizar en Auth y levantar restricción en BD
+  // Verificaciones específicas para usuario 78105180D (FRANCISCO JAVIER AGUILAR CHAVES)
+  apiUpdatePassword._setVerifySupabaseTokenForTesting((token, cb) => {
+    cb(null, { id: 'uid-78105180D', email: '78105180d@asistente.internal' });
+  });
+  apiUpdatePassword._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      dni: '78105180D',
+      nombre: 'FRANCISCO JAVIER AGUILAR CHAVES',
+      rol: 'comercial',
+      activo: true,
+      must_change_password: true
+    });
+  });
+
+  // Caso 1: Rechazo de DNI mayúsculas exacto (78105180D)
+  const reqDniUpper = createMockHttp({ method: 'POST', body: { newPassword: '78105180D', confirmPassword: '78105180D' } });
+  apiUpdatePassword(reqDniUpper.req, reqDniUpper.res);
+  report(
+    "api/update-password -> Rechaza 78105180D (DNI exacto mayúsculas) con HTTP 400",
+    reqDniUpper.res.statusCode === 400,
+    `Status: ${reqDniUpper.res.statusCode} | Error: ${reqDniUpper.res._jsonData?.error}`
+  );
+
+  // Caso 2: Rechazo de DNI minúsculas (78105180d)
+  const reqDniLower = createMockHttp({ method: 'POST', body: { newPassword: '78105180d', confirmPassword: '78105180d' } });
+  apiUpdatePassword(reqDniLower.req, reqDniLower.res);
+  report(
+    "api/update-password -> Rechaza 78105180d (DNI en minúsculas) con HTTP 400",
+    reqDniLower.res.statusCode === 400,
+    `Status: ${reqDniLower.res.statusCode} | Error: ${reqDniLower.res._jsonData?.error}`
+  );
+
+  // Caso 3: Rechazo de números del DNI sin la letra (78105180)
+  const reqDniDigits = createMockHttp({ method: 'POST', body: { newPassword: '78105180', confirmPassword: '78105180' } });
+  apiUpdatePassword(reqDniDigits.req, reqDniDigits.res);
+  report(
+    "api/update-password -> Rechaza 78105180 (números sin letra) con HTTP 400",
+    reqDniDigits.res.statusCode === 400,
+    `Status: ${reqDniDigits.res.statusCode} | Error: ${reqDniDigits.res._jsonData?.error}`
+  );
+
+  // Caso 4: Rechazo de longitud inferior al límite técnico de 6 caracteres (ej. '12345')
+  const reqShortPwd = createMockHttp({ method: 'POST', body: { newPassword: '12345', confirmPassword: '12345' } });
+  apiUpdatePassword(reqShortPwd.req, reqShortPwd.res);
+  report(
+    "api/update-password -> Rechaza longitud inferior a 6 caracteres con HTTP 400",
+    reqShortPwd.res.statusCode === 400,
+    `Status: ${reqShortPwd.res.statusCode} | Error: ${reqShortPwd.res._jsonData?.error}`
+  );
+
+  // Caso 5: Rechazo de confirmación que no coincide
+  const reqMismatchPwd = createMockHttp({ method: 'POST', body: { newPassword: 'simpletodo6', confirmPassword: 'otraPassword' } });
+  apiUpdatePassword(reqMismatchPwd.req, reqMismatchPwd.res);
+  report(
+    "api/update-password -> Rechaza confirmación discordante con HTTP 400",
+    reqMismatchPwd.res.statusCode === 400,
+    `Status: ${reqMismatchPwd.res.statusCode} | Error: ${reqMismatchPwd.res._jsonData?.error}`
+  );
+
+  // Caso 6: Aceptación de contraseña válida sin composición (ej. 'simpletodo6', sin mayúsculas/números/símbolos obligatorios)
+  let updatedAguilarPassword = null;
+  let dbRestrictionAguilarLifted = false;
+  apiUpdatePassword._setUpdateSupabaseAuthPasswordForTesting((userId, newPass, cb) => {
+    updatedAguilarPassword = newPass;
+    cb(null);
+  });
+  apiUpdatePassword._setLiftRestrictionInDatabaseForTesting((userId, cb) => {
+    dbRestrictionAguilarLifted = true;
+    cb(null, { dni: '78105180D', rol: 'comercial', must_change_password: false });
+  });
+
+  const reqValidSimple = createMockHttp({ method: 'POST', body: { newPassword: 'simpletodo6', confirmPassword: 'simpletodo6' } });
+  apiUpdatePassword(reqValidSimple.req, reqValidSimple.res);
+  const simpleSuccess = reqValidSimple.res.statusCode === 200 &&
+                        reqValidSimple.res._jsonData?.success === true &&
+                        updatedAguilarPassword === 'simpletodo6' &&
+                        dbRestrictionAguilarLifted === true;
+  report(
+    "api/update-password -> Acepta contraseña válida sin composición ('simpletodo6') con HTTP 200",
+    simpleSuccess,
+    `Status: ${reqValidSimple.res.statusCode} | Desbloqueado: ${dbRestrictionAguilarLifted}`
+  );
+
+  // Intento 2: Nueva contraseña válida para 00000006X -> Debe actualizar en Auth y levantar restricción en BD
+  apiUpdatePassword._setVerifySupabaseTokenForTesting((token, cb) => {
+    cb(null, { id: 'uid-00000006X', email: '00000006x@asistente.internal' });
+  });
+  apiUpdatePassword._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      dni: '00000006X',
+      nombre: 'CAMBIO PENDIENTE TEST',
+      rol: 'comercial',
+      activo: true,
+      must_change_password: true
+    });
+  });
+  apiUpdatePassword._setUpdateSupabaseAuthPasswordForTesting((userId, newPass, cb) => {
+    updatedAuthPassword = newPass;
+    cb(null);
+  });
+  apiUpdatePassword._setLiftRestrictionInDatabaseForTesting((userId, cb) => {
+    dbRestrictionLifted = true;
+    cb(null, {
+      dni: '00000006X',
+      rol: 'comercial',
+      must_change_password: false
+    });
+  });
   const goodPwdHttp = createMockHttp({
     method: 'POST',
     body: { newPassword: 'MiNuevoPasswordSeguro2026!' }

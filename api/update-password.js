@@ -266,24 +266,27 @@ module.exports = function (req, res) {
 
   // 3. Procesamiento seguro del cuerpo de la petición (Maneja req.body pre-parseado o stream con límite)
   function processPayload(payload) {
-    const { newPassword } = payload || {};
+    const { newPassword, confirmPassword } = payload || {};
     
     // Validación de presencia y tipo estricto SIN alterar silenciosamente con trim()
     if (typeof newPassword !== 'string' || newPassword.length === 0) {
-      return sendJson(res, 400, { success: false, error: "Debe proporcionar el campo newPassword como cadena de texto." });
+      return sendJson(res, 400, { success: false, error: "Debe proporcionar una nueva contraseña no vacía." });
     }
 
-    if (newPassword.length < 8) {
-      return sendJson(res, 400, {
-        success: false,
-        error: "La nueva contraseña debe tener como mínimo 8 caracteres."
-      });
+    if (confirmPassword !== undefined) {
+      if (typeof confirmPassword !== 'string' || confirmPassword.length === 0) {
+        return sendJson(res, 400, { success: false, error: "La confirmación de la contraseña no puede estar vacía." });
+      }
+      if (newPassword !== confirmPassword) {
+        return sendJson(res, 400, { success: false, error: "La nueva contraseña y la confirmación no coinciden." });
+      }
     }
 
-    if (!/[A-Za-z]/.test(newPassword) || !/[0-9]/.test(newPassword)) {
+    // Longitud mínima técnica impuesta por el motor de autenticación (6 caracteres, sin requisitos de composición)
+    if (newPassword.length < 6) {
       return sendJson(res, 400, {
         success: false,
-        error: "La nueva contraseña debe contener al menos una letra y un número."
+        error: "La nueva contraseña debe tener como mínimo 6 caracteres."
       });
     }
 
@@ -316,10 +319,25 @@ module.exports = function (req, res) {
           });
         }
 
-        if (profile.dni && newPassword === profile.dni) {
+        const userIdentifier = (profile.dni || '').trim();
+        const upperIdentifier = userIdentifier.toUpperCase();
+        const upperPassword = newPassword.toUpperCase();
+
+        // Comprobación: La contraseña no puede ser igual al usuario de acceso (case-insensitive)
+        if (upperIdentifier && upperPassword === upperIdentifier) {
           return sendJson(res, 400, {
             success: false,
-            error: "La nueva contraseña no puede ser idéntica a tu número de DNI."
+            error: "La nueva contraseña no puede ser igual a tu usuario de acceso."
+          });
+        }
+
+        // Comprobación: Si el usuario es un DNI, tampoco puede ser igual a sus números sin la letra final (ej. para 78105180D rechaza 78105180)
+        const dniNumericPart = userIdentifier.replace(/[A-Za-z]$/i, '');
+        const isDni = /^\d{6,8}[A-Za-z]$/i.test(userIdentifier) || (/^\d+$/.test(dniNumericPart) && dniNumericPart.length >= 6);
+        if (isDni && (newPassword === dniNumericPart || newPassword === userIdentifier.replace(/\D/g, ''))) {
+          return sendJson(res, 400, {
+            success: false,
+            error: "La nueva contraseña no puede ser igual a los números de tu DNI."
           });
         }
 

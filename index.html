@@ -5942,7 +5942,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
             <input type="password" id="pwd-current" required style="padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;">
           </div>
           <div style="display: flex; flex-direction: column; gap: 6px;">
-            <label style="font-size: 12.5px; font-weight: 700; color: var(--t2);">Nueva Contrase&ntilde;a</label>
+            <label style="font-size: 12.5px; font-weight: 700; color: var(--t2);">Nueva Contrase&ntilde;a (m&iacute;nimo 6 caracteres)</label>
             <input type="password" id="pwd-new" required style="padding: 10px 14px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: var(--text); font-size: 14px; outline: none; transition: border-color 0.2s;">
           </div>
           <div style="display: flex; flex-direction: column; gap: 6px;">
@@ -14041,14 +14041,28 @@ async function saveNewPassword(event) {
     return;
   }
   
-  if (newPwd.length < 8) {
-    if (errorEl) errorEl.textContent = 'La nueva contraseña debe tener al menos 8 caracteres.';
+  if (newPwd.length < 6) {
+    if (errorEl) errorEl.textContent = 'La nueva contraseña debe tener como mínimo 6 caracteres.';
     return;
   }
 
   if (newPwd === currentPwd) {
     if (errorEl) errorEl.textContent = 'La nueva contraseña debe ser diferente a la actual.';
     return;
+  }
+
+  const userIdentifier = (typeof currentAgentDni !== 'undefined' && currentAgentDni ? currentAgentDni : '').trim();
+  if (userIdentifier) {
+    if (newPwd.toUpperCase() === userIdentifier.toUpperCase()) {
+      if (errorEl) errorEl.textContent = 'La nueva contraseña no puede ser igual a tu usuario de acceso.';
+      return;
+    }
+    const dniNumericPart = userIdentifier.replace(/[A-Za-z]$/i, '');
+    const isDni = /^\d{6,8}[A-Za-z]$/i.test(userIdentifier) || (/^\d+$/.test(dniNumericPart) && dniNumericPart.length >= 6);
+    if (isDni && (newPwd === dniNumericPart || newPwd === userIdentifier.replace(/\D/g, ''))) {
+      if (errorEl) errorEl.textContent = 'La nueva contraseña no puede ser igual a los números de tu DNI.';
+      return;
+    }
   }
   
   if (btn) {
@@ -14086,7 +14100,7 @@ async function saveNewPassword(event) {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${session.access_token}`
       },
-      body: JSON.stringify({ newPassword: newPwd })
+      body: JSON.stringify({ newPassword: newPwd, confirmPassword: confirmPwd })
     });
 
     const data = await res.json();

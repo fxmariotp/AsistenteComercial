@@ -253,7 +253,7 @@
     <p>Por seguridad, es obligatorio establecer una nueva contraseña personal antes de acceder a la información comercial.</p>
     
     <div class="login-field">
-      <label for="new-password">Nueva Contraseña (mínimo 8 caracteres)</label>
+      <label for="new-password">Nueva Contraseña (mínimo 6 caracteres)</label>
       <input type="password" id="new-password" placeholder="Introduce tu nueva contraseña">
     </div>
 
@@ -529,17 +529,38 @@ async function submitMandatoryPasswordChange() {
 
   errDiv.textContent = "";
 
-  if (!newPass || newPass.length < 8) {
-    errDiv.textContent = "La contraseña debe tener al menos 8 caracteres.";
+  if (!newPass || newPass.length === 0) {
+    errDiv.textContent = "Por favor, introduce tu nueva contraseña.";
     return;
   }
-  if (!/[A-Za-z]/.test(newPass) || !/[0-9]/.test(newPass)) {
-    errDiv.textContent = "La contraseña debe incluir al menos una letra y un número.";
+
+  if (newPass.length < 6) {
+    errDiv.textContent = "La nueva contraseña debe tener como mínimo 6 caracteres.";
     return;
   }
+
+  if (!confirmPass || confirmPass.length === 0) {
+    errDiv.textContent = "Por favor, confirma tu nueva contraseña.";
+    return;
+  }
+
   if (newPass !== confirmPass) {
-    errDiv.textContent = "Las contraseñas no coinciden.";
+    errDiv.textContent = "La nueva contraseña y la confirmación no coinciden.";
     return;
+  }
+
+  const currentDni = (pendingDni || document.getElementById('login-dni').value || '').trim();
+  if (currentDni) {
+    if (newPass.toUpperCase() === currentDni.toUpperCase()) {
+      errDiv.textContent = "La nueva contraseña no puede ser igual a tu usuario de acceso.";
+      return;
+    }
+    const dniNumericPart = currentDni.replace(/[A-Za-z]$/i, '');
+    const isDni = /^\d{6,8}[A-Za-z]$/i.test(currentDni) || (/^\d+$/.test(dniNumericPart) && dniNumericPart.length >= 6);
+    if (isDni && (newPass === dniNumericPart || newPass === currentDni.replace(/\D/g, ''))) {
+      errDiv.textContent = "La nueva contraseña no puede ser igual a los números de tu DNI.";
+      return;
+    }
   }
 
   btn.disabled = true;
@@ -562,7 +583,7 @@ async function submitMandatoryPasswordChange() {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${token}`
       },
-      body: JSON.stringify({ newPassword: newPass })
+      body: JSON.stringify({ newPassword: newPass, confirmPassword: confirmPass })
     });
 
     const updateJson = await updateRes.json();
