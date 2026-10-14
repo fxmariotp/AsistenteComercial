@@ -7764,7 +7764,7 @@ const BASE = {
     name:'Iberdrola', color:'#008B3C',
     tp1:0.12, tp2:0.12,
     te_sin:0.0999, te_con:0.094,
-    precio_excedente:0.06,
+    precio_excedente:0.05,
     sva_luz:4.48, sva_gas:9.95,
     gas_rl1:{tf:0.2112, tv:0.1024},
     gas_rl2:{tf:0.3606, tv:0.1013},
@@ -11512,7 +11512,7 @@ function calcComp(){
         r.te_con = 0.094;
         r.desc_sin = 0.15;
         r.desc_con = 0.20;
-        r.precio_excedente = 0.06;
+        r.precio_excedente = 0.05;
         r.tarifas_luz = [
           {
             n: 'Plan Ahora',
@@ -17475,7 +17475,7 @@ function getRenosurChatResponse(query) {
           descuento_con_mantenimiento: "20%",
           descuento_general: "❌ Prohibido sin mantenimiento / 20% con mantenimiento (precio final 0,094 €/kWh)",
           potencia: "TP1: 0,1200 €/kW-día | TP2: 0,1200 €/kW-día",
-          excedentes: "0,06 €/kWh",
+          excedentes: "0,05 €/kWh",
           mantenimiento: "4,48 €/mes (Pack Iberdrola Hogar obligatorio)",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%",
@@ -17491,7 +17491,7 @@ function getRenosurChatResponse(query) {
           descuento_con_mantenimiento: "30%",
           descuento_general: "20% sin mantenimiento / 30% con mantenimiento",
           potencia: "TP1: 0,1240 €/kW-día | TP2: 0,0710 €/kW-día",
-          excedentes: "0,06 €/kWh",
+          excedentes: "0,05 €/kWh",
           mantenimiento: "4,48 €/mes",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
@@ -17505,7 +17505,7 @@ function getRenosurChatResponse(query) {
           descuento_con_mantenimiento: "25%",
           descuento_general: "20% sin mantenimiento / 25% con mantenimiento",
           potencia: "TP1: 0,1090 €/kW-día | TP2: 0,0790 €/kW-día",
-          excedentes: "0,06 €/kWh",
+          excedentes: "0,05 €/kWh",
           mantenimiento: "4,48 €/mes",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
@@ -17649,7 +17649,7 @@ function getRenosurChatResponse(query) {
            "  - Con Mantenimiento (20% dto. - Precio Final): <strong>0,094 €/kWh</strong><br><br>" +
            "• <strong>Término de Potencia:</strong><br>" +
            "  - TP1 (Punta): <strong>0,1200 €/kW·día</strong> | TP2 (Valle): <strong>0,1200 €/kW·día</strong><br><br>" +
-           "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+           "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
            "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes (obligatorio)<br>" +
            "• <strong>Permanencia:</strong> Sin permanencia<br>" +
            "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
@@ -17664,7 +17664,7 @@ function getRenosurChatResponse(query) {
       "  - Con Mantenimiento (30% dto.): <strong>0,1306 €/kWh</strong><br><br>" +
       "• <strong>Término de Potencia:</strong><br>" +
       "  - TP1 (Punta): <strong>0,1240 €/kW·día</strong> | TP2 (Valle): <strong>0,0710 €/kW·día</strong><br><br>" +
-      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
       "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
@@ -17679,7 +17679,7 @@ function getRenosurChatResponse(query) {
       "  - Con Mantenimiento (25% dto.): <strong>0,1312 €/kWh</strong><br><br>" +
       "• <strong>Término de Potencia:</strong><br>" +
       "  - TP1 (Punta): <strong>0,1090 €/kW·día</strong> | TP2 (Valle): <strong>0,0790 €/kW·día</strong><br><br>" +
-      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,05 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Pack Iberdrola Hogar):</strong> 4,48 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
       "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
