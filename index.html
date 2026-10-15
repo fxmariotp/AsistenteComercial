@@ -8727,7 +8727,14 @@ function renderControlVacationsTimeline() {
   let bodyHtml = '<tbody>';
   
   const mappedTimeline = Object.keys(COMERCIALES).map(dni => {
-    const role = AGENT_ROLES[dni] || 'comercial';
+    let role = AGENT_ROLES[dni];
+    if (!role) {
+      if (dni.startsWith('0000000') || (COMERCIALES[dni] && COMERCIALES[dni].includes('TEST'))) {
+        role = 'test';
+      } else {
+        role = 'comercial';
+      }
+    }
     return {
       dni,
       name: COMERCIALES[dni],
@@ -8736,7 +8743,7 @@ function renderControlVacationsTimeline() {
   });
   
   mappedTimeline.sort((a, b) => {
-    const rolePriority = { 'gerente': 1, 'comercial': 2, 'evaria': 3 };
+    const rolePriority = { 'gerente': 1, 'comercial': 2, 'evaria': 3, 'test': 4 };
     const prioA = rolePriority[a.rol] || 99;
     const prioB = rolePriority[b.rol] || 99;
     
@@ -12992,12 +12999,20 @@ let AGENT_STATUSES = {};
 
 // Roles predefinidos seguros
 AGENT_ROLES['MIGUELR'] = 'gerente';
-AGENT_ROLES['MARIAC'] = 'evaria';
+AGENT_ROLES['MARIAC'] = 'gerente';
 AGENT_ROLES['28750523V'] = 'evaria';
 AGENT_ROLES['29502580C'] = 'evaria';
 AGENT_ROLES['53343101Y'] = 'evaria';
 AGENT_ROLES['53770728V'] = 'comercial';
 AGENT_ROLES['78105180D'] = 'comercial';
+
+// Asignación de rol Test a cuentas de pruebas
+AGENT_ROLES['00000001A'] = 'test';
+AGENT_ROLES['00000002B'] = 'test';
+AGENT_ROLES['00000003G'] = 'test';
+AGENT_ROLES['00000004E'] = 'test';
+AGENT_ROLES['00000005I'] = 'test';
+AGENT_ROLES['00000006X'] = 'test';
 
 
 async function fetchAgentRolesFromCloud() {
@@ -13096,6 +13111,8 @@ function updateSelectColor(selectEl) {
     selectEl.style.color = '#10b981';
   } else if (val === 'gerente') {
     selectEl.style.color = '#d4af37';
+  } else if (val === 'test') {
+    selectEl.style.color = '#8b5cf6';
   }
 }
 
@@ -13808,7 +13825,14 @@ function initGruposAgentes() {
   let html = '';
   
   const mappedComerciales = Object.keys(COMERCIALES).map(dni => {
-    const currentRol = AGENT_ROLES[dni] || 'comercial';
+    let currentRol = AGENT_ROLES[dni];
+    if (!currentRol) {
+      if (dni.startsWith('0000000') || (COMERCIALES[dni] && COMERCIALES[dni].includes('TEST'))) {
+        currentRol = 'test';
+      } else {
+        currentRol = 'comercial';
+      }
+    }
     const currentStatus = AGENT_STATUSES[dni] || 'active';
     return {
       dni,
@@ -13819,7 +13843,7 @@ function initGruposAgentes() {
   });
   
   mappedComerciales.sort((a, b) => {
-    const rolePriority = { 'gerente': 1, 'comercial': 2, 'evaria': 3 };
+    const rolePriority = { 'gerente': 1, 'comercial': 2, 'evaria': 3, 'test': 4 };
     const prioA = rolePriority[a.rol] || 99;
     const prioB = rolePriority[b.rol] || 99;
     
@@ -13830,12 +13854,13 @@ function initGruposAgentes() {
   });
   
   mappedComerciales.forEach(agent => {
-    const selectColor = agent.rol === 'comercial' ? '#f97316' : (agent.rol === 'evaria' ? '#10b981' : '#d4af37');
+    const selectColor = agent.rol === 'comercial' ? '#f97316' : (agent.rol === 'evaria' ? '#10b981' : (agent.rol === 'gerente' ? '#d4af37' : '#8b5cf6'));
     const optionsHtml = `
       <select id="user-role-${agent.dni}" onchange="updateSelectColor(this)" style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: var(--bg); color: ${selectColor}; font-weight: 700; font-size: 13px; outline: none; cursor: pointer;">
+        <option value="gerente" style="color: #d4af37; font-weight: bold;" ${agent.rol === 'gerente' ? 'selected' : ''}>Gerencia</option>
         <option value="comercial" style="color: #f97316; font-weight: bold;" ${agent.rol === 'comercial' ? 'selected' : ''}>Comerciales Renosur</option>
         <option value="evaria" style="color: #10b981; font-weight: bold;" ${agent.rol === 'evaria' ? 'selected' : ''}>Trabajadores Evaria</option>
-        <option value="gerente" style="color: #d4af37; font-weight: bold;" ${agent.rol === 'gerente' ? 'selected' : ''}>Gerencia</option>
+        <option value="test" style="color: #8b5cf6; font-weight: bold;" ${agent.rol === 'test' ? 'selected' : ''}>Cuentas de Test</option>
       </select>
     `;
     
