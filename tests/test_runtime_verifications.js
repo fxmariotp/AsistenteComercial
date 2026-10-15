@@ -93,6 +93,7 @@ process.env.GOOGLE_SHEET_ID = "mock-google-sheet-id";
 const apiRanking = require('../api/ranking');
 const apiComisiones = require('../api/comisiones');
 const apiUpdatePassword = require('../api/update-password');
+const apiGerenteCredentials = require('../api/gerente-credentials');
 
 // ----------------------------------------------------------------------------
 // CASO 1: Caché disponible y receptor devuelve error 401
@@ -833,6 +834,108 @@ console.log("\n\x1b[37m=== CASO 6: Alta y correspondencias de FRANCISCO JAVIER A
     "provision_alta_aguilar.js -> Bloquea con Exit Code 2 ante base no migrada (protege contra contraseñas en texto plano)",
     blocksLegacy,
     `Exit code: ${runLegacyDest.status} | Detección de esquema incompatible: ${blocksLegacy}`
+  );
+})();
+
+// ----------------------------------------------------------------------------
+// CASO 7: Consulta autorizada de credenciales para Gerencia (api/gerente-credentials)
+// ----------------------------------------------------------------------------
+console.log("\n\x1b[37m=== CASO 7: Consulta autorizada de credenciales para Gerencia (api/gerente-credentials) ===\x1b[0m");
+
+(function testGerenteCredentialsEndpoint() {
+  // 7.1 Acceso anónimo denegado con HTTP 401
+  const anonHttp = createMockHttp({ headers: {} });
+  apiGerenteCredentials(anonHttp.req, anonHttp.res);
+  report(
+    "api/gerente-credentials -> Denegado con HTTP 401 para petición sin token",
+    anonHttp.res.statusCode === 401,
+    `Status: ${anonHttp.res.statusCode} | Error: ${anonHttp.res._jsonData?.error}`
+  );
+
+  // 7.2 Acceso de Comercial denegado con HTTP 403
+  apiGerenteCredentials._setVerifySupabaseTokenForTesting((token, cb) => {
+    cb(null, { id: 'user-comercial-1', email: 'comercial@asistente.internal' });
+  });
+  apiGerenteCredentials._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      id: 'p-1',
+      dni: '00000001A',
+      nombre: 'COMERCIAL TEST',
+      rol: 'comercial',
+      activo: true,
+      must_change_password: false
+    });
+  });
+
+  const comercialHttp = createMockHttp();
+  apiGerenteCredentials(comercialHttp.req, comercialHttp.res);
+  report(
+    "api/gerente-credentials -> Denegado con HTTP 403 para perfil Comercial",
+    comercialHttp.res.statusCode === 403,
+    `Status: ${comercialHttp.res.statusCode} | Error: ${comercialHttp.res._jsonData?.error}`
+  );
+
+  // 7.3 Acceso de Evaria denegado con HTTP 403
+  apiGerenteCredentials._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      id: 'p-evaria',
+      dni: '00000004E',
+      nombre: 'EVARIA TEST',
+      rol: 'evaria',
+      activo: true,
+      must_change_password: false
+    });
+  });
+
+  const evariaHttp = createMockHttp();
+  apiGerenteCredentials(evariaHttp.req, evariaHttp.res);
+  report(
+    "api/gerente-credentials -> Denegado con HTTP 403 para perfil Evaria",
+    evariaHttp.res.statusCode === 403,
+    `Status: ${evariaHttp.res.statusCode} | Error: ${evariaHttp.res._jsonData?.error}`
+  );
+
+  // 7.4 Acceso autorizado de Gerente -> HTTP 200 con credenciales desocultadas y protección de hashes personales
+  apiGerenteCredentials._setVerifySupabaseTokenForTesting((token, cb) => {
+    cb(null, { id: 'user-gerente-fran', email: '77860623b@asistente.internal' });
+  });
+  apiGerenteCredentials._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      id: 'p-gerente',
+      dni: '77860623B',
+      nombre: 'FRANCISCO MORENTE',
+      rol: 'gerente',
+      activo: true,
+      must_change_password: false
+    });
+  });
+
+  apiGerenteCredentials._setFetchAllProfilesForTesting((cb) => {
+    cb(null, [
+      { dni: '47539234M', nombre: 'ANA ROCIO GALERA MORILLO', rol: 'comercial', activo: true, must_change_password: true },
+      { dni: '78105180D', nombre: 'FRANCISCO JAVIER AGUILAR CHAVES', rol: 'comercial', activo: true, must_change_password: false }
+    ]);
+  });
+
+  apiGerenteCredentials._setFetchTempCredentialsForTesting((cb) => {
+    cb(null, [
+      { dni: '47539234M', temp_password: 'TempPassword47539!' },
+      { dni: '78105180D', temp_password: 'OldTempPass78105!' }
+    ]);
+  });
+
+  const gerenteHttp = createMockHttp();
+  apiGerenteCredentials(gerenteHttp.req, gerenteHttp.res);
+
+  const credsData = gerenteHttp.res._jsonData?.credentials || {};
+  const is200 = gerenteHttp.res.statusCode === 200;
+  const anaHasTemp = credsData['47539234M']?.password === 'TempPassword47539!' && credsData['47539234M']?.mustChangePassword === true;
+  const aguilarHasPersonal = credsData['78105180D']?.password === 'Contraseña personal ya establecida' && credsData['78105180D']?.isPersonal === true;
+
+  report(
+    "api/gerente-credentials -> Autorizado con HTTP 200 para Gerente (desoculta temporales y preserva personales)",
+    is200 && anaHasTemp && aguilarHasPersonal,
+    `Ana (must_change=true): ${credsData['47539234M']?.password} | Aguilar (must_change=false): ${credsData['78105180D']?.password}`
   );
 })();
 

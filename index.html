@@ -5179,7 +5179,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
                   </p>
                 </div>
               </div>
-              <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; background: #E85D3A; color: #fff; font-weight: 700; font-size: 12.5px; padding: 8px 14px; border-radius: 6px; text-decoration: none; white-space: nowrap; flex-shrink: 0;">
+              <a href="https://grupoenergiza.omniasoluciones.es/backend/direcciones_qr/search/lista" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; background: #E85D3A; color: #fff; font-weight: 700; font-size: 12.5px; padding: 8px 14px; border-radius: 6px; text-decoration: none; white-space: nowrap; flex-shrink: 0;">
                 Abrir CRM Energiza (QR Lead)
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </a>
@@ -5327,7 +5327,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
                   </p>
                 </div>
               </div>
-              <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; background: #E85D3A; color: #fff; font-weight: 700; font-size: 12.5px; padding: 8px 14px; border-radius: 6px; text-decoration: none; white-space: nowrap; flex-shrink: 0;">
+              <a href="https://grupoenergiza.omniasoluciones.es/backend/direcciones_qr/search/lista" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 6px; background: #E85D3A; color: #fff; font-weight: 700; font-size: 12.5px; padding: 8px 14px; border-radius: 6px; text-decoration: none; white-space: nowrap; flex-shrink: 0;">
                 Abrir CRM Energiza (QR Lead)
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
               </a>
@@ -6944,10 +6944,16 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
               Administra los usuarios, contraseñas, roles y estado de actividad de los agentes. Si desactivas a un agente, no podrá iniciar sesión.
             </p>
           </div>
-          <button id="btn-save-users-gerente" onclick="saveAllAgentUsersByGerente()" style="background: var(--blue); color: #fff; border: none; padding: 10px 20px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; transition: opacity 0.2s;">
-            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
-            Guardar Cambios
-          </button>
+          <div style="display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+            <button id="btn-toggle-passwords-gerente" type="button" onclick="toggleGerentePasswordsVisibility()" style="background: rgba(53, 127, 191, 0.08); color: var(--blue); border: 1.5px solid var(--blue); padding: 9px 16px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13px; transition: all 0.2s;">
+              <svg id="icon-toggle-pwd" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+              <span id="text-toggle-pwd">Desocultar Contraseñas</span>
+            </button>
+            <button id="btn-save-users-gerente" onclick="saveAllAgentUsersByGerente()" style="background: var(--blue); color: #fff; border: none; padding: 10px 20px; border-radius: var(--rs); font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 8px; font-size: 13.5px; transition: opacity 0.2s;">
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path><polyline points="17 21 17 13 7 13 7 21"></polyline><polyline points="7 3 7 8 15 8"></polyline></svg>
+              Guardar Cambios
+            </button>
+          </div>
         </div>
         
         <div style="overflow-x: auto;">
@@ -11362,7 +11368,7 @@ function renderProcedimientos() {
             </div>
           </div>
           <div style="align-self: center; flex-shrink: 0;">
-            <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: #E85D3A; color: #fff; font-weight: 700; font-size: 14px; padding: 12px 20px; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(232, 93, 58, 0.28); transition: all 0.2s;">
+            <a href="https://grupoenergiza.omniasoluciones.es/backend/direcciones_qr/search/lista" target="_blank" rel="noopener noreferrer" style="display: inline-flex; align-items: center; gap: 8px; background: #E85D3A; color: #fff; font-weight: 700; font-size: 14px; padding: 12px 20px; border-radius: 8px; text-decoration: none; box-shadow: 0 4px 14px rgba(232, 93, 58, 0.28); transition: all 0.2s;">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"></path><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"></path></svg>
               Abrir CRM Energiza (QR Lead)
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
@@ -13792,6 +13798,9 @@ function filterLoginLogs() {
   renderLoginLogs(searchFiltered);
 }
 
+let gerentePasswordsRevealed = false;
+let cachedGerenteCredentials = null;
+
 function initGruposAgentes() {
   const tbody = document.getElementById('tbl-gerente-usuarios-body');
   if (!tbody) return;
@@ -13832,8 +13841,28 @@ function initGruposAgentes() {
     
     const userFieldHtml = `<input type="text" id="user-dni-${agent.dni}" value="${agent.dni}" readonly style="padding: 6px 12px; border: 1.5px solid var(--border); border-radius: var(--rs); background: rgba(0,0,0,0.02); color: var(--text); font-family: monospace; font-size: 13px; width: 110px; outline: none;">`;
       
+    let pwdDisplayHtml = '';
+    if (gerentePasswordsRevealed && cachedGerenteCredentials && cachedGerenteCredentials[agent.dni]) {
+      const cred = cachedGerenteCredentials[agent.dni];
+      if (cred.isPersonal) {
+        pwdDisplayHtml = `<span style="font-size: 11px; font-weight: 700; color: #059669; background: rgba(16, 185, 129, 0.1); padding: 3px 8px; border-radius: 4px; border: 1px solid rgba(16, 185, 129, 0.2);" title="El usuario ya estableció su contraseña personal privada">Personal establecida</span>`;
+      } else {
+        const safePwd = escapeHtml(cred.password);
+        pwdDisplayHtml = `
+          <div style="display: inline-flex; align-items: center; gap: 4px; background: rgba(53, 127, 191, 0.08); padding: 2px 6px; border-radius: 4px; border: 1px solid rgba(53, 127, 191, 0.2);">
+            <span style="font-family: monospace; font-size: 12px; font-weight: 700; color: #0f172a;">${safePwd}</span>
+            <button type="button" title="Copiar contraseña" onclick="copyGerentePassword('${safePwd}')" style="background: transparent; border: none; cursor: pointer; color: var(--blue); padding: 0 2px; display: inline-flex; align-items: center;">
+              <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>
+            </button>
+          </div>
+        `;
+      }
+    } else {
+      pwdDisplayHtml = `<span style="font-size: 12px; color: var(--t2); font-family: monospace; letter-spacing: 2px;">••••••••</span>`;
+    }
+
     const pwdFieldHtml = `<div style="display: flex; align-items: center; gap: 6px;">
-      <span style="font-size: 12px; color: var(--t2); font-family: monospace; letter-spacing: 2px;">••••••••</span>
+      ${pwdDisplayHtml}
       <button type="button" onclick="gerenteTriggerPasswordReset('${agent.dni}')" style="padding: 3px 8px; font-size: 11px; border: 1px solid var(--border); border-radius: 4px; background: rgba(53,127,191,0.08); color: var(--blue); cursor: pointer; font-weight: 600;">Restablecer</button>
     </div>`;
     
@@ -13856,6 +13885,83 @@ function initGruposAgentes() {
   });
   
   tbody.innerHTML = html;
+}
+
+async function toggleGerentePasswordsVisibility() {
+  const btn = document.getElementById('btn-toggle-passwords-gerente');
+  const txt = document.getElementById('text-toggle-pwd');
+  const icon = document.getElementById('icon-toggle-pwd');
+
+  if (!gerentePasswordsRevealed) {
+    if (btn) {
+      btn.disabled = true;
+      if (txt) txt.textContent = "Cargando...";
+    }
+
+    try {
+      if (!cachedGerenteCredentials) {
+        if (!supabaseClient) throw new Error("Cliente de autenticación no inicializado.");
+        const { data: { session }, error: sessionErr } = await supabaseClient.auth.getSession();
+        if (!session || !session.access_token) throw new Error("Sesión no válida o expirada. Vuelve a iniciar sesión.");
+
+        const res = await fetch('/api/gerente-credentials', {
+          headers: {
+            'Authorization': `Bearer ${session.access_token}`
+          }
+        });
+        const json = await res.json();
+        if (!res.ok || !json.success) {
+          throw new Error(json.error || "No se pudieron obtener las credenciales.");
+        }
+        cachedGerenteCredentials = json.credentials;
+      }
+
+      gerentePasswordsRevealed = true;
+      if (btn) {
+        btn.disabled = false;
+        btn.style.background = 'var(--blue)';
+        btn.style.color = '#fff';
+        if (txt) txt.textContent = "Ocultar Contraseñas";
+        if (icon) {
+          icon.innerHTML = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"></path><line x1="1" y1="1" x2="23" y2="23"></line>`;
+        }
+      }
+      initGruposAgentes();
+    } catch (e) {
+      console.error("Error al desocultar contraseñas:", e);
+      alert("Error al desocultar contraseñas: " + e.message);
+      if (btn) {
+        btn.disabled = false;
+        btn.style.background = 'rgba(53, 127, 191, 0.08)';
+        btn.style.color = 'var(--blue)';
+        if (txt) txt.textContent = "Desocultar Contraseñas";
+      }
+    }
+  } else {
+    gerentePasswordsRevealed = false;
+    if (btn) {
+      btn.style.background = 'rgba(53, 127, 191, 0.08)';
+      btn.style.color = 'var(--blue)';
+      if (txt) txt.textContent = "Desocultar Contraseñas";
+      if (icon) {
+        icon.innerHTML = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle>`;
+      }
+    }
+    initGruposAgentes();
+  }
+}
+
+function copyGerentePassword(pwd) {
+  if (!pwd) return;
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(pwd).then(() => {
+      alert("Contraseña copiada al portapapeles.");
+    }).catch(() => {
+      prompt("Copia la contraseña:", pwd);
+    });
+  } else {
+    prompt("Copia la contraseña:", pwd);
+  }
 }
 
 function gerenteTriggerPasswordReset(dni) {
@@ -16672,7 +16778,7 @@ const KNOWLEDGE_BASE = [
     • <strong>Un único consentimiento por cliente:</strong> Aunque contrate luz y gas o varios suministros.<br>
     • <strong>Sin consentimiento firmado:</strong> No se continúa con la grabación ni se envía el SMS del contrato.<br>
     • <strong>La desaparición de la fila:</strong> Corresponde a la firma del consentimiento; no significa que el contrato ya esté firmado.<br><br>
-    👉 <a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" style="display:inline-block;background:#E85D3A;color:#fff;font-weight:700;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:13px;margin-top:6px;">Acceder al CRM de Energiza (QR Lead)</a>`
+    👉 <a href="https://grupoenergiza.omniasoluciones.es/backend/direcciones_qr/search/lista" target="_blank" style="display:inline-block;background:#E85D3A;color:#fff;font-weight:700;padding:8px 14px;border-radius:6px;text-decoration:none;font-size:13px;margin-top:6px;">Acceder al CRM de Energiza (QR Lead)</a>`
   }
 ];
 
@@ -16842,7 +16948,7 @@ function getRenosurChatResponse(query) {
              `• <strong>Un único consentimiento por cliente:</strong> Válido para luz, gas o múltiples suministros.<br>` +
              `• <strong>Regla estricta:</strong> Sin consentimiento firmado no se continúa con la grabación ni se envía el contrato.<br>` +
              `• <strong>Fila en CRM:</strong> Su desaparición acredita la firma del consentimiento, no del contrato.<br><br>` +
-             `<a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" style="display:inline-block;background:#E85D3A;color:#fff;font-weight:700;padding:7px 14px;border-radius:6px;text-decoration:none;font-size:12.5px;">👉 Acceder al CRM de Energiza</a>`;
+             `<a href="https://grupoenergiza.omniasoluciones.es/backend/direcciones_qr/search/lista" target="_blank" style="display:inline-block;background:#E85D3A;color:#fff;font-weight:700;padding:7px 14px;border-radius:6px;text-decoration:none;font-size:12.5px;">👉 Acceder al CRM de Energiza</a>`;
     }
 
     if (hasEndesa) {
@@ -16977,7 +17083,7 @@ function getRenosurChatResponse(query) {
                `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (contrato de alquiler, escrituras de compraventa, IBI o certificado de empadronamiento).<br>` +
                `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
                `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Naturgy</strong> (contratar con la potencia actual del suministro).<br><br>` +
-               `<a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" style="display:inline-block;background:#E85D3A;color:#fff;font-weight:700;padding:7px 14px;border-radius:6px;text-decoration:none;font-size:12.5px;">👉 Acceder al CRM de Energiza</a>`;
+               `<a href="https://grupoenergiza.omniasoluciones.es/backend/direcciones_qr/search/lista" target="_blank" style="display:inline-block;background:#E85D3A;color:#fff;font-weight:700;padding:7px 14px;border-radius:6px;text-decoration:none;font-size:12.5px;">👉 Acceder al CRM de Energiza</a>`;
       }
       if (isCIF) {
         return `<strong>Naturgy — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
@@ -17007,7 +17113,7 @@ function getRenosurChatResponse(query) {
                `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras, IBI o certificado de empadronamiento).<br>` +
                `  - <strong>Altas nuevas:</strong> Obligatorio el CIE.<br>` +
                `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Naturgy</strong> (contratar con la potencia actual del suministro).<br><br>` +
-               `<a href="https://grupoenergiza.omniasoluciones.es/backend/usuarios/login/index" target="_blank" style="display:inline-block;background:#E85D3A;color:#fff;font-weight:700;padding:7px 14px;border-radius:6px;text-decoration:none;font-size:12.5px;">👉 Acceder al CRM de Energiza</a>`;
+               `<a href="https://grupoenergiza.omniasoluciones.es/backend/direcciones_qr/search/lista" target="_blank" style="display:inline-block;background:#E85D3A;color:#fff;font-weight:700;padding:7px 14px;border-radius:6px;text-decoration:none;font-size:12.5px;">👉 Acceder al CRM de Energiza</a>`;
       }
     }
 
