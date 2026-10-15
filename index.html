@@ -7760,7 +7760,7 @@ function escapeHtml(str) {
     - Por Uso Luz (2.0TD): TP1=0,1230 TP2=0,0616 €/kW·dia, TE P1=0,1230 €/kWh (precio UNICO 24h, sin discriminacion)
     - Fijo Luz 24h (CIF): TP1=0,122 TP2=0,043 €/kW·dia, TE P1=0,166 €/kWh
     Gas Por Uso Gas: RL1 TV=0,079 TF=0,1693€/dia · RL2 TV=0,077 TF=0,3008 · RL3 TV=0,073 TF=0,6496
-    Servielectric Complet: 8,48€/mes · Servigas Complet: 11,81€/mes
+    Servielectric Complet: 8,48€/mes · Servigas Complet: 8,48€/mes
     Impuesto electrico: 5,11%
 
   ENDESA: Vigencia 07/04/2026 – 08/05/2026
@@ -7805,7 +7805,7 @@ const BASE = {
     tp1:0.1230, tp2:0.0616,
     te_sin:0.1230, te_con:0.1230,
     precio_excedente:0.06,
-    sva_luz:8.48, sva_gas:11.81,
+    sva_luz:8.48, sva_gas:8.48,
     gas_rl1:{tf:0.175233, tv:0.092000},
     gas_rl2:{tf:0.314118, tv:0.089902},
     gas_rl3:{tf:0.678697, tv:0.086462},
@@ -11694,13 +11694,16 @@ function calcComp(){
     // SVA
     let svaLuzAmt = 0, svaGasAmt = 0;
     if(useSva){
-      if (cia === 'gana') {
-        svaLuzAmt = (4.13 / 30) * dias;
-      } else {
-        svaLuzAmt = (r.sva_luz / 30) * dias;
-      }
-      if(gas > 0){
-        svaGasAmt = (r.sva_gas / 30) * dias;
+      if (compMode === 'luz') {
+        if (cia === 'gana') {
+          svaLuzAmt = (4.13 / 30) * dias;
+        } else {
+          svaLuzAmt = (r.sva_luz / 30) * dias;
+        }
+      } else if (compMode === 'gas') {
+        if (gas > 0) {
+          svaGasAmt = (r.sva_gas / 30) * dias;
+        }
       }
     }
 
@@ -17478,7 +17481,7 @@ function getRenosurChatResponse(query) {
       }
       if (asksGasOnly || cleanQ.includes('servigas')) {
         return `<strong>Servigas (Servicio de Mantenimiento de Gas de Naturgy):</strong><br><br>` +
-          `• <strong>Precio:</strong> Tarifa de referencia <strong>11,81 €/mes</strong> (según modalidad y promociones).<br>` +
+          `• <strong>Precio:</strong> Tarifa de referencia <strong>8,48 €/mes</strong> (en comparador: 8,48 €/mes).<br>` +
           `• <strong>Modalidades y Coberturas:</strong><br>` +
           `  - <strong>Complet:</strong> Revisión preventiva anual de instalación individual (IRI), caldera y circuito de calefacción/radiadores. Incluye la Inspección Periódica oficial de cada 5 años y urgencias en <3h (desplazamiento y 3h de mano de obra gratis).<br>` +
           `  - <strong>Complet Agua Caliente:</strong> Igual a Complet para calentadores (sin circuito de calefacción).<br>` +
@@ -17492,7 +17495,7 @@ function getRenosurChatResponse(query) {
         `• <strong>Modalidades:</strong> Xpress (urgencias <3h, 3h mano de obra gratis, electrodomésticos gama blanca y 2h manitas), Xpress Piezas (añade piezas hasta 300€ para aparatos <10 años) y Complet (añade revisión preventiva anual de aire acondicionado RITE <70 kW).<br>` +
         `• <strong>Condiciones:</strong> Carencia de 15 días. Contrato anual (baja con 1 mes de preaviso).<br><br>` +
         `<h3>2. GAS: Servigas (Complet / Xpress / Básico)</h3>` +
-        `• <strong>Precio:</strong> Tarifa de referencia <strong>11,81 €/mes</strong> (según modalidad y promociones).<br>` +
+        `• <strong>Precio:</strong> Tarifa de referencia <strong>8,48 €/mes</strong> (en comparador: 8,48 €/mes).<br>` +
         `• <strong>Modalidades:</strong> Complet (revisión anual obligatoria de caldera e IRI, Inspección Periódica de 5 años y urgencias <3h con 3h mano de obra gratis), Complet Agua Caliente y Xpress.<br>` +
         `• <strong>Condiciones:</strong> Carencia de 15 días. Contrato anual (baja con 1 mes de preaviso).`;
     }
@@ -17567,7 +17570,7 @@ function getRenosurChatResponse(query) {
       `• <strong>Gas (Pack Mantenimiento Gas):</strong> 9,95 €/mes. Revisión anual de caldera y radiadores, reparación con 3h mano de obra y piezas hasta 50€.<br><br>` +
       `<h3>2. NATURGY</h3>` +
       `• <strong>Luz (Servielectric):</strong> 8,48 €/mes ref. Urgencias <3h (3h mano de obra gratis), electrodomésticos, manitas (2h) y revisión aire acondicionado (Complet).<br>` +
-      `• <strong>Gas (Servigas):</strong> 11,81 €/mes ref. Revisión anual de caldera, Inspección 5 años y urgencias <3h.<br><br>` +
+      `• <strong>Gas (Servigas):</strong> 8,48 €/mes ref. Revisión anual de caldera, Inspección 5 años y urgencias <3h.<br><br>` +
       `<h3>3. ENDESA</h3>` +
       `• <strong>Luz (Protección Luz 360):</strong> 4,54 €/mes con IVA. Urgencias <3h, electrodomésticos, cerrajería, fontanería y cristalería con piezas hasta 500€ (máx 2/año) y protección pagos.<br>` +
       `• <strong>Gas (Mantenimiento Gas Completo):</strong> 9,09 €/mes con IVA. Revisión anual/bienal de caldera y radiadores, urgencias <3h (3h mano de obra gratis).<br><br>` +
