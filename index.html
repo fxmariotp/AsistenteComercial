@@ -7822,18 +7822,18 @@ const BASE = {
   },
   endesa:{
     name:'Endesa', color:'#00A8E0',
-    tp1:0.093, tp2:0.093,
-    te_sin:0.137, te_con:0.131,
+    tp1:0.091, tp2:0.091,
+    te_sin:0.1670, te_con:0.1614,
     precio_excedente:0.06,
     sva_luz:4.77, sva_gas:9.09,
     gas_rl1:{tf:0.232, tv:0.074},
     gas_rl2:{tf:0.471, tv:0.070},
     gas_rl3:{tf:0.989, tv:0.064},
     imp_electrico:0.0511,
-    desc_sin:0.20, desc_con:0.23,
+    desc_sin:0.10, desc_con:0.13,
     tarifas_luz:[
-      {n:'Luz 24H', te:0.171, tp1:0.093, tp2:0.093, te_sin:0.137, te_con:0.131, desc_sin:0.20, desc_con:0.23, nota:'Precio unico 24h sin permanencia'},
-      {n:'Solar Plus', te:0.164, tp1:0.093, tp2:0.093, te_sin:0.145, te_con:0.145, desc_sin:0.1158, desc_con:0.1158, nota:'Tarifa Solar con excedentes (+2€/mes Batería Virtual)', extra_bateria_virtual:2.00, nota_extra:'"Fuera de Andalucía y Extremadura el precio final es 0.153 €/kWh"'}
+      {n:'Luz 24H', te:0.185544, tp1:0.091, tp2:0.091, te_sin:0.1670, te_con:0.1614, desc_sin:0.10, desc_con:0.13, nota:'Precio unico 24h sin permanencia'},
+      {n:'Solar Plus', te:0.164, tp1:0.091, tp2:0.091, te_sin:0.145, te_con:0.145, desc_sin:0.1158, desc_con:0.1158, nota:'Tarifa Solar con excedentes (+2€/mes Batería Virtual)', extra_bateria_virtual:2.00, nota_extra:'"Fuera de Andalucía y Extremadura el precio final es 0.153 €/kWh"'}
     ],
     tarifas_gas:[
       {n:'Gas Endesa RL1', tv:0.074, tf:0.232},
@@ -11626,8 +11626,8 @@ function calcComp(){
     }
     if (cia === 'endesa' && excedente > 0) {
       r.name = isCif ? 'Endesa Solar Plus (Precio CIF)' : 'Endesa Solar Plus';
-      r.tp1 = 0.093;
-      r.tp2 = 0.093;
+      r.tp1 = 0.091;
+      r.tp2 = 0.091;
       r.te_sin = 0.145;
       r.te_con = 0.145;
       r.precio_excedente = 0.06;
@@ -11635,7 +11635,7 @@ function calcComp(){
       r.desc_con = 0.1158;
       r.coste_bateria_virtual_activa = 2.00;
       r.tarifas_luz = [
-        {n:'Solar Plus', te:0.164, tp1:0.093, tp2:0.093, te_sin:0.145, te_con:0.145, desc_sin:0.1158, desc_con:0.1158, nota:'Tarifa Solar Plus con excedentes (+2€/mes Batería Virtual)', extra_bateria_virtual:2.00, nota_extra:'"Fuera de Andalucía y Extremadura el precio final es 0.153 €/kWh"'}
+        {n:'Solar Plus', te:0.164, tp1:0.091, tp2:0.091, te_sin:0.145, te_con:0.145, desc_sin:0.1158, desc_con:0.1158, nota:'Tarifa Solar Plus con excedentes (+2€/mes Batería Virtual)', extra_bateria_virtual:2.00, nota_extra:'"Fuera de Andalucía y Extremadura el precio final es 0.153 €/kWh"'}
       ];
     }
     
@@ -17675,12 +17675,12 @@ function getRenosurChatResponse(query) {
       luz: {
         luz_24h: {
           name: "Endesa Luz 24H",
-          base: "0,171 €/kWh",
-          sin_mantenimiento: "0,137 €/kWh",
-          con_mantenimiento: "0,131 €/kWh",
-          descuento_sin_mantenimiento: "20% sin mantenimiento",
-          descuento_con_mantenimiento: "23% con mantenimiento",
-          potencia: "TP1: 0,093 €/kW-día | TP2: 0,093 €/kW-día",
+          base: "0,185544 €/kWh",
+          sin_mantenimiento: "0,1670 €/kWh",
+          con_mantenimiento: "0,1614 €/kWh",
+          descuento_sin_mantenimiento: "10% sin mantenimiento",
+          descuento_con_mantenimiento: "13% con mantenimiento",
+          potencia: "TP1: 0,091 €/kW-día | TP2: 0,091 €/kW-día",
           excedentes: "0,06 €/kWh",
           mantenimiento: "4,77 €/mes",
           permanencia: "No tiene permanencia.",
@@ -17693,7 +17693,7 @@ function getRenosurChatResponse(query) {
           con_mantenimiento: "0,145 €/kWh (12% de descuento)",
           descuento_sin_mantenimiento: "12% sin mantenimiento",
           descuento_con_mantenimiento: "12% con mantenimiento",
-          potencia: "TP1: 0,093 €/kW-día | TP2: 0,093 €/kW-día",
+          potencia: "TP1: 0,091 €/kW-día | TP2: 0,091 €/kW-día",
           excedentes: "0,06 €/kWh",
           mantenimiento: "4,77 €/mes",
           permanencia: "Ese dato no aparece en la información disponible de esta tarifa.",
@@ -17826,10 +17826,10 @@ function getRenosurChatResponse(query) {
   if (q.includes('luz 24h') || q.includes('luz 24 h') || (q.includes('endesa') && q.includes('24h'))) {
     return "<strong>Endesa — Luz 24H:</strong><br><br>" +
       "• <strong>Término de Energía:</strong><br>" +
-      "  - Precio Base: 0,171 €/kWh<br>" +
-      "  - Sin Mantenimiento (20% dto.): <strong>0,137 €/kWh</strong><br>" +
-      "  - Con Mantenimiento (23% dto.): <strong>0,131 €/kWh</strong><br><br>" +
-      "• <strong>Término de Potencia:</strong> TP1: <strong>0,093 €/kW·día</strong> | TP2: <strong>0,093 €/kW·día</strong><br>" +
+      "  - Precio Base: 0,185544 €/kWh<br>" +
+      "  - Sin Mantenimiento (10% dto.): <strong>0,1670 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (13% dto.): <strong>0,1614 €/kWh</strong><br><br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,091 €/kW·día</strong> | TP2: <strong>0,091 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Protección Luz 360):</strong> 4,77 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
@@ -17844,7 +17844,7 @@ function getRenosurChatResponse(query) {
       "  - Precio con descuento (con o sin mantenimiento): <strong>0,145 €/kWh</strong><br>" +
       "  - <em>*Nota:* \"Fuera de Andalucía y Extremadura el precio final es 0.153 €/kWh\"</em><br><br>" +
       "• <strong>Batería Virtual Activa:</strong> +2,00 €/mes en todas las facturas<br>" +
-      "• <strong>Término de Potencia:</strong> TP1: <strong>0,093 €/kW·día</strong> | TP2: <strong>0,093 €/kW·día</strong><br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,091 €/kW·día</strong> | TP2: <strong>0,091 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> <strong>0,06 €/kWh</strong><br>" +
       "• <strong>Mantenimiento Luz:</strong> 4,77 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia<br>" +
@@ -17909,7 +17909,7 @@ function getRenosurChatResponse(query) {
              ibLuzBest +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1230 €/kWh<br>` +
              `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1390 €/kWh<br>` +
-             `• <strong>Endesa Luz 24H:</strong> 0,137 €/kWh (0,131 €/kWh con mant.)<br>` +
+             `• <strong>Endesa Luz 24H:</strong> 0,1670 €/kWh (0,1614 €/kWh con mant.)<br>` +
              `• <strong>Endesa Solar Plus:</strong> 0,145 €/kWh (+2€/mes BV)<br><br>` +
              `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
     }
@@ -17979,7 +17979,7 @@ function getRenosurChatResponse(query) {
       if (company === 'endesa') {
         return `<strong>Tarifas de Luz de Endesa disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-          `  <button onclick="sendQuickChatQuery('Endesa Luz 24H')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Luz 24H (Estándar 24 Horas) — Desde 0,131 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Endesa Luz 24H')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Luz 24H (Estándar 24 Horas) — Desde 0,1614 €/kWh</button>` +
           `  <button onclick="sendQuickChatQuery('Endesa Solar Plus')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Solar Plus (Con placas / Excedentes) — Desde 0,145 €/kWh (+2€/mes BV)</button>` +
           `</div>`;
       }
