@@ -7774,7 +7774,7 @@ function escapeHtml(str) {
 */
 
 function isPlanAhoraActive() {
-  return Date.now() <= new Date('2026-10-15T23:59:59+02:00').getTime();
+  return Date.now() <= new Date('2026-10-31T23:59:59+02:00').getTime();
 }
 
 const BASE = {
@@ -7790,7 +7790,7 @@ const BASE = {
     imp_electrico:0.0511,
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
-      {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-10-15T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña (≤10kW) · Sin tarjetas promocionales'},
+      {n:'Plan Ahora', te:0.1176, tp1:0.12, tp2:0.12, te_sin:0.0999, te_con:0.094, desc_sin:0.15, desc_con:0.20, temporal:true, expira:'2026-10-31T23:59:59', solo_mantenimiento:true, provincias:['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'], nota:'Campaña temporal hasta 31/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña (≤10kW) · Sin tarjetas promocionales'},
       {n:'Plan Impulsa', te:0.186533, tp1:0.1240, tp2:0.0710, te_sin:0.1492, te_con:0.1306, desc_sin:0.20, desc_con:0.30, nota:'Precio único 24h sin permanencia'},
       {n:'Plan Especial', te:0.174875, tp1:0.1090, tp2:0.0790, te_sin:0.1399, te_con:0.1312, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia (<10kW)'}
     ],
@@ -10870,7 +10870,7 @@ function renderCondiciones(){
             <div style="margin-top:6px;display:flex;flex-direction:column;gap:5px;">
               <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
                 <span style="font-size:10.5px;font-weight:800;color:#dc2626;background:rgba(220,38,38,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(220,38,38,0.2);display:inline-flex;align-items:center;gap:3px;">
-                  ⏳ Campaña hasta 15/10 (23:59:59)
+                  ⏳ Campaña hasta 31/10 (23:59:59)
                 </span>
                 <span style="font-size:10.5px;font-weight:700;color:#d97706;background:rgba(217,119,6,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(217,119,6,0.2);">
                   ⚠️ Solo con mantenimiento
@@ -11585,10 +11585,10 @@ function calcComp(){
             desc_sin: 0.15,
             desc_con: 0.20,
             temporal: true,
-            expira: '2026-10-15T23:59:59',
+            expira: '2026-10-31T23:59:59',
             solo_mantenimiento: true,
             provincias: ['Sevilla', 'Huelva', 'Barcelona', 'A Coruña'],
-            nota: 'Campaña temporal hasta 15/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña · Sin tarjetas promocionales'
+            nota: 'Campaña temporal hasta 31/10 (23:59:59) · Solo con mantenimiento · Sevilla, Huelva, Barcelona y A Coruña · Sin tarjetas promocionales'
           }
         ];
       } else if (off.type === 'especial') {
@@ -17597,7 +17597,7 @@ function getRenosurChatResponse(query) {
           mantenimiento: "4,48 €/mes (Pack Iberdrola Hogar obligatorio)",
           permanencia: "No tiene permanencia.",
           retrocomision: "0-2 meses: 100% | 2-4 meses: 50%",
-          vigencia: "Válido hasta el 15 de octubre a las 23:59:59.",
+          vigencia: "Válido hasta el 31 de octubre a las 23:59:59.",
           condiciones_especiales: "Solo se puede meter con mantenimiento. Solo se puede vender en Sevilla, Huelva, Barcelona y A Coruña. No se pueden dar tarjetas promocionales."
         },
         plan_impulsa: {
@@ -17754,10 +17754,10 @@ function getRenosurChatResponse(query) {
   };
 
   // ── RESPUESTAS EXACTAS PARA TARIFAS Y PRECIOS ──
-  // 1. Iberdrola Plan Ahora (CAMPAÑA TEMPORAL ACTIVA HASTA 15/10)
+  // 1. Iberdrola Plan Ahora (CAMPAÑA TEMPORAL ACTIVA HASTA 31/10)
   if (q.includes('plan ahora') || q.includes('ahora 0-10') || q.includes('ahora 10-15') || (q.includes('ahora') && q.includes('iberdrola'))) {
     return "⚡ <strong>Iberdrola — Plan Ahora (Campaña Temporal Activa):</strong><br><br>" +
-           "⏳ <strong>Vigencia:</strong> Hasta el <strong>15 de octubre a las 23:59:59</strong>.<br>" +
+           "⏳ <strong>Vigencia:</strong> Hasta el <strong>31 de octubre a las 23:59:59</strong>.<br>" +
            "⚠️ <strong>Condición de contratación:</strong> <strong>Solo se puede meter con mantenimiento</strong>.<br>" +
            "📍 <strong>Zonas autorizadas:</strong> Solo se puede comercializar/vender en <strong>Sevilla, Huelva, Barcelona y A Coruña</strong>.<br>" +
            "🚫 <strong>Tarjetas promocionales:</strong> <strong>NO se pueden dar tarjetas promocionales</strong> con esta tarifa.<br><br>" +
@@ -17906,7 +17906,7 @@ function getRenosurChatResponse(query) {
       
       // Luz más barata
       const ibLuzBest = isPlanAhoraActive() 
-        ? `• <strong>Iberdrola Plan Ahora (Temporal hasta 15/10):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>• <strong>Iberdrola Plan Especial:</strong> 0,1399 €/kWh (0,1312 €/kWh con SVA)<br>`
+        ? `• <strong>Iberdrola Plan Ahora (Temporal hasta 31/10):</strong> 0,094 €/kWh (con SVA · Sevilla, Huelva, Barcelona y A Coruña)<br>• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>• <strong>Iberdrola Plan Especial:</strong> 0,1399 €/kWh (0,1312 €/kWh con SVA)<br>`
         : `• <strong>Iberdrola Plan Impulsa:</strong> 0,1492 €/kWh (0,1306 €/kWh con SVA)<br>• <strong>Iberdrola Plan Especial:</strong> 0,1399 €/kWh (0,1312 €/kWh con SVA)<br>`;
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              ibLuzBest +
@@ -17960,7 +17960,7 @@ function getRenosurChatResponse(query) {
         if (isPlanAhoraActive()) {
           return `<strong>Tarifas de Luz de Iberdrola disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
             `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Plan Ahora (Temporal hasta 15/10) — 0,094 €/kWh (Con Mant.)</button>` +
+            `  <button onclick="sendQuickChatQuery('Iberdrola Plan Ahora')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔥 Plan Ahora (Temporal hasta 31/10) — 0,094 €/kWh (Con Mant.)</button>` +
             `  <button onclick="sendQuickChatQuery('Iberdrola Plan Impulsa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Impulsa — Desde 0,1306 €/kWh</button>` +
             `  <button onclick="sendQuickChatQuery('Iberdrola Plan Especial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan Especial — Desde 0,1312 €/kWh</button>` +
             `</div>`;
