@@ -7753,7 +7753,7 @@ function escapeHtml(str) {
     - Plan Impulsa:                TE=0,186533 TP1=45,26 TP2=25,915 (P1 0,124 P2 0,071 €/kW·dia)
     Descuento sin mantenimiento: 20% TE (0,1492 €/kWh)
     Descuento con mantenimiento (Pack): 30% TE (0,1306 €/kWh)
-    Gas RL1: TV=0,1206 TF=6,55€/mes · RL2: TV=0,1192 TF=11,18 · RL3: TV=0,1192 TF=21,53
+    Gas RL1: TV=0,1194 TF=6,34€/mes (0,2112€/día) · RL2: TV=0,1183 TF=10,82 (0,3606€/día) · RL3: TV=0,1183 TF=20,84 (0,6945€/día)
     Impuesto electrico: 5,11%
 
   NATURGY: PVP 2026 Peninsula
@@ -7784,9 +7784,9 @@ const BASE = {
     te_sin:0.0999, te_con:0.094,
     precio_excedente:0.05,
     sva_luz:4.48, sva_gas:9.95,
-    gas_rl1:{tf:0.2112, tv:0.1024},
-    gas_rl2:{tf:0.3606, tv:0.1013},
-    gas_rl3:{tf:0.6945, tv:0.1013},
+    gas_rl1:{tf:0.2112, tv:0.1194},
+    gas_rl2:{tf:0.3606, tv:0.1183},
+    gas_rl3:{tf:0.6945, tv:0.1183},
     imp_electrico:0.0511,
     desc_sin:0.15, desc_con:0.20,
     tarifas_luz:[
@@ -7795,9 +7795,9 @@ const BASE = {
       {n:'Plan Especial', te:0.174875, tp1:0.1090, tp2:0.0790, te_sin:0.1399, te_con:0.1312, desc_sin:0.20, desc_con:0.25, nota:'Precio único 24h sin permanencia (<10kW)'}
     ],
     tarifas_gas:[
-      {n:'Iberdrola Gas RL1', tv:0.1024, tf:0.2112},
-      {n:'Iberdrola Gas RL2', tv:0.1013, tf:0.3606},
-      {n:'Iberdrola Gas RL3', tv:0.1013, tf:0.6945}
+      {n:'Iberdrola Gas RL1', tv:0.1194, tf:0.2112},
+      {n:'Iberdrola Gas RL2', tv:0.1183, tf:0.3606},
+      {n:'Iberdrola Gas RL3', tv:0.1183, tf:0.6945}
     ]
   },
   naturgy:{
@@ -12297,14 +12297,16 @@ function printCompanyOffer(key) {
       });
     }
   } else {
+    const tvDisp = (bandObj.tv != null && bandObj.tv.toString().split('.')[1]?.length > 3) ? bandObj.tv.toString() : bandObj.tv.toFixed(3);
     rows.push({
       concept: 'Termino Variable Gas',
-      calc: `${gas.toFixed(2)} kWh × ${bandObj.tv.toFixed(3)} €/kWh`,
+      calc: `${gas.toFixed(2)} kWh × ${tvDisp} €/kWh`,
       val: `${f2(gasVar)} €`
     });
+    const tfDisp = (bandObj.tf != null && bandObj.tf.toString().split('.')[1]?.length > 3) ? bandObj.tf.toString() : bandObj.tf.toFixed(3);
     rows.push({
       concept: 'Termino Fijo Gas',
-      calc: `${dias} dias × ${bandObj.tf.toFixed(3)} €/dia`,
+      calc: `${dias} dias × ${tfDisp} €/dia`,
       val: `${f2(gasFij)} €`
     });
     if (svaGasAmt > 0) {
@@ -17636,9 +17638,9 @@ function getRenosurChatResponse(query) {
         }
       },
       gas: {
-        rl1: "TV (Término Variable): 0,1024 €/kWh | TF (Término Fijo): 0,2112 €/día (Equivalente mensual: 6,34 €/mes)",
-        rl2: "TV (Término Variable): 0,1013 €/kWh | TF (Término Fijo): 0,3606 €/día (Equivalente mensual: 10,82 €/mes)",
-        rl3: "TV (Término Variable): 0,1013 €/kWh | TF (Término Fijo): 0,6945 €/día (Equivalente mensual: 20,84 €/mes)",
+        rl1: "TV (Término Variable): 0,1194 €/kWh | TF (Término Fijo): 0,2112 €/día (Equivalente mensual: 6,34 €/mes)",
+        rl2: "TV (Término Variable): 0,1183 €/kWh | TF (Término Fijo): 0,3606 €/día (Equivalente mensual: 10,82 €/mes)",
+        rl3: "TV (Término Variable): 0,1183 €/kWh | TF (Término Fijo): 0,6945 €/día (Equivalente mensual: 20,84 €/mes)",
         mantenimiento: "9,95 €/mes",
         retrocomision: "0-2 meses: 100% | 2-4 meses: 50%"
       }
