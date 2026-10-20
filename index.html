@@ -9777,16 +9777,7 @@ function renderNativeRanking(data) {
     const targetMet = pts >= obj;
     const percent = obj > 0 ? Math.min(100, Math.round((pts / obj) * 100)) : 0;
     
-    let tramoAlertHtml = '';
-    if (typeof getTramoBonusInfo === 'function') {
-      const tramo = getTramoBonusInfo(pts, obj);
-      tramoAlertHtml = `
-        <div style="margin-top:8px;padding:6px 12px;border-radius:6px;background:${tramo.badgeBg};border:1px solid ${tramo.badgeColor}33;font-size:12px;color:${tramo.badgeColor};display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;">
-          <span>${tramo.message}</span>
-          <span style="font-weight:800;white-space:nowrap;padding:2px 8px;border-radius:12px;background:${tramo.badgeColor}22;font-size:11px;">${tramo.badgeText}</span>
-        </div>
-      `;
-    }
+
 
     let msgHtml = '';
     if (targetMet) {
@@ -9798,7 +9789,6 @@ function renderNativeRanking(data) {
           <div style="font-size: 13px; color: var(--t2);">
             Has acumulado <strong>${pts.toFixed(1)} pts</strong> y cumplido con exito tu objetivo diario de ${obj.toFixed(1)} pts (<strong>${percent}%</strong>). ¡Excelente trabajo, sigue sumando! 🚀🔥
           </div>
-          ${tramoAlertHtml}
         </div>
       `;
     } else {
@@ -9819,7 +9809,6 @@ function renderNativeRanking(data) {
           <div style="font-size: 13px; color: var(--t2);">
             Llevas <strong>${pts.toFixed(1)} pts</strong> de un objetivo de ${obj.toFixed(1)} pts. Te quedan <strong>${remaining.toFixed(1)} pts</strong> para estar en objetivos. <span style="color: var(--blue); font-weight: 700;">${motivationalPhrase}</span>
           </div>
-          ${tramoAlertHtml}
         </div>
       `;
     }
@@ -9896,17 +9885,7 @@ function renderNativeRanking(data) {
       
       const pendText = (pendientes !== undefined && pendientes !== '' && parseFloat(pendientes) > 0) ? `<span class="pendientes-bubble">+${pendientes}</span>` : '';
       
-      let tramoTag = '';
-      if (typeof getTramoBonusInfo === 'function') {
-        const tInfo = getTramoBonusInfo(pts, obj);
-        if (tInfo.tier === 'tramo_1') {
-          tramoTag = `<span title="${tInfo.badgeText}" style="color:#b45309; font-size:9.5px; font-weight:700; background:rgba(217,119,6,0.1); border:1px solid rgba(217,119,6,0.2); padding:1.5px 6px; border-radius:6px; margin-left:4px; flex-shrink:0;">🔥 +10€</span>`;
-        } else if (tInfo.tier === 'tramo_max') {
-          tramoTag = `<span title="${tInfo.badgeText}" style="color:#7c3aed; font-size:9.5px; font-weight:700; background:rgba(124,58,237,0.1); border:1px solid rgba(124,58,237,0.2); padding:1.5px 6px; border-radius:6px; margin-left:4px; flex-shrink:0;">👑 +15€</span>`;
-        } else if (tInfo.tier === 'base_met') {
-          tramoTag = `<span title="${tInfo.badgeText}" style="color:#059669; font-size:9.5px; font-weight:700; background:rgba(5,150,105,0.1); border:1px solid rgba(5,150,105,0.2); padding:1.5px 6px; border-radius:6px; margin-left:4px; flex-shrink:0;">🎯 Base</span>`;
-        }
-      }
+
 
       return `
         <div class="ranking-list-row ${cumple ? 'target-met' : ''}" style="animation-delay: ${delay}s;">
@@ -9915,7 +9894,6 @@ function renderNativeRanking(data) {
             <span style="width: 28px; height: 28px; border-radius: 50%; background: ${cumple ? 'rgba(16,185,129,0.1)' : '#f1f5f9'}; color: ${cumple ? '#059669' : '#334155'}; display: inline-flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 800; flex-shrink: 0; border: 1px solid ${cumple ? 'rgba(16,185,129,0.2)' : '#e2e8f0'};">${initials}</span>
             <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${shortName}</span>
             ${cumple ? '<span style="color:#15803d; font-size:9.5px; font-weight:700; background:rgba(16,185,129,0.1); border:1px solid rgba(16,185,129,0.2); padding:1.5px 6px; border-radius:6px; margin-left:4px; flex-shrink:0;">✓ Cumplido</span>' : ''}
-            ${tramoTag}
           </div>
           <div class="row-progress-container">
             <div class="row-pct" style="font-variant-numeric: tabular-nums;">${pct}% del objetivo diario (${obj.toFixed(1)} pts)</div>
@@ -16094,16 +16072,7 @@ function updateDashboardRankingWidget() {
     statusText = `Te faltan <strong>${info.remaining.toFixed(1)} pts</strong> para estar en objetivos. ${motivationalPhrase}`;
   }
   
-  let tramoBonusHtml = '';
-  if (typeof getTramoBonusInfo === 'function') {
-    const tramoInfo = getTramoBonusInfo(info.points, info.objective);
-    tramoBonusHtml = `
-      <div style="margin-top:4px;padding:4px 8px;border-radius:6px;background:${tramoInfo.badgeBg};border:1px solid ${tramoInfo.badgeColor}33;font-size:11px;color:${tramoInfo.badgeColor};font-weight:700;display:flex;align-items:center;justify-content:space-between;gap:6px;">
-        <span>${tramoInfo.badgeText}</span>
-        <span style="font-size:10px;opacity:0.9;padding:1px 5px;background:${tramoInfo.badgeColor}18;border-radius:4px;">${tramoInfo.tierName}</span>
-      </div>
-    `;
-  }
+
 
   // Render circular progress wheel HTML
   container.innerHTML = `
@@ -16128,7 +16097,6 @@ function updateDashboardRankingWidget() {
         <div style="font-size: 11px; color: var(--t2); line-height: 1.35;">
           ${statusText}
         </div>
-        ${tramoBonusHtml}
         <div style="font-size: 10px; font-weight: 700; color: var(--t3); text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 4px; margin-top: 2px;">
           <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
           Ranking Puesto #${info.rank}
