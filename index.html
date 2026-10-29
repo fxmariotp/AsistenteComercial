@@ -4894,8 +4894,8 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
             <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
           </div>
           <div style="display: flex; flex-direction: column; min-width: 0;">
-            <div class="db-glass-title">Condiciones Telemarketing</div>
-            <div class="db-glass-desc">Objetivos mínimos, tramos y comisiones</div>
+            <div class="db-glass-title">Condiciones Telemarketing Definitivas</div>
+            <div class="db-glass-desc">Objetivos mínimos, tramos, importes fijos y descomisiones</div>
           </div>
           <svg class="db-glass-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
         </div>
@@ -6081,33 +6081,6 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
     <!-- ══════ CONDICIONES TELEMARKETING ══════ -->
     <div class="panel" id="panel-telemarketing">
       <style>
-        .tele-tab-btn {
-          padding: 8px 18px;
-          font-size: 13.5px;
-          font-weight: 700;
-          border-radius: var(--rs);
-          display: flex;
-          align-items: center;
-          gap: 6px;
-          cursor: pointer;
-          transition: all 0.2s;
-          border: 1.5px solid transparent;
-        }
-        .tele-tab-btn.active {
-          background: #ea580c;
-          border-color: #c2410c;
-          color: white;
-          box-shadow: 0 2px 8px rgba(234, 88, 12, 0.25);
-        }
-        .tele-tab-btn.inactive {
-          background: var(--surface);
-          border-color: var(--border);
-          color: var(--text);
-        }
-        .tele-tab-btn.inactive:hover {
-          background: var(--surface2);
-          border-color: var(--t3);
-        }
         .tele-sep-section-title {
           display: flex;
           align-items: center;
@@ -6170,551 +6143,455 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
           transform: translateY(-2px);
           box-shadow: 0 4px 12px rgba(234, 88, 12, 0.12);
         }
-        .telemarketing-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 24px;
-          max-width: 100%;
+        .tele-aclaracion-box {
+          background: #fff7ed;
+          border: 1.5px solid #fed7aa;
+          border-left: 5px solid #ea580c;
+          border-radius: 10px;
+          padding: 14px 18px;
+          margin-bottom: 18px;
         }
-        @media (max-width: 1024px) {
-          .telemarketing-grid {
-            grid-template-columns: 1fr;
-            gap: 16px;
-          }
-        }
-        .tele-card {
-          background: var(--surface);
-          border: 1.5px solid var(--border);
-          border-radius: var(--r);
-          padding: 20px 24px;
-          box-shadow: var(--shadow);
-          display: flex;
-          flex-direction: column;
-          gap: 10px;
-        }
-        @media (max-width: 768px) {
-          .tele-card {
-            padding: 16px;
-            gap: 8px;
-          }
-          .tele-sep-cond-box {
-            padding: 12px 14px;
-          }
-        }
-        .tele-card-title {
-          margin: 0 0 10px 0;
-          font-size: 14px;
+        .tele-badge-fixed {
+          font-size: 11px;
           font-weight: 800;
-          color: var(--text);
-          display: flex;
-          align-items: center;
-          gap: 8px;
+          background: #eff6ff;
+          color: #1d4ed8;
+          border: 1px solid #bfdbfe;
+          padding: 2px 8px;
+          border-radius: 6px;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          display: inline-block;
         }
-        .tele-table {
-          width: 100%;
-          border-collapse: collapse;
-          text-align: left;
-          font-size: 12.5px;
-        }
-        .tele-table th {
-          padding: 6px 10px;
-          border-bottom: 2px solid var(--border);
-          color: var(--t3);
-          font-weight: 700;
-        }
-        .tele-table td {
-          padding: 6px 10px;
-          border-bottom: 1px solid var(--border);
-        }
-        .tele-table tr:last-child td {
-          border-bottom: none;
-        }
-        .tele-note {
-          margin-top: 10px;
-          background: rgba(53, 127, 191, 0.05);
-          border: 1px dashed rgba(53, 127, 191, 0.2);
-          border-radius: var(--rs);
-          padding: 10px;
-          font-size: 11.5px;
-          font-weight: 700;
-          color: var(--blue);
-          display: flex;
-          align-items: center;
-          gap: 6px;
-        }
-        .tele-list {
-          margin: 0;
-          padding-left: 16px;
-          font-size: 12.5px;
-          color: var(--text);
-          line-height: 1.5;
-          display: flex;
-          flex-direction: column;
-          gap: 8px;
-        }
-        .tele-descom-row {
-          display: flex;
-          justify-content: space-between;
-          font-size: 12.5px;
-          border-bottom: 1px solid var(--border);
-          padding-bottom: 6px;
-        }
-        .tele-descom-row:last-child {
-          border-bottom: none;
-          padding-bottom: 0;
+        .tele-badge-rappel {
+          font-size: 11px;
+          font-weight: 800;
+          background: #ffedd5;
+          color: #c2410c;
+          border: 1px solid #fed7aa;
+          padding: 2px 8px;
+          border-radius: 6px;
+          text-transform: uppercase;
+          letter-spacing: 0.03em;
+          display: inline-block;
         }
       </style>
 
-      <!-- Sub-Tabs Telemarketing -->
-      <div style="display: flex; gap: 10px; margin-bottom: 22px; border-bottom: 1px solid var(--border); padding-bottom: 14px; flex-wrap: wrap;">
-        <button id="btn-tele-sep" class="tele-tab-btn active" onclick="switchTeleTab('sep')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
-          Octubre 2026 (Mes promocional Nº2)
-        </button>
-        <button id="btn-tele-gen" class="tele-tab-btn inactive" onclick="switchTeleTab('gen')">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-          Condiciones Generales y Descomisiones
-        </button>
+      <!-- Encabezado de Sección Definitiva -->
+      <div style="background: linear-gradient(135deg, rgba(234, 88, 12, 0.08) 0%, rgba(254, 215, 170, 0.2) 100%); border: 1.5px solid #fed7aa; border-radius: 14px; padding: 20px 24px; margin-bottom: 26px;">
+        <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 6px;">
+          <div style="width: 36px; height: 36px; border-radius: 10px; background: #ea580c; color: white; display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+          </div>
+          <div>
+            <h3 style="font-size: 18px; font-weight: 900; color: #9a3412; margin: 0; letter-spacing: -0.01em;">Condiciones de Telemarketing Definitivas</h3>
+            <div style="font-size: 13px; color: var(--t2); margin-top: 2px;">Objetivos mínimos por jornada, comisiones con y sin rappel, importes fijos y normativa de contratación</div>
+          </div>
+        </div>
       </div>
 
-      <!-- ── TAB 1: SEPTIEMBRE (NUEVO ESCALADO) ── -->
-      <div id="tele-tab-sep" style="display: block;">
-        
-        <!-- 1. CONDICIONES ACTUALES -->
-        <div style="margin-bottom: 28px;">
-          <h4 class="tele-sep-section-title">
-            <span class="tele-sep-bar"></span>
-            CONDICIONES ACTUALES
-          </h4>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px;">
-            <div class="tele-sep-cond-box">
-              <div style="font-weight: 800; font-size: 15px; color: #9a3412; margin-bottom: 6px;">Jornada 5 horas</div>
-              <div style="font-size: 14px; color: var(--text);">
-                <strong style="font-size: 16px; color: #ea580c;">960 € brutos</strong> &nbsp;·&nbsp; Objetivo: <strong style="color: var(--text);">18 puntos</strong>
-              </div>
+      <!-- ── BLOQUE 1: CONDICIONES Y SALARIOS POR JORNADA ── -->
+      <div style="margin-bottom: 30px;">
+        <h4 class="tele-sep-section-title">
+          <span class="tele-sep-bar"></span>
+          1. CONDICIONES Y SALARIOS POR JORNADA
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 18px; margin-bottom: 18px;">
+          <div class="tele-sep-cond-box">
+            <div style="font-weight: 800; font-size: 15px; color: #9a3412; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Jornada 5 horas
             </div>
-            <div class="tele-sep-cond-box">
-              <div style="font-weight: 800; font-size: 15px; color: #9a3412; margin-bottom: 6px;">Jornada 6 horas</div>
-              <div style="font-size: 14px; color: var(--text);">
-                <strong style="font-size: 16px; color: #ea580c;">1.098 € brutos</strong> &nbsp;·&nbsp; Objetivo: <strong style="color: var(--text);">21 puntos</strong>
-              </div>
+            <div style="font-size: 14px; color: var(--text);">
+              Salario fijo: <strong style="font-size: 16px; color: #ea580c;">960 € brutos</strong> &nbsp;·&nbsp; Objetivo mínimo: <strong style="color: var(--text);">18 puntos</strong>
+            </div>
+          </div>
+          <div class="tele-sep-cond-box">
+            <div style="font-weight: 800; font-size: 15px; color: #9a3412; margin-bottom: 6px; display: flex; align-items: center; gap: 6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Jornada 6 horas
+            </div>
+            <div style="font-size: 14px; color: var(--text);">
+              Salario fijo: <strong style="font-size: 16px; color: #ea580c;">1.098 € brutos</strong> &nbsp;·&nbsp; Objetivo mínimo: <strong style="color: var(--text);">21 puntos</strong>
             </div>
           </div>
         </div>
 
-        <!-- 2. ESCALADO PROPUESTO POR JORNADA -->
-        <div style="margin-bottom: 28px;">
-          <h4 class="tele-sep-section-title">
-            <span class="tele-sep-bar"></span>
-            ESCALADO PROPUESTO POR JORNADA
-          </h4>
-          
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
-            
-            <!-- Columna Jornada 5 horas -->
-            <div>
-              <div style="font-size: 15px; font-weight: 800; color: #9a3412; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Jornada 5 horas
-              </div>
+        <!-- Cumplimiento Mínimo Mensual (General) -->
+        <table class="tele-sep-table" style="margin-bottom: 12px;">
+          <thead>
+            <tr>
+              <th style="text-align: left;">Tipo de Contratación</th>
+              <th style="text-align: center; width: 160px;">Jornada Semanal</th>
+              <th style="text-align: right; width: 220px;">Objetivo Mensual Ventas Luz*</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 700;">Alta 20 Horas</td>
+              <td style="text-align: center; color: var(--t2); font-weight: 600;">20 h / semana</td>
+              <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">15 puntos</td>
+            </tr>
+            <tr style="background: rgba(234, 88, 12, 0.03);">
+              <td style="font-weight: 700;">Alta 25 Horas (5h diarias)</td>
+              <td style="text-align: center; color: var(--t2); font-weight: 600;">25 h / semana</td>
+              <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">18 puntos</td>
+            </tr>
+            <tr>
+              <td style="font-weight: 700;">Alta 30 Horas (6h diarias)</td>
+              <td style="text-align: center; color: var(--t2); font-weight: 600;">30 h / semana</td>
+              <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">21 puntos</td>
+            </tr>
+            <tr style="background: rgba(234, 88, 12, 0.03);">
+              <td style="font-weight: 700;">Alta 40 Horas</td>
+              <td style="text-align: center; color: var(--t2); font-weight: 600;">40 h / semana</td>
+              <td style="text-align: right; font-weight: 800; color: #c2410c; font-size: 14px; background: #ffedd5;">27 puntos</td>
+            </tr>
+          </tbody>
+        </table>
 
-              <!-- Tabla 1: Tramos Jornada 5h -->
-              <table class="tele-sep-table" style="margin-bottom: 16px;">
-                <thead>
-                  <tr>
-                    <th style="text-align: left;">Puntos</th>
-                    <th style="text-align: right;">Incremento</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="font-weight: 700;">18 – 24</td>
-                    <td style="text-align: right; color: var(--t2); font-weight: 600;">Comisión base</td>
-                  </tr>
-                  <tr style="background: rgba(234, 88, 12, 0.04);">
-                    <td style="font-weight: 700;">25 – 29</td>
-                    <td style="text-align: right; color: #ea580c; font-weight: 800;">+10 €/contrato</td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: 700;">30 o más</td>
-                    <td style="text-align: right; color: #ea580c; font-weight: 800;">+15 €/contrato</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <!-- Tabla 2: Producto Jornada 5h -->
-              <table class="tele-sep-table">
-                <thead>
-                  <tr>
-                    <th style="text-align: left;">Producto</th>
-                    <th style="text-align: center; width: 65px;">18-24</th>
-                    <th style="text-align: center; width: 65px;">25-29</th>
-                    <th style="text-align: center; width: 65px;">30+</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="font-weight: 600;">Luz c/servicio</td>
-                    <td style="text-align: center; font-weight: 600;">50 €</td>
-                    <td style="text-align: center; font-weight: 700; color: #ea580c;">60 €</td>
-                    <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">65 €</td>
-                  </tr>
-                  <tr style="background: rgba(234, 88, 12, 0.03);">
-                    <td style="font-weight: 600;">Luz s/servicio</td>
-                    <td style="text-align: center; font-weight: 600;">30 €</td>
-                    <td style="text-align: center; font-weight: 700; color: #ea580c;">40 €</td>
-                    <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">45 €</td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: 600;">Gas c/mantenim.</td>
-                    <td style="text-align: center; font-weight: 600;">30 €</td>
-                    <td style="text-align: center; font-weight: 700; color: #ea580c;">40 €</td>
-                    <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">45 €</td>
-                  </tr>
-                  <tr style="background: rgba(234, 88, 12, 0.03);">
-                    <td style="font-weight: 600;">Gas s/mantenim.</td>
-                    <td style="text-align: center; font-weight: 600;">10 €</td>
-                    <td style="text-align: center; font-weight: 700; color: #ea580c;">20 €</td>
-                    <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">25 €</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-            <!-- Columna Jornada 6 horas -->
-            <div>
-              <div style="font-size: 15px; font-weight: 800; color: #9a3412; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
-                Jornada 6 horas
-              </div>
-
-              <!-- Tabla 1: Tramos Jornada 6h -->
-              <table class="tele-sep-table" style="margin-bottom: 16px;">
-                <thead>
-                  <tr>
-                    <th style="text-align: left;">Puntos</th>
-                    <th style="text-align: right;">Incremento</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="font-weight: 700;">21 – 27</td>
-                    <td style="text-align: right; color: var(--t2); font-weight: 600;">Comisión base</td>
-                  </tr>
-                  <tr style="background: rgba(234, 88, 12, 0.04);">
-                    <td style="font-weight: 700;">28 – 32</td>
-                    <td style="text-align: right; color: #ea580c; font-weight: 800;">+10 €/contrato</td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: 700;">33 o más</td>
-                    <td style="text-align: right; color: #ea580c; font-weight: 800;">+15 €/contrato</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <!-- Tabla 2: Producto Jornada 6h -->
-              <table class="tele-sep-table">
-                <thead>
-                  <tr>
-                    <th style="text-align: left;">Producto</th>
-                    <th style="text-align: center; width: 65px;">21-27</th>
-                    <th style="text-align: center; width: 65px;">28-32</th>
-                    <th style="text-align: center; width: 65px;">33+</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td style="font-weight: 600;">Luz c/servicio</td>
-                    <td style="text-align: center; font-weight: 600;">50 €</td>
-                    <td style="text-align: center; font-weight: 700; color: #ea580c;">60 €</td>
-                    <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">65 €</td>
-                  </tr>
-                  <tr style="background: rgba(234, 88, 12, 0.03);">
-                    <td style="font-weight: 600;">Luz s/servicio</td>
-                    <td style="text-align: center; font-weight: 600;">30 €</td>
-                    <td style="text-align: center; font-weight: 700; color: #ea580c;">40 €</td>
-                    <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">45 €</td>
-                  </tr>
-                  <tr>
-                    <td style="font-weight: 600;">Gas c/mantenim.</td>
-                    <td style="text-align: center; font-weight: 600;">30 €</td>
-                    <td style="text-align: center; font-weight: 700; color: #ea580c;">40 €</td>
-                    <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">45 €</td>
-                  </tr>
-                  <tr style="background: rgba(234, 88, 12, 0.03);">
-                    <td style="font-weight: 600;">Gas s/mantenim.</td>
-                    <td style="text-align: center; font-weight: 600;">10 €</td>
-                    <td style="text-align: center; font-weight: 700; color: #ea580c;">20 €</td>
-                    <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">25 €</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-
-          </div>
-        </div>
-
-        <!-- 3. PRODUCTOS SIN CAMBIOS -->
-        <div style="margin-bottom: 24px;">
-          <h4 class="tele-sep-section-title">
-            <span class="tele-sep-bar"></span>
-            PRODUCTOS SIN CAMBIOS
-          </h4>
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
-            <div class="tele-sep-stat-box">
-              <div style="font-size: 13px; color: var(--t2); font-weight: 700; margin-bottom: 6px;">Luz &gt;15 kW</div>
-              <div style="font-size: 24px; font-weight: 900; color: #ea580c;">100 €</div>
-            </div>
-            <div class="tele-sep-stat-box">
-              <div style="font-size: 13px; color: var(--t2); font-weight: 700; margin-bottom: 6px;">Alarma (Securitas)</div>
-              <div style="font-size: 24px; font-weight: 900; color: #ea580c;">100 €</div>
-            </div>
-            <div class="tele-sep-stat-box">
-              <div style="font-size: 13px; color: var(--t2); font-weight: 700; margin-bottom: 6px;">Solar Cloud</div>
-              <div style="font-size: 24px; font-weight: 900; color: #ea580c;">50 €</div>
-            </div>
-            <div class="tele-sep-stat-box">
-              <div style="font-size: 13px; color: var(--t2); font-weight: 700; margin-bottom: 6px;">Suscripción CCSS</div>
-              <div style="font-size: 24px; font-weight: 900; color: #ea580c;">30 €</div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- ── TAB 2: CONDICIONES GENERALES Y DESCOMISIONES ── -->
-      <div id="tele-tab-gen" style="display: none;">
-        
-        <!-- 1. CUMPLIMIENTO MÍNIMO MENSUAL -->
-        <div style="margin-bottom: 28px;">
-          <h4 class="tele-sep-section-title">
-            <span class="tele-sep-bar"></span>
-            CUMPLIMIENTO MÍNIMO MENSUAL (GENERAL)
-          </h4>
-
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 16px;">
-            <div class="tele-sep-cond-box">
-              <div style="font-weight: 800; font-size: 14px; color: #9a3412; margin-bottom: 4px;">Alta 20 Horas</div>
-              <div style="font-size: 13.5px; color: var(--text);">
-                Objetivo: <strong style="font-size: 16px; color: #ea580c;">15 puntos</strong> / mes
-              </div>
-            </div>
-            <div class="tele-sep-cond-box">
-              <div style="font-weight: 800; font-size: 14px; color: #9a3412; margin-bottom: 4px;">Alta 25 Horas</div>
-              <div style="font-size: 13.5px; color: var(--text);">
-                Objetivo: <strong style="font-size: 16px; color: #ea580c;">18 puntos</strong> / mes
-              </div>
-            </div>
-            <div class="tele-sep-cond-box">
-              <div style="font-weight: 800; font-size: 14px; color: #9a3412; margin-bottom: 4px;">Alta 30 Horas</div>
-              <div style="font-size: 13.5px; color: var(--text);">
-                Objetivo: <strong style="font-size: 16px; color: #ea580c;">21 puntos</strong> / mes
-              </div>
-            </div>
-            <div class="tele-sep-cond-box">
-              <div style="font-weight: 800; font-size: 14px; color: #9a3412; margin-bottom: 4px;">Alta 40 Horas</div>
-              <div style="font-size: 13.5px; color: var(--text);">
-                Objetivo: <strong style="font-size: 16px; color: #ea580c;">27 puntos</strong> / mes
-              </div>
-            </div>
-          </div>
-
-          <table class="tele-sep-table" style="margin-bottom: 12px;">
-            <thead>
-              <tr>
-                <th style="text-align: left;">Tipo de Contratación</th>
-                <th style="text-align: center; width: 160px;">Jornada Semanal</th>
-                <th style="text-align: right; width: 200px;">Objetivo Ventas Luz*</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="font-weight: 700;">Alta 20 H</td>
-                <td style="text-align: center; color: var(--t2); font-weight: 600;">20 h / semana</td>
-                <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">15 puntos</td>
-              </tr>
-              <tr style="background: rgba(234, 88, 12, 0.03);">
-                <td style="font-weight: 700;">Alta 25 H</td>
-                <td style="text-align: center; color: var(--t2); font-weight: 600;">25 h / semana</td>
-                <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">18 puntos</td>
-              </tr>
-              <tr>
-                <td style="font-weight: 700;">Alta 30 H</td>
-                <td style="text-align: center; color: var(--t2); font-weight: 600;">30 h / semana</td>
-                <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">21 puntos</td>
-              </tr>
-              <tr style="background: rgba(234, 88, 12, 0.03);">
-                <td style="font-weight: 700;">Alta 40 H</td>
-                <td style="text-align: center; color: var(--t2); font-weight: 600;">40 h / semana</td>
-                <td style="text-align: right; font-weight: 800; color: #c2410c; font-size: 14px; background: #ffedd5;">27 puntos</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <div class="tele-sep-cond-box" style="padding: 12px 16px; font-size: 12.5px; font-weight: 600; color: #9a3412; display: flex; align-items: center; gap: 8px;">
+        <div style="display: flex; flex-direction: column; gap: 8px;">
+          <div class="tele-sep-cond-box" style="padding: 10px 14px; font-size: 12.5px; font-weight: 600; color: #9a3412; display: flex; align-items: center; gap: 8px;">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c; flex-shrink: 0;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
             <span>* Al menos el <strong>50%</strong> de las ventas deben ser con servicio de mantenimiento.</span>
           </div>
+          <div class="tele-sep-cond-box" style="padding: 10px 14px; font-size: 12.5px; font-weight: 600; color: #9a3412; display: flex; align-items: center; gap: 8px;">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c; flex-shrink: 0;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
+            <span>Al cierre del mes <strong>solo contarán los contratos en estado verde</strong> (Grabados, Formalizados, Activado y Renovación), trasladando los contratos pendientes al mes siguiente.</span>
+          </div>
         </div>
+      </div>
 
-        <!-- 2. COMISIONADO BASE EXTRA -->
-        <div style="margin-bottom: 28px;">
-          <h4 class="tele-sep-section-title">
+      <!-- ── BLOQUE 2: PRODUCTOS CON RAPPEL (LUZ OTRAS COMERCIALIZADORAS) ── -->
+      <div style="margin-bottom: 30px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+          <h4 class="tele-sep-section-title" style="margin: 0;">
             <span class="tele-sep-bar"></span>
-            COMISIONADO BASE EXTRA
+            2. PRODUCTOS CON RAPPEL — LUZ (DEMÁS COMERCIALIZADORAS)
           </h4>
+          <span class="tele-badge-rappel">Con Rappel por Tramos</span>
+        </div>
+        
+        <p style="font-size: 13px; color: var(--t2); margin: 0 0 16px 0; line-height: 1.5;">
+          Aplica a los contratos de <strong>Luz de las demás comercializadoras</strong> (Iberdrola, Naturgy, Endesa, etc., excepto Gana Energía). El importe por contrato se incrementa automáticamente al superar los tramos de puntos establecidos para cada jornada.
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px;">
           
-          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; margin-bottom: 16px;">
-            <!-- Tabla de Comisionado -->
+          <!-- Columna Jornada 5 horas -->
+          <div>
+            <div style="font-size: 15px; font-weight: 800; color: #9a3412; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Jornada 5 horas (Objetivo: 18 pts)
+            </div>
+
+            <!-- Tramos Jornada 5h -->
+            <table class="tele-sep-table" style="margin-bottom: 16px;">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Puntos Alcanzados</th>
+                  <th style="text-align: right;">Incremento Rappel</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 700;">18 – 24 pts</td>
+                  <td style="text-align: right; color: var(--t2); font-weight: 600;">Comisión base (+0 €)</td>
+                </tr>
+                <tr style="background: rgba(234, 88, 12, 0.04);">
+                  <td style="font-weight: 700;">25 – 29 pts</td>
+                  <td style="text-align: right; color: #ea580c; font-weight: 800;">+10 € / contrato</td>
+                </tr>
+                <tr>
+                  <td style="font-weight: 700;">30 o más pts</td>
+                  <td style="text-align: right; color: #ea580c; font-weight: 800;">+15 € / contrato</td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Producto Jornada 5h -->
             <table class="tele-sep-table">
               <thead>
                 <tr>
-                  <th style="text-align: left;">Producto / Suministro</th>
-                  <th style="text-align: right; width: 140px;">Comisión Bruta</th>
+                  <th style="text-align: left;">Producto (Luz otras Cías)</th>
+                  <th style="text-align: center; width: 65px;">18-24</th>
+                  <th style="text-align: center; width: 65px;">25-29</th>
+                  <th style="text-align: center; width: 65px;">30+</th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
                   <td style="font-weight: 600;">Luz con servicio &lt; 15 kW</td>
-                  <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">50,00 €</td>
+                  <td style="text-align: center; font-weight: 600;">50 €</td>
+                  <td style="text-align: center; font-weight: 700; color: #ea580c;">60 €</td>
+                  <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">65 €</td>
                 </tr>
                 <tr style="background: rgba(234, 88, 12, 0.03);">
                   <td style="font-weight: 600;">Luz sin servicio &lt; 15 kW</td>
-                  <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">30,00 €</td>
+                  <td style="text-align: center; font-weight: 600;">30 €</td>
+                  <td style="text-align: center; font-weight: 700; color: #ea580c;">40 €</td>
+                  <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">45 €</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Columna Jornada 6 horas -->
+          <div>
+            <div style="font-size: 15px; font-weight: 800; color: #9a3412; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c;"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+              Jornada 6 horas (Objetivo: 21 pts)
+            </div>
+
+            <!-- Tramos Jornada 6h -->
+            <table class="tele-sep-table" style="margin-bottom: 16px;">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Puntos Alcanzados</th>
+                  <th style="text-align: right;">Incremento Rappel</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 700;">21 – 27 pts</td>
+                  <td style="text-align: right; color: var(--t2); font-weight: 600;">Comisión base (+0 €)</td>
+                </tr>
+                <tr style="background: rgba(234, 88, 12, 0.04);">
+                  <td style="font-weight: 700;">28 – 32 pts</td>
+                  <td style="text-align: right; color: #ea580c; font-weight: 800;">+10 € / contrato</td>
                 </tr>
                 <tr>
-                  <td style="font-weight: 600;">Luz &gt; 15 kW (Iberdrola, Endesa)</td>
-                  <td style="text-align: right; font-weight: 800; color: #c2410c; font-size: 14px; background: #ffedd5;">100,00 €</td>
-                </tr>
-                <tr style="background: rgba(234, 88, 12, 0.03);">
-                  <td style="font-weight: 600;">Gas con mantenimiento</td>
-                  <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">30,00 €</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: 600;">Gas sin mantenimiento</td>
-                  <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">10,00 €</td>
-                </tr>
-                <tr style="background: rgba(234, 88, 12, 0.03);">
-                  <td style="font-weight: 600;">Alarma (Securitas Direct)</td>
-                  <td style="text-align: right; font-weight: 800; color: #c2410c; font-size: 14px; background: #ffedd5;">100,00 €</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: 600;">Solar Cloud</td>
-                  <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">50,00 €</td>
-                </tr>
-                <tr style="background: rgba(234, 88, 12, 0.03);">
-                  <td style="font-weight: 600;">Suscripción CCSS (Comunidades)</td>
-                  <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 14px;">30,00 €</td>
-                </tr>
-                <tr>
-                  <td style="font-weight: 600;">PYMES (Acciona, Total, Ignis...)</td>
-                  <td style="text-align: right; font-weight: 800; color: #ea580c; font-size: 13.5px;">40% comisionado</td>
+                  <td style="font-weight: 700;">33 o más pts</td>
+                  <td style="text-align: right; color: #ea580c; font-weight: 800;">+15 € / contrato</td>
                 </tr>
               </tbody>
             </table>
 
-            <!-- Stat Boxes + Condiciones de contratación -->
-            <div style="display: flex; flex-direction: column; gap: 14px; justify-content: space-between;">
-              <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
-                <div class="tele-sep-stat-box">
-                  <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Luz &gt;15 kW</div>
-                  <div style="font-size: 24px; font-weight: 900; color: #ea580c;">100 €</div>
-                </div>
-                <div class="tele-sep-stat-box">
-                  <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Alarma Securitas</div>
-                  <div style="font-size: 24px; font-weight: 900; color: #ea580c;">100 €</div>
-                </div>
-                <div class="tele-sep-stat-box">
-                  <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Luz c/ Servicio</div>
-                  <div style="font-size: 24px; font-weight: 900; color: #ea580c;">50 €</div>
-                </div>
-                <div class="tele-sep-stat-box">
-                  <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Solar Cloud</div>
-                  <div style="font-size: 24px; font-weight: 900; color: #ea580c;">50 €</div>
-                </div>
-              </div>
+            <!-- Producto Jornada 6h -->
+            <table class="tele-sep-table">
+              <thead>
+                <tr>
+                  <th style="text-align: left;">Producto (Luz otras Cías)</th>
+                  <th style="text-align: center; width: 65px;">21-27</th>
+                  <th style="text-align: center; width: 65px;">28-32</th>
+                  <th style="text-align: center; width: 65px;">33+</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td style="font-weight: 600;">Luz con servicio &lt; 15 kW</td>
+                  <td style="text-align: center; font-weight: 600;">50 €</td>
+                  <td style="text-align: center; font-weight: 700; color: #ea580c;">60 €</td>
+                  <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">65 €</td>
+                </tr>
+                <tr style="background: rgba(234, 88, 12, 0.03);">
+                  <td style="font-weight: 600;">Luz sin servicio &lt; 15 kW</td>
+                  <td style="text-align: center; font-weight: 600;">30 €</td>
+                  <td style="text-align: center; font-weight: 700; color: #ea580c;">40 €</td>
+                  <td style="text-align: center; font-weight: 800; color: #c2410c; background: #ffedd5;">45 €</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-              <div class="tele-sep-cond-box">
-                <div style="font-weight: 800; font-size: 13.5px; color: #9a3412; margin-bottom: 5px; display: flex; align-items: center; gap: 6px;">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c;"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>
-                  Condiciones de Contratación
-                </div>
-                <div style="font-size: 12.5px; color: var(--text); line-height: 1.5;">
-                  Al cierre del mes <strong>solo contarán los contratos en estado verde</strong> (Grabados, Formalizados, Activado y Renovación), trasladando los contratos pendientes al mes siguiente.
-                </div>
+        </div>
+      </div>
+
+      <!-- ── BLOQUE 3: PRODUCTOS SIN RAPPEL (IMPORTES FIJOS: GAS Y LUZ GANA ENERGÍA) ── -->
+      <div style="margin-bottom: 30px;">
+        <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px;">
+          <h4 class="tele-sep-section-title" style="margin: 0;">
+            <span class="tele-sep-bar"></span>
+            3. PRODUCTOS SIN RAPPEL — IMPORTES FIJOS (GAS Y LUZ GANA ENERGÍA)
+          </h4>
+          <span class="tele-badge-fixed">Importes Fijos · Sin Rappel</span>
+        </div>
+
+        <!-- Aclaración destacada obligatoria -->
+        <div class="tele-aclaracion-box">
+          <div style="display: flex; align-items: flex-start; gap: 10px;">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #ea580c; flex-shrink: 0; margin-top: 1px;"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+            <div style="font-size: 13.5px; line-height: 1.5; color: var(--text);">
+              <strong style="color: #9a3412; font-size: 14px;">«El rappel no se aplica a los contratos de gas ni a los contratos de luz de Gana Energía. Sus comisiones son fijas, independientemente del tramo alcanzado.»</strong>
+              <div style="font-size: 12.5px; color: var(--t2); margin-top: 4px;">
+                * Conserva los salarios, objetivos por jornada, puntuaciones y condiciones de los demás productos. <strong>Excluir un producto del rappel no significa que deje de contar para puntos u objetivos.</strong>
               </div>
             </div>
           </div>
         </div>
 
-        <!-- 3. DESCOMISIONES -->
-        <div style="margin-bottom: 24px;">
-          <h4 class="tele-sep-section-title">
-            <span class="tele-sep-bar"></span>
-            DESCOMISIONES POR COMPAÑÍA
-          </h4>
-          
-          <table class="tele-sep-table">
-            <thead>
-              <tr>
-                <th style="text-align: left;">Comercializadora / Canal</th>
-                <th style="text-align: left;">Tramo de Permanencia</th>
-                <th style="text-align: right; width: 180px;">Penalización Descomisión</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td style="font-weight: 700; color: #0f172a;">Iberdrola</td>
-                <td style="color: var(--t2); font-size: 13px;">0 a 2 meses &nbsp;|&nbsp; 2 a 4 meses</td>
-                <td style="text-align: right; font-weight: 800;">
-                  <span style="color: #c2410c; background: #ffedd5; padding: 2px 7px; border-radius: 6px; font-size: 12.5px;">100%</span>
-                  <span style="color: var(--t3); margin: 0 4px;">/</span>
-                  <span style="color: #ea580c; background: #fff7ed; border: 1px solid #fed7aa; padding: 1.5px 6px; border-radius: 6px; font-size: 12.5px;">50%</span>
-                </td>
-              </tr>
-              <tr style="background: rgba(234, 88, 12, 0.03);">
-                <td style="font-weight: 700; color: #0f172a;">Naturgy</td>
-                <td style="color: var(--t2); font-size: 13px;">0 a 2 meses &nbsp;|&nbsp; 2 a 4 meses</td>
-                <td style="text-align: right; font-weight: 800;">
-                  <span style="color: #c2410c; background: #ffedd5; padding: 2px 7px; border-radius: 6px; font-size: 12.5px;">100%</span>
-                  <span style="color: var(--t3); margin: 0 4px;">/</span>
-                  <span style="color: #ea580c; background: #fff7ed; border: 1px solid #fed7aa; padding: 1.5px 6px; border-radius: 6px; font-size: 12.5px;">50%</span>
-                </td>
-              </tr>
-              <tr>
-                <td style="font-weight: 700; color: #0f172a;">Endesa</td>
-                <td style="color: var(--t2); font-size: 13px;">Hasta 12 meses</td>
-                <td style="text-align: right; font-weight: 800;">
-                  <span style="color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 6px; font-size: 12.5px;">100%</span>
-                </td>
-              </tr>
-              <tr style="background: rgba(234, 88, 12, 0.03);">
-                <td style="font-weight: 700; color: #0f172a;">Gana Energía</td>
-                <td style="color: var(--t2); font-size: 13px;">Hasta 12 meses</td>
-                <td style="text-align: right; font-weight: 800;">
-                  <span style="color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 6px; font-size: 12.5px;">100%</span>
-                </td>
-              </tr>
-              <tr>
-                <td style="font-weight: 700; color: #0f172a;">Pymes (Todas las Cías)</td>
-                <td style="color: var(--t2); font-size: 13px;">Hasta 12 meses</td>
-                <td style="text-align: right; font-weight: 800;">
-                  <span style="color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 6px; font-size: 12.5px;">100%</span>
-                </td>
-              </tr>
-              <tr style="background: rgba(234, 88, 12, 0.03);">
-                <td style="font-weight: 700; color: #0f172a;">Securitas Direct</td>
-                <td style="color: var(--t2); font-size: 13px;">Hasta 6 meses</td>
-                <td style="text-align: right; font-weight: 800;">
-                  <span style="color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 6px; font-size: 12.5px;">100%</span>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+        <!-- Tabla de Importes Fijos -->
+        <table class="tele-sep-table" style="margin-bottom: 18px;">
+          <thead>
+            <tr>
+              <th style="text-align: left;">Producto / Suministro</th>
+              <th style="text-align: left;">Comercializadora</th>
+              <th style="text-align: center; width: 140px;">Jornada 5 Horas</th>
+              <th style="text-align: center; width: 140px;">Jornada 6 Horas</th>
+              <th style="text-align: right; width: 150px;">Condición Rappel</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 700; color: var(--text);">Gas con servicio / mantenimiento</td>
+              <td style="font-weight: 600; color: var(--t2);">Todas las comercializadoras</td>
+              <td style="text-align: center; font-weight: 800; color: #ea580c; font-size: 14px;">30,00 €</td>
+              <td style="text-align: center; font-weight: 800; color: #ea580c; font-size: 14px;">30,00 €</td>
+              <td style="text-align: right;"><span class="tele-badge-fixed">Sin rappel</span></td>
+            </tr>
+            <tr style="background: rgba(234, 88, 12, 0.03);">
+              <td style="font-weight: 700; color: var(--text);">Gas sin servicio / mantenimiento</td>
+              <td style="font-weight: 600; color: var(--t2);">Todas las comercializadoras</td>
+              <td style="text-align: center; font-weight: 800; color: #ea580c; font-size: 14px;">15,00 €</td>
+              <td style="text-align: center; font-weight: 800; color: #ea580c; font-size: 14px;">15,00 €</td>
+              <td style="text-align: right;"><span class="tele-badge-fixed">Sin rappel</span></td>
+            </tr>
+            <tr>
+              <td style="font-weight: 700; color: var(--text);">Luz con servicio Gana Energía</td>
+              <td style="font-weight: 700; color: #0284c7;">Gana Energía</td>
+              <td style="text-align: center; font-weight: 800; color: #ea580c; font-size: 14px;">50,00 €</td>
+              <td style="text-align: center; font-weight: 800; color: #ea580c; font-size: 14px;">50,00 €</td>
+              <td style="text-align: right;"><span class="tele-badge-fixed">Sin rappel</span></td>
+            </tr>
+            <tr style="background: rgba(234, 88, 12, 0.03);">
+              <td style="font-weight: 700; color: var(--text);">Luz sin servicio Gana Energía</td>
+              <td style="font-weight: 700; color: #0284c7;">Gana Energía</td>
+              <td style="text-align: center; font-weight: 800; color: #ea580c; font-size: 14px;">30,00 €</td>
+              <td style="text-align: center; font-weight: 800; color: #ea580c; font-size: 14px;">30,00 €</td>
+              <td style="text-align: right;"><span class="tele-badge-fixed">Sin rappel</span></td>
+            </tr>
+          </tbody>
+        </table>
 
+        <!-- Stat Cards Resumen Fijo -->
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Gas c/servicio (Todas)</div>
+            <div style="font-size: 24px; font-weight: 900; color: #ea580c;">30 €</div>
+            <div style="font-size: 11px; color: var(--t3); font-weight: 600; margin-top: 2px;">Fijo · Sin rappel</div>
+          </div>
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Gas s/servicio (Todas)</div>
+            <div style="font-size: 24px; font-weight: 900; color: #ea580c;">15 €</div>
+            <div style="font-size: 11px; color: var(--t3); font-weight: 600; margin-top: 2px;">Fijo · Sin rappel</div>
+          </div>
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Luz Gana Energía c/s</div>
+            <div style="font-size: 24px; font-weight: 900; color: #ea580c;">50 €</div>
+            <div style="font-size: 11px; color: var(--t3); font-weight: 600; margin-top: 2px;">Fijo · Sin rappel</div>
+          </div>
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Luz Gana Energía s/s</div>
+            <div style="font-size: 24px; font-weight: 900; color: #ea580c;">30 €</div>
+            <div style="font-size: 11px; color: var(--t3); font-weight: 600; margin-top: 2px;">Fijo · Sin rappel</div>
+          </div>
+        </div>
       </div>
+
+      <!-- ── BLOQUE 4: OTROS PRODUCTOS Y SERVICIOS COMPLEMENTARIOS ── -->
+      <div style="margin-bottom: 30px;">
+        <h4 class="tele-sep-section-title">
+          <span class="tele-sep-bar"></span>
+          4. OTROS PRODUCTOS Y SERVICIOS COMPLEMENTARIOS
+        </h4>
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px;">
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Luz &gt;15 kW (Iberdrola, Endesa)</div>
+            <div style="font-size: 24px; font-weight: 900; color: #ea580c;">100 €</div>
+          </div>
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Alarma (Securitas Direct)</div>
+            <div style="font-size: 24px; font-weight: 900; color: #ea580c;">100 €</div>
+          </div>
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Solar Cloud</div>
+            <div style="font-size: 24px; font-weight: 900; color: #ea580c;">50 €</div>
+          </div>
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">Suscripción CCSS (Comunidades)</div>
+            <div style="font-size: 24px; font-weight: 900; color: #ea580c;">30 €</div>
+          </div>
+          <div class="tele-sep-stat-box">
+            <div style="font-size: 12.5px; color: var(--t2); font-weight: 700; margin-bottom: 4px;">PYMES (Acciona, Total, Ignis...)</div>
+            <div style="font-size: 22px; font-weight: 900; color: #ea580c;">40%</div>
+            <div style="font-size: 11px; color: var(--t3); font-weight: 600; margin-top: 2px;">del comisionado</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ── BLOQUE 5: DESCOMISIONES POR COMPAÑÍA ── -->
+      <div style="margin-bottom: 24px;">
+        <h4 class="tele-sep-section-title">
+          <span class="tele-sep-bar"></span>
+          5. DESCOMISIONES POR COMPAÑÍA (PERMANENCIAS)
+        </h4>
+
+        <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: 10px; padding: 12px 16px; margin-bottom: 14px; font-size: 12.5px; color: var(--t2); line-height: 1.5;">
+          • Una venta se descomisiona si el contrato es cancelado por el cliente o rechazado por la distribuidora antes de la activación de la primera factura (habitualmente dentro de los primeros 15-30 días).<br>
+          • Si el cliente desiste del contrato en el periodo legal de desestimiento (14 días), el importe de la comisión se descontará íntegramente de la liquidación del mes en curso o del mes siguiente.
+        </div>
+        
+        <table class="tele-sep-table">
+          <thead>
+            <tr>
+              <th style="text-align: left;">Comercializadora / Canal</th>
+              <th style="text-align: left;">Tramo de Permanencia</th>
+              <th style="text-align: right; width: 180px;">Penalización Descomisión</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="font-weight: 700; color: #0f172a;">Iberdrola</td>
+              <td style="color: var(--t2); font-size: 13px;">0 a 2 meses &nbsp;|&nbsp; 2 a 4 meses</td>
+              <td style="text-align: right; font-weight: 800;">
+                <span style="color: #c2410c; background: #ffedd5; padding: 2px 7px; border-radius: 6px; font-size: 12.5px;">100%</span>
+                <span style="color: var(--t3); margin: 0 4px;">/</span>
+                <span style="color: #ea580c; background: #fff7ed; border: 1px solid #fed7aa; padding: 1.5px 6px; border-radius: 6px; font-size: 12.5px;">50%</span>
+              </td>
+            </tr>
+            <tr style="background: rgba(234, 88, 12, 0.03);">
+              <td style="font-weight: 700; color: #0f172a;">Naturgy</td>
+              <td style="color: var(--t2); font-size: 13px;">0 a 2 meses &nbsp;|&nbsp; 2 a 4 meses</td>
+              <td style="text-align: right; font-weight: 800;">
+                <span style="color: #c2410c; background: #ffedd5; padding: 2px 7px; border-radius: 6px; font-size: 12.5px;">100%</span>
+                <span style="color: var(--t3); margin: 0 4px;">/</span>
+                <span style="color: #ea580c; background: #fff7ed; border: 1px solid #fed7aa; padding: 1.5px 6px; border-radius: 6px; font-size: 12.5px;">50%</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight: 700; color: #0f172a;">Endesa</td>
+              <td style="color: var(--t2); font-size: 13px;">Hasta 12 meses</td>
+              <td style="text-align: right; font-weight: 800;">
+                <span style="color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 6px; font-size: 12.5px;">100%</span>
+              </td>
+            </tr>
+            <tr style="background: rgba(234, 88, 12, 0.03);">
+              <td style="font-weight: 700; color: #0f172a;">Gana Energía</td>
+              <td style="color: var(--t2); font-size: 13px;">Hasta 12 meses</td>
+              <td style="text-align: right; font-weight: 800;">
+                <span style="color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 6px; font-size: 12.5px;">100%</span>
+              </td>
+            </tr>
+            <tr>
+              <td style="font-weight: 700; color: #0f172a;">Pymes (Todas las Cías)</td>
+              <td style="color: var(--t2); font-size: 13px;">Hasta 12 meses</td>
+              <td style="text-align: right; font-weight: 800;">
+                <span style="color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 6px; font-size: 12.5px;">100%</span>
+              </td>
+            </tr>
+            <tr style="background: rgba(234, 88, 12, 0.03);">
+              <td style="font-weight: 700; color: #0f172a;">Securitas Direct</td>
+              <td style="color: var(--t2); font-size: 13px;">Hasta 6 meses</td>
+              <td style="text-align: right; font-weight: 800;">
+                <span style="color: #c2410c; background: #ffedd5; padding: 2px 8px; border-radius: 6px; font-size: 12.5px;">100%</span>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
     </div>
+
 
     <!-- ══════ PANEL CENTRAL DE GERENCIA (HUB) ══════ -->
     <div class="panel" id="panel-gerenteHub">
@@ -7888,7 +7765,7 @@ const PANELS = {
   calendario:  {title:'Calendario',      sub:'Dias laborables 2026 · Calendario RENOSUR-TM', color:'#10b981', icon:'<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>'},
   telefonos:   {title:'Telefonos',               sub:'Atencion al cliente y averias de comercializadoras y distribuidoras', color:'#a855f7', icon:'<path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>'},
   normas:      {title:'Normas de sala',          sub:'Garantizar un entorno de trabajo profesional, respetuoso, saludable y orientado al rendimiento.', color:'#64748b', icon:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>'},
-  telemarketing: {title:'Condiciones Telemarketing', sub:'Objetivos mínimos, comisiones y condiciones de contratación', color:'#d97706', icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>'},
+  telemarketing: {title:'Condiciones de Telemarketing Definitivas', sub:'Objetivos mínimos por jornada, comisiones con y sin rappel e importes fijos', color:'#d97706', icon:'<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline>'},
   controlVacaciones: {title:'Control Vacaciones', sub:'Gestion y control de vacaciones de todos los comerciales', color:'#e08034', icon:'<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path>'},
   gruposAgentes: {title:'Gestión de Usuarios', sub:'Administración de usuarios, contraseñas, roles y estado de actividad', color:'#e08034', icon:'<path d=\"M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2\\"></path><circle cx=\"9\" cy=\"7\" r=\"4\\"></circle><path d=\"M23 21v-2a4 4 0 0 0-3-3.87\\"></path><circle cx=\"17\" cy=\"7\" r=\"3\\"></circle>'},
   registroConexiones: {title:'Registro Conexiones', sub:'Historial de accesos de comerciales e IPs de conexión', color:'#ef4444', icon:'<path d=\"M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z\"></path>'},
@@ -10298,23 +10175,7 @@ function toggleSetupGuide(show) {
 }
 
 function switchTeleTab(tab) {
-  const tabSep = document.getElementById('tele-tab-sep');
-  const tabGen = document.getElementById('tele-tab-gen');
-  const btnSep = document.getElementById('btn-tele-sep');
-  const btnGen = document.getElementById('btn-tele-gen');
-  if (!tabSep || !tabGen || !btnSep || !btnGen) return;
-
-  if (tab === 'sep') {
-    tabSep.style.display = 'block';
-    tabGen.style.display = 'none';
-    btnSep.className = 'tele-tab-btn active';
-    btnGen.className = 'tele-tab-btn inactive';
-  } else {
-    tabSep.style.display = 'none';
-    tabGen.style.display = 'block';
-    btnGen.className = 'tele-tab-btn active';
-    btnSep.className = 'tele-tab-btn inactive';
-  }
+  // Sección unificada de Condiciones de Telemarketing Definitivas
 }
 
 
@@ -16403,7 +16264,7 @@ const SEARCH_INDEX = [
   { title: "Normas de Sala", keywords: ["normas", "sala", "horarios", "conducta", "movil", "silencio", "faltas", "mision", "valores"], action: () => showPanel('normas') },
 
   // Condiciones Telemarketing
-  { title: "Condiciones Telemarketing y Comisiones", keywords: ["condiciones", "telemarketing", "comisiones", "descomisiones", "retro", "retrocomision", "retrocomisiones", "retrocomisión", "objetivos", "securitas", "direct", "iberdrola", "endesa", "gana", "naturgy"], action: () => showPanel('telemarketing') },
+  { title: "Condiciones de Telemarketing Definitivas", keywords: ["condiciones", "telemarketing", "definitivas", "comisiones", "descomisiones", "rappel", "gas", "gana", "gana energia", "retro", "retrocomision", "retrocomisiones", "retrocomisión", "objetivos", "securitas", "direct", "iberdrola", "endesa", "naturgy"], action: () => showPanel('telemarketing') },
 
   // Enlaces de Trabajo
   { title: "Naturgy — Procedimiento de consentimiento previo (CRM Energiza)", keywords: ["consentimiento", "consentimiento previo", "naturgy", "enviar consentimiento", "lead", "qr lead", "generar lead", "sms consentimiento", "firma previa", "grabacion naturgy", "evaria solar"], action: () => { showPanel('procedimientos', document.getElementById('btn-nav-procedimientos')); setTimeout(() => { const el = document.getElementById('procedimiento-naturgy'); if (el) { el.scrollIntoView({ behavior: 'smooth' }); } }, 200); } },
@@ -16682,20 +16543,31 @@ const KNOWLEDGE_BASE = [
     <em>*Tienes la calculadora interactiva lista en la línea inferior del Comprobador de Retrocomisiones en el Dashboard.*</em>`
   },
   {
-    keywords: ["comisiones", "comision", "pagos", "cuanto gano", "cuanto pagan", "escalado", "telemarketing", "septiembre", "octubre", "condiciones telemarketing", "objetivos telemarketing", "salario base telemarketing"],
-    answer: `<strong>Condiciones y Escalado de Telemarketing (Octubre 2026 - Mes promocional Nº2):</strong><br><br>
-    • <strong>Jornada 5 horas:</strong> <strong>960 € brutos</strong> | Objetivo: <strong>18 puntos</strong><br>
-      - <em>18 – 24 puntos:</em> Comisión base (Luz c/s: 50€ | Luz s/s: 30€ | Gas c/m: 30€ | Gas s/m: 10€)<br>
-      - <em>25 – 29 puntos:</em> <strong>+10 €/contrato</strong> (Luz c/s: 60€ | Luz s/s: 40€ | Gas c/m: 40€ | Gas s/m: 20€)<br>
-      - <em>30 o más puntos:</em> <strong>+15 €/contrato</strong> (Luz c/s: 65€ | Luz s/s: 45€ | Gas c/m: 45€ | Gas s/m: 25€)<br><br>
-    • <strong>Jornada 6 horas:</strong> <strong>1.098 € brutos</strong> | Objetivo: <strong>21 puntos</strong><br>
-      - <em>21 – 27 puntos:</em> Comisión base (Luz c/s: 50€ | Luz s/s: 30€ | Gas c/m: 30€ | Gas s/m: 10€)<br>
-      - <em>28 – 32 puntos:</em> <strong>+10 €/contrato</strong> (Luz c/s: 60€ | Luz s/s: 40€ | Gas c/m: 40€ | Gas s/m: 20€)<br>
-      - <em>33 o más puntos:</em> <strong>+15 €/contrato</strong> (Luz c/s: 65€ | Luz s/s: 45€ | Gas c/m: 45€ | Gas s/m: 25€)<br><br>
-    • <strong>Productos sin cambios:</strong><br>
+    keywords: ["comisiones", "comision", "pagos", "cuanto gano", "cuanto pagan", "escalado", "telemarketing", "rappel", "condiciones telemarketing", "objetivos telemarketing", "salario base telemarketing"],
+    answer: `<strong>Condiciones de Telemarketing Definitivas:</strong><br><br>
+    • <strong>Jornadas y Salarios Mínimos:</strong><br>
+      - <em>Jornada 5 horas:</em> <strong>960 € brutos</strong> | Objetivo: <strong>18 puntos</strong><br>
+      - <em>Jornada 6 horas:</em> <strong>1.098 € brutos</strong> | Objetivo: <strong>21 puntos</strong><br><br>
+    • <strong>Productos con Rappel (Luz demás Comercializadoras: Iberdrola, Naturgy, Endesa...):</strong><br>
+      - <em>Jornada 5 horas:</em><br>
+        · 18–24 pts (Base): Luz c/s 50€ | s/s 30€<br>
+        · 25–29 pts (+10€): Luz c/s 60€ | s/s 40€<br>
+        · 30+ pts (+15€): Luz c/s 65€ | s/s 45€<br>
+      - <em>Jornada 6 horas:</em><br>
+        · 21–27 pts (Base): Luz c/s 50€ | s/s 30€<br>
+        · 28–32 pts (+10€): Luz c/s 60€ | s/s 40€<br>
+        · 33+ pts (+15€): Luz c/s 65€ | s/s 45€<br><br>
+    • <strong>Productos sin Rappel (Importes Fijos para ambas jornadas):</strong><br>
+      - <em>Gas con servicio (todas las Cías):</em> <strong>30 €</strong> / contrato (fijo)<br>
+      - <em>Gas sin servicio (todas las Cías):</em> <strong>15 €</strong> / contrato (fijo)<br>
+      - <em>Luz con servicio Gana Energía:</em> <strong>50 €</strong> / contrato (fijo)<br>
+      - <em>Luz sin servicio Gana Energía:</em> <strong>30 €</strong> / contrato (fijo)<br>
+      <em>«El rappel no se aplica a los contratos de gas ni a los contratos de luz de Gana Energía. Sus comisiones son fijas, independientemente del tramo alcanzado.»</em><br>
+      <em>*Excluir un producto del rappel no significa que deje de contar para puntos u objetivos.*</em><br><br>
+    • <strong>Otros Productos:</strong><br>
       - Luz &gt; 15 kW: <strong>100 €</strong> | Alarma (Securitas): <strong>100 €</strong><br>
-      - Solar Cloud: <strong>50 €</strong> | Suscripción CCSS: <strong>30 €</strong><br><br>
-    <em>*Para ver todas las tablas interactivas, haz clic en el menú lateral "Condiciones Telemarketing".*</em>`
+      - Solar Cloud: <strong>50 €</strong> | Suscripción CCSS: <strong>30 €</strong> | PYMES: <strong>40%</strong><br><br>
+    <em>*Para consultar las tablas completas, accede a la sección "Condiciones Telemarketing" en el menú.*</em>`
   },
   {
     keywords: ["descomisiones", "descomision", "caidas", "bajas"],
