@@ -94,6 +94,7 @@ const apiRanking = require('../api/ranking');
 const apiComisiones = require('../api/comisiones');
 const apiUpdatePassword = require('../api/update-password');
 const apiGerenteCredentials = require('../api/gerente-credentials');
+const apiVacaciones = require('../api/vacaciones');
 
 // ----------------------------------------------------------------------------
 // CASO 1: Caché disponible y receptor devuelve error 401
@@ -940,6 +941,148 @@ console.log("\n\x1b[37m=== CASO 7: Consulta autorizada de credenciales para Gere
 })();
 
 // ----------------------------------------------------------------------------
+// ----------------------------------------------------------------------------
+// CASO 8: Gestión autorizada de vacaciones (api/vacaciones)
+// ----------------------------------------------------------------------------
+console.log("\n\x1b[37m=== CASO 8: Gestión autorizada de vacaciones (api/vacaciones) ===\x1b[0m");
+
+(function testVacacionesEndpoint() {
+  // 8.1 Acceso anónimo denegado con HTTP 401
+  const anonHttp = createMockHttp({ method: 'POST', headers: {} });
+  apiVacaciones(anonHttp.req, anonHttp.res);
+  report(
+    "api/vacaciones -> Denegado con HTTP 401 para petición sin token Bearer",
+    anonHttp.res.statusCode === 401,
+    `Status: ${anonHttp.res.statusCode} | Error: ${anonHttp.res._jsonData?.error}`
+  );
+
+  // 8.2 Comercial intentando modificar vacaciones de otro comercial denegado con HTTP 403
+  apiVacaciones._setVerifySupabaseTokenForTesting((token, cb) => {
+    cb(null, { id: 'user-comercial-1', email: '00000001a@asistente.internal' });
+  });
+  apiVacaciones._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      id: 'p-1',
+      dni: '00000001A',
+      nombre: 'COMERCIAL A',
+      rol: 'comercial',
+      activo: true
+    });
+  });
+
+  const crossHttp = createMockHttp({
+    method: 'POST',
+    body: { action: 'add', dni: '00000002B', fecha: '2026-11-15' }
+  });
+  crossHttp.req.body = { action: 'add', dni: '00000002B', fecha: '2026-11-15' };
+  apiVacaciones(crossHttp.req, crossHttp.res);
+  report(
+    "api/vacaciones -> Denegado con HTTP 403 al intentar comercial modificar vacaciones de otro agente",
+    crossHttp.res.statusCode === 403,
+    `Status: ${crossHttp.res.statusCode} | Error: ${crossHttp.res._jsonData?.error}`
+  );
+
+  // 8.3 Usuario con perfil inactivo denegado con HTTP 403
+  apiVacaciones._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      id: 'p-inactivo',
+      dni: '00000005I',
+      nombre: 'INACTIVO',
+      rol: 'comercial',
+      activo: false
+    });
+  });
+
+  const inactiveHttp = createMockHttp({ method: 'POST' });
+  inactiveHttp.req.body = { action: 'add', dni: '00000005I', fecha: '2026-11-15' };
+  apiVacaciones(inactiveHttp.req, inactiveHttp.res);
+  report(
+    "api/vacaciones -> Denegado con HTTP 403 para cuenta desactivada",
+    inactiveHttp.res.statusCode === 403,
+    `Status: ${inactiveHttp.res.statusCode} | Error: ${inactiveHttp.res._jsonData?.error}`
+  );
+
+  // 8.4 Comercial agregando vacación propia con cupo disponible -> HTTP 200
+  apiVacaciones._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      id: 'p-1',
+      dni: '00000001A',
+      nombre: 'COMERCIAL A',
+      rol: 'comercial',
+      activo: true
+    });
+  });
+  apiVacaciones._setGetVacationCountForTesting((dni, cb) => {
+    cb(null, [{ fecha: '2026-08-01' }, { fecha: '2026-08-02' }]); // 2 días existentes
+  });
+  apiVacaciones._setExecuteVacacionesOpForTesting((op, cb) => {
+    cb(null, { success: true, action: op.action, dni: op.dni, fecha: op.fecha });
+  });
+
+  const addOwnHttp = createMockHttp({ method: 'POST' });
+  addOwnHttp.req.body = { action: 'add', dni: '00000001A', fecha: '2026-11-15' };
+  apiVacaciones(addOwnHttp.req, addOwnHttp.res);
+  report(
+    "api/vacaciones -> Comercial agrega vacación propia con éxito (HTTP 200)",
+    addOwnHttp.res.statusCode === 200 && addOwnHttp.res._jsonData?.success === true,
+    `Status: ${addOwnHttp.res.statusCode} | Payload: ${JSON.stringify(addOwnHttp.res._jsonData)}`
+  );
+
+  // 8.5 Comercial intentando superar los 26 días laborables de cupo -> HTTP 400
+  const maxDays = [];
+  for (let d = 1; d <= 26; d++) {
+    maxDays.push({ fecha: `2026-08-${d < 10 ? '0' + d : d}` });
+  }
+  apiVacaciones._setGetVacationCountForTesting((dni, cb) => {
+    cb(null, maxDays); // 26 días ya consumidos
+  });
+
+  const limitHttp = createMockHttp({ method: 'POST' });
+  limitHttp.req.body = { action: 'add', dni: '00000001A', fecha: '2026-12-01' };
+  apiVacaciones(limitHttp.req, limitHttp.res);
+  report(
+    "api/vacaciones -> Rechaza con HTTP 400 superar el límite de 26 días laborables",
+    limitHttp.res.statusCode === 400,
+    `Status: ${limitHttp.res.statusCode} | Error: ${limitHttp.res._jsonData?.error}`
+  );
+
+  // 8.6 Comercial eliminando vacación propia -> HTTP 200
+  const delOwnHttp = createMockHttp({ method: 'POST' });
+  delOwnHttp.req.body = { action: 'delete', dni: '00000001A', fecha: '2026-11-15' };
+  apiVacaciones(delOwnHttp.req, delOwnHttp.res);
+  report(
+    "api/vacaciones -> Comercial elimina vacación propia con éxito (HTTP 200)",
+    delOwnHttp.res.statusCode === 200 && delOwnHttp.res._jsonData?.success === true,
+    `Status: ${delOwnHttp.res.statusCode} | Payload: ${JSON.stringify(delOwnHttp.res._jsonData)}`
+  );
+
+  // 8.7 Gerente gestionando vacación para cualquier comercial -> HTTP 200
+  apiVacaciones._setVerifySupabaseTokenForTesting((token, cb) => {
+    cb(null, { id: 'user-gerente-1', email: 'gerente@asistente.internal' });
+  });
+  apiVacaciones._setFetchUserProfileForTesting((userId, cb) => {
+    cb(null, {
+      id: 'p-gerente',
+      dni: '77860623B',
+      nombre: 'FRANCISCO MORENTE',
+      rol: 'gerente',
+      activo: true
+    });
+  });
+  apiVacaciones._setGetVacationCountForTesting((dni, cb) => {
+    cb(null, [{ fecha: '2026-08-01' }]);
+  });
+
+  const gerenteAddHttp = createMockHttp({ method: 'POST' });
+  gerenteAddHttp.req.body = { action: 'add', dni: '00000002B', fecha: '2026-12-10' };
+  apiVacaciones(gerenteAddHttp.req, gerenteAddHttp.res);
+  report(
+    "api/vacaciones -> Gerente autorizado gestiona vacaciones de cualquier comercial (HTTP 200)",
+    gerenteAddHttp.res.statusCode === 200 && gerenteAddHttp.res._jsonData?.success === true,
+    `Status: ${gerenteAddHttp.res.statusCode} | Payload: ${JSON.stringify(gerenteAddHttp.res._jsonData)}`
+  );
+})();
+
 // RESUMEN FINAL
 // ----------------------------------------------------------------------------
 console.log("\n\x1b[36m==================================================================\x1b[0m");

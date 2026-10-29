@@ -15152,11 +15152,30 @@ async function fetchVacationsFromCloud(dni) {
           }
           let insertSuccess = true;
           if (localVacs.length > 0) {
-            const rows = localVacs.map(dateStr => ({ dni, fecha: dateStr }));
-            const { error: insertError } = await supabaseClient.from('vacaciones').insert(rows);
-            if (insertError) {
-              console.error("Error migrating vacations to Supabase:", insertError);
-              insertSuccess = false;
+            let migratedViaApi = false;
+            try {
+              const { data: { session } } = await supabaseClient.auth.getSession();
+              if (session && session.access_token) {
+                const res = await fetch('/api/vacaciones', {
+                  method: 'POST',
+                  headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${session.access_token}`
+                  },
+                  body: JSON.stringify({ action: 'bulk_add', dni, fechas: localVacs })
+                });
+                const json = await res.json();
+                if (res.ok && json.success) migratedViaApi = true;
+              }
+            } catch (_) {}
+
+            if (!migratedViaApi) {
+              const rows = localVacs.map(dateStr => ({ dni, fecha: dateStr }));
+              const { error: insertError } = await supabaseClient.from('vacaciones').insert(rows);
+              if (insertError) {
+                console.error("Error migrating vacations to Supabase:", insertError);
+                insertSuccess = false;
+              }
             }
           }
           if (insertSuccess) {
@@ -15267,6 +15286,29 @@ function showCloudSyncWarning(msg) {
 async function addVacationDayToCloud(dni, dateStr) {
   if (!supabaseClient) return;
   try {
+    const { data: { session }, error: sessionErr } = await supabaseClient.auth.getSession();
+    if (session && session.access_token) {
+      try {
+        const res = await fetch('/api/vacaciones', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ action: 'add', dni, fecha: dateStr })
+        });
+        const json = await res.json();
+        if (res.ok && json.success) {
+          return;
+        }
+        if (json && json.error && json.error.includes('26')) {
+          showCloudSyncWarning(json.error);
+          return;
+        }
+      } catch (apiErr) {
+        console.warn("Fallo al contactar /api/vacaciones, reintentando directo en Supabase:", apiErr);
+      }
+    }
     const { error } = await supabaseClient.from('vacaciones').insert({ dni, fecha: dateStr });
     if (error) {
       console.error("Error adding vacation day to cloud:", error);
@@ -15281,6 +15323,25 @@ async function addVacationDayToCloud(dni, dateStr) {
 async function deleteVacationDayFromCloud(dni, dateStr) {
   if (!supabaseClient) return;
   try {
+    const { data: { session }, error: sessionErr } = await supabaseClient.auth.getSession();
+    if (session && session.access_token) {
+      try {
+        const res = await fetch('/api/vacaciones', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${session.access_token}`
+          },
+          body: JSON.stringify({ action: 'delete', dni, fecha: dateStr })
+        });
+        const json = await res.json();
+        if (res.ok && json.success) {
+          return;
+        }
+      } catch (apiErr) {
+        console.warn("Fallo al contactar /api/vacaciones, reintentando directo en Supabase:", apiErr);
+      }
+    }
     const { error } = await supabaseClient.from('vacaciones').delete().eq('dni', dni).eq('fecha', dateStr);
     if (error) {
       console.error("Error deleting vacation day from cloud:", error);
