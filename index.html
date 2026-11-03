@@ -5071,18 +5071,18 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
     <!-- â•â•â•â•â•â• SCRIPTS â•â•â•â•â•â• -->
     <div class="panel" id="panel-scripts">
       <div class="cia-tabs" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center;">
-        <button class="ctab active" id="ctab-naturgy" onclick="switchCia('naturgy')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid #E85D3A;background:rgba(232, 93, 58, 0.08);color:#E85D3A;border-radius:10px;cursor:pointer;">
-          <img src="img-companias/naturgy.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
-        </button>
-        <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia('naturgy-cif')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
-          <img src="img-companias/naturgy.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
-          <span style="font-weight: 800; font-size: 13px; color: var(--text);">(CIF)</span>
-        </button>
-        <button class="ctab" id="ctab-iberdrola" onclick="switchCia('iberdrola')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+        <button class="ctab active" id="ctab-iberdrola" onclick="switchCia('iberdrola')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid #008B3C;background:rgba(0, 139, 60, 0.08);color:#008B3C;border-radius:10px;cursor:pointer;">
           <img src="img-companias/iberdrola.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
         <button class="ctab" id="ctab-iberdrola-cif" onclick="switchCia('iberdrola-cif')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
           <img src="img-companias/iberdrola.png" onerror="handleLogoError(this, 'iberdrola')" alt="Iberdrola" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <span style="font-weight: 800; font-size: 13px; color: var(--text);">(CIF)</span>
+        </button>
+        <button class="ctab" id="ctab-naturgy" onclick="switchCia('naturgy')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="img-companias/naturgy.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+        </button>
+        <button class="ctab" id="ctab-naturgy-cif" onclick="switchCia('naturgy-cif')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="img-companias/naturgy.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
           <span style="font-weight: 800; font-size: 13px; color: var(--text);">(CIF)</span>
         </button>
         <button class="ctab" id="ctab-endesa" onclick="switchCia('endesa')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
@@ -5094,7 +5094,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
       </div>
 
       <!-- IBERDROLA -->
-      <div class="sv" id="sv-iberdrola">
+      <div class="sv active" id="sv-iberdrola">
         <div class="script-big-card">
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#008B3C"></span>Apertura</div>
@@ -5114,10 +5114,10 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#0d5c9e"></span>Verificacion de productos contratados</div>
             <p class="nota">Lee unicamente los apartados que apliquen segun lo contratado</p>
-            <div class="prod-block"><strong>3.1 · Luz sin servicio — descuento 20% TE</strong>Le informamos que vamos a realizar la contratacion de su suministro de luz con CUPS <span class="blank bsm">(CUPS)</span> con el plan <span class="blank">(plan)</span> en el que disfrutara de un <strong>descuento del 20%</strong> en el termino de energia durante 12 meses.</div>
-            <div class="prod-block"><strong>3.2 · Gas sin servicio — descuento 10% + 10%</strong>Le informamos que vamos a realizar la contratacion de su suministro de gas con CUPS <span class="blank bsm">(CUPS)</span> en el que disfrutara de un <strong>descuento del 10%</strong> en el termino de energia y 10% en el Termino Fijo durante 12 meses.</div>
-            <div class="prod-block"><strong>3.3 · Luz con servicio — descuento 25% (Pack Iberdrola)</strong>Le informamos que vamos a realizar la contratacion de su contrato de luz con CUPS <span class="blank bsm">(CUPS)</span> con el plan <span class="blank">(plan)</span> en el que disfrutara de un <strong>descuento del 25%</strong> en el termino de energia durante 12 meses al contratar el Pack Iberdrola.</div>
-            <div class="prod-block"><strong>3.4 · Gas con servicio — descuento 15% + 15% (Mantenimiento gas)</strong>Le informamos que vamos a realizar la contratacion de su suministro de Gas con CUPS <span class="blank bsm">(CUPS)</span> que disfrutara de un <strong>descuento del 15%</strong> en el termino de energia y 15% en el Termino Fijo durante 12 meses al contratar el servicio de mantenimiento gas.</div>
+            <div class="prod-block"><strong>3.1 · Luz sin servicio — descuento 15% TE</strong>Le informamos que vamos a realizar la contratacion de su suministro de luz con CUPS <span class="blank bsm">(CUPS)</span> con el plan <span class="blank">(plan)</span> en el que disfrutara de un <strong>descuento del 15%</strong> en el termino de energia durante 12 meses.</div>
+            <div class="prod-block"><strong>3.2 · Gas sin servicio — descuento 10%</strong>Le informamos que vamos a realizar la contratacion de su suministro de gas con CUPS <span class="blank bsm">(CUPS)</span> en el que disfrutara de un <strong>descuento del 10%</strong> en el termino de energia y 10% en el Termino Fijo durante 12 meses.</div>
+            <div class="prod-block"><strong>3.3 · Luz con servicio — descuento 20% (Pack Iberdrola)</strong>Le informamos que vamos a realizar la contratacion de su contrato de luz con CUPS <span class="blank bsm">(CUPS)</span> con el plan <span class="blank">(plan)</span> en el que disfrutara de un <strong>descuento del 20%</strong> en el termino de energia durante 12 meses al contratar el Pack Iberdrola.</div>
+            <div class="prod-block"><strong>3.4 · Gas con servicio — descuento 15% (Mantenimiento gas)</strong>Le informamos que vamos a realizar la contratacion de su suministro de Gas con CUPS <span class="blank bsm">(CUPS)</span> que disfrutara de un <strong>descuento del 15%</strong> en el termino de energia y 15% en el Termino Fijo durante 12 meses al contratar el servicio de mantenimiento gas.</div>
           </div>
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#008B3C"></span>Cierre y despedida</div>
@@ -5148,10 +5148,10 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#0d5c9e"></span>Verificacion de productos contratados</div>
             <p class="nota">Lee unicamente los apartados que apliquen segun lo contratado</p>
-            <div class="prod-block"><strong>3.1 · Luz sin servicio — descuento 20% TE</strong>Le informamos que vamos a realizar la contratacion de su suministro de luz con CUPS <span class="blank bsm">(CUPS)</span> con el plan <span class="blank">(plan)</span> en el que disfrutara de un <strong>descuento del 20%</strong> en el termino de energia durante 12 meses.</div>
-            <div class="prod-block"><strong>3.2 · Gas sin servicio — descuento 10% + 10%</strong>Le informamos que vamos a realizar la contratacion de su suministro de gas con CUPS <span class="blank bsm">(CUPS)</span> en el que disfrutara de un <strong>descuento del 10%</strong> en el termino de energia y 10% en el Termino Fijo durante 12 meses.</div>
-            <div class="prod-block"><strong>3.3 · Luz con servicio — descuento 25% (Pack Iberdrola)</strong>Le informamos que vamos a realizar la contratacion de su contrato de luz con CUPS <span class="blank bsm">(CUPS)</span> con el plan <span class="blank">(plan)</span> en el que disfrutara de un <strong>descuento del 25%</strong> en el termino de energia durante 12 meses al contratar el Pack Iberdrola.</div>
-            <div class="prod-block"><strong>3.4 · Gas con servicio — descuento 15% + 15% (Mantenimiento gas)</strong>Le informamos que vamos a realizar la contratacion de su suministro de Gas con CUPS <span class="blank bsm">(CUPS)</span> que disfrutara de un <strong>descuento del 15%</strong> en el termino de energia y 15% en el Termino Fijo durante 12 meses al contratar el servicio de mantenimiento gas.</div>
+            <div class="prod-block"><strong>3.1 · Luz sin servicio — descuento 15% TE</strong>Le informamos que vamos a realizar la contratacion de su suministro de luz con CUPS <span class="blank bsm">(CUPS)</span> con el plan <span class="blank">(plan)</span> en el que disfrutara de un <strong>descuento del 15%</strong> en el termino de energia durante 12 meses.</div>
+            <div class="prod-block"><strong>3.2 · Gas sin servicio — descuento 10%</strong>Le informamos que vamos a realizar la contratacion de su suministro de gas con CUPS <span class="blank bsm">(CUPS)</span> en el que disfrutara de un <strong>descuento del 10%</strong> en el termino de energia y 10% en el Termino Fijo durante 12 meses.</div>
+            <div class="prod-block"><strong>3.3 · Luz con servicio — descuento 20% (Pack Iberdrola)</strong>Le informamos que vamos a realizar la contratacion de su contrato de luz con CUPS <span class="blank bsm">(CUPS)</span> con el plan <span class="blank">(plan)</span> en el que disfrutara de un <strong>descuento del 20%</strong> en el termino de energia durante 12 meses al contratar el Pack Iberdrola.</div>
+            <div class="prod-block"><strong>3.4 · Gas con servicio — descuento 15% (Mantenimiento gas)</strong>Le informamos que vamos a realizar la contratacion de su suministro de Gas con CUPS <span class="blank bsm">(CUPS)</span> que disfrutara de un <strong>descuento del 15%</strong> en el termino de energia y 15% en el Termino Fijo durante 12 meses al contratar el servicio de mantenimiento gas.</div>
           </div>
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#008B3C"></span>Cierre y despedida</div>
@@ -5161,7 +5161,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
       </div>
 
       <!-- NATURGY -->
-      <div class="sv active" id="sv-naturgy">
+      <div class="sv" id="sv-naturgy">
         <div class="script-big-card">
 
           <!-- Aviso Requisito Obligatorio Consentimiento Previo (Vigente desde 19/10/2026) -->
