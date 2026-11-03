@@ -7559,13 +7559,12 @@ function escapeHtml(str) {
     Servielectric Complet: 8,48€/mes · Servigas Complet: 8,48€/mes
     Impuesto electrico: 5,11%
 
-  ENDESA: Vigencia 07/04/2026 – 08/05/2026
-    - Tarifa Luz Fija 24h (Pc≤15kW): TE=0,1407 €/kWh PRECIO UNICO 24h TP1=TP2=2,849€/kW·mes ← MAS BARATA PLANA
-    - Tarifa Luz 3 Periodos: TP=2,849/2,849 TE P1=0,2252 P2=0,1480 P3=0,1147 ← discriminacion horaria
-    - Tu Otra Casa 50: TP P1=2,74 P2=0,492 TE=0,245 (50% dto en 50h mayor consumo) ← discriminacion
-    - Tempo Open (Pc≤15kW): TP P1=3,444 P2=1,258 TE=0,2122 con dto por franja ← discriminacion
-    Desc. bienvenida: 10% TE/TV · Servicio mant: +3%
-    Gas RL.1: TV=0,0937 TF=7,181€/mes · RL.2: TV=0,093 TF=14,60 · RL.3: TV=0,088 TF=30,67
+  ENDESA: Tarifa Luz 24H (Promo Black Friday: +10% dto extra + 100€ Para Ti en 5 facturas)
+    - Luz 24H (Pc≤15kW): Base TE=0,185544 TP1=TP2=0,091 €/kW·dia
+    Descuento sin mantenimiento: 20% TE (0,1484 €/kWh) [10% base + 10% Black Friday]
+    Descuento con mantenimiento (Protección Luz 360): 23% TE (0,1429 €/kWh) [10% base + 3% mant + 10% Black Friday]
+    Bono "Para Ti": 100€ de bonificación divididos en 5 facturas (-20€/factura)
+    Gas RL.1: TV=0,074 TF=0,232 €/dia · RL.2: TV=0,070 TF=0,471 · RL.3: TV=0,064 TF=0,989
     Impuesto electrico: 5,11%
 */
 
@@ -7617,16 +7616,16 @@ const BASE = {
   endesa:{
     name:'Endesa', color:'#00A8E0',
     tp1:0.091, tp2:0.091,
-    te_sin:0.1670, te_con:0.1614,
+    te_sin:0.1484, te_con:0.1429,
     precio_excedente:0.06,
     sva_luz:4.77, sva_gas:9.09,
     gas_rl1:{tf:0.232, tv:0.074},
     gas_rl2:{tf:0.471, tv:0.070},
     gas_rl3:{tf:0.989, tv:0.064},
     imp_electrico:0.0511,
-    desc_sin:0.10, desc_con:0.13,
+    desc_sin:0.20, desc_con:0.23,
     tarifas_luz:[
-      {n:'Luz 24H', te:0.185544, tp1:0.091, tp2:0.091, te_sin:0.1670, te_con:0.1614, desc_sin:0.10, desc_con:0.13, nota:'Precio unico 24h sin permanencia'},
+      {n:'Luz 24H', te:0.185544, tp1:0.091, tp2:0.091, te_sin:0.1484, te_con:0.1429, desc_sin:0.20, desc_con:0.23, promo_black_friday:true, bono_para_ti:'100€ en 5 facturas (-20€/factura)', nota:'Precio único 24h sin permanencia · Promo Black Friday: +10% dto extra + 100€ en Para Ti (-20€ en 5 facturas)'},
       {n:'Solar Plus', te:0.164, tp1:0.091, tp2:0.091, te_sin:0.145, te_con:0.145, desc_sin:0.1158, desc_con:0.1158, nota:'Tarifa Solar con excedentes (+2€/mes Batería Virtual)', extra_bateria_virtual:2.00, nota_extra:'"Fuera de Andalucía y Extremadura el precio final es 0.153 €/kWh"'}
     ],
     tarifas_gas:[
@@ -10639,12 +10638,26 @@ function renderCondiciones(){
                 </span>
               </div>
             </div>`;
+        } else if (t.promo_black_friday) {
+          temporalBannerHtml = `
+            <div style="margin-top:6px;display:flex;flex-direction:column;gap:5px;">
+              <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+                <span style="font-size:10.5px;font-weight:800;color:#7c3aed;background:rgba(124,58,237,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(124,58,237,0.2);display:inline-flex;align-items:center;gap:3px;">
+                  🛍️ Promo Black Friday: +10% dto extra
+                </span>
+                <span style="font-size:10.5px;font-weight:700;color:#059669;background:rgba(5,150,105,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(5,150,105,0.2);display:inline-flex;align-items:center;gap:3px;">
+                  🎁 100€ en Para Ti (-20€ en 5 facturas)
+                </span>
+              </div>
+            </div>`;
         }
         let dtoText = `Dto: ${(dSin*100).toFixed(0)}% / ${teCon?(dCon*100).toFixed(0)+'%':'—'}`;
         if (t.solo_mantenimiento) {
           dtoText = `Dto: ❌ / ${(dCon*100).toFixed(0)}% (Solo con mantenimiento)`;
         } else if (t.n === 'Solar Plus') {
           dtoText = `Dto: 12% / 12% (+2€/mes Batería Virtual)`;
+        } else if (t.promo_black_friday) {
+          dtoText = `Dto: ${(dSin*100).toFixed(0)}% / ${teCon?(dCon*100).toFixed(0)+'%':'—'} (incluye +10% Black Friday) · Bono 100€ Para Ti (-20€ en 5 facturas)`;
         }
         let sinMantHtml = '';
         if (t.solo_mantenimiento) {
@@ -11658,6 +11671,11 @@ function renderInvCards(results, useSva){
     if (res.cuotaBateriaVirtualEndesa > 0) {
       cardExtraBadges += '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">+2€/mes Batería Virtual</span>';
     }
+    const isEndesa24h = (cia === 'endesa' && compMode === 'luz' && !(res.cuotaBateriaVirtualEndesa > 0));
+    if (isEndesa24h) {
+      cardExtraBadges += '<span style="font-size:11px;color:#7c3aed;font-weight:800;background:rgba(124,58,237,0.1);padding:2px 7px;border-radius:4px;border:1px solid rgba(124,58,237,0.25);">🛍️ Black Friday (+10% dto)</span>';
+      cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:800;background:rgba(5,150,105,0.1);padding:2px 7px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);">🎁 100€ Para Ti (-20€ en 5 facturas)</span>';
+    }
     if (isPlanAhora) {
       if (isLocked) {
         cardExtraBadges += '<span style="font-size:11px;color:#b45309;font-weight:800;background:rgba(245,158,11,0.15);padding:2px 8px;border-radius:4px;border:1px solid rgba(245,158,11,0.3);display:inline-flex;align-items:center;gap:4px;">⚡ Plan Ahora</span>';
@@ -11701,6 +11719,25 @@ function renderInvCards(results, useSva){
       }
     }
 
+    let promoEndesaBannerHtml = '';
+    if (isEndesa24h) {
+      const displayTe = (useSva ? r.te_con : r.te_sin).toFixed(4);
+      promoEndesaBannerHtml = `
+        <div style="background:linear-gradient(135deg, #faf5ff, #f3e8ff);border:1.5px solid #d8b4fe;border-radius:8px;padding:10px 14px;margin:12px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;">
+          <div style="display:flex;align-items:center;gap:8px;">
+            <span style="font-size:22px;">🛍️</span>
+            <div>
+              <div style="font-size:12.5px;color:#6b21a8;font-weight:800;">
+                ¡Promo Black Friday Endesa Activa!
+              </div>
+              <div style="font-size:11.5px;color:#7e22ce;margin-top:2px;">
+                Incluye un <strong>10% de dto. extra</strong> en energía ya aplicado (<strong style="color:#6b21a8;">${displayTe} €/kWh</strong>) + <strong style="color:#166534;">100 € de bonificación en el programa Para Ti</strong> (divididos en 5 facturas a <strong>-20 €/factura</strong>).
+              </div>
+            </div>
+          </div>
+        </div>`;
+    }
+
     let actionBtnHtml = '';
     if (isLocked) {
       actionBtnHtml = `
@@ -11740,6 +11777,7 @@ function renderInvCards(results, useSva){
       </div>
       
       ${lockedBannerHtml}
+      ${promoEndesaBannerHtml}
 
       <!-- Savings Grid -->
       <div class="inv-savings-grid"${isLocked?' style="opacity:0.6;filter:grayscale(0.3);"':''}>
@@ -11822,6 +11860,7 @@ function renderSummary(results, actual){
             ${isPlanAhora ? '<span style="font-size:10.5px;color:#059669;font-weight:800;background:rgba(5,150,105,0.1);padding:1px 6px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);">⚡ Plan Ahora</span>' : ''}
             ${isPlanAhora ? '<span style="font-size:10.5px;color:#dc2626;font-weight:700;background:rgba(220,38,38,0.08);padding:1px 5px;border-radius:4px;border:1px solid rgba(220,38,38,0.18);">🚫 Sin tarjetas</span>' : ''}
             ${r.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:10.5px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:1px 5px;border-radius:4px;">(+2€/mes BV)</span>' : ''}
+            ${(r.cia === 'endesa' && isLuz && !(r.cuotaBateriaVirtualEndesa > 0)) ? '<span style="font-size:10.5px;color:#7c3aed;font-weight:800;background:rgba(124,58,237,0.1);padding:1px 5px;border-radius:4px;border:1px solid rgba(124,58,237,0.25);">🛍️ Black Friday + 100€ Para Ti</span>' : ''}
           </div>
           ${isBest?'<span class="badge-best" style="margin-left:6px;background:#059669;color:#fff;font-weight:800;padding:2px 6px;border-radius:4px;font-size:10.5px;">🏆 Mayor Ahorro</span>':''}
         </td>
@@ -12168,6 +12207,20 @@ function printCompanyOffer(key) {
             <span>+${f2(Math.abs(ahorro * 12))} € al año</span>
             ${pct !== null ? `<span style="font-size: 13px; font-weight: 700; color: #dc2626; margin-top: 2px;">+${Math.round(Math.abs(pct))}% al año</span>` : ''}
           </div>
+        </div>
+      </div>
+    `;
+  }
+
+  if (cia === 'endesa' && compMode === 'luz' && !(cuotaBateriaVirtualEndesa > 0)) {
+    html += `
+      <div style="border: 1.5px solid #c084fc; background: #faf5ff; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #581c87; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <div>
+          <strong>🛍️ Promoción Black Friday Endesa:</strong> 10% de dto. extra en término de energía ya incluido en el cálculo.<br>
+          <strong>🎁 Bonificación "Para Ti":</strong> <strong>100 € de abono directo</strong> divididos en las 5 primeras facturas (<strong>-20 €/factura</strong>).
+        </div>
+        <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #15803d; white-space: nowrap;">
+          -20 € en 5 facturas
         </div>
       </div>
     `;
@@ -17424,15 +17477,16 @@ function getRenosurChatResponse(query) {
     endesa: {
       luz: {
         luz_24h: {
-          name: "Endesa Luz 24H",
+          name: "Endesa Luz 24H (Promo Black Friday)",
           base: "0,185544 €/kWh",
-          sin_mantenimiento: "0,1670 €/kWh",
-          con_mantenimiento: "0,1614 €/kWh",
-          descuento_sin_mantenimiento: "10% sin mantenimiento",
-          descuento_con_mantenimiento: "13% con mantenimiento",
+          sin_mantenimiento: "0,1484 €/kWh (20% de descuento total: 10% base + 10% Black Friday)",
+          con_mantenimiento: "0,1429 €/kWh (23% de descuento total: 13% base + 10% Black Friday con Protección Luz 360)",
+          descuento_sin_mantenimiento: "20% (10% base + 10% Black Friday)",
+          descuento_con_mantenimiento: "23% (13% base + 10% Black Friday)",
+          promo_black_friday: "10% de descuento extra en energía + 100€ de bonificación en el programa Para Ti divididos en 5 facturas (-20€/factura).",
           potencia: "TP1: 0,091 €/kW-día | TP2: 0,091 €/kW-día",
           excedentes: "0,06 €/kWh",
-          mantenimiento: "4,77 €/mes",
+          mantenimiento: "4,77 €/mes (Protección Luz 360)",
           permanencia: "No tiene permanencia.",
           retrocomision: "12 meses"
         },
@@ -17575,13 +17629,16 @@ function getRenosurChatResponse(query) {
       "• <strong>Retrocomisión:</strong> 0-2 meses: 100% | 2-4 meses: 50%";
   }
 
-  // 7. Endesa Luz 24H
-  if (q.includes('luz 24h') || q.includes('luz 24 h') || (q.includes('endesa') && q.includes('24h'))) {
-    return "<strong>Endesa — Luz 24H:</strong><br><br>" +
+  // 7. Endesa Luz 24H (Promo Black Friday)
+  if (q.includes('luz 24h') || q.includes('luz 24 h') || (q.includes('endesa') && q.includes('24h')) || (q.includes('endesa') && (q.includes('black friday') || q.includes('para ti') || q.includes('promo')))) {
+    return "<strong>Endesa — Luz 24H (Promo Black Friday Activa):</strong><br><br>" +
+      "🛍️ <strong>Promoción Black Friday:</strong><br>" +
+      "• <strong>10% de descuento EXTRA</strong> en el término de energía (acumulable al descuento habitual).<br>" +
+      "• <strong>100 € de bonificación en el programa \"Para Ti\"</strong>, aplicados en <strong>5 facturas a -20 €/factura</strong>.<br><br>" +
       "• <strong>Término de Energía:</strong><br>" +
       "  - Precio Base: 0,185544 €/kWh<br>" +
-      "  - Sin Mantenimiento (10% dto.): <strong>0,1670 €/kWh</strong><br>" +
-      "  - Con Mantenimiento (13% dto.): <strong>0,1614 €/kWh</strong><br><br>" +
+      "  - Sin Mantenimiento (20% dto. total: 10% base + 10% Black Friday): <strong>0,1484 €/kWh</strong><br>" +
+      "  - Con Mantenimiento (23% dto. total: 13% base + 10% Black Friday): <strong>0,1429 €/kWh</strong><br><br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,091 €/kW·día</strong> | TP2: <strong>0,091 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
       "• <strong>Mantenimiento Luz (Protección Luz 360):</strong> 4,77 €/mes<br>" +
@@ -17660,7 +17717,7 @@ function getRenosurChatResponse(query) {
              ibLuzBest +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1230 €/kWh<br>` +
              `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1390 €/kWh<br>` +
-             `• <strong>Endesa Luz 24H:</strong> 0,1670 €/kWh (0,1614 €/kWh con mant.)<br>` +
+             `• <strong>Endesa Luz 24H (Black Friday):</strong> 0,1484 €/kWh (0,1429 €/kWh con mant.) + 100€ en Para Ti (-20€ en 5 facturas)<br>` +
              `• <strong>Endesa Solar Plus:</strong> 0,145 €/kWh (+2€/mes BV)<br><br>` +
              `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
     }
@@ -17669,7 +17726,7 @@ function getRenosurChatResponse(query) {
     let company = null;
     if (q.includes('iberdrola') || q.includes('especial') || q.includes('impulsa') || q.includes('ahora')) company = 'iberdrola';
     else if (q.includes('naturgy') || q.includes('por uso')) company = 'naturgy';
-    else if (q.includes('endesa') || q.includes('solar')) company = 'endesa';
+    else if (q.includes('endesa') || q.includes('solar') || q.includes('black friday') || q.includes('para ti')) company = 'endesa';
     else if (q.includes('gana')) company = 'gana';
 
     const compNames = {
@@ -17720,7 +17777,7 @@ function getRenosurChatResponse(query) {
       if (company === 'endesa') {
         return `<strong>Tarifas de Luz de Endesa disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-          `  <button onclick="sendQuickChatQuery('Endesa Luz 24H')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Luz 24H (Estándar 24 Horas) — Desde 0,1614 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Endesa Luz 24H')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Luz 24H (Black Friday: +10% dto + 100€ Para Ti) — Desde 0,1429 €/kWh</button>` +
           `  <button onclick="sendQuickChatQuery('Endesa Solar Plus')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Solar Plus (Con placas / Excedentes) — Desde 0,145 €/kWh (+2€/mes BV)</button>` +
           `</div>`;
       }
