@@ -6900,7 +6900,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
         
         .promociones-grid {
           display: grid;
-          grid-template-columns: repeat(3, 1fr);
+          grid-template-columns: repeat(2, 1fr);
           gap: 16px;
           align-items: stretch;
           margin-bottom: 0;
@@ -8766,24 +8766,6 @@ const DEFAULT_PROMOCIONES = [
         delivery: 'Tarjeta electronica al correo'
       }
     ]
-  },
-  {
-    id: 'caprabo',
-    name: 'Caprabo',
-    img: 'PROMOCIONES%20SUPERMERCADOS/CAPRABO.png',
-    color: '#0d5c9e',
-    colorBg: 'rgba(13, 92, 158, 0.08)',
-    colorAlpha: 'rgba(13, 92, 158, 0.05)',
-    iconColor: '#0d5c9e',
-    iconBg: 'rgba(13, 92, 158, 0.15)',
-    active: true,
-    provinces: [
-      {
-        name: 'Barcelona',
-        stores: ['Rubi', 'Masnou', 'Abrera', 'Max Center La Farga'],
-        delivery: 'Ingreso en tarjeta de cliente (hay que pasar la tarjeta)'
-      }
-    ]
   }
 ];
 
@@ -8792,7 +8774,7 @@ let promocionesConfigLoaded = false;
 
 function getPromocionesConfig() {
   if (promocionesConfig && promocionesConfig.length > 0) {
-    return promocionesConfig;
+    return promocionesConfig.filter(p => p.id !== 'caprabo');
   }
   const stored = localStorage.getItem('promociones_config');
   let loadedConfig = null;
@@ -8819,13 +8801,15 @@ function getPromocionesConfig() {
         }
       });
     }
+    // Asegurar eliminación de Caprabo en almacenamiento previo
+    loadedConfig = loadedConfig.filter(p => p.id !== 'caprabo');
     promocionesConfig = loadedConfig;
     localStorage.setItem('promociones_config', JSON.stringify(promocionesConfig));
     return promocionesConfig;
   }
 
   // Si es el formato antiguo o no hay datos, inicializar con DEFAULT_PROMOCIONES
-  promocionesConfig = JSON.parse(JSON.stringify(DEFAULT_PROMOCIONES));
+  promocionesConfig = JSON.parse(JSON.stringify(DEFAULT_PROMOCIONES)).filter(p => p.id !== 'caprabo');
   localStorage.setItem('promociones_config', JSON.stringify(promocionesConfig));
   return promocionesConfig;
 }
@@ -8947,12 +8931,6 @@ function renderPromociones() {
         Tarjeta electrónica
       </span>`;
       deliverySubtitle = `<span style="font-size: 12px; color: var(--t2); font-weight: 600;">Envío de tarjeta digital por correo electrónico</span>`;
-    } else if (promo.id === 'caprabo') {
-      deliveryBadge = `<span style="font-size: 11.5px; font-weight: 800; color: #0369a1; background: rgba(2, 132, 199, 0.12); border: 1px solid rgba(2, 132, 199, 0.25); padding: 3px 8px; border-radius: 6px; display: inline-flex; align-items: center; gap: 4px; white-space: nowrap;">
-        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect><line x1="1" y1="10" x2="23" y2="10"></line></svg>
-        Tarjeta cliente
-      </span>`;
-      deliverySubtitle = `<span style="font-size: 12px; color: var(--t2); font-weight: 600;">Ingreso directo al pasar la tarjeta de cliente</span>`;
     }
     
     // Provincias y Tiendas directamente visibles
@@ -16168,7 +16146,6 @@ const SEARCH_INDEX = [
   // Promociones
   { title: "Promociones: Carrefour", keywords: ["carrefour", "promociones", "tarjeta", "regalo", "supermercado", "correo", "postal"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
   { title: "Promociones: Leroy Merlin", keywords: ["leroy merlin", "promociones", "tarjeta", "regalo", "supermercado", "electronica", "tienda", "sevilla", "huelva", "malaga", "barcelona"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
-  { title: "Promociones: Caprabo", keywords: ["caprabo", "promociones", "tarjeta", "regalo", "supermercado", "barcelona", "cliente"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
   { title: "Promociones Supermercados (Iberdrola)", keywords: ["promociones", "tarjetas", "regalo", "supermercado", "cif", "30€", "50€", "ccpp"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
 
   // Comparador
@@ -16519,10 +16496,7 @@ const KNOWLEDGE_BASE = [
   {
     keywords: ["caprabo"],
     answer: `<strong>Promoción de Caprabo:</strong><br><br>
-    • <strong>Método de entrega:</strong> Ingreso directo en la tarjeta de cliente (el cliente debe pasar su tarjeta física por caja).<br>
-    • <strong>Tiendas válidas:</strong> Provincia de Barcelona (tiendas en Rubí, Masnou, Abrera y Max Center La Farga).<br>
-    • <strong>Importante:</strong> Los clientes con CIF (empresas) obtienen un máximo de 30€ (no optan a la tarjeta de 50€). Las CCPP (Comunidades de Propietarios) no pueden tener tarjeta promocional.<br>
-    • <strong>Exclusión Plan Ahora:</strong> Con el Plan Ahora <strong>NO</strong> se pueden dar tarjetas promocionales.`
+    La promoción de Caprabo ya no está disponible (ha sido eliminada). Actualmente solo se encuentran activas las promociones de supermercado de <strong>Carrefour</strong> y <strong>Leroy Merlin</strong>.`
   },
   {
     keywords: ["cif", "pymes", "empresas", "30", "30€", "50", "50€"],
@@ -16535,13 +16509,13 @@ const KNOWLEDGE_BASE = [
   {
     keywords: ["ccpp", "comunidades de propietarios", "comunidad de vecinos"],
     answer: `<strong>Condiciones para CCPP (Comunidades de Propietarios):</strong><br><br>
-    • Las CCPP tienen **totalmente prohibido y excluido** recibir tarjetas de regalo o promociones comerciales en cualquiera de los supermercados asociados (Carrefour, Leroy Merlin, Caprabo).`
+    • Las CCPP tienen **totalmente prohibido y excluido** recibir tarjetas de regalo o promociones comerciales en cualquiera de los supermercados asociados (Carrefour, Leroy Merlin).`
   },
   {
     keywords: ["plan ahora tarjeta", "plan ahora promocion", "tarjeta plan ahora", "tarjetas plan ahora", "promocion plan ahora", "promociones plan ahora"],
     answer: `<strong>Tarjetas Promocionales en Plan Ahora (Iberdrola):</strong><br><br>
     • Con el <strong>Plan Ahora de Iberdrola NO se pueden dar tarjetas promocionales</strong> bajo ningún concepto.<br>
-    • Las promociones de tarjetas regalo (Carrefour, Leroy Merlin, Caprabo) solo aplican a otras tarifas autorizadas de Iberdrola.`
+    • Las promociones de tarjetas regalo (Carrefour, Leroy Merlin) solo aplican a otras tarifas autorizadas de Iberdrola.`
   },
   {
     keywords: ["comunidades solares", "comunidad solar", "buscar comunidades solares", "buscar comunidad solar", "solar iberdrola", "smart solar", "mapa solar"],
@@ -17925,49 +17899,9 @@ function getRenosurChatResponse(query) {
     }
   }
 
-  // Búsqueda dinámica de tiendas de Caprabo
+  // Consulta de promoción Caprabo (Eliminada)
   if (q.includes('caprabo')) {
-    const config = getPromocionesConfig();
-    const capraboPromo = config.find(p => p.id === 'caprabo');
-    if (capraboPromo) {
-      if (!capraboPromo.active) {
-        return "La promoción de Caprabo está actualmente <strong>desactivada</strong>.";
-      }
-      
-      const stopWords = ['hay', 'en', 'de', 'el', 'la', 'un', 'una', 'si', 'dónde', 'donde', 'que', 'qué', 'con', 'para', 'caprabo', 'promocion', 'promoción', 'tienda', 'tiendas', 'provincia', 'provincias', 'activo', 'activa', 'activos', 'activas', 'cual', 'cuál', 'esta', 'estas', 'este', 'estos', 'los', 'las', 'al', 'del', 'o', 'y', 'por', 'alguna', 'algun', 'algún', 'ciudad', 'ciudades', 'sitio', 'sitios'];
-      const words = q.split(/\s+/).filter(w => !stopWords.includes(w));
-      const searchLoc = words.join(' ').trim();
-      
-      const activeListHtml = capraboPromo.provinces.map(prov => `• <strong>${prov.name}:</strong> ${prov.stores.join(', ')} (Entrega: ${prov.delivery})`).join('<br>');
-      
-      if (searchLoc) {
-        const cleanSearch = cleanStr(searchLoc);
-        let matchProv = null;
-        
-        for (const prov of capraboPromo.provinces) {
-          if (cleanStr(prov.name).includes(cleanSearch) || cleanSearch.includes(cleanStr(prov.name))) {
-            matchProv = prov;
-            break;
-          }
-          const foundStore = prov.stores.find(st => cleanStr(st).includes(cleanSearch) || cleanSearch.includes(cleanStr(st)));
-          if (foundStore) {
-            matchProv = prov;
-            break;
-          }
-        }
-        
-        if (matchProv) {
-          return `<strong>¡Sí! Hay promoción de Caprabo</strong> en <strong>${matchProv.name}</strong>.<br><br>` +
-                 `• Tiendas: ${matchProv.stores.join(', ')}<br>` +
-                 `• Entrega: ${matchProv.delivery}`;
-        } else {
-          return `<strong>No hay promoción de Caprabo</strong> en <strong>"${escapeHtml(searchLoc)}"</strong>.<br><br>` +
-                 `Está disponible únicamente en estas ciudades:<br>${activeListHtml}`;
-        }
-      }
-      
-      return `<strong>Tiendas y Provincias Activas de Caprabo:</strong><br><br>${activeListHtml}`;
-    }
+    return "La promoción de Caprabo ya no está disponible (ha sido eliminada). Actualmente solo se encuentran activas las promociones de supermercado de <strong>Carrefour</strong> y <strong>Leroy Merlin</strong>.";
   }
   
   // 1. Buscar en la Base de Conocimientos (Q&A Directo)
