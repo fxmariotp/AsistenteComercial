@@ -5587,6 +5587,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
 
             <div style="background: rgba(255, 80, 0, 0.06); border: 1px dashed rgba(255, 80, 0, 0.35); border-radius: 8px; padding: 14px 18px; font-size: 13px; color: var(--t2); line-height: 1.55; text-align: left;">
               ℹ️ <strong>Tramitación directa:</strong> Aportar <strong>DNI + Factura</strong> (+ IBAN para domiciliación).<br>
+              ⚡ <strong>Servicio Obligatorio en Luz:</strong> La tarifa de <strong>luz de Repsol solo se puede tramitar con servicio</strong> de mantenimiento (Tu Asistente 24h Plus con 2 meses gratis, luego 5,78 €/mes). En cambio, el <strong>gas se puede tramitar con y sin servicio</strong>.<br>
               ⚠️ <strong>Paso previo obligatorio (LeadsRepsol):</strong> Antes de subir el contrato tienen que firmar el lead que se genere desde el enlace de <a href="https://colaboradores.repsolluzygas.com/solicitud?user=BMra8LVRBibEoCjGvUUC%2Bw1ZqhM%2BtWC9e258TkszIt0%3D&amp;agency=DISHOGAR&amp;channel=54&amp;origen=220&amp;referidor=1" target="_blank" rel="noopener noreferrer" style="color: #ea580c; font-weight: 700;">LeadsRepsol</a>. Posteriormente el cliente recibe el SMS para la firma digital del contrato <strong>sin verificación posterior</strong> ni llamadas de confirmación.
             </div>
           </div>
@@ -5657,7 +5658,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
             <div style="background: rgba(255, 80, 0, 0.06); border: 1px dashed rgba(255, 80, 0, 0.35); border-radius: 8px; padding: 14px 18px; font-size: 13px; color: var(--t2); line-height: 1.55; text-align: left;">
               🏢 <strong>Condiciones Comerciales Repsol CIF:</strong><br>
               • <strong>Energía 24h:</strong> 0,1499 €/kWh · <strong>Potencia:</strong> TP1 0,099726 · TP2 0,099726 €/kW·día.<br>
-              • <strong>Mantenimiento SVA:</strong> Asistente 24h Pyme por <strong>9,99 €/mes</strong> (Urgencias &lt;3h, 3h mano de obra gratis, 50€ materiales).<br>
+              • <strong>Mantenimiento SVA:</strong> <strong>Obligatorio en Luz</strong>: Asistente 24h Pyme por <strong>9,99 €/mes</strong> (Urgencias &lt;3h, 3h mano de obra gratis, 50€ materiales). El gas se puede tramitar con o sin servicio.<br>
               • <strong>Saldo Waylet:</strong> <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación + hasta 40 cts./l en repostajes.<br>
               • <strong>Permanencia:</strong> Sin permanencia · <strong>Retrocomisión:</strong> 6 meses.<br>
               • ⚠️ <strong>Firma de Lead Previa:</strong> Antes de subir el contrato, el apoderado/cliente tiene que firmar el lead generado desde <a href="https://colaboradores.repsolluzygas.com/solicitud?user=BMra8LVRBibEoCjGvUUC%2Bw1ZqhM%2BtWC9e258TkszIt0%3D&amp;agency=DISHOGAR&amp;channel=54&amp;origen=220&amp;referidor=1" target="_blank" rel="noopener noreferrer" style="color: #ea580c; font-weight: 700;">LeadsRepsol</a>.
@@ -7863,14 +7864,14 @@ const BASE = {
     gas_rl3:{tf:0.763333, tv:0.089900},
     imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Tarifa Tranquilísima', te:0.1399, tp1:0.091507, tp2:0.091507, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Asistente 24h Plus 2 meses gratis · Regalo saldo Waylet'},
-      {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'},
-      {n:'Tarifa Tranquilísima (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, nota:'Tarifa 24h Autónomos y Pymes (CIF) · Asistente 24h Pyme (9,99€/mes) · 60€ Saldo Waylet'}
+      {n:'Tarifa Tranquilísima', te:0.1399, tp1:0.091507, tp2:0.091507, solo_mantenimiento:true, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Solo con servicio (Asistente 24h Plus 2 meses gratis) · Regalo saldo Waylet'},
+      {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, solo_mantenimiento:true, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · Solo con servicio · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'},
+      {n:'Tarifa Tranquilísima (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, solo_mantenimiento:true, nota:'Tarifa 24h Autónomos y Pymes (CIF) · Solo con servicio (Asistente 24h Pyme 9,99€/mes) · 60€ Saldo Waylet'}
     ],
     tarifas_gas:[
-      {n:'Gas Ahorro RL1', tv:0.0899, tf:0.230000, nota:'Peaje RL.1 hasta 5.000 kWh/año · Fijo 6,90 €/mes · Tu Asistente Gas 9,08 €/mes'},
-      {n:'Gas Ahorro RL2', tv:0.0899, tf:0.463333, nota:'Peaje RL.2 de 5.000 a 15.000 kWh/año · Fijo 13,90 €/mes'},
-      {n:'Gas Ahorro RL3', tv:0.0899, tf:0.763333, nota:'Peaje RL.3 más de 15.000 kWh/año · Fijo 22,90 €/mes'}
+      {n:'Gas Ahorro RL1', tv:0.0899, tf:0.230000, nota:'Peaje RL.1 hasta 5.000 kWh/año · Fijo 6,90 €/mes · Con y sin servicio (Tu Asistente Gas 9,08 €/mes)'},
+      {n:'Gas Ahorro RL2', tv:0.0899, tf:0.463333, nota:'Peaje RL.2 de 5.000 a 15.000 kWh/año · Fijo 13,90 €/mes · Con y sin servicio'},
+      {n:'Gas Ahorro RL3', tv:0.0899, tf:0.763333, nota:'Peaje RL.3 más de 15.000 kWh/año · Fijo 22,90 €/mes · Con y sin servicio'}
     ]
   }
 };
@@ -10793,6 +10794,7 @@ function renderCondiciones(){
         <div style="font-size:11px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:3px 8px;border-radius:6px;border:1px solid rgba(217,119,6,0.18);white-space:nowrap;">
           Retrocomisión: ${retrocomision}
         </div>
+        ${id === 'repsol' ? '<div style="font-size:11px;color:#c2410c;font-weight:700;background:rgba(234,88,12,0.08);padding:3px 8px;border-radius:6px;border:1px solid rgba(234,88,12,0.25);white-space:nowrap;">Luz: Solo con servicio</div>' : ''}
         ${dtoHdrText}
       </div>`;
 
@@ -10859,7 +10861,11 @@ function renderCondiciones(){
         }
         let dtoText = `Dto: ${(dSin*100).toFixed(0)}% / ${teCon?(dCon*100).toFixed(0)+'%':'—'}`;
         if (t.solo_mantenimiento) {
-          dtoText = `Dto: ❌ / ${(dCon*100).toFixed(0)}% (Solo con mantenimiento)`;
+          if (id === 'repsol') {
+            dtoText = `⚠️ <strong>Solo se puede tramitar con servicio</strong> (Asistente 24h)`;
+          } else {
+            dtoText = `Dto: ❌ / ${(dCon*100).toFixed(0)}% (Solo con mantenimiento)`;
+          }
         } else if (t.n === 'Solar Plus') {
           dtoText = `Dto: 12% / 12% (+2€/mes Batería Virtual)`;
         } else if (t.promo_black_friday) {
@@ -10867,7 +10873,7 @@ function renderCondiciones(){
         }
         let sinMantHtml = '';
         if (t.solo_mantenimiento) {
-          sinMantHtml = '<span style="color:#dc2626;font-size:15px;font-weight:900;display:inline-block;" title="Prohibido contratar sin mantenimiento">❌</span>';
+          sinMantHtml = '<span style="color:#dc2626;font-size:15px;font-weight:900;display:inline-block;" title="Prohibido tramitar sin servicio">❌</span>';
         } else if (teSin !== t.te) {
           const teSinDisp = (teSin.toString().split('.')[1]?.length > 3) ? teSin.toString() : teSin.toFixed(3);
           sinMantHtml = `<span class="price-sin">${teSinDisp}</span>`;
@@ -10879,7 +10885,7 @@ function renderCondiciones(){
         htmlLuz += `<tr><td><strong>${t.n}</strong>${t.nota?`<br><span style="font-size:13px;color:var(--green);font-weight:600">✓ ${t.nota}</span>`:''}${extraNoteHtml}${temporalBannerHtml}<br><span style="font-size:12px;color:var(--t3)">${dtoText}</span></td>
           <td class="price-base">${teBaseDisp}</td>
           <td>${sinMantHtml}</td>
-          <td>${teCon && teCon !== t.te ? `<span class="price-con">${teConDisp}</span>` : '<span style="color:var(--t3)">igual</span>'}</td>
+          <td>${teCon && teCon !== t.te ? `<span class="price-con">${teConDisp}</span>` : (t.solo_mantenimiento ? `<span class="price-con">${teBaseDisp}</span>` : '<span style="color:var(--t3)">igual</span>')}</td>
           </tr>`;
       }
     });
@@ -10917,7 +10923,7 @@ function renderCondiciones(){
     if (id === 'gana') {
       svaHtml = `<span>Mantenimiento: <strong>4.13 €/mes</strong></span>`;
     } else if (id === 'repsol') {
-      svaHtml = `<span>Mantenimiento Luz: <strong>5,78 €/mes</strong> (Particular) · <strong>9,99 €/mes</strong> (CIF / Pyme)</span>`;
+      svaHtml = `<span>Mantenimiento Luz (Obligatorio): <strong>5,78 €/mes</strong> (Particular) · <strong>9,99 €/mes</strong> (CIF / Pyme)</span>`;
     } else if (r.sva_luz > 0) {
       svaHtml = `<span>Mantenimiento: <strong>${r.sva_luz.toFixed(2)} €/mes</strong></span>`;
     } else {
@@ -10978,6 +10984,7 @@ function renderCondiciones(){
         <div style="font-size:11px;color:#d97706;font-weight:700;background:rgba(217,119,6,0.08);padding:3px 8px;border-radius:6px;border:1px solid rgba(217,119,6,0.18);white-space:nowrap;">
           Retrocomisión: ${retrocomision}
         </div>
+        ${id === 'repsol' ? '<div style="font-size:11px;color:#059669;font-weight:700;background:rgba(5,150,105,0.08);padding:3px 8px;border-radius:6px;border:1px solid rgba(5,150,105,0.2);white-space:nowrap;">Gas: Con y sin servicio</div>' : ''}
       </div>`;
 
     // GAS
@@ -11014,7 +11021,9 @@ function renderCondiciones(){
       }
     });
     let svaGasHtml = '';
-    if (r.sva_gas > 0) {
+    if (id === 'repsol') {
+      svaGasHtml = `<span>Mantenimiento Gas (Opcional): <strong>${r.sva_gas.toFixed(2)} €/mes</strong> (Con y sin servicio)</span>`;
+    } else if (r.sva_gas > 0) {
       svaGasHtml = `<span>Mantenimiento Gas: <strong>${r.sva_gas.toFixed(2)} €/mes</strong></span>`;
     } else {
       svaGasHtml = `<span>Mantenimiento Gas: <strong>No disponible</strong></span>`;
@@ -11663,7 +11672,9 @@ function calcComp(){
   const results=offers.map(off=>{
     const cia = off.id;
     const key = cia + '_' + off.type;
-    const isLocked = (compMode === 'luz' && off.type === 'ahora' && !useSva);
+    const isPlanAhoraLocked = (compMode === 'luz' && off.type === 'ahora' && !useSva);
+    const isRepsolLuzLocked = (compMode === 'luz' && cia === 'repsol' && !useSva);
+    const isLocked = isPlanAhoraLocked || isRepsolLuzLocked;
     let r={...RATES[cia]};
     if (isCif) {
       r.name = r.name + ' (Precio CIF)';
@@ -11713,7 +11724,7 @@ function calcComp(){
       r.sva_luz = 6.99;
       r.coste_bateria_virtual_activa = 1.99;
       r.tarifas_luz = [
-        {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'}
+        {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, solo_mantenimiento:true, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · Solo con servicio · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'}
       ];
     } else if (cia === 'repsol' && isCif && compMode === 'luz') {
       r.name = 'Repsol Tarifa Tranquilísima (CIF)';
@@ -11723,7 +11734,7 @@ function calcComp(){
       r.te_con = 0.1499;
       r.sva_luz = 9.99;
       r.tarifas_luz = [
-        {n:'Tarifa Tranquilísima (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, nota:'Tarifa especial 24h para CIF / Pymes · Asistente 24h Pyme (9,99€/mes) · 60€ Regalo Saldo Waylet'}
+        {n:'Tarifa Tranquilísima (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, solo_mantenimiento:true, nota:'Tarifa especial 24h para CIF / Pymes · Solo con servicio (Asistente 24h Pyme 9,99€/mes) · 60€ Regalo Saldo Waylet'}
       ];
     }
     
@@ -11871,7 +11882,7 @@ function calcComp(){
 
     const ahorro = actual > 0 ? actual - total : null;
     return {
-      key, cia, type: off.type, isLocked, r, tariffName, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
+      key, cia, type: off.type, isLocked, isRepsolLuzLocked, isPlanAhoraLocked, r, tariffName, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
       dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
       costeGestion, cuotaBateriaVirtualEndesa, cuotaBateriaVirtualRepsol, bateriaVirtual, appliedBateriaVirtual
@@ -12061,6 +12072,11 @@ function renderInvCards(results, useSva){
         cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:700;background:rgba(5,150,105,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(5,150,105,0.2);">Tu Asistente 24h Plus (2 meses gratis)</span>';
       }
     }
+    if (res.isRepsolLuzLocked) {
+      cardExtraBadges += '<span style="font-size:11px;color:#b91c1c;font-weight:800;background:rgba(220,38,38,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(220,38,38,0.25);display:inline-flex;align-items:center;gap:4px;">🔒 Requiere SVA (Luz solo con servicio)</span>';
+    } else if (cia === 'repsol' && compMode === 'luz') {
+      cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">⚡ Solo con servicio</span>';
+    }
     const isEndesa24h = (cia === 'endesa' && compMode === 'luz' && !(res.cuotaBateriaVirtualEndesa > 0));
     if (isEndesa24h) {
       cardExtraBadges += '<span style="font-size:11px;color:#7c3aed;font-weight:800;background:rgba(124,58,237,0.1);padding:2px 7px;border-radius:4px;border:1px solid rgba(124,58,237,0.25);">🛍️ Black Friday (+10% dto)</span>';
@@ -12107,6 +12123,25 @@ function renderInvCards(results, useSva){
             </div>
           </div>`;
       }
+    } else if (res.isRepsolLuzLocked) {
+      lockedBannerHtml = `
+        <div style="background:linear-gradient(135deg, #fff7ed, #fef2f2);border:1.5px solid #fed7aa;border-radius:8px;padding:12px 16px;margin:14px 0;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;box-shadow:0 2px 4px rgba(0,0,0,0.02);">
+          <div style="display:flex;align-items:center;gap:10px;">
+            <span style="font-size:26px;">🔒</span>
+            <div>
+              <div style="font-size:13px;color:#9a3412;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                <span>Tarifa Repsol Luz Bloqueada: Solo se puede tramitar con servicio</span>
+              </div>
+              <div style="font-size:11.5px;color:#c2410c;margin-top:3px;">
+                La tarifa de <strong>luz de Repsol solo se puede tramitar con servicio de mantenimiento</strong> (${isCif ? '<strong>Asistente 24h Pyme 9,99 €/mes</strong>' : '<strong>Tu Asistente 24h Plus (2 meses gratis)</strong>'}). El gas sí se puede tramitar con y sin servicio.<br>Activa la casilla de SVA para desbloquear la propuesta y poder generar el PDF.
+              </div>
+            </div>
+          </div>
+          <button type="button" onclick="unlockPlanAhoraSva()" style="background:linear-gradient(135deg, #ea580c, #c2410c);color:#fff;border:none;padding:9px 18px;border-radius:6px;font-weight:800;font-size:12.5px;cursor:pointer;display:inline-flex;align-items:center;gap:6px;box-shadow:0 3px 6px rgba(234,88,12,0.3);transition:all 0.2s;">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 9.9-1"></path></svg>
+            Activar SVA y Desbloquear Repsol
+          </button>
+        </div>`;
     }
 
     let promoEndesaBannerHtml = '';
@@ -12180,8 +12215,11 @@ function renderInvCards(results, useSva){
 
     let actionBtnHtml = '';
     if (isLocked) {
+      const lockAlertMsg = res.isRepsolLuzLocked 
+        ? 'La tarifa de luz de Repsol está bloqueada porque solo se puede tramitar con servicio de mantenimiento (SVA).\\n\\nEl gas sí se puede tramitar con y sin servicio, pero la luz exige servicio obligatorio.\\n\\nActiva la casilla de SVA para desbloquearla y generar el PDF.'
+        : 'El Plan Ahora de Iberdrola está bloqueado porque no se puede contratar sin Mantenimiento (SVA).\\n\\nActiva la casilla de SVA para desbloquearlo y poder generar el PDF.';
       actionBtnHtml = `
-        <button class="btn btn-pdf" style="background:#f1f5f9;color:#94a3b8;border-color:#cbd5e1;cursor:not-allowed;" onclick="alert('El Plan Ahora de Iberdrola está bloqueado porque no se puede contratar sin Mantenimiento (SVA).\\n\\nActiva la casilla de SVA para desbloquearlo y poder generar el PDF.');">
+        <button class="btn btn-pdf" style="background:#f1f5f9;color:#94a3b8;border-color:#cbd5e1;cursor:not-allowed;" onclick="alert('${lockAlertMsg}');">
           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:8px;display:inline-block;vertical-align:middle"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
           Bloqueado (Requiere SVA)
         </button>`;
@@ -12302,6 +12340,7 @@ function renderSummary(results, actual){
             ${isPlanAhora ? '<span style="font-size:10.5px;color:#dc2626;font-weight:700;background:rgba(220,38,38,0.08);padding:1px 5px;border-radius:4px;border:1px solid rgba(220,38,38,0.18);">🚫 Sin tarjetas</span>' : ''}
             ${r.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:10.5px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:1px 5px;border-radius:4px;">(+2€/mes BV)</span>' : ''}
             ${r.cuotaBateriaVirtualRepsol > 0 ? '<span style="font-size:10.5px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:1px 5px;border-radius:4px;">(+1,99€/mes BV)</span>' : ''}
+            ${(r.cia === 'repsol' && isLuz) ? '<span style="font-size:10.5px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:1px 5px;border-radius:4px;">(Solo con servicio)</span>' : ''}
             ${(r.cia === 'endesa' && isLuz && !(r.cuotaBateriaVirtualEndesa > 0)) ? '<span style="font-size:10.5px;color:#7c3aed;font-weight:800;background:rgba(124,58,237,0.1);padding:1px 5px;border-radius:4px;border:1px solid rgba(124,58,237,0.25);">🛍️ Black Friday + 100€ Para Ti</span>' : ''}
           </div>
           ${isBest?'<span class="badge-best" style="margin-left:6px;background:#059669;color:#fff;font-weight:800;padding:2px 6px;border-radius:4px;font-size:10.5px;">🏆 Mayor Ahorro</span>':''}
@@ -12331,7 +12370,11 @@ function printCompanyOffer(key) {
   }
 
   if (targetRes.isLocked) {
-    alert("El Plan Ahora de Iberdrola está bloqueado porque solo se puede contratar con Mantenimiento (SVA).\n\nActiva la casilla 'Activar SVA (Mantenimientos)' para desbloquearlo y poder generar el PDF.");
+    if (targetRes.isRepsolLuzLocked) {
+      alert("La tarifa de luz de Repsol está bloqueada porque solo se puede tramitar con servicio de mantenimiento (SVA).\n\nEl gas sí se puede tramitar con y sin servicio, pero la luz exige servicio obligatorio.\n\nActiva la casilla 'Activar SVA (Mantenimientos)' para desbloquearla y poder generar el PDF.");
+    } else {
+      alert("El Plan Ahora de Iberdrola está bloqueado porque solo se puede contratar con Mantenimiento (SVA).\n\nActiva la casilla 'Activar SVA (Mantenimientos)' para desbloquearlo y poder generar el PDF.");
+    }
     return;
   }
 

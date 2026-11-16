@@ -1,4 +1,4 @@
-# ============================================================================
+﻿# ============================================================================
 # SUITE DE PRUEBAS FUNCIONALES REALES Y DE SEGURIDAD - FASE 1 (REVISADA)
 # Archivo: tests/test_functional_suite.ps1
 # ============================================================================
@@ -360,6 +360,13 @@ Report-Test -Category "Comparator Integrity" -TestName "Variables de Repsol decl
 Report-Test -Category "Comparator Integrity" -TestName "Destructuracion segura de propiedades de calculo en renderInvCards" -Profile "Frontend Client" -Expected "excedente destructurado de res" -Obtained "Destructuracion completa implementada" -Condition $renderCardsDestructuresExc
 
 Report-Test -Category "Comparator Integrity" -TestName "Repsol configurado con tarifas luz/gas y ofertas activas en calcComp" -Profile "Calculo Comparativas" -Expected "BASE.repsol y offers incluyen repsol" -Obtained "Estructura completa de 5 companias integrada" -Condition ($repsolBaseExists -and $compOffersIncludeRepsol)
+
+$repsolLuzSoloMantenimiento = ($indexContent -match "n:'Tarifa Tranquilísima'[\s\S]*?solo_mantenimiento:true")
+$repsolLuzLockLogic = ($indexContent -match "isRepsolLuzLocked\s*=\s*\(compMode\s*===\s*'luz'\s*&&\s*cia\s*===\s*'repsol'\s*&&\s*!useSva\)")
+
+Report-Test -Category "Comparator Integrity" -TestName "Repsol Luz exige obligatoriamente servicio de mantenimiento" -Profile "Reglas de Negocio Repsol" -Expected "solo_mantenimiento:true en tarifas_luz de Repsol" -Obtained "Configuracion de solo_mantenimiento aplicada a Repsol Luz" -Condition $repsolLuzSoloMantenimiento
+
+Report-Test -Category "Comparator Integrity" -TestName "Bloqueo de Repsol Luz en comparador sin SVA" -Profile "Motor de Comparacion" -Expected "isRepsolLuzLocked bloquea la oferta si no hay SVA activo" -Obtained "Bloqueo de seguridad para evitar tramitacion no permitida" -Condition $repsolLuzLockLogic
 
 # ----------------------------------------------------------------------------
 # Resumen Final
