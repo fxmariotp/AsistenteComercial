@@ -5607,7 +5607,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
               Repsol — Tramitación Empresas y Pymes (CIF)
             </h3>
             <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; background: rgba(255, 80, 0, 0.1); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(255, 80, 0, 0.25);">
-              <span style="font-weight: 800; color: #ea580c; font-size: 13px;">Tarifa Fijo Luz 24h CIF: 0,1499 €/kWh · Potencia 0,099726 €/kW·día</span>
+              <span style="font-weight: 800; color: #ea580c; font-size: 13px;">Tarifa Tranquilísima (CIF): 0,1499 €/kWh · Potencia 0,099726 €/kW·día</span>
             </div>
             <p style="font-size: 14.5px; color: var(--t2); line-height: 1.6; margin-bottom: 18px;">
               De momento <strong>no hay texto legal de locución ni grabación telefónica</strong> para Repsol Empresas.<br>
@@ -7752,13 +7752,13 @@ function escapeHtml(str) {
     Impuesto electrico: 5,11%
 
   REPSOL: PVP 2026 Peninsula
-    - Tarifa Tranquilísima Promo (2.0TD <10kW): TE=0,1399 €/kWh · TP1=TP2=33,40 €/kW·año (0,0915 €/kW·día)
+    - Tarifa Tranquilísima (2.0TD <10kW): TE=0,1399 €/kWh · TP1=TP2=33,40 €/kW·año (0,0915 €/kW·día)
       Tu Asistente 24h Plus: 5,78 €/mes (100% dto los 2 primeros meses) · Saldo Waylet: 0 / 20 / 20 €
       Precio kWh fijo durante 5 años · Sin permanencia
     - Tarifa Solar (Autoconsumo con placas y Batería Virtual): TE=0,1699 €/kWh · TP1=TP2=0,099726 €/kW·día
       Cuota Batería Virtual: 1,99 €/mes · Excedentes: 0,06 €/kWh
       Asistente 24h Plus: 6,99 €/mes (2 meses gratis) · 60 € regalo saldo Waylet
-    - Fijo Luz 24h (CIF / Pymes): TE=0,1499 €/kWh · TP1=TP2=0,099726 €/kW·día
+    - Tarifa Tranquilísima (CIF): TE=0,1499 €/kWh · TP1=TP2=0,099726 €/kW·día
       Asistente 24h Pyme: 9,99 €/mes · 60 € regalo saldo Waylet
     - Gas Ahorro: RL1 TV=0,0899 TF=6,90 €/mes (0,2300 €/día) · RL2 TV=0,0899 TF=13,90 €/mes · RL3 TV=0,0899 TF=22,90 €/mes
       Tu Asistente Gas: 9,08 €/mes · Sin permanencia
@@ -7863,9 +7863,9 @@ const BASE = {
     gas_rl3:{tf:0.763333, tv:0.089900},
     imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Tarifa Tranquilísima Promo', te:0.1399, tp1:0.091507, tp2:0.091507, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Asistente 24h Plus 2 meses gratis · Regalo saldo Waylet'},
+      {n:'Tarifa Tranquilísima', te:0.1399, tp1:0.091507, tp2:0.091507, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Asistente 24h Plus 2 meses gratis · Regalo saldo Waylet'},
       {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'},
-      {n:'Fijo Luz 24h (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, nota:'Tarifa 24h Autónomos y Pymes (CIF) · Asistente 24h Pyme (9,99€/mes) · 60€ Saldo Waylet'}
+      {n:'Tarifa Tranquilísima (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, nota:'Tarifa 24h Autónomos y Pymes (CIF) · Asistente 24h Pyme (9,99€/mes) · 60€ Saldo Waylet'}
     ],
     tarifas_gas:[
       {n:'Gas Ahorro RL1', tv:0.0899, tf:0.230000, nota:'Peaje RL.1 hasta 5.000 kWh/año · Fijo 6,90 €/mes · Tu Asistente Gas 9,08 €/mes'},
@@ -11341,7 +11341,7 @@ const PROCEDIMIENTOS = {
       process: [
         'De momento NO hay texto legal ni locución corporativa para Repsol.',
         'Tramitación corporativa directa con DNI + Factura + CIF.',
-        'Tarifa Fijo Luz 24h CIF: 0,1499 €/kWh en 24h, potencia TP1/TP2 0,099726 €/kW·día, Asistente 24h Pyme 9,99 €/mes y 60 € de regalo en saldo Waylet.',
+        'Tarifa Tranquilísima (CIF): 0,1499 €/kWh en 24h, potencia TP1/TP2 0,099726 €/kW·día, Asistente 24h Pyme 9,99 €/mes y 60 € de regalo en saldo Waylet.',
         'Paso previo obligatorio (LeadsRepsol): Antes de subir el contrato corporativo, el apoderado / cliente tiene que firmar el lead que se genere desde el enlace de LeadsRepsol.',
         'Proceso de firma: SMS enviado al titular / apoderado que ha de firmar sin verificación posterior.',
         'Sin llamadas posteriores: No requiere llamada de verificación posterior tras la firma.',
@@ -11354,8 +11354,8 @@ const PROCEDIMIENTOS = {
       'Proceso de firma: SMS que el cliente ha de firmar directamente (sin verificación posterior).',
       'Sin permanencia ni penalización por baja anticipada.',
       '14 días naturales de desistimiento legal desde la contratación.',
-      'Tarifa Tranquilísima Promo: Precio del kWh fijo garantizado durante 5 años.',
-      'Tarifa Fijo Luz 24h CIF (Pymes): 0,1499 €/kWh, potencia 0,099726 €/kW·día, Asistente 24h Pyme 9,99 €/mes y 60 € de regalo en saldo Waylet.',
+      'Tarifa Tranquilísima: Precio del kWh fijo garantizado durante 5 años.',
+      'Tarifa Tranquilísima (CIF): 0,1499 €/kWh, potencia 0,099726 €/kW·día, Asistente 24h Pyme 9,99 €/mes y 60 € de regalo en saldo Waylet.',
       'Tu Asistente 24h Plus: 100% de descuento (gratis) los 2 primeros meses en suministro de luz.',
       'Suministros con placas solares / autoconsumo: Tarifa Solar con batería virtual (+1,99 €/mes) y compensación de excedentes a 0,06 €/kWh.',
       'Regalo de saldo Waylet para facturas y repostajes en estaciones de servicio según promoción (hasta 60€ en solar y 20€ con servicios adicionales).'
@@ -11716,14 +11716,14 @@ function calcComp(){
         {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'}
       ];
     } else if (cia === 'repsol' && isCif) {
-      r.name = 'Repsol Fijo Luz 24h (Precio CIF)';
+      r.name = 'Repsol Tarifa Tranquilísima (CIF)';
       r.tp1 = 0.099726;
       r.tp2 = 0.099726;
       r.te_sin = 0.1499;
       r.te_con = 0.1499;
       r.sva_luz = 9.99;
       r.tarifas_luz = [
-        {n:'Fijo Luz 24h (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, nota:'Tarifa especial 24h para CIF / Pymes · Asistente 24h Pyme (9,99€/mes) · 60€ Regalo Saldo Waylet'}
+        {n:'Tarifa Tranquilísima (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, nota:'Tarifa especial 24h para CIF / Pymes · Asistente 24h Pyme (9,99€/mes) · 60€ Regalo Saldo Waylet'}
       ];
     }
     
@@ -11858,7 +11858,7 @@ function calcComp(){
       } else if (cia === 'gana') {
         tariffName = (off.type === 'gana_mercado' ? 'Precio de Mercado' : 'Plan 24 Horas') + (isCif ? ' (CIF)' : '');
       } else if (cia === 'repsol') {
-        tariffName = (excedente > 0 ? 'Tarifa Solar (BV)' : (isCif ? 'Fijo Luz 24h (CIF)' : 'Tranquilísima Promo')) + (isCif && excedente > 0 ? ' (CIF)' : '');
+        tariffName = (excedente > 0 ? 'Tarifa Solar (BV)' : (isCif ? 'Tarifa Tranquilísima (CIF)' : 'Tarifa Tranquilísima')) + (isCif && excedente > 0 ? ' (CIF)' : '');
       }
     } else {
       const rlName = band.toUpperCase();
@@ -12700,7 +12700,7 @@ function printCompanyOffer(key) {
       html += `
         <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div>
-            <strong>🏢 Tarifa Fijo Luz 24h (CIF / Pymes):</strong> Precio único 24h a <strong>0,1499 €/kWh</strong> y potencia a <strong>0,099726 €/kW·día</strong>.<br>
+            <strong>🏢 Tarifa Tranquilísima (CIF):</strong> Precio único 24h a <strong>0,1499 €/kWh</strong> y potencia a <strong>0,099726 €/kW·día</strong>.<br>
             <strong>🎁 Saldo Waylet:</strong> <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación para facturas y repostajes.
           </div>
           <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
@@ -12712,7 +12712,7 @@ function printCompanyOffer(key) {
       html += `
         <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div>
-            <strong>🛡️ Tarifa Tranquilísima Promo:</strong> Precio fijo garantizado durante <strong>5 años</strong> sin permanencia ni penalizaciones.<br>
+            <strong>🛡️ Tarifa Tranquilísima:</strong> Precio fijo garantizado durante <strong>5 años</strong> sin permanencia ni penalizaciones.<br>
             <strong>🛠️ Tu Asistente 24h Plus:</strong> <strong>100% de descuento (gratis)</strong> durante los 2 primeros meses.
           </div>
           <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
@@ -17637,7 +17637,7 @@ function getRenosurChatResponse(query) {
                `  - <strong>Sin verificación posterior:</strong> No requiere llamada de verificación ni control tras la firma del SMS.<br>` +
                `  - Activación sin cortes en un plazo aproximado de 15 días laborables.<br><br>` +
                `• <strong>Tarifas y Ventajas Destacadas:</strong><br>` +
-               `  - <strong>Tarifa Tranquilísima Promo:</strong> Precio fijo del kWh garantizado durante 5 años (0,1399 €/kWh). Sin permanencia.<br>` +
+               `  - <strong>Tarifa Tranquilísima:</strong> Precio fijo del kWh garantizado durante 5 años (0,1399 €/kWh). Sin permanencia.<br>` +
                `  - <strong>Tarifa Solar (Batería Virtual):</strong> Cuota 1,99 €/mes, compensación de excedentes a 0,06 €/kWh y 60 € de regalo en saldo Waylet.<br>` +
                `  - <strong>Servicios de Mantenimiento (SVA):</strong> Tu Asistente 24h Plus (2 meses gratis, luego 5,78 €/mes en Tranquilísima o 6,99 €/mes en Solar); Tu Asistente Gas 9,08 €/mes.<br>` +
                `  - <strong>Retrocomisión:</strong> 6 meses.<br><br>` +
@@ -17659,7 +17659,7 @@ function getRenosurChatResponse(query) {
                `  - Envío de SMS / enlace para firma digital del contrato.<br>` +
                `  - <strong>Sin verificación posterior:</strong> No requiere llamada de confirmación posterior tras la firma.<br><br>` +
                `• <strong>Tarifas y Ventajas CIF:</strong><br>` +
-               `  - <strong>Fijo Luz 24h (CIF / Pymes):</strong> <strong>0,1499 €/kWh</strong>.<br>` +
+               `  - <strong>Tarifa Tranquilísima (CIF):</strong> <strong>0,1499 €/kWh</strong>.<br>` +
                `  - <strong>Término de Potencia:</strong> TP1 0,099726 €/kW·día | TP2 0,099726 €/kW·día.<br>` +
                `  - <strong>Mantenimiento Luz (Asistente 24h Pyme):</strong> 9,99 €/mes (urgencias <3h, 3h mano de obra gratis, 50€ materiales, reparación electrodomésticos).<br>` +
                `  - <strong>Regalo Waylet:</strong> 60 € en saldo Waylet al finalizar la contratación.<br><br>` +
@@ -17677,7 +17677,7 @@ function getRenosurChatResponse(query) {
              `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones. No se permiten cambios de potencia.<br><br>` +
              `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA (Servicio de Asistencia de la Comercializadora) en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
              `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
-             `• <strong>Repsol:</strong> Se tramita con DNI + Factura (sin texto legal de momento). Paso previo: firmar el lead en LeadsRepsol antes de subir el contrato. Firma mediante SMS sin verificación posterior. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet), CIF 0,1499 €/kWh y Gas Ahorro (0,0899 €/kWh). Retrocomisión 6 meses.<br><br>` +
+             `• <strong>Repsol:</strong> Se tramita con DNI + Factura (sin texto legal de momento). Paso previo: firmar el lead en LeadsRepsol antes de subir el contrato. Firma mediante SMS sin verificación posterior. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet), Tranquilísima (CIF) 0,1499 €/kWh y Gas Ahorro (0,0899 €/kWh). Retrocomisión 6 meses.<br><br>` +
              `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Repsol?") para elegir entre Particular o CIF.*</em>`;
     }
   }
@@ -18078,7 +18078,7 @@ function getRenosurChatResponse(query) {
       }
       if (asksLuzOnly || cleanQ.includes('tu asistente 24h') || cleanQ.includes('asistente 24h') || cleanQ.includes('asistente plus') || cleanQ.includes('24 horas plus')) {
         return `<strong>Tu Asistente 24 horas Plus (Servicio de Asistencia de Luz de Repsol):</strong><br><br>` +
-          `• <strong>Precio:</strong> <strong>5,78 €/mes</strong> en Tranquilísima Promo (6,99 €/mes en Solar).<br>` +
+          `• <strong>Precio:</strong> <strong>5,78 €/mes</strong> en Tarifa Tranquilísima (6,99 €/mes en Solar).<br>` +
           `• <strong>Promoción:</strong> <strong>100% de descuento (gratis) los 2 primeros meses</strong>.<br>` +
           `• <strong>Coberturas incluidas:</strong><br>` +
           `  - <strong>Asistencia urgente:</strong> En menos de 3 horas las 24 horas del día ante averías eléctricas urgentes.<br>` +
@@ -18275,7 +18275,7 @@ function getRenosurChatResponse(query) {
     repsol: {
       luz: {
         tranquilisima: {
-          name: "Repsol Tranquilísima Promo",
+          name: "Repsol Tarifa Tranquilísima",
           base: "0,1399 €/kWh",
           sin_mantenimiento: "0,1399 €/kWh (Precio garantizado 5 años)",
           con_mantenimiento: "0,1399 €/kWh (Tu Asistente 24h Plus: 2 meses gratis, luego 5,78 €/mes)",
@@ -18304,7 +18304,7 @@ function getRenosurChatResponse(query) {
           regalo: "60 € de regalo en saldo Waylet al finalizar la contratación."
         },
         cif: {
-          name: "Repsol Fijo Luz 24h (CIF / Pymes)",
+          name: "Repsol Tarifa Tranquilísima (CIF)",
           base: "0,1499 €/kWh",
           sin_mantenimiento: "0,1499 €/kWh",
           con_mantenimiento: "0,1499 €/kWh (+9,99 €/mes Asistente 24h Pyme)",
@@ -18461,9 +18461,9 @@ function getRenosurChatResponse(query) {
       "• <strong>Retrocomisión:</strong> 12 meses";
   }
 
-  // 11. Repsol Tranquilísima Promo
-  if (q.includes('tranquilisima') || q.includes('tranquilísima') || (q.includes('repsol') && (q.includes('luz') || q.includes('fijo') || q.includes('tranquila')) && !q.includes('solar') && !q.includes('placa') && !q.includes('gas') && !q.includes('cif') && !q.includes('pyme') && !q.includes('empresa') && !q.includes('autonomo') && !q.includes('autónomo'))) {
-    return "<strong>Repsol — Tarifa Tranquilísima Promo:</strong><br><br>" +
+  // 11. Repsol Tarifa Tranquilísima
+  if ((q.includes('tranquilisima') || q.includes('tranquilísima') || (q.includes('repsol') && (q.includes('luz') || q.includes('fijo') || q.includes('tranquila')))) && !q.includes('solar') && !q.includes('placa') && !q.includes('gas') && !q.includes('cif') && !q.includes('pyme') && !q.includes('pymes') && !q.includes('empresa') && !q.includes('empresas') && !q.includes('autonomo') && !q.includes('autónomo') && !q.includes('negocio')) {
+    return "<strong>Repsol — Tarifa Tranquilísima:</strong><br><br>" +
       "• <strong>Término de Energía:</strong> <strong>0,1399 €/kWh</strong> (Precio fijo garantizado durante 5 años)<br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,091507 €/kW·día</strong> | TP2: <strong>0,091507 €/kW·día</strong> (33,40 €/kW·año)<br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
@@ -18517,9 +18517,9 @@ function getRenosurChatResponse(query) {
       `Ver Infografía Oficial de Descuentos Waylet</button></div>`;
   }
 
-  // 15. Repsol Fijo Luz 24h (CIF / Pymes)
-  if ((q.includes('repsol') && (q.includes('cif') || q.includes('pyme') || q.includes('pymes') || q.includes('empresa') || q.includes('empresas') || q.includes('autonomo') || q.includes('autónomo') || q.includes('negocio'))) || q.includes('repsol cif') || q.includes('asistente 24h pyme')) {
-    return "<strong>Repsol — Fijo Luz 24h (Autónomos y Pymes / CIF):</strong><br><br>" +
+  // 15. Repsol Tarifa Tranquilísima (CIF)
+  if ((q.includes('repsol') && (q.includes('cif') || q.includes('pyme') || q.includes('pymes') || q.includes('empresa') || q.includes('empresas') || q.includes('autonomo') || q.includes('autónomo') || q.includes('negocio'))) || q.includes('repsol cif') || q.includes('tranquilisima cif') || q.includes('tranquilísima cif') || q.includes('asistente 24h pyme')) {
+    return "<strong>Repsol — Tarifa Tranquilísima (CIF):</strong><br><br>" +
       "• <strong>Término de Energía 24h:</strong> <strong>0,1499 €/kWh</strong> (0,149900 €/kWh)<br>" +
       "• <strong>Término de Potencia:</strong> TP1 (Punta): <strong>0,099726 €/kW·día</strong> | TP2 (Valle): <strong>0,099726 €/kW·día</strong><br>" +
       "• <strong>Mantenimiento Luz (Asistente 24h Pyme):</strong> <strong>9,99 €/mes</strong><br>" +
@@ -18563,11 +18563,11 @@ function getRenosurChatResponse(query) {
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              ibLuzBest +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1230 €/kWh<br>` +
-             `• <strong>Repsol Tranquilísima Promo:</strong> 0,1399 €/kWh (precio fijo 5 años)<br>` +
+             `• <strong>Repsol Tarifa Tranquilísima:</strong> 0,1399 €/kWh (precio fijo 5 años)<br>` +
              `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1390 €/kWh<br>` +
              `• <strong>Endesa Luz 24H (Black Friday):</strong> 0,1484 €/kWh (0,1429 €/kWh con mant.) + 100€ en Para Ti (-20€ en 5 facturas)<br>` +
              `• <strong>Endesa Solar Plus:</strong> 0,145 €/kWh (+2€/mes BV)<br>` +
-             `• <strong>Repsol Fijo Luz 24h (CIF / Pymes):</strong> 0,1499 €/kWh (+60€ Waylet)<br>` +
+             `• <strong>Repsol Tarifa Tranquilísima (CIF):</strong> 0,1499 €/kWh (+60€ Waylet)<br>` +
              `• <strong>Repsol Solar:</strong> 0,1699 €/kWh (excedentes a 0,06 €/kWh, BV 1,99€/mes, 60€ saldo Waylet)<br><br>` +
              `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
     }
@@ -18644,8 +18644,8 @@ function getRenosurChatResponse(query) {
       if (company === 'repsol') {
         return `<strong>Tarifas de Luz de Repsol disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
-          `  <button onclick="sendQuickChatQuery('Repsol Tranquilisima')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tranquilísima Promo (Precio fijo 5 años) — 0,1399 €/kWh</button>` +
-          `  <button onclick="sendQuickChatQuery('Repsol Fijo Luz 24h CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Fijo Luz 24h (Autónomos y Pymes / CIF) — 0,1499 €/kWh + 60€ Waylet</button>` +
+          `  <button onclick="sendQuickChatQuery('Repsol Tranquilisima')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tarifa Tranquilísima (Precio fijo 5 años) — 0,1399 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Repsol Tranquilisima CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tarifa Tranquilísima (CIF) — 0,1499 €/kWh + 60€ Waylet</button>` +
           `  <button onclick="sendQuickChatQuery('Repsol Solar')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Solar (Batería Virtual 1,99€ + 60€ Waylet) — 0,1699 €/kWh</button>` +
           `</div>`;
       }
