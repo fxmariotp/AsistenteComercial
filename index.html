@@ -5522,55 +5522,50 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
 
       <!-- REPSOL -->
       <div class="sv" id="sv-repsol">
-        <div class="script-big-card">
-          <div class="script-section">
-            <div class="script-sec-title"><span style="background:#FF5000"></span>Apertura</div>
-            <p class="stxt">Buenas tardes, le llamamos de <strong>Evaria colaborador oficial de Repsol</strong>. ¿Podria hablar con <span class="blank blg">(nombre del cliente)</span>? El motivo de nuestra llamada es confirmar que los datos facilitados por usted son correctos, le informo que la conversacion esta siendo grabada hoy <span id="rep-fecha" style="display:inline-block;border-bottom:2px solid #FF5000;padding:0 6px;font-weight:700;color:#FF5000;min-width:90px;text-align:center">25/05/2026</span> a las <span id="rep-hora" style="display:inline-block;border-bottom:2px solid #FF5000;padding:0 6px;font-weight:700;color:#FF5000;min-width:55px;text-align:center">15:23</span> horas.</p>
-          </div>
-          <div class="script-section">
-            <div class="script-sec-title"><span style="background:#e07b00"></span>Datos personales del cliente</div>
-            <div class="step-list">
-              <div class="step-row"><span class="stn">1</span><div>¿Nos podria facilitar su <strong>nombre y apellidos</strong>? <span class="blank blg">(nombre y apellidos)</span> y su <strong>DNI / NIE</strong> <span class="blank bsm">(DNI)</span></div></div>
-              <div class="step-row"><span class="stn">2</span><div>¿Seria tan amable de indicarnos la <strong>fecha de nacimiento</strong>? <span class="blank">(fecha de nacimiento)</span></div></div>
-              <div class="step-row"><span class="stn">3</span><div>¿Me podria confirmar la <strong>direccion completa</strong> del punto de suministro? <span class="blank blg">(direccion completa)</span></div></div>
-              <div class="step-row"><span class="stn">4</span><div>¿Nos podria facilitar su <strong>telefono</strong> de contacto? <span class="blank">(telefono)</span></div></div>
-              <div class="step-row"><span class="stn">5</span><div>¿Nos podria facilitar su <strong>correo electronico</strong> para el envio del contrato y acceso al area cliente? <span class="blank blg">(correo electronico)</span></div></div>
-              <div class="step-row"><span class="stn">6</span><div>¿Nos podria facilitar el <strong>numero de cuenta (IBAN)</strong> donde domiciliar los recibos? <span class="blank blg">(IBAN completo)</span></div></div>
+        <div class="script-big-card" style="border-top: 4px solid #FF5000;">
+          <div style="padding: 36px 24px; text-align: center; max-width: 680px; margin: 0 auto;">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: 50%; background: rgba(255, 80, 0, 0.1); margin-bottom: 16px;">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FF5000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+                <polyline points="10 9 9 9 8 9"></polyline>
+              </svg>
             </div>
-          </div>
-          <div class="script-section">
-            <div class="script-sec-title"><span style="background:#0d5c9e"></span>Verificacion de productos contratados</div>
-            <p class="nota">Lee unicamente los apartados que apliquen segun lo contratado</p>
-            <div class="prod-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
-              <div class="prod-block" style="margin:0">
-                <strong>💡 Luz · Tarifa Tranquilísima Promo</strong>
-                Ha realizado la contratacion de su suministro de luz con CUPS <span class="blank bsm">(CUPS)</span> bajo la tarifa <strong>Tranquilísima Promo</strong> a <strong>0,1399 €/kWh</strong> (24h) y potencia a <strong>33,40 €/kW·año</strong> (0,0915 €/kW·día), con <strong>precio fijo durante 5 años</strong> y sin permanencia.
-                <div style="margin-top:8px"><span class="ry">✓ CLIENTE: SI</span></div>
+            <h3 style="font-size: 21px; font-weight: 800; color: var(--text); margin-bottom: 10px;">
+              Repsol — Tramitación Directa
+            </h3>
+            <p style="font-size: 15px; color: var(--t2); line-height: 1.6; margin-bottom: 24px;">
+              De momento <strong>no hay texto legal de locución ni grabación telefónica</strong> para Repsol.<br>
+              La contratación se tramita directamente aportando <strong>DNI + Factura</strong>.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; text-align: left; margin-bottom: 22px;">
+              <div style="background: var(--surface2, rgba(0,0,0,0.02)); border: 1.5px solid rgba(255, 80, 0, 0.25); border-radius: 10px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #FF5000; color: #fff; font-weight: 800; font-size: 13px;">1</span>
+                  <strong style="color: var(--text); font-size: 14.5px;">DNI / NIE en vigor</strong>
+                </div>
+                <div style="font-size: 12.5px; color: var(--t3); line-height: 1.45;">
+                  Documento de identidad vigente del titular (ambas caras legibles).
+                </div>
               </div>
-              <div class="prod-block" style="margin:0">
-                <strong>☀️ Luz · Tarifa Solar (Batería Virtual)</strong>
-                Ha realizado la contratacion de su suministro con placas solares bajo la tarifa <strong>Solar con Batería Virtual</strong> a <strong>0,1699 €/kWh</strong>, compensación de excedentes a <strong>0,06 €/kWh</strong> y cuota de batería virtual de <strong>1,99 €/mes</strong>.
-                <div style="margin-top:8px"><span class="ry">✓ CLIENTE: SI</span></div>
-              </div>
-              <div class="prod-block" style="margin:0;border-left:3px solid var(--blue2)">
-                <strong>🔥 Gas · Tarifa Gas Ahorro RL.1</strong>
-                Ha realizado la contratacion de su suministro de gas con CUPS <span class="blank bsm">(CUPS)</span> bajo la tarifa <strong>Gas Ahorro RL.1</strong> con termino variable a <strong>0,0899 €/kWh</strong> y termino fijo a <strong>6,90 €/mes</strong> (0,2300 €/día) sin permanencia.
-                <div style="margin-top:8px"><span class="ry">✓ CLIENTE: SI</span></div>
-              </div>
-              <div class="prod-block" style="margin:0;border-left:3px solid var(--green)">
-                <strong>🛠️ Servicios de Mantenimiento Repsol</strong>
-                Ha contratado el servicio <strong style="color:var(--green)">Tu Asistente 24h Plus</strong> (5,78 €/mes con 2 primeros meses gratis) y/o <strong style="color:var(--green)">Tu Asistente Gas</strong> (9,08 €/mes).
-                <div style="margin-top:8px"><span class="ry">✓ CLIENTE: SI</span></div>
+
+              <div style="background: var(--surface2, rgba(0,0,0,0.02)); border: 1.5px solid rgba(255, 80, 0, 0.25); border-radius: 10px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #FF5000; color: #fff; font-weight: 800; font-size: 13px;">2</span>
+                  <strong style="color: var(--text); font-size: 14.5px;">Factura completa</strong>
+                </div>
+                <div style="font-size: 12.5px; color: var(--t3); line-height: 1.45;">
+                  Factura actual de luz o gas donde figure el CUPS y la dirección de suministro.
+                </div>
               </div>
             </div>
-            <div class="prod-block" style="background:rgba(255,80,0,0.06);border-left:3px solid #FF5000">
-              <strong>🎁 Promocion y Saldo Waylet</strong>
-              Disfruta de las ventajas de Repsol con saldo de regalo en la app <strong>Waylet</strong> utilizable en facturas y repostajes (hasta 60€ en solar / 20€ con servicios adicionales).
+
+            <div style="background: rgba(255, 80, 0, 0.06); border: 1px dashed rgba(255, 80, 0, 0.35); border-radius: 8px; padding: 12px 18px; font-size: 13px; color: var(--t2); line-height: 1.5;">
+              ℹ️ <strong>Requisitos de tramitación:</strong> Se tramita con <strong>DNI + Factura</strong> (+ IBAN para domiciliación). No requiere lectura legal con el cliente.
             </div>
-          </div>
-          <div class="script-section">
-            <div class="script-sec-title"><span style="background:#008B3C"></span>Cierre y Despedida</div>
-            <p class="stxt">Con esto queda gestionada la solicitud de contratacion con Repsol. Le recordamos que dispone de <strong>14 dias naturales de desistimiento</strong> sin penalizacion y que el cambio de suministro se realizara sin cortes en unos 15 dias laborables. Para cualquier consulta dispone del telefono gratuito de atencion <strong>900 118 866</strong> (asistencia 24h <strong>900 10 17 21</strong>). Gracias por su confianza y bienvenido a Repsol.</p>
           </div>
         </div>
       </div>
@@ -11184,33 +11179,32 @@ const PROCEDIMIENTOS = {
     color: '#FF5000',
     residencial: {
       docs: [
-        'Lectura de texto legal obligatorio / grabación telefónica.',
         'DNI o NIE en vigor del titular.',
-        'CUPS del suministro (luz o gas).',
-        'Datos de contacto (teléfono y correo electrónico).',
-        'Número de cuenta bancaria (IBAN) para domiciliación.'
+        'Factura actual completa (o CUPS + datos del suministro).'
       ],
       process: [
-        'Se realiza la contratación telefónica con la lectura y aceptación del texto legal.',
-        'El cliente recibe el contrato por correo electrónico / SMS para su confirmación digital.',
-        'Activación del contrato y acceso al Área Cliente / app de Repsol en un plazo aproximado de 15 días (sin corte de suministro ni trámites adicionales).'
+        'De momento NO hay texto legal ni grabación telefónica para Repsol.',
+        'La contratación se tramita directamente con DNI + Factura.',
+        'El cliente recibe el contrato por SMS / correo para confirmación digital.',
+        'Activación del contrato y acceso al Área Cliente / app de Repsol en unos 15 días laborables (sin corte de suministro ni trámites adicionales).'
       ]
     },
     pymes: {
       docs: [
-        'Lectura de texto legal.',
-        'DNI / NIE del representante legal o apoderado.',
+        'DNI o NIE del representante legal o apoderado.',
+        'Factura actual completa (o CUPS + datos del suministro).',
         'CIF de la empresa / sociedad o documento acreditativo de autónomo.',
-        'Factura actual completa o CUPS del suministro.',
         'Número de cuenta bancaria (IBAN).'
       ],
       process: [
-        'Contratación corporativa con lectura de texto legal.',
+        'De momento NO hay texto legal ni locución corporativa para Repsol.',
+        'Tramitación corporativa directa con DNI + Factura + CIF.',
         'Envío de contrato al correo de la empresa para revisión y firma electrónica.',
         'Activación del suministro en unos 15 días laborables sin interrupción del servicio.'
       ]
     },
     requisitos: [
+      'Tramitación: De momento NO hay texto legal ni grabación; se tramita directamente con DNI + Factura.',
       'Sin permanencia ni penalización por baja anticipada.',
       '14 días naturales de desistimiento legal desde la contratación.',
       'Tarifa Tranquilísima Promo: Precio del kWh fijo garantizado durante 5 años.',
@@ -17359,7 +17353,7 @@ function getRenosurChatResponse(query) {
              `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones. No se permiten cambios de potencia.<br><br>` +
              `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA (Servicio de Asistencia de la Comercializadora) en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
              `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
-             `• <strong>Repsol:</strong> Lectura legal + DNI/NIE + Factura/CUPS. Firma por SMS con PIN OTP. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet) y Gas Ahorro (0,0899 €/kWh). Retrocomisión 6 meses.<br><br>` +
+             `• <strong>Repsol:</strong> Se tramita con DNI + Factura (de momento no hay texto legal ni locución). Firma por SMS con PIN OTP. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet) y Gas Ahorro (0,0899 €/kWh). Retrocomisión 6 meses.<br><br>` +
              `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Repsol?") para elegir entre Particular o CIF.*</em>`;
     }
   }
