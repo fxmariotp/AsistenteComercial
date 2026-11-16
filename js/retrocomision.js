@@ -168,6 +168,21 @@ function calcRetrocomisionInfo(company, dateStr) {
         ruleDetails = `Contrato firmado a partir del 01/03/2026. Han transcurrido <strong>${diffDays} días</strong> (supera los 365 días). ¡Está <strong>100% libre de retrocomisión</strong>!`;
       }
     }
+  } else if (comp === 'repsol') {
+    totalPeriodDays = 181;
+    ruleTitle = 'Normativa Repsol: 6 meses (181 días) de retrocomisión (100%) · Más de 181 días (Libre / 0%)';
+    dateToFree = addDays(contractDate, 182);
+    daysToFree = 182 - diffDays;
+
+    if (diffDays <= 181) {
+      retroPct = 100;
+      statusTier = 'danger';
+      ruleDetails = `El contrato tiene <strong>${diffDays} días</strong> de antigüedad (tramo 0-181 días / 6 meses). Si cambias el suministro ahora, aplica un <strong>100% de retrocomisión</strong>.`;
+    } else {
+      retroPct = 0;
+      statusTier = 'success';
+      ruleDetails = `El contrato tiene <strong>${diffDays} días</strong> de antigüedad (supera los 6 meses / 181 días). ¡Está <strong>100% libre de retrocomisión</strong>!`;
+    }
   }
 
   return {

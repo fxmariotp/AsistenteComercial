@@ -4792,6 +4792,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
                 <label for="retro-cia" class="db-tool-lbl-sm">Cía:</label>
                 <select id="retro-cia" onchange="renderRetrocomisionCheck()" class="db-tool-input-sm" style="width: 104px;">
                   <option value="iberdrola">Iberdrola</option>
+                  <option value="repsol">Repsol</option>
                   <option value="naturgy">Naturgy</option>
                   <option value="endesa">Endesa</option>
                   <option value="gana">Gana Energía</option>
@@ -10650,7 +10651,7 @@ function renderCondiciones(){
     if (id === 'iberdrola') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (id === 'repsol') {
-      retrocomision = '12 meses';
+      retrocomision = '6 meses';
     } else if (id === 'naturgy') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (id === 'endesa') {
@@ -10831,7 +10832,7 @@ function renderCondiciones(){
     if (id === 'iberdrola') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (id === 'repsol') {
-      retrocomision = '12 meses';
+      retrocomision = '6 meses';
     } else if (id === 'naturgy') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (id === 'endesa') {
@@ -17358,7 +17359,7 @@ function getRenosurChatResponse(query) {
              `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones. No se permiten cambios de potencia.<br><br>` +
              `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA (Servicio de Asistencia de la Comercializadora) en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
              `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
-             `• <strong>Repsol:</strong> Lectura legal + DNI/NIE + Factura/CUPS. Firma por SMS con PIN OTP. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet) y Gas Ahorro (0,0899 €/kWh). Retrocomisión 12 meses.<br><br>` +
+             `• <strong>Repsol:</strong> Lectura legal + DNI/NIE + Factura/CUPS. Firma por SMS con PIN OTP. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet) y Gas Ahorro (0,0899 €/kWh). Retrocomisión 6 meses.<br><br>` +
              `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Repsol?") para elegir entre Particular o CIF.*</em>`;
     }
   }
@@ -17939,7 +17940,7 @@ function getRenosurChatResponse(query) {
           excedentes: "0,06 €/kWh",
           mantenimiento: "5,78 €/mes (Tu Asistente 24h Plus - 2 meses gratis)",
           permanencia: "Sin permanencia ni penalización.",
-          retrocomision: "12 meses",
+          retrocomision: "6 meses",
           nota: "Precio de la energía fijo durante 5 años. Saldo Waylet promocional."
         },
         solar: {
@@ -17954,7 +17955,7 @@ function getRenosurChatResponse(query) {
           bateria_virtual: "1,99 €/mes",
           mantenimiento: "6,99 €/mes (Asistente 24h Plus - 2 meses gratis)",
           permanencia: "Sin permanencia.",
-          retrocomision: "12 meses",
+          retrocomision: "6 meses",
           regalo: "60 € de regalo en saldo Waylet al finalizar la contratación."
         }
       },
@@ -17963,7 +17964,7 @@ function getRenosurChatResponse(query) {
         rl2: "TV (Término Variable): 0,089900 €/kWh | TF (Término Fijo): 0,463333 €/día (Equivalente mensual: 13,90 €/mes)",
         rl3: "TV (Término Variable): 0,089900 €/kWh | TF (Término Fijo): 0,763333 €/día (Equivalente mensual: 22,90 €/mes)",
         mantenimiento: "9,08 €/mes (Tu Asistente Gas)",
-        retrocomision: "12 meses"
+        retrocomision: "6 meses"
       }
     }
   };
