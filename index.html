@@ -5090,6 +5090,10 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
         <button class="ctab" id="ctab-repsol" onclick="switchCia('repsol')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
           <img src="img-companias/repsol.svg" onerror="handleLogoError(this, 'repsol')" alt="Repsol" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
+        <button class="ctab" id="ctab-repsol-cif" onclick="switchCia('repsol-cif')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="img-companias/repsol.svg" onerror="handleLogoError(this, 'repsol')" alt="Repsol" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+          <span style="font-weight: 800; font-size: 13px; color: var(--text);">(CIF)</span>
+        </button>
         <button class="ctab" id="ctab-naturgy" onclick="switchCia('naturgy')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
           <img src="img-companias/naturgy.png" onerror="handleLogoError(this, 'naturgy')" alt="Naturgy" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
@@ -5575,6 +5579,77 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
 
             <div style="background: rgba(255, 80, 0, 0.06); border: 1px dashed rgba(255, 80, 0, 0.35); border-radius: 8px; padding: 12px 18px; font-size: 13px; color: var(--t2); line-height: 1.5;">
               ℹ️ <strong>Tramitación directa:</strong> Aportar <strong>DNI + Factura</strong> (+ IBAN para domiciliación). El cliente recibe un SMS que ha de firmar <strong>sin verificación posterior</strong> ni llamadas de confirmación.
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPSOL CIF -->
+      <div class="sv" id="sv-repsol-cif">
+        <div class="script-big-card" style="border-top: 4px solid #FF5000;">
+          <div style="padding: 36px 24px; text-align: center; max-width: 680px; margin: 0 auto;">
+            <div style="display: inline-flex; align-items: center; justify-content: center; width: 68px; height: 68px; border-radius: 50%; background: rgba(255, 80, 0, 0.1); margin-bottom: 16px;">
+              <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="#FF5000" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+            </div>
+            <h3 style="font-size: 21px; font-weight: 800; color: var(--text); margin-bottom: 6px;">
+              Repsol — Tramitación Empresas y Pymes (CIF)
+            </h3>
+            <div style="display: inline-flex; align-items: center; gap: 8px; margin-bottom: 16px; background: rgba(255, 80, 0, 0.1); padding: 4px 12px; border-radius: 6px; border: 1px solid rgba(255, 80, 0, 0.25);">
+              <span style="font-weight: 800; color: #ea580c; font-size: 13px;">Tarifa Fijo Luz 24h CIF: 0,1499 €/kWh · Potencia 0,099726 €/kW·día</span>
+            </div>
+            <p style="font-size: 14.5px; color: var(--t2); line-height: 1.6; margin-bottom: 22px;">
+              De momento <strong>no hay texto legal de locución ni grabación telefónica</strong> para Repsol Empresas.<br>
+              La contratación corporativa se tramita directamente aportando <strong>DNI + Factura + CIF</strong>.
+            </p>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; text-align: left; margin-bottom: 22px;">
+              <div style="background: var(--surface2, rgba(0,0,0,0.02)); border: 1.5px solid rgba(255, 80, 0, 0.25); border-radius: 10px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #FF5000; color: #fff; font-weight: 800; font-size: 13px;">1</span>
+                  <strong style="color: var(--text); font-size: 14px;">DNI Apoderado + CIF</strong>
+                </div>
+                <div style="font-size: 12.5px; color: var(--t3); line-height: 1.45;">
+                  DNI/NIE del representante legal y CIF de la sociedad o recibo de autónomo.
+                </div>
+              </div>
+
+              <div style="background: var(--surface2, rgba(0,0,0,0.02)); border: 1.5px solid rgba(255, 80, 0, 0.25); border-radius: 10px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #FF5000; color: #fff; font-weight: 800; font-size: 13px;">2</span>
+                  <strong style="color: var(--text); font-size: 14px;">Factura completa</strong>
+                </div>
+                <div style="font-size: 12.5px; color: var(--t3); line-height: 1.45;">
+                  Factura de luz con CUPS y razón social legible.
+                </div>
+              </div>
+
+              <div style="background: var(--surface2, rgba(0,0,0,0.02)); border: 1.5px solid rgba(255, 80, 0, 0.25); border-radius: 10px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #FF5000; color: #fff; font-weight: 800; font-size: 13px;">3</span>
+                  <strong style="color: var(--text); font-size: 14px;">Firma por SMS</strong>
+                </div>
+                <div style="font-size: 12.5px; color: var(--t3); line-height: 1.45;">
+                  El apoderado firma digitalmente el enlace SMS <strong>sin verificación posterior</strong>.
+                </div>
+              </div>
+            </div>
+
+            <div style="background: rgba(255, 80, 0, 0.06); border: 1px dashed rgba(255, 80, 0, 0.35); border-radius: 8px; padding: 14px 18px; font-size: 13px; color: var(--t2); line-height: 1.5; text-align: left;">
+              🏢 <strong>Condiciones Comerciales Repsol CIF:</strong><br>
+              • <strong>Energía 24h:</strong> 0,1499 €/kWh · <strong>Potencia:</strong> TP1 0,099726 · TP2 0,099726 €/kW·día.<br>
+              • <strong>Mantenimiento SVA:</strong> Asistente 24h Pyme por <strong>9,99 €/mes</strong> (Urgencias &lt;3h, 3h mano de obra gratis, 50€ materiales).<br>
+              • <strong>Saldo Waylet:</strong> <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación + hasta 40 cts./l en repostajes.<br>
+              • <strong>Permanencia:</strong> Sin permanencia · <strong>Retrocomisión:</strong> 6 meses.
+            </div>
+            
+            <div style="margin-top: 14px; text-align: center;">
+              <button onclick="openServiceDocumentModal('img-companias/repsol-cif-ficha.png', 'Tarifa Luz CIF / Pymes — Repsol')" style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,80,0,0.1);color:#c2410c;border:1.5px solid rgba(255,80,0,0.3);border-radius:8px;padding:8px 16px;font-size:13px;font-weight:700;cursor:pointer;transition:all 0.15s;" onmouseover="this.style.background='rgba(255,80,0,0.2)'" onmouseout="this.style.background='rgba(255,80,0,0.1)'">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                Ver Ficha Oficial Repsol CIF (0,1499 €/kWh)
+              </button>
             </div>
           </div>
         </div>
@@ -7648,6 +7723,8 @@ function escapeHtml(str) {
     - Tarifa Solar (Autoconsumo con placas y Batería Virtual): TE=0,1699 €/kWh · TP1=TP2=0,099726 €/kW·día
       Cuota Batería Virtual: 1,99 €/mes · Excedentes: 0,06 €/kWh
       Asistente 24h Plus: 6,99 €/mes (2 meses gratis) · 60 € regalo saldo Waylet
+    - Fijo Luz 24h (CIF / Pymes): TE=0,1499 €/kWh · TP1=TP2=0,099726 €/kW·día
+      Asistente 24h Pyme: 9,99 €/mes · 60 € regalo saldo Waylet
     - Gas Ahorro: RL1 TV=0,0899 TF=6,90 €/mes (0,2300 €/día) · RL2 TV=0,0899 TF=13,90 €/mes · RL3 TV=0,0899 TF=22,90 €/mes
       Tu Asistente Gas: 9,08 €/mes · Sin permanencia
     Impuesto electrico: 5,11%
@@ -7752,7 +7829,8 @@ const BASE = {
     imp_electrico:0.0511,
     tarifas_luz:[
       {n:'Tarifa Tranquilísima Promo', te:0.1399, tp1:0.091507, tp2:0.091507, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Asistente 24h Plus 2 meses gratis · Regalo saldo Waylet'},
-      {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'}
+      {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'},
+      {n:'Fijo Luz 24h (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, nota:'Tarifa 24h Autónomos y Pymes (CIF) · Asistente 24h Pyme (9,99€/mes) · 60€ Saldo Waylet'}
     ],
     tarifas_gas:[
       {n:'Gas Ahorro RL1', tv:0.0899, tf:0.230000, nota:'Peaje RL.1 hasta 5.000 kWh/año · Fijo 6,90 €/mes · Tu Asistente Gas 9,08 €/mes'},
@@ -10565,20 +10643,22 @@ function switchCia(id){
   const colors={
     iberdrola:'#008B3C',
     'iberdrola-cif':'#008B3C',
+    repsol:'#FF5000',
+    'repsol-cif':'#FF5000',
     naturgy:'#E85D3A',
     'naturgy-cif':'#E85D3A',
     endesa:'#00A8E0',
-    gana:'#E30613',
-    repsol:'#FF5000'
+    gana:'#E30613'
   };
   const bgTints={
     iberdrola:'rgba(0, 139, 60, 0.08)',
     'iberdrola-cif':'rgba(0, 139, 60, 0.08)',
+    repsol:'rgba(255, 80, 0, 0.08)',
+    'repsol-cif':'rgba(255, 80, 0, 0.08)',
     naturgy:'rgba(232, 93, 58, 0.08)',
     'naturgy-cif':'rgba(232, 93, 58, 0.08)',
     endesa:'rgba(0, 168, 224, 0.08)',
-    gana:'rgba(227, 6, 19, 0.08)',
-    repsol:'rgba(255, 80, 0, 0.08)'
+    gana:'rgba(227, 6, 19, 0.08)'
   };
   document.querySelectorAll('#panel-scripts .ctab').forEach(t=>{
     t.classList.remove('active');
@@ -10792,7 +10872,8 @@ function renderCondiciones(){
                  <br><span style="margin-top:2px;display:inline-block">Potencia Solar Plus: TP1 ${r.tarifas_luz[1].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(3)} €/kW·dia</span>`;
     } else if (r.tarifas_luz.length > 1 && id === 'repsol') {
       potHtml = `<span>Potencia Tranquilísima: TP1 0,0915 · TP2 0,0915 €/kW·día (33,40 €/kW·año)</span>
-                 <br><span style="margin-top:2px;display:inline-block">Potencia Solar: TP1 0,099726 · TP2 0,099726 €/kW·día</span>`;
+                 <br><span style="margin-top:2px;display:inline-block">Potencia Solar: TP1 0,099726 · TP2 0,099726 €/kW·día</span>
+                 <br><span style="margin-top:2px;display:inline-block">Potencia CIF / Pymes: TP1 0,099726 · TP2 0,099726 €/kW·día</span>`;
     } else {
       potHtml = `<span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(3)} €/kW·dia</span>`;
     }
@@ -10800,6 +10881,8 @@ function renderCondiciones(){
     let svaHtml = '';
     if (id === 'gana') {
       svaHtml = `<span>Mantenimiento: <strong>4.13 €/mes</strong></span>`;
+    } else if (id === 'repsol') {
+      svaHtml = `<span>Mantenimiento Luz: <strong>5,78 €/mes</strong> (Particular) · <strong>9,99 €/mes</strong> (CIF / Pyme)</span>`;
     } else if (r.sva_luz > 0) {
       svaHtml = `<span>Mantenimiento: <strong>${r.sva_luz.toFixed(2)} €/mes</strong></span>`;
     } else {
@@ -10812,7 +10895,11 @@ function renderCondiciones(){
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
         <span>Excedentes: <strong style="color:var(--text);">${r.precio_excedente.toFixed(3)} €/kWh</strong></span>
         <span>${svaHtml}</span>
-        ${id === 'repsol' ? `<button onclick="openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')" style="display:inline-flex;align-items:center;gap:5px;color:#c2410c;background:rgba(234,88,12,0.08);border-radius:6px;border:1px solid rgba(234,88,12,0.25);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.15)'" onmouseout="this.style.background='rgba(234,88,12,0.08)'">
+        ${id === 'repsol' ? `<button onclick="openServiceDocumentModal('img-companias/repsol-cif-ficha.png', 'Tarifa Luz CIF / Pymes — Repsol')" style="display:inline-flex;align-items:center;gap:5px;color:#c2410c;background:rgba(234,88,12,0.08);border-radius:6px;border:1px solid rgba(234,88,12,0.25);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.15)'" onmouseout="this.style.background='rgba(234,88,12,0.08)'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          Ficha CIF (0,1499 €/kWh)
+        </button>
+        <button onclick="openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')" style="display:inline-flex;align-items:center;gap:5px;color:#c2410c;background:rgba(234,88,12,0.08);border-radius:6px;border:1px solid rgba(234,88,12,0.25);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.15)'" onmouseout="this.style.background='rgba(234,88,12,0.08)'">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
           Descuentos Waylet (10-40 cts./l)
         </button>` : ''}
@@ -11218,6 +11305,7 @@ const PROCEDIMIENTOS = {
       process: [
         'De momento NO hay texto legal ni locución corporativa para Repsol.',
         'Tramitación corporativa directa con DNI + Factura + CIF.',
+        'Tarifa Fijo Luz 24h CIF: 0,1499 €/kWh en 24h, potencia TP1/TP2 0,099726 €/kW·día, Asistente 24h Pyme 9,99 €/mes y 60 € de regalo en saldo Waylet.',
         'Proceso de firma: SMS enviado al titular / apoderado que ha de firmar sin verificación posterior.',
         'Sin llamadas posteriores: No requiere llamada de verificación posterior tras la firma.',
         'Activación del suministro en unos 15 días laborables sin interrupción del servicio.'
@@ -11229,6 +11317,7 @@ const PROCEDIMIENTOS = {
       'Sin permanencia ni penalización por baja anticipada.',
       '14 días naturales de desistimiento legal desde la contratación.',
       'Tarifa Tranquilísima Promo: Precio del kWh fijo garantizado durante 5 años.',
+      'Tarifa Fijo Luz 24h CIF (Pymes): 0,1499 €/kWh, potencia 0,099726 €/kW·día, Asistente 24h Pyme 9,99 €/mes y 60 € de regalo en saldo Waylet.',
       'Tu Asistente 24h Plus: 100% de descuento (gratis) los 2 primeros meses en suministro de luz.',
       'Suministros con placas solares / autoconsumo: Tarifa Solar con batería virtual (+1,99 €/mes) y compensación de excedentes a 0,06 €/kWh.',
       'Regalo de saldo Waylet para facturas y repostajes en estaciones de servicio según promoción (hasta 60€ en solar y 20€ con servicios adicionales).'
@@ -11550,6 +11639,16 @@ function calcComp(){
       r.tarifas_luz = [
         {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'}
       ];
+    } else if (cia === 'repsol' && isCif) {
+      r.name = 'Repsol Fijo Luz 24h (Precio CIF)';
+      r.tp1 = 0.099726;
+      r.tp2 = 0.099726;
+      r.te_sin = 0.1499;
+      r.te_con = 0.1499;
+      r.sva_luz = 9.99;
+      r.tarifas_luz = [
+        {n:'Fijo Luz 24h (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, nota:'Tarifa especial 24h para CIF / Pymes · Asistente 24h Pyme (9,99€/mes) · 60€ Regalo Saldo Waylet'}
+      ];
     }
     
     // Potencia y energia
@@ -11683,7 +11782,7 @@ function calcComp(){
       } else if (cia === 'gana') {
         tariffName = (off.type === 'gana_mercado' ? 'Precio de Mercado' : 'Plan 24 Horas') + (isCif ? ' (CIF)' : '');
       } else if (cia === 'repsol') {
-        tariffName = (excedente > 0 ? 'Tarifa Solar (BV)' : 'Tranquilísima Promo') + (isCif ? ' (CIF)' : '');
+        tariffName = (excedente > 0 ? 'Tarifa Solar (BV)' : (isCif ? 'Fijo Luz 24h (CIF)' : 'Tranquilísima Promo')) + (isCif && excedente > 0 ? ' (CIF)' : '');
       }
     } else {
       const rlName = band.toUpperCase();
@@ -11841,6 +11940,7 @@ function unlockPlanAhoraSva() {
 
 function renderInvCards(results, useSva){
   const isLuz = compMode === 'luz';
+  const isCif = document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false;
   const firstNonLockedIdx = results.findIndex(res => !res.isLocked);
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
     const{cia,r,total,ahorro,actual,tariffName,isLocked}=res;
@@ -11868,12 +11968,17 @@ function renderInvCards(results, useSva){
     if (res.cuotaBateriaVirtualEndesa > 0) {
       cardExtraBadges += '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">+2€/mes Batería Virtual</span>';
     }
-    if (res.cuotaBateriaVirtualRepsol > 0) {
+    const isRepsolCif = (cia === 'repsol' && compMode === 'luz' && isCif && !(res.cuotaBateriaVirtualRepsol > 0));
+    if (isRepsolCif) {
+      cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🏢 Tarifa CIF / Pymes</span>';
+      cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🎁 60€ Saldo Waylet</span>';
+      if (useSva) {
+        cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:700;background:rgba(5,150,105,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(5,150,105,0.2);">Asistente 24h Pyme (9,99€/mes)</span>';
+      }
+    } else if (res.cuotaBateriaVirtualRepsol > 0) {
       cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">+1,99€/mes Batería Virtual</span>';
       cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🎁 60€ Saldo Waylet</span>';
-    }
-    const isRepsolTranquilisima = (cia === 'repsol' && compMode === 'luz' && !(res.cuotaBateriaVirtualRepsol > 0));
-    if (isRepsolTranquilisima) {
+    } else if (isRepsolTranquilisima) {
       cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🛡️ 5 años precio fijo</span>';
       if (useSva) {
         cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:700;background:rgba(5,150,105,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(5,150,105,0.2);">Tu Asistente 24h Plus (2 meses gratis)</span>';
@@ -11954,6 +12059,9 @@ function renderInvCards(results, useSva){
       if (isSolarOffer) {
         wayletHighlightBadge = '🚗💡🔥☀️ Coche, Luz, Gas y Solar: 40 cts./l + 60€ Saldo';
         wayletTierText = 'Con tu tarifa Solar con placas acumulas el <strong>descuento máximo de 40 cts./l de saldo</strong> en tus repostajes pagando con Waylet, además de <strong>60 € de regalo</strong> en saldo Waylet.';
+      } else if (isCif) {
+        wayletHighlightBadge = '🏢🚗💡 Repsol CIF / Pymes: 20 cts./l + 60€ Saldo';
+        wayletTierText = 'Con la tarifa de Luz 24h para Autónomos y Pymes (CIF) acumulas <strong>20 cts./l de saldo</strong> en tus repostajes pagando con Waylet, además de <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación.';
       } else if (compMode === 'dual') {
         wayletHighlightBadge = '🚗💡🔥 Coche, Luz y Gas: 30 cts./l';
         wayletTierText = 'Al contratar Luz y Gas acumulas <strong>30 cts./l de saldo</strong> en cada repostaje pagando con la app Waylet en estaciones Repsol.';
@@ -11980,6 +12088,10 @@ function renderInvCards(results, useSva){
               <span style="font-size:11px;font-weight:800;color:#ea580c;background:rgba(234,88,12,0.12);padding:3px 9px;border-radius:6px;border:1px solid rgba(234,88,12,0.25);">
                 ${wayletHighlightBadge}
               </span>
+              ${isCif ? `<button type="button" onclick="openServiceDocumentModal('img-companias/repsol-cif-ficha.png', 'Tarifa Luz CIF / Pymes — Repsol')" style="background:rgba(234,88,12,0.12);color:#c2410c;border:1px solid rgba(234,88,12,0.25);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.22)'" onmouseout="this.style.background='rgba(234,88,12,0.12)'">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                Ficha CIF
+              </button>` : ''}
               <button type="button" onclick="openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')" style="background:rgba(234,88,12,0.12);color:#c2410c;border:1px solid rgba(234,88,12,0.25);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.22)'" onmouseout="this.style.background='rgba(234,88,12,0.12)'">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
                 Ver Ficha Completa
@@ -12507,17 +12619,32 @@ function printCompanyOffer(key) {
       </div>
     `;
   } else if (cia === 'repsol' && compMode === 'luz' && !(cuotaBateriaVirtualRepsol > 0)) {
-    html += `
-      <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <div>
-          <strong>🛡️ Tarifa Tranquilísima Promo:</strong> Precio fijo garantizado durante <strong>5 años</strong> sin permanencia ni penalizaciones.<br>
-          <strong>🛠️ Tu Asistente 24h Plus:</strong> <strong>100% de descuento (gratis)</strong> durante los 2 primeros meses.
+    const isCifPrint = document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false;
+    if (isCifPrint) {
+      html += `
+        <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <div>
+            <strong>🏢 Tarifa Fijo Luz 24h (CIF / Pymes):</strong> Precio único 24h a <strong>0,1499 €/kWh</strong> y potencia a <strong>0,099726 €/kW·día</strong>.<br>
+            <strong>🎁 Saldo Waylet:</strong> <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación para facturas y repostajes.
+          </div>
+          <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
+            60 € Saldo Waylet
+          </div>
         </div>
-        <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
-          5 Años Precio Fijo
+      `;
+    } else {
+      html += `
+        <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+          <div>
+            <strong>🛡️ Tarifa Tranquilísima Promo:</strong> Precio fijo garantizado durante <strong>5 años</strong> sin permanencia ni penalizaciones.<br>
+            <strong>🛠️ Tu Asistente 24h Plus:</strong> <strong>100% de descuento (gratis)</strong> durante los 2 primeros meses.
+          </div>
+          <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
+            5 Años Precio Fijo
+          </div>
         </div>
-      </div>
-    `;
+      `;
+    }
   }
 
   if (cia === 'repsol') {
@@ -17435,6 +17562,11 @@ function getRenosurChatResponse(query) {
                `• <strong>Procedimiento de Firma:</strong><br>` +
                `  - Envío de SMS / enlace para firma digital del contrato.<br>` +
                `  - <strong>Sin verificación posterior:</strong> No requiere llamada de confirmación posterior tras la firma.<br><br>` +
+               `• <strong>Tarifas y Ventajas CIF:</strong><br>` +
+               `  - <strong>Fijo Luz 24h (CIF / Pymes):</strong> <strong>0,1499 €/kWh</strong>.<br>` +
+               `  - <strong>Término de Potencia:</strong> TP1 0,099726 €/kW·día | TP2 0,099726 €/kW·día.<br>` +
+               `  - <strong>Mantenimiento Luz (Asistente 24h Pyme):</strong> 9,99 €/mes (urgencias <3h, 3h mano de obra gratis, 50€ materiales, reparación electrodomésticos).<br>` +
+               `  - <strong>Regalo Waylet:</strong> 60 € en saldo Waylet al finalizar la contratación.<br><br>` +
                `• <strong>Normas Operativas:</strong><br>` +
                `  - Sin permanencia ni penalización económica.<br>` +
                `  - Retrocomisión: 6 meses.<br>` +
@@ -17634,6 +17766,24 @@ function getRenosurChatResponse(query) {
         ],
         exclusions: "Aparatos o instalaciones de uso comercial o industrial no doméstico."
       },
+      pyme: {
+        name: "Asistente 24h Pyme",
+        family: "Electricidad / Bricolaje / Fontanería / Cerrajería / Cristalería / Electrodomésticos",
+        modalidad: "Asistente 24 horas Pyme.",
+        price_no_tax: "8,26 €/mes (aprox)",
+        price_with_tax: "9,99 €/mes",
+        promo: "No indicada.",
+        billing: "Mensual.",
+        permanencia: "Sin permanencia.",
+        carencia: "Sin carencia indicada.",
+        warranty: "Garantía en reparaciones.",
+        includes: [
+          "Asistencia urgente en menos de 3 horas las 24 horas del día.",
+          "3 horas de mano de obra gratis y 50 € en materiales para averías de fontanería, cristalería, electricidad o cerrajería.",
+          "Reparación de electrodomésticos."
+        ],
+        exclusions: "Aparatos fuera del ámbito de la actividad comercial o del local del negocio."
+      },
       gas: {
         name: "Tu Asistente Gas",
         family: "Gas / Calefacción",
@@ -17820,6 +17970,15 @@ function getRenosurChatResponse(query) {
 
     // ── 5. REPSOL ──
     if (hasRepsol) {
+      if (cleanQ.includes('pyme') || cleanQ.includes('cif') || cleanQ.includes('empresa') || cleanQ.includes('autonomo') || cleanQ.includes('autónomo')) {
+        return `<strong>Asistente 24h Pyme (Servicio de Asistencia de Luz Pymes/CIF de Repsol):</strong><br><br>` +
+          `• <strong>Precio:</strong> <strong>9,99 €/mes</strong>.<br>` +
+          `• <strong>Coberturas incluidas:</strong><br>` +
+          `  - <strong>Asistencia urgente:</strong> En menos de 3 horas las 24 horas del día ante averías urgentes.<br>` +
+          `  - <strong>Mano de obra y materiales:</strong> 3 horas de mano de obra gratis y hasta <strong>50 € en materiales</strong> para fontanería, cristalería, electricidad o cerrajería.<br>` +
+          `  - <strong>Electrodomésticos:</strong> Reparación de averías en electrodomésticos.<br>` +
+          `• <strong>Condiciones:</strong> Sin permanencia ni penalización por baja anticipada.`;
+      }
       if (asksLuzOnly || cleanQ.includes('tu asistente 24h') || cleanQ.includes('asistente 24h') || cleanQ.includes('asistente plus') || cleanQ.includes('24 horas plus')) {
         return `<strong>Tu Asistente 24 horas Plus (Servicio de Asistencia de Luz de Repsol):</strong><br><br>` +
           `• <strong>Precio:</strong> <strong>5,78 €/mes</strong> en Tranquilísima Promo (6,99 €/mes en Solar).<br>` +
@@ -18046,6 +18205,20 @@ function getRenosurChatResponse(query) {
           permanencia: "Sin permanencia.",
           retrocomision: "6 meses",
           regalo: "60 € de regalo en saldo Waylet al finalizar la contratación."
+        },
+        cif: {
+          name: "Repsol Fijo Luz 24h (CIF / Pymes)",
+          base: "0,1499 €/kWh",
+          sin_mantenimiento: "0,1499 €/kWh",
+          con_mantenimiento: "0,1499 €/kWh (+9,99 €/mes Asistente 24h Pyme)",
+          descuento_sin_mantenimiento: "0%",
+          descuento_con_mantenimiento: "0%",
+          potencia: "TP1: 0,099726 €/kW-día | TP2: 0,099726 €/kW-día",
+          excedentes: "0,06 €/kWh",
+          mantenimiento: "9,99 €/mes (Asistente 24h Pyme)",
+          permanencia: "Sin permanencia.",
+          retrocomision: "6 meses",
+          regalo: "60 € de regalo en saldo Waylet al finalizar la contratación."
         }
       },
       gas: {
@@ -18192,7 +18365,7 @@ function getRenosurChatResponse(query) {
   }
 
   // 11. Repsol Tranquilísima Promo
-  if (q.includes('tranquilisima') || q.includes('tranquilísima') || (q.includes('repsol') && (q.includes('luz') || q.includes('fijo') || q.includes('tranquila')) && !q.includes('solar') && !q.includes('placa') && !q.includes('gas'))) {
+  if (q.includes('tranquilisima') || q.includes('tranquilísima') || (q.includes('repsol') && (q.includes('luz') || q.includes('fijo') || q.includes('tranquila')) && !q.includes('solar') && !q.includes('placa') && !q.includes('gas') && !q.includes('cif') && !q.includes('pyme') && !q.includes('empresa') && !q.includes('autonomo') && !q.includes('autónomo'))) {
     return "<strong>Repsol — Tarifa Tranquilísima Promo:</strong><br><br>" +
       "• <strong>Término de Energía:</strong> <strong>0,1399 €/kWh</strong> (Precio fijo garantizado durante 5 años)<br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,091507 €/kW·día</strong> | TP2: <strong>0,091507 €/kW·día</strong> (33,40 €/kW·año)<br>" +
@@ -18247,6 +18420,23 @@ function getRenosurChatResponse(query) {
       `Ver Infografía Oficial de Descuentos Waylet</button></div>`;
   }
 
+  // 15. Repsol Fijo Luz 24h (CIF / Pymes)
+  if ((q.includes('repsol') && (q.includes('cif') || q.includes('pyme') || q.includes('pymes') || q.includes('empresa') || q.includes('empresas') || q.includes('autonomo') || q.includes('autónomo') || q.includes('negocio'))) || q.includes('repsol cif') || q.includes('asistente 24h pyme')) {
+    return "<strong>Repsol — Fijo Luz 24h (Autónomos y Pymes / CIF):</strong><br><br>" +
+      "• <strong>Término de Energía 24h:</strong> <strong>0,1499 €/kWh</strong> (0,149900 €/kWh)<br>" +
+      "• <strong>Término de Potencia:</strong> TP1 (Punta): <strong>0,099726 €/kW·día</strong> | TP2 (Valle): <strong>0,099726 €/kW·día</strong><br>" +
+      "• <strong>Mantenimiento Luz (Asistente 24h Pyme):</strong> <strong>9,99 €/mes</strong><br>" +
+      "  - Asistencia urgente en menos de 3 horas.<br>" +
+      "  - 3 horas de mano de obra gratis y 50 € en materiales para fontanería, cristalería, electricidad o cerrajería.<br>" +
+      "  - Reparación de electrodomésticos.<br>" +
+      "• <strong>Regalo Waylet:</strong> <strong>60 € de regalo en saldo Waylet</strong> al finalizar la contratación (para facturas y repostajes).<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia.<br>" +
+      "• <strong>Retrocomisión:</strong> 6 meses" +
+      `<div style=\"margin-top:8px;\"><button onclick=\"openServiceDocumentModal('img-companias/repsol-cif-ficha.png', 'Tarifa Luz CIF / Pymes — Repsol')\" style=\"display:inline-flex;align-items:center;gap:6px;color:#c2410c;background:rgba(234,88,12,0.1);border-radius:6px;border:1px solid rgba(234,88,12,0.3);cursor:pointer;font-weight:700;font-size:12.5px;padding:7px 12px;transition:all 0.15s;\" onmouseover=\"this.style.background='rgba(234,88,12,0.2)'\" onmouseout=\"this.style.background='rgba(234,88,12,0.1)'\">` +
+      `<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><line x1=\"3\" y1=\"9\" x2=\"21\" y2=\"9\"/><line x1=\"9\" y1=\"21\" x2=\"9\" y2=\"9\"/></svg>` +
+      `Ver Ficha Oficial Repsol CIF</button></div>`;
+  }
+
   // ── GESTIÓN GENERAL DE TARIFAS Y PRECIOS ──
   const isTarifasQuery = q.includes('tarifa') || q.includes('precio') || q.includes('costar') || q.includes('cuesta') || q.includes('luz') || q.includes('gas') || q.includes('energia') || q.includes('energía') || q.includes('potencia') || q.includes('excedent') || q.includes('mantenimiento') || q.includes('descuento') || q.includes('cif') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3') || q.includes('punta') || q.includes('valle') || q.includes('llano') || q.includes('barat') || q.includes('gestión') || q.includes('gestion') || q.includes('permanencia') || q.includes('retro') || q.includes('kw') || q.includes('kwh') || q.includes('tarifas') || q.includes('precios');
 
@@ -18280,6 +18470,7 @@ function getRenosurChatResponse(query) {
              `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1390 €/kWh<br>` +
              `• <strong>Endesa Luz 24H (Black Friday):</strong> 0,1484 €/kWh (0,1429 €/kWh con mant.) + 100€ en Para Ti (-20€ en 5 facturas)<br>` +
              `• <strong>Endesa Solar Plus:</strong> 0,145 €/kWh (+2€/mes BV)<br>` +
+             `• <strong>Repsol Fijo Luz 24h (CIF / Pymes):</strong> 0,1499 €/kWh (+60€ Waylet)<br>` +
              `• <strong>Repsol Solar:</strong> 0,1699 €/kWh (excedentes a 0,06 €/kWh, BV 1,99€/mes, 60€ saldo Waylet)<br><br>` +
              `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
     }
@@ -18357,6 +18548,7 @@ function getRenosurChatResponse(query) {
         return `<strong>Tarifas de Luz de Repsol disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
           `  <button onclick="sendQuickChatQuery('Repsol Tranquilisima')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tranquilísima Promo (Precio fijo 5 años) — 0,1399 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Repsol Fijo Luz 24h CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Fijo Luz 24h (Autónomos y Pymes / CIF) — 0,1499 €/kWh + 60€ Waylet</button>` +
           `  <button onclick="sendQuickChatQuery('Repsol Solar')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Solar (Batería Virtual 1,99€ + 60€ Waylet) — 0,1699 €/kWh</button>` +
           `</div>`;
       }
