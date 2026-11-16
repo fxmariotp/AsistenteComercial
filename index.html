@@ -10812,6 +10812,10 @@ function renderCondiciones(){
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
         <span>Excedentes: <strong style="color:var(--text);">${r.precio_excedente.toFixed(3)} €/kWh</strong></span>
         <span>${svaHtml}</span>
+        ${id === 'repsol' ? `<button onclick="openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')" style="display:inline-flex;align-items:center;gap:5px;color:#c2410c;background:rgba(234,88,12,0.08);border-radius:6px;border:1px solid rgba(234,88,12,0.25);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.15)'" onmouseout="this.style.background='rgba(234,88,12,0.08)'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          Descuentos Waylet (10-40 cts./l)
+        </button>` : ''}
         ${serviceFilesLuz[id] ? `<button onclick="openServiceDocumentModal('${serviceFilesLuz[id]}', 'Servicio de Luz — ${r.name}')" style="display:inline-flex;align-items:center;gap:5px;color:var(--blue);background:rgba(13,92,158,0.08);border-radius:6px;border:1px solid rgba(13,92,158,0.2);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(13,92,158,0.15)'" onmouseout="this.style.background='rgba(13,92,158,0.08)'">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           Ver Servicio
@@ -10900,6 +10904,10 @@ function renderCondiciones(){
       </div>
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
         <span>${svaGasHtml}</span>
+        ${id === 'repsol' ? `<button onclick="openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')" style="display:inline-flex;align-items:center;gap:5px;color:#c2410c;background:rgba(234,88,12,0.08);border-radius:6px;border:1px solid rgba(234,88,12,0.25);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.15)'" onmouseout="this.style.background='rgba(234,88,12,0.08)'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+          Descuentos Waylet (10-40 cts./l)
+        </button>` : ''}
         ${serviceFilesGas[id] ? `<button onclick="openServiceDocumentModal('${serviceFilesGas[id]}', 'Servicio de Gas — ${r.name}')" style="display:inline-flex;align-items:center;gap:5px;color:var(--blue);background:rgba(13,92,158,0.08);border-radius:6px;border:1px solid rgba(13,92,158,0.2);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(13,92,158,0.15)'" onmouseout="this.style.background='rgba(13,92,158,0.08)'">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path><circle cx="12" cy="12" r="3"></circle></svg>
           Ver Servicio
@@ -11851,7 +11859,7 @@ function renderInvCards(results, useSva){
     } else if (cia === 'gana') {
       retrocomision = '12 meses';
     } else if (cia === 'repsol') {
-      retrocomision = '12 meses';
+      retrocomision = '6 meses';
     }
     
     const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
@@ -11938,6 +11946,53 @@ function renderInvCards(results, useSva){
         </div>`;
     }
 
+    let promoRepsolBannerHtml = '';
+    if (cia === 'repsol') {
+      const isSolarOffer = (res.cuotaBateriaVirtualRepsol > 0 || excedente > 0);
+      let wayletHighlightBadge = '';
+      let wayletTierText = '';
+      if (isSolarOffer) {
+        wayletHighlightBadge = '🚗💡🔥☀️ Coche, Luz, Gas y Solar: 40 cts./l + 60€ Saldo';
+        wayletTierText = 'Con tu tarifa Solar con placas acumulas el <strong>descuento máximo de 40 cts./l de saldo</strong> en tus repostajes pagando con Waylet, además de <strong>60 € de regalo</strong> en saldo Waylet.';
+      } else if (compMode === 'dual') {
+        wayletHighlightBadge = '🚗💡🔥 Coche, Luz y Gas: 30 cts./l';
+        wayletTierText = 'Al contratar Luz y Gas acumulas <strong>30 cts./l de saldo</strong> en cada repostaje pagando con la app Waylet en estaciones Repsol.';
+      } else {
+        wayletHighlightBadge = '🚗💡 Coche y Luz: 20 cts./l';
+        wayletTierText = 'Al contratar la Luz acumulas <strong>20 cts./l de saldo</strong> en cada repostaje pagando con la app Waylet en estaciones Repsol.';
+      }
+
+      promoRepsolBannerHtml = `
+        <div style="background:linear-gradient(135deg, #fff7ed, #ffedd5);border:1.5px solid #fed7aa;border-radius:10px;padding:12px 16px;margin:12px 0;box-shadow:0 2px 6px rgba(234,88,12,0.05);">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+            <div style="display:flex;align-items:center;gap:10px;">
+              <span style="font-size:24px;">⛽</span>
+              <div>
+                <div style="font-size:13px;color:#9a3412;font-weight:800;display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+                  <span>Descuentos en Repostajes con Waylet al contratar con Repsol</span>
+                </div>
+                <div style="font-size:11.5px;color:#c2410c;margin-top:2px;">
+                  ${wayletTierText}
+                </div>
+              </div>
+            </div>
+            <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;">
+              <span style="font-size:11px;font-weight:800;color:#ea580c;background:rgba(234,88,12,0.12);padding:3px 9px;border-radius:6px;border:1px solid rgba(234,88,12,0.25);">
+                ${wayletHighlightBadge}
+              </span>
+              <button type="button" onclick="openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')" style="background:rgba(234,88,12,0.12);color:#c2410c;border:1px solid rgba(234,88,12,0.25);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.22)'" onmouseout="this.style.background='rgba(234,88,12,0.12)'">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Ver Ficha Completa
+              </button>
+            </div>
+          </div>
+          
+          <div style="background:#ffffff;border:1px solid #fed7aa;border-radius:8px;padding:8px;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.03);transition:all 0.2s;" onclick="openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')" title="Haz clic para ampliar la imagen">
+            <img src="img-companias/repsol-waylet-descuentos.png" alt="Descuentos Waylet Repsol: Coche 10 cts/l, Coche y Luz 20 cts/l, Coche Luz y Gas 30 cts/l, Coche Luz Gas y Solar 40 cts/l" style="width:100%;max-width:640px;height:auto;display:inline-block;border-radius:6px;vertical-align:middle;">
+          </div>
+        </div>`;
+    }
+
     let actionBtnHtml = '';
     if (isLocked) {
       actionBtnHtml = `
@@ -11978,6 +12033,7 @@ function renderInvCards(results, useSva){
       
       ${lockedBannerHtml}
       ${promoEndesaBannerHtml}
+      ${promoRepsolBannerHtml}
 
       <!-- Savings Grid -->
       <div class="inv-savings-grid"${isLocked?' style="opacity:0.6;filter:grayscale(0.3);"':''}>
@@ -12459,6 +12515,25 @@ function printCompanyOffer(key) {
         </div>
         <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
           5 Años Precio Fijo
+        </div>
+      </div>
+    `;
+  }
+
+  if (cia === 'repsol') {
+    html += `
+      <div style="border: 1.5px solid #ea580c; background: #fff7ed; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px solid rgba(234, 88, 12, 0.2); padding-bottom: 4px;">
+          <div style="font-weight: 800; font-size: 11px; color: #c2410c; display: flex; align-items: center; gap: 6px;">
+            <span>🚗⚡🔥☀️ Descuentos en Repostajes con Waylet por contratar con Repsol</span>
+          </div>
+          <span style="font-size: 10px; font-weight: 800; color: #ea580c; background: rgba(234, 88, 12, 0.12); padding: 2px 7px; border-radius: 4px;">Hasta 40 cts./l de saldo</span>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 6px;">
+          <img src="img-companias/repsol-waylet-descuentos.png" alt="Descuentos Waylet Repsol" style="width: 100%; max-width: 620px; height: auto; border-radius: 6px; display: block; border: 1px solid #fed7aa;" />
+        </div>
+        <div style="font-size: 9.5px; color: #9a3412; line-height: 1.35; text-align: center;">
+          • <strong>Solo Waylet:</strong> 10 cts./l · • <strong>Con Luz:</strong> 20 cts./l · • <strong>Con Luz y Gas:</strong> 30 cts./l · • <strong>Con Luz, Gas y Solar:</strong> 40 cts./l de saldo acumulable en carburante
         </div>
       </div>
     `;
@@ -16683,6 +16758,11 @@ const KNOWLEDGE_BASE = [
     La retro/permanencia de comisión para Pymes es de <strong>12 meses (100%)</strong>.`
   },
   {
+    keywords: ["retro de repsol", "retro repsol", "retrocomision repsol", "retrocomisión repsol"],
+    answer: `<strong>Retrocomisión / Descomisión de Repsol:</strong><br><br>
+    La retro/permanencia de comisión para Repsol es de <strong>6 meses (100%)</strong>. Si el suministro se da de baja dentro de los primeros 6 meses, se descuenta el 100% de la comisión.`
+  },
+  {
     keywords: ["retro de securitas", "retro securitas"],
     answer: `<strong>Retrocomisión / Descomisión de Securitas Direct:</strong><br><br>
     La retro/permanencia de comisión para Securitas Direct es de <strong>6 meses (100%)</strong>.`
@@ -16690,6 +16770,7 @@ const KNOWLEDGE_BASE = [
   {
     keywords: ["retro", "retrocomision", "retrocomisiones", "retrocomisión", "retros", "descomisiones", "descomision"],
     answer: `<strong>Permanencia y Retrocomisiones (Clawbacks) por Compañía:</strong><br><br>
+    • <strong>Repsol:</strong> 6 meses (100% de descomisión si se da de baja antes).<br>
     • <strong>Gana Energía:</strong> 12 meses (100% de descomisión si se da de baja antes).<br>
     • <strong>Endesa:</strong> 12 meses (100% de descomisión si se da de baja antes).<br>
     • <strong>Iberdrola:</strong> 0-2 meses (100% de descomisión) | 2-4 meses (50% de descomisión).<br>
@@ -18119,7 +18200,7 @@ function getRenosurChatResponse(query) {
       "• <strong>Mantenimiento Luz (Tu Asistente 24h Plus):</strong> 5,78 €/mes (100% de descuento / gratis los 2 primeros meses)<br>" +
       "• <strong>Ventajas Waylet:</strong> Saldo de regalo Waylet para repostajes y facturas.<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia ni penalización económica.<br>" +
-      "• <strong>Retrocomisión:</strong> 12 meses";
+      "• <strong>Retrocomisión:</strong> 6 meses";
   }
 
   // 12. Repsol Solar (Batería Virtual)
@@ -18132,7 +18213,7 @@ function getRenosurChatResponse(query) {
       "• <strong>Mantenimiento Luz (Asistente 24h Plus):</strong> 6,99 €/mes (2 meses gratis)<br>" +
       "• <strong>Regalo Waylet:</strong> <strong>60 € de regalo en saldo Waylet</strong> al finalizar la contratación (para facturas y repostajes).<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia.<br>" +
-      "• <strong>Retrocomisión:</strong> 12 meses";
+      "• <strong>Retrocomisión:</strong> 6 meses";
   }
 
   // 13. Repsol Gas Ahorro
@@ -18145,7 +18226,25 @@ function getRenosurChatResponse(query) {
       "  - RL.3: <strong>22,90 €/mes</strong> (0,763333 €/día)<br>" +
       "• <strong>Mantenimiento Gas (Tu Asistente Gas):</strong> 9,08 €/mes<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia.<br>" +
-      "• <strong>Retrocomisión:</strong> 12 meses";
+      "• <strong>Retrocomisión:</strong> 6 meses";
+  }
+
+  // 14. Repsol — Descuentos en Repostajes con Waylet
+  if (q.includes('waylet') || (q.includes('repsol') && (q.includes('repostaj') || q.includes('carburante') || q.includes('gasolina') || q.includes('gasoil') || q.includes('combustible') || q.includes('descuento') || q.includes('promocion') || q.includes('promoción')))) {
+    return "<strong>Repsol — Descuentos en Repostajes con Waylet:</strong><br><br>" +
+      "Al contratar los suministros de Repsol y pagar a través de la app <strong>Waylet</strong> en estaciones de servicio Repsol, el cliente acumula saldo por cada litro de carburante repostado según los suministros contratados:<br><br>" +
+      "🚗 <strong>1. Coche (Solo Waylet):</strong><br>" +
+      "• Paga con Waylet y consigue: <strong>10 cts./l de saldo</strong> en tus repostajes.<br><br>" +
+      "🚗💡 <strong>2. Coche y Luz:</strong><br>" +
+      "• Contrata la luz con Repsol y, pagando con Waylet, consigue: <strong>20 cts./l de saldo</strong> en tus repostajes.<br><br>" +
+      "🚗💡🔥 <strong>3. Coche, Luz y Gas:</strong><br>" +
+      "• Añade el gas y, pagando con Waylet, consigue: <strong>30 cts./l de saldo</strong> en tus repostajes.<br><br>" +
+      "🚗💡🔥☀️ <strong>4. Coche, Luz, Gas y Solar:</strong><br>" +
+      "• Contrátalo todo (incluyendo placas solares con Batería Virtual a 1,99 €/mes y excedentes a 0,06 €/kWh) y consigue: <strong>40 cts./l de saldo</strong> en tus repostajes.<br>" +
+      "• <em>¡Además acumulas <strong>60 € de regalo directo en saldo Waylet</strong> al finalizar la contratación de la tarifa Solar!</em><br><br>" +
+      `<div style=\"margin-top:8px;\"><button onclick=\"openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')\" style=\"display:inline-flex;align-items:center;gap:6px;color:#c2410c;background:rgba(234,88,12,0.1);border-radius:6px;border:1px solid rgba(234,88,12,0.3);cursor:pointer;font-weight:700;font-size:12.5px;padding:7px 12px;transition:all 0.15s;\" onmouseover=\"this.style.background='rgba(234,88,12,0.2)'\" onmouseout=\"this.style.background='rgba(234,88,12,0.1)'\">` +
+      `<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><polygon points=\"12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2\"></polygon></svg>` +
+      `Ver Infografía Oficial de Descuentos Waylet</button></div>`;
   }
 
   // ── GESTIÓN GENERAL DE TARIFAS Y PRECIOS ──
