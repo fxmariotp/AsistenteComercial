@@ -12148,8 +12148,8 @@ function renderInvCards(results, useSva){
       }
 
       promoRepsolBannerHtml = `
-        <div style="background:linear-gradient(135deg, #fff7ed, #ffedd5);border:1.5px solid #fed7aa;border-radius:10px;padding:12px 16px;margin:12px 0;box-shadow:0 2px 6px rgba(234,88,12,0.05);">
-          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:10px;">
+        <div style="background:linear-gradient(135deg, #fff7ed, #ffedd5);border:1.5px solid #fed7aa;border-radius:10px;padding:10px 14px;margin:10px 0;box-shadow:0 2px 6px rgba(234,88,12,0.05);">
+          <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
             <div style="display:flex;align-items:center;gap:10px;">
               <span style="font-size:24px;">⛽</span>
               <div>
@@ -12174,10 +12174,6 @@ function renderInvCards(results, useSva){
                 Ver Ficha Completa
               </button>
             </div>
-          </div>
-          
-          <div style="background:#ffffff;border:1px solid #fed7aa;border-radius:8px;padding:8px;text-align:center;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,0.03);transition:all 0.2s;" onclick="openServiceDocumentModal('img-companias/repsol-waylet-descuentos.png', 'Descuentos en Carburante Waylet — Repsol')" title="Haz clic para ampliar la imagen">
-            <img src="img-companias/repsol-waylet-descuentos.png" alt="Descuentos Waylet Repsol: Coche 10 cts/l, Coche y Luz 20 cts/l, Coche Luz y Gas 30 cts/l, Coche Luz Gas y Solar 40 cts/l" style="width:100%;max-width:640px;height:auto;display:inline-block;border-radius:6px;vertical-align:middle;">
           </div>
         </div>`;
     }
@@ -12522,25 +12518,25 @@ function printCompanyOffer(key) {
 
   let tbodyHtml = rows.map(r => `
     <tr>
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: left; ${r.isGreen ? 'color:#166534;font-weight:700;' : ''}">${r.concept}</td>
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: center; color: #475569; font-size: 11.5px;">${r.calc}</td>
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 700; ${r.isGreen ? 'color:#166534;' : ''}">${r.val}</td>
+      <td style="padding: 3.5px 8px; border-bottom: 1px solid #e2e8f0; text-align: left; ${r.isGreen ? 'color:#166534;font-weight:700;' : ''}">${r.concept}</td>
+      <td style="padding: 3.5px 8px; border-bottom: 1px solid #e2e8f0; text-align: center; color: #475569; font-size: 11px;">${r.calc}</td>
+      <td style="padding: 3.5px 8px; border-bottom: 1px solid #e2e8f0; text-align: right; font-weight: 700; ${r.isGreen ? 'color:#166534;' : ''}">${r.val}</td>
     </tr>
   `).join('');
 
   tbodyHtml += `
     <tr style="font-weight: 700; background: #f8fafc;">
-      <td style="padding: 5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: left;">Subtotal</td>
-      <td style="padding: 5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: center;">—</td>
-      <td style="padding: 5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: right;">${f2(useSva ? subtotalNoExc : subtotal)} €</td>
+      <td style="padding: 3.5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: left;">Subtotal</td>
+      <td style="padding: 3.5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: center;">—</td>
+      <td style="padding: 3.5px 8px; border-top: 1px solid #cbd5e1; border-bottom: 1px solid #cbd5e1; text-align: right;">${f2(useSva ? subtotalNoExc : subtotal)} €</td>
     </tr>
   `;
 
   tbodyHtml += `
     <tr style="font-weight: 600; color: #475569;">
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: left;">I.V.A. (${finalIvaPct}%)</td>
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">${finalIvaPct}% s/ ${f2(useSva ? subtotalNoExc : subtotal)} €</td>
-      <td style="padding: 5px 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">${f2(useSva ? (subtotalNoExc * finalIva) : ivaAmt)} €</td>
+      <td style="padding: 3.5px 8px; border-bottom: 1px solid #e2e8f0; text-align: left;">I.V.A. (${finalIvaPct}%)</td>
+      <td style="padding: 3.5px 8px; border-bottom: 1px solid #e2e8f0; text-align: center;">${finalIvaPct}% s/ ${f2(useSva ? subtotalNoExc : subtotal)} €</td>
+      <td style="padding: 3.5px 8px; border-bottom: 1px solid #e2e8f0; text-align: right;">${f2(useSva ? (subtotalNoExc * finalIva) : ivaAmt)} €</td>
     </tr>
   `;
 
@@ -12549,9 +12545,9 @@ function printCompanyOffer(key) {
     const formulaText = `${excedente.toFixed(2)} kWh × ${(excPrice * (1 + finalIva)).toFixed(3)} €/kWh (IVA inc.)`;
     tbodyHtml += `
       <tr style="font-weight: 600; color: #166534; background: #f0fdf4;">
-        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Virtual</td>
-        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">${formulaText}</td>
-        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(batteryDiscount)} €</td>
+        <td style="padding: 3.5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Virtual</td>
+        <td style="padding: 3.5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">${formulaText}</td>
+        <td style="padding: 3.5px 8px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(batteryDiscount)} €</td>
       </tr>
     `;
   }
@@ -12559,63 +12555,63 @@ function printCompanyOffer(key) {
   if (appliedBateriaVirtual > 0) {
     tbodyHtml += `
       <tr style="font-weight: 600; color: #166534; background: #f0fdf4;">
-        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Multicasa</td>
-        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">Saldo batería virtual aplicado (con IVA)</td>
-        <td style="padding: 5px 8px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(appliedBateriaVirtual)} €</td>
+        <td style="padding: 3.5px 8px; border-bottom: 1px solid #bbf7d0; text-align: left;">Descuento Batería Multicasa</td>
+        <td style="padding: 3.5px 8px; border-bottom: 1px solid #bbf7d0; text-align: center;">Saldo batería virtual aplicado (con IVA)</td>
+        <td style="padding: 3.5px 8px; border-bottom: 1px solid #bbf7d0; text-align: right;">−${f2(appliedBateriaVirtual)} €</td>
       </tr>
     `;
   }
 
     let html = `
-    <div class="print-header" style="margin-bottom: 16px; padding-bottom: 10px; display: flex; align-items: center; justify-content: flex-start; gap: 16px; border-bottom: 2px solid var(--blue);">
+    <div class="print-header" style="margin-bottom: 10px; padding-bottom: 6px; display: flex; align-items: center; justify-content: flex-start; gap: 14px; border-bottom: 2px solid var(--blue);">
       <div class="print-logo-area">
-        <img src="logo-renosur-black.png" alt="Renosur Grupo" style="height: 64px; width: auto; object-fit: contain; display: block;" />
+        <img src="logo-renosur-black.png" alt="Renosur Grupo" style="height: 48px; width: auto; object-fit: contain; display: block;" />
       </div>
       <div class="print-title-area" style="text-align: left;">
-        <div style="font-size: 22px; font-weight: 900; color: var(--text); margin-bottom: 0;">¿Como realizamos su estudio?</div>
+        <div style="font-size: 20px; font-weight: 900; color: var(--text); margin-bottom: 0;">¿Cómo realizamos su estudio?</div>
       </div>
     </div>
     
-    <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
-      1. Analizamos las caracteristicas del suministro
+    <div class="print-section-title" style="font-size: 11px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase;">
+      1. Analizamos las características del suministro
     </div>
-    <div class="print-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; border: 1.5px solid var(--border); border-radius: 8px; padding: 10px; background: #fff;">
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nombre del cliente</span>
-        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${clientNameVal || '—'}</span>
+    <div class="print-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-bottom: 8px; border: 1.5px solid var(--border); border-radius: 8px; padding: 7px 10px; background: #fff;">
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <span style="font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase;">Nombre del cliente</span>
+        <span style="font-size: 11.5px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${clientNameVal || '—'}</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa aplicada</span>
-        <span style="font-size: 12px; font-weight: 800; color: var(--blue); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${targetRes.tariffName || r.name}</span>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <span style="font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa aplicada</span>
+        <span style="font-size: 11.5px; font-weight: 800; color: var(--blue); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${targetRes.tariffName || r.name}</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Peaje de acceso / Segmento</span>
-        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${compMode === 'luz' ? (pot1 > 10 && pot1 <= 15 ? '2.1TD' : (pot1 > 15 ? '3.0TD' : '2.0TD')) : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <span style="font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase;">Peaje de acceso / Segmento</span>
+        <span style="font-size: 11.5px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${compMode === 'luz' ? (pot1 > 10 && pot1 <= 15 ? '2.1TD' : (pot1 > 15 ? '3.0TD' : '2.0TD')) : `Gas (RL${band === 'rl1' ? '1' : band === 'rl2' ? '2' : '3'})`}</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Periodo facturado</span>
-        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${dias} dias</span>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <span style="font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase;">Periodo facturado</span>
+        <span style="font-size: 11.5px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${dias} dias</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Asesor</span>
-        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${agentName}</span>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <span style="font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase;">Asesor</span>
+        <span style="font-size: 11.5px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${agentName}</span>
       </div>
-      <div style="display: flex; flex-direction: column; gap: 4px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Fecha de comparativa</span>
-        <span style="font-size: 12px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${dateStr}</span>
+      <div style="display: flex; flex-direction: column; gap: 3px;">
+        <span style="font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase;">Fecha de comparativa</span>
+        <span style="font-size: 11.5px; font-weight: 700; color: var(--text); border-top: 1px solid #f1f5f9; padding-top: 2px; margin-top: 1px;">${dateStr}</span>
       </div>
     </div>
     
-    <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
+    <div class="print-section-title" style="font-size: 11px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 3px; margin-bottom: 6px; text-transform: uppercase;">
       2. Propuesta de ahorro con el producto seleccionado
     </div>
     
-    <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 8px; font-size: 11.5px;">
+    <table class="print-table" style="width: 100%; border-collapse: collapse; margin-bottom: 6px; font-size: 11px;">
       <thead>
         <tr style="background: var(--blue) !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-          <th style="padding: 5px 8px; text-align: left; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Concepto</th>
-          <th style="padding: 5px 8px; text-align: center; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Calculo</th>
-          <th style="padding: 5px 8px; text-align: right; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Importe</th>
+          <th style="padding: 4px 8px; text-align: left; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Concepto</th>
+          <th style="padding: 4px 8px; text-align: center; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Calculo</th>
+          <th style="padding: 4px 8px; text-align: right; font-weight: 700; background: var(--blue) !important; color: #ffffff !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Importe</th>
         </tr>
       </thead>
       <tbody>
@@ -12623,46 +12619,46 @@ function printCompanyOffer(key) {
       </tbody>
     </table>
     
-    <div style="display: flex; justify-content: flex-end; margin-top: 5px; margin-bottom: 12px;">
-      <div style="display: flex; width: 240px; border-radius: 6px; overflow: hidden; font-weight: 800; font-size: 14.5px; border: 1.5px solid var(--border); box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);">
-        <div style="flex: 1; background: var(--blue); color: #fff; padding: 6px 10px; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Total</div>
-        <div style="width: 120px; background: #f8fafc; color: var(--text); padding: 10px; text-align: right; border-left: 1.5px solid var(--border); -webkit-print-color-adjust: exact; print-color-adjust: exact;">${f2(total)} €</div>
+    <div style="display: flex; justify-content: flex-end; margin-top: 4px; margin-bottom: 8px;">
+      <div style="display: flex; width: 220px; border-radius: 6px; overflow: hidden; font-weight: 800; font-size: 13.5px; border: 1.5px solid var(--border); box-shadow: 0 2px 4px -1px rgba(0,0,0,0.02);">
+        <div style="flex: 1; background: var(--blue); color: #fff; padding: 5px 8px; text-align: center; -webkit-print-color-adjust: exact; print-color-adjust: exact;">Total</div>
+        <div style="width: 110px; background: #f8fafc; color: var(--text); padding: 5px 8px; text-align: right; border-left: 1.5px solid var(--border); -webkit-print-color-adjust: exact; print-color-adjust: exact;">${f2(total)} €</div>
       </div>
     </div>
   `;
   
   if (ahorro > 0) {
     html += `
-      <div style="border: 2px solid #047857; border-radius: 8px; overflow: hidden; margin-bottom: 12px; page-break-inside: avoid; font-family: inherit;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #047857; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+      <div style="border: 2px solid #047857; border-radius: 8px; overflow: hidden; margin-bottom: 8px; page-break-inside: avoid; font-family: inherit;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #047857; color: #ffffff; text-align: center; font-weight: 700; font-size: 11px; text-transform: uppercase; padding: 5px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div style="border-right: 1px solid rgba(255,255,255,0.3);">Resultado ahorro</div>
           <div>Ahorro anual (estimado)</div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 8px 0;">
-          <div style="border-right: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #202854;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 6px 0;">
+          <div style="border-right: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #202854;">
             ${f2(ahorro)} €
           </div>
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #202854; line-height: 1.3;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #202854; line-height: 1.25;">
             <span>${f2(ahorro * 12)} € al año</span>
-            ${pct !== null ? `<span style="font-size: 13px; font-weight: 700; color: #047857; margin-top: 2px;">${Math.round(pct)}% al año</span>` : ''}
+            ${pct !== null ? `<span style="font-size: 12px; font-weight: 700; color: #047857; margin-top: 1px;">${Math.round(pct)}% al año</span>` : ''}
           </div>
         </div>
       </div>
     `;
   } else {
     html += `
-      <div style="border: 2px solid #202854; border-radius: 8px; overflow: hidden; margin-bottom: 12px; page-break-inside: avoid; font-family: inherit;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #202854; color: #ffffff; text-align: center; font-weight: 700; font-size: 12px; text-transform: uppercase; padding: 8px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+      <div style="border: 2px solid #202854; border-radius: 8px; overflow: hidden; margin-bottom: 8px; page-break-inside: avoid; font-family: inherit;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #202854; color: #ffffff; text-align: center; font-weight: 700; font-size: 11px; text-transform: uppercase; padding: 5px 0; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div style="border-right: 1px solid rgba(255,255,255,0.3);">Coste estimado mensual</div>
           <div>Diferencia con actual</div>
         </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 8px 0;">
-          <div style="border-right: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 800; color: #202854;">
+        <div style="display: grid; grid-template-columns: 1fr 1fr; background: #ffffff; text-align: center; padding: 6px 0;">
+          <div style="border-right: 2px solid #e2e8f0; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: 800; color: #202854;">
             ${f2(total)} €
           </div>
-          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; color: #dc2626; line-height: 1.3;">
+          <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; color: #dc2626; line-height: 1.25;">
             <span>+${f2(Math.abs(ahorro * 12))} € al año</span>
-            ${pct !== null ? `<span style="font-size: 13px; font-weight: 700; color: #dc2626; margin-top: 2px;">+${Math.round(Math.abs(pct))}% al año</span>` : ''}
+            ${pct !== null ? `<span style="font-size: 12px; font-weight: 700; color: #dc2626; margin-top: 1px;">+${Math.round(Math.abs(pct))}% al año</span>` : ''}
           </div>
         </div>
       </div>
@@ -12671,12 +12667,12 @@ function printCompanyOffer(key) {
 
   if (cia === 'endesa' && compMode === 'luz' && !(cuotaBateriaVirtualEndesa > 0)) {
     html += `
-      <div style="border: 1.5px solid #c084fc; background: #faf5ff; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #581c87; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+      <div style="border: 1.5px solid #c084fc; background: #faf5ff; border-radius: 6px; padding: 5px 10px; margin-bottom: 6px; font-size: 10px; color: #581c87; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
         <div>
           <strong>🛍️ Promoción Black Friday Endesa:</strong> 10% de dto. extra en término de energía ya incluido en el cálculo.<br>
           <strong>🎁 Bonificación "Para Ti":</strong> <strong>100 € de abono directo</strong> divididos en las 5 primeras facturas (<strong>-20 €/factura</strong>).
         </div>
-        <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #15803d; white-space: nowrap;">
+        <div style="text-align: right; font-weight: 800; font-size: 11.5px; color: #15803d; white-space: nowrap;">
           -20 € en 5 facturas
         </div>
       </div>
@@ -12685,12 +12681,12 @@ function printCompanyOffer(key) {
 
   if (cia === 'repsol' && compMode === 'luz' && (cuotaBateriaVirtualRepsol > 0)) {
     html += `
-      <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+      <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 5px 10px; margin-bottom: 6px; font-size: 10px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
         <div>
           <strong>☀️ Tarifa Solar Repsol (Batería Virtual):</strong> Excedentes compensados a <strong>0,06 €/kWh</strong> con cuota de batería virtual de <strong>1,99 €/mes</strong>.<br>
           <strong>🎁 Saldo Waylet de Regalo:</strong> <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación para facturas y repostajes.
         </div>
-        <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
+        <div style="text-align: right; font-weight: 800; font-size: 11.5px; color: #ea580c; white-space: nowrap;">
           60 € Saldo Waylet
         </div>
       </div>
@@ -12699,24 +12695,24 @@ function printCompanyOffer(key) {
     const isCifPrint = document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false;
     if (isCifPrint) {
       html += `
-        <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 5px 10px; margin-bottom: 6px; font-size: 10px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div>
             <strong>🏢 Tarifa Tranquilísima (CIF):</strong> Precio único 24h a <strong>0,1499 €/kWh</strong> y potencia a <strong>0,099726 €/kW·día</strong>.<br>
             <strong>🎁 Saldo Waylet:</strong> <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación para facturas y repostajes.
           </div>
-          <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
+          <div style="text-align: right; font-weight: 800; font-size: 11.5px; color: #ea580c; white-space: nowrap;">
             60 € Saldo Waylet
           </div>
         </div>
       `;
     } else {
       html += `
-        <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 5px 10px; margin-bottom: 6px; font-size: 10px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
           <div>
             <strong>🛡️ Tarifa Tranquilísima:</strong> Precio fijo garantizado durante <strong>5 años</strong> sin permanencia ni penalizaciones.<br>
             <strong>🛠️ Tu Asistente 24h Plus:</strong> <strong>100% de descuento (gratis)</strong> durante los 2 primeros meses.
           </div>
-          <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
+          <div style="text-align: right; font-weight: 800; font-size: 11.5px; color: #ea580c; white-space: nowrap;">
             5 Años Precio Fijo
           </div>
         </div>
@@ -12726,17 +12722,17 @@ function printCompanyOffer(key) {
 
   if (cia === 'repsol') {
     html += `
-      <div style="border: 1.5px solid #ea580c; background: #fff7ed; border-radius: 8px; padding: 8px 12px; margin-bottom: 10px; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 6px; border-bottom: 1px solid rgba(234, 88, 12, 0.2); padding-bottom: 4px;">
-          <div style="font-weight: 800; font-size: 11px; color: #c2410c; display: flex; align-items: center; gap: 6px;">
+      <div style="border: 1.5px solid #ea580c; background: #fff7ed; border-radius: 6px; padding: 5px 10px; margin-bottom: 6px; page-break-inside: avoid; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 3px; border-bottom: 1px solid rgba(234, 88, 12, 0.2); padding-bottom: 2px;">
+          <div style="font-weight: 800; font-size: 10px; color: #c2410c; display: flex; align-items: center; gap: 4px;">
             <span>🚗⚡🔥☀️ Descuentos en Repostajes con Waylet por contratar con Repsol</span>
           </div>
-          <span style="font-size: 10px; font-weight: 800; color: #ea580c; background: rgba(234, 88, 12, 0.12); padding: 2px 7px; border-radius: 4px;">Hasta 40 cts./l de saldo</span>
+          <span style="font-size: 9px; font-weight: 800; color: #ea580c; background: rgba(234, 88, 12, 0.12); padding: 1px 5px; border-radius: 4px;">Hasta 40 cts./l de saldo</span>
         </div>
-        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 6px;">
-          <img src="img-companias/repsol-waylet-descuentos.png" alt="Descuentos Waylet Repsol" style="width: 100%; max-width: 620px; height: auto; border-radius: 6px; display: block; border: 1px solid #fed7aa;" />
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 3px;">
+          <img src="img-companias/repsol-waylet-descuentos.png" alt="Descuentos Waylet Repsol" style="width: auto; max-width: 100%; height: 56px; border-radius: 4px; display: block; border: 1px solid #fed7aa;" />
         </div>
-        <div style="font-size: 9.5px; color: #9a3412; line-height: 1.35; text-align: center;">
+        <div style="font-size: 8px; color: #9a3412; line-height: 1.25; text-align: center;">
           • <strong>Solo Waylet:</strong> 10 cts./l · • <strong>Con Luz:</strong> 20 cts./l · • <strong>Con Luz y Gas:</strong> 30 cts./l · • <strong>Con Luz, Gas y Solar:</strong> 40 cts./l de saldo acumulable en carburante
         </div>
       </div>
@@ -12744,23 +12740,23 @@ function printCompanyOffer(key) {
   }
 
   html += `
-    <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
-      3. Compañia y Tarifa seleccionada
+    <div class="print-section-title" style="font-size: 11px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 3px; margin-bottom: 5px; text-transform: uppercase;">
+      3. Compañía y Tarifa seleccionada
     </div>
-    <div style="margin-top: 8px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; border: 1.5px solid var(--border); border-radius: 8px; padding: 8px 14px; background: #fff;">
+    <div style="margin-top: 4px; margin-bottom: 6px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; border: 1.5px solid var(--border); border-radius: 6px; padding: 6px 12px; background: #fff;">
       <div class="print-brand-badge" style="display: inline-flex; align-items: center; padding: 0 !important; background: transparent !important; border: none !important; box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
-        <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height: 52px; max-width: 200px; object-fit: contain; display: block;" />
+        <img src="${getCompanyLogoUrl(cia)}" onerror="handleLogoError(this, '${cia}')" alt="${r.name}" style="height: 38px; max-width: 150px; object-fit: contain; display: block;" />
       </div>
       <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 2px;">
-        <span style="font-size: 10px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa aplicada</span>
-        <span style="font-size: 14px; font-weight: 800; color: ${printColor}; background: #f8fafc; padding: 4px 10px; border-radius: 6px; border: 1.5px solid #e2e8f0;">${targetRes.tariffName || r.name}</span>
+        <span style="font-size: 9px; font-weight: 700; color: #64748b; text-transform: uppercase;">Tarifa aplicada</span>
+        <span style="font-size: 13px; font-weight: 800; color: ${printColor}; background: #f8fafc; padding: 3px 8px; border-radius: 5px; border: 1.5px solid #e2e8f0;">${targetRes.tariffName || r.name}</span>
       </div>
     </div>
     
-    <div class="print-footer" style="border-top: 1.5px solid var(--border); padding-top: 8px; font-size: 8.5px; color: #64748b; text-align: center; line-height: 1.4; margin-top: 8px;">
-      Este estudio energetico es de caracter informativo. Los calculos se estiman segun el consumo facilitado por el cliente,<br>
-      las tarifas contractuales de las comercializadoras y la legislacion vigente. RENOSUR no se hace responsable de posibles<br>
-      variaciones en las condiciones comerciales reales en el momento de la contratacion definitiva.
+    <div class="print-footer" style="border-top: 1.5px solid var(--border); padding-top: 5px; font-size: 8px; color: #64748b; text-align: center; line-height: 1.3; margin-top: 5px;">
+      Este estudio energético es de carácter informativo. Los cálculos se estiman según el consumo facilitado por el cliente,<br>
+      las tarifas contractuales de las comercializadoras y la legislación vigente. RENOSUR no se hace responsable de posibles<br>
+      variaciones en las condiciones comerciales reales en el momento de la contratación definitiva.
     </div>
   `;
 
@@ -12789,11 +12785,12 @@ function printCompanyOffer(key) {
       : `COMPARATIVA ${companyAndTariff}.pdf`).replace(/\s+/g, ' ');
 
     const opt = {
-      margin:       [8, 8, 8, 8],
+      margin:       [6, 6, 6, 6],
       filename:     pdfFilename,
       image:        { type: 'jpeg', quality: 0.98 },
       html2canvas:  { scale: 2, useCORS: true, width: 760 },
-      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      jsPDF:        { unit: 'mm', format: 'a4', orientation: 'portrait' },
+      pagebreak:    { mode: ['avoid-all', 'css', 'legacy'] }
     };
     
     const container = document.getElementById('print-report-container');
