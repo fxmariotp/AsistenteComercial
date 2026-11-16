@@ -5541,30 +5541,40 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
               La contratación se tramita directamente aportando <strong>DNI + Factura</strong>.
             </p>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; text-align: left; margin-bottom: 22px;">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; text-align: left; margin-bottom: 22px;">
               <div style="background: var(--surface2, rgba(0,0,0,0.02)); border: 1.5px solid rgba(255, 80, 0, 0.25); border-radius: 10px; padding: 16px;">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
                   <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #FF5000; color: #fff; font-weight: 800; font-size: 13px;">1</span>
-                  <strong style="color: var(--text); font-size: 14.5px;">DNI / NIE en vigor</strong>
+                  <strong style="color: var(--text); font-size: 14px;">DNI / NIE en vigor</strong>
                 </div>
                 <div style="font-size: 12.5px; color: var(--t3); line-height: 1.45;">
-                  Documento de identidad vigente del titular (ambas caras legibles).
+                  Documento vigente del titular (ambas caras).
                 </div>
               </div>
 
               <div style="background: var(--surface2, rgba(0,0,0,0.02)); border: 1.5px solid rgba(255, 80, 0, 0.25); border-radius: 10px; padding: 16px;">
                 <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
                   <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #FF5000; color: #fff; font-weight: 800; font-size: 13px;">2</span>
-                  <strong style="color: var(--text); font-size: 14.5px;">Factura completa</strong>
+                  <strong style="color: var(--text); font-size: 14px;">Factura completa</strong>
                 </div>
                 <div style="font-size: 12.5px; color: var(--t3); line-height: 1.45;">
-                  Factura actual de luz o gas donde figure el CUPS y la dirección de suministro.
+                  Factura de luz o gas con CUPS y dirección.
+                </div>
+              </div>
+
+              <div style="background: var(--surface2, rgba(0,0,0,0.02)); border: 1.5px solid rgba(255, 80, 0, 0.25); border-radius: 10px; padding: 16px;">
+                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 6px;">
+                  <span style="display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 7px; background: #FF5000; color: #fff; font-weight: 800; font-size: 13px;">3</span>
+                  <strong style="color: var(--text); font-size: 14px;">Firma por SMS</strong>
+                </div>
+                <div style="font-size: 12.5px; color: var(--t3); line-height: 1.45;">
+                  SMS que el cliente firma <strong>sin verificación posterior</strong>.
                 </div>
               </div>
             </div>
 
             <div style="background: rgba(255, 80, 0, 0.06); border: 1px dashed rgba(255, 80, 0, 0.35); border-radius: 8px; padding: 12px 18px; font-size: 13px; color: var(--t2); line-height: 1.5;">
-              ℹ️ <strong>Requisitos de tramitación:</strong> Se tramita con <strong>DNI + Factura</strong> (+ IBAN para domiciliación). No requiere lectura legal con el cliente.
+              ℹ️ <strong>Tramitación directa:</strong> Aportar <strong>DNI + Factura</strong> (+ IBAN para domiciliación). El cliente recibe un SMS que ha de firmar <strong>sin verificación posterior</strong> ni llamadas de confirmación.
             </div>
           </div>
         </div>
@@ -11185,7 +11195,8 @@ const PROCEDIMIENTOS = {
       process: [
         'De momento NO hay texto legal ni grabación telefónica para Repsol.',
         'La contratación se tramita directamente con DNI + Factura.',
-        'El cliente recibe el contrato por SMS / correo para confirmación digital.',
+        'Proceso de firma: Es un SMS que el cliente ha de firmar sin verificación posterior.',
+        'Sin llamadas posteriores: No requiere llamada de verificación ni control tras la firma del SMS.',
         'Activación del contrato y acceso al Área Cliente / app de Repsol en unos 15 días laborables (sin corte de suministro ni trámites adicionales).'
       ]
     },
@@ -11199,12 +11210,14 @@ const PROCEDIMIENTOS = {
       process: [
         'De momento NO hay texto legal ni locución corporativa para Repsol.',
         'Tramitación corporativa directa con DNI + Factura + CIF.',
-        'Envío de contrato al correo de la empresa para revisión y firma electrónica.',
+        'Proceso de firma: SMS enviado al titular / apoderado que ha de firmar sin verificación posterior.',
+        'Sin llamadas posteriores: No requiere llamada de verificación posterior tras la firma.',
         'Activación del suministro en unos 15 días laborables sin interrupción del servicio.'
       ]
     },
     requisitos: [
       'Tramitación: De momento NO hay texto legal ni grabación; se tramita directamente con DNI + Factura.',
+      'Proceso de firma: SMS que el cliente ha de firmar directamente (sin verificación posterior).',
       'Sin permanencia ni penalización por baja anticipada.',
       '14 días naturales de desistimiento legal desde la contratación.',
       'Tarifa Tranquilísima Promo: Precio del kWh fijo garantizado durante 5 años.',
@@ -17009,7 +17022,7 @@ function getRenosurChatResponse(query) {
         `  <button onclick="sendQuickChatQuery('Firma Naturgy')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Naturgy (Consentimiento Previo + SMS Contrato)</button>` +
         `  <button onclick="sendQuickChatQuery('Firma Endesa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Endesa (SMS con PIN Temporal)</button>` +
         `  <button onclick="sendQuickChatQuery('Firma Gana Energia')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Gana Energía (2 PDFs + PIN SMS)</button>` +
-        `  <button onclick="sendQuickChatQuery('Firma Repsol')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Repsol (SMS con PIN OTP + Confirmación)</button>` +
+        `  <button onclick="sendQuickChatQuery('Firma Repsol')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Repsol (Firma por SMS sin verificación posterior)</button>` +
         `</div>`;
     }
 
@@ -17058,10 +17071,10 @@ function getRenosurChatResponse(query) {
 
     if (hasRepsol) {
       return `<strong>Repsol — Proceso de Firma Digital:</strong><br><br>` +
-             `1. <strong>SMS con Enlace de Firma Segura:</strong> El cliente recibe un SMS con el enlace al portal de contratación digital de Repsol.<br>` +
-             `2. <strong>Validación por PIN OTP:</strong> El titular introduce el código PIN de validación enviado a su teléfono móvil para firmar el contrato digital.<br>` +
-             `3. <strong>Activación y Asignación de Beneficios:</strong> El suministro se tramita sin cortes y los saldos de regalo de Waylet (hasta 60€) se asocian a su cuenta.<br><br>` +
-             `<em>*Nota operativa:* En canal telefónico asistido se realiza lectura obligatoria de las condiciones legales de contratación.</em>`;
+             `1. <strong>SMS con Enlace de Firma:</strong> El cliente recibe un SMS en su teléfono móvil con el enlace para firmar el contrato digitalmente.<br>` +
+             `2. <strong>Firma Digital Directa:</strong> El titular accede y firma directamente desde el enlace del SMS.<br>` +
+             `3. <strong>Sin Verificación Posterior:</strong> De momento <strong>no requiere llamada de verificación ni comprobaciones adicionales posteriores</strong> tras la firma del SMS.<br><br>` +
+             `<em>*Nota operativa:* Se tramita directamente con DNI + Factura. No hay texto legal ni locución de grabación telefónica por el momento.</em>`;
     }
   }
 
@@ -17313,19 +17326,19 @@ function getRenosurChatResponse(query) {
       if (isResidencial) {
         return `<strong>Repsol — Requisitos y Procedimiento Residencial (Particulares):</strong><br><br>` +
                `• <strong>Documentación necesaria:</strong><br>` +
-               `  - Lectura de texto legal obligatorio / grabación telefónica.<br>` +
-               `  - DNI o NIE en vigor del titular.<br>` +
-               `  - CUPS del suministro (luz o gas) o factura reciente completa.<br>` +
-               `  - Datos de contacto (teléfono y correo electrónico).<br>` +
-               `  - Número de cuenta bancaria (IBAN) para domiciliación.<br><br>` +
+               `  - DNI o NIE en vigor del titular (ambas caras).<br>` +
+               `  - Factura actual completa de luz o gas (con CUPS legible y dirección).<br>` +
+               `  - Número de cuenta bancaria (IBAN) para domiciliación.<br>` +
+               `  - <em>*Nota:* De momento NO hay texto legal ni locución de grabación telefónica; se tramita directamente con DNI + Factura.</em><br><br>` +
                `• <strong>Procedimiento de Firma:</strong><br>` +
-               `  - Envío de SMS con enlace al portal de firma y código PIN OTP.<br>` +
+               `  - <strong>SMS de Firma:</strong> El cliente recibe un SMS con el enlace para firmar el contrato.<br>` +
+               `  - <strong>Sin verificación posterior:</strong> No requiere llamada de verificación ni control tras la firma del SMS.<br>` +
                `  - Activación sin cortes en un plazo aproximado de 15 días laborables.<br><br>` +
                `• <strong>Tarifas y Ventajas Destacadas:</strong><br>` +
                `  - <strong>Tarifa Tranquilísima Promo:</strong> Precio fijo del kWh garantizado durante 5 años (0,1399 €/kWh). Sin permanencia.<br>` +
                `  - <strong>Tarifa Solar (Batería Virtual):</strong> Cuota 1,99 €/mes, compensación de excedentes a 0,06 €/kWh y 60 € de regalo en saldo Waylet.<br>` +
                `  - <strong>Servicios de Mantenimiento (SVA):</strong> Tu Asistente 24h Plus (2 meses gratis, luego 5,78 €/mes en Tranquilísima o 6,99 €/mes en Solar); Tu Asistente Gas 9,08 €/mes.<br>` +
-               `  - <strong>Retrocomisión:</strong> 12 meses.<br><br>` +
+               `  - <strong>Retrocomisión:</strong> 6 meses.<br><br>` +
                `• <strong>Normas Operativas:</strong><br>` +
                `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (contrato alquiler, escrituras, IBI).<br>` +
                `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.`;
@@ -17333,16 +17346,17 @@ function getRenosurChatResponse(query) {
       if (isCIF) {
         return `<strong>Repsol — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
                `• <strong>Documentación necesaria:</strong><br>` +
-               `  - Lectura de texto legal obligatorio.<br>` +
                `  - DNI / NIE del representante legal o apoderado.<br>` +
                `  - CIF de la empresa / sociedad o acreditación de autónomo.<br>` +
                `  - Factura actual completa del suministro o CUPS.<br>` +
-               `  - Cuenta bancaria (IBAN).<br><br>` +
+               `  - Cuenta bancaria (IBAN).<br>` +
+               `  - <em>*Nota:* De momento NO hay texto legal ni locución corporativa; tramitación directa con DNI + Factura + CIF.</em><br><br>` +
                `• <strong>Procedimiento de Firma:</strong><br>` +
-               `  - Envío de contrato corporativo por correo/SMS con PIN de seguridad para firma digital.<br><br>` +
+               `  - Envío de SMS / enlace para firma digital del contrato.<br>` +
+               `  - <strong>Sin verificación posterior:</strong> No requiere llamada de confirmación posterior tras la firma.<br><br>` +
                `• <strong>Normas Operativas:</strong><br>` +
                `  - Sin permanencia ni penalización económica.<br>` +
-               `  - Retrocomisión: 12 meses.<br>` +
+               `  - Retrocomisión: 6 meses.<br>` +
                `  - Altas nuevas: Obligatorio CIE.`;
       }
     }
@@ -17353,7 +17367,7 @@ function getRenosurChatResponse(query) {
              `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones. No se permiten cambios de potencia.<br><br>` +
              `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA (Servicio de Asistencia de la Comercializadora) en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
              `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
-             `• <strong>Repsol:</strong> Se tramita con DNI + Factura (de momento no hay texto legal ni locución). Firma por SMS con PIN OTP. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet) y Gas Ahorro (0,0899 €/kWh). Retrocomisión 6 meses.<br><br>` +
+             `• <strong>Repsol:</strong> Se tramita con DNI + Factura (sin texto legal de momento). Firma mediante SMS sin verificación posterior. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet) y Gas Ahorro (0,0899 €/kWh). Retrocomisión 6 meses.<br><br>` +
              `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Repsol?") para elegir entre Particular o CIF.*</em>`;
     }
   }
