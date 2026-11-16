@@ -5091,6 +5091,9 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
         <button class="ctab" id="ctab-gana" onclick="switchCia('gana')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
           <img src="img-companias/gana.png" onerror="handleLogoError(this, 'gana')" alt="Gana Energia" style="height:28px;max-width:110px;object-fit:contain;display:block;">
         </button>
+        <button class="ctab" id="ctab-repsol" onclick="switchCia('repsol')" style="display:inline-flex;align-items:center;gap:6px;height:44px;padding:4px 16px;border:1.5px solid transparent;background:transparent;color:var(--t2);border-radius:10px;cursor:pointer;">
+          <img src="img-companias/repsol.svg" onerror="handleLogoError(this, 'repsol')" alt="Repsol" style="height:28px;max-width:110px;object-fit:contain;display:block;">
+        </button>
       </div>
 
       <!-- IBERDROLA -->
@@ -5504,6 +5507,61 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
           <div class="script-section">
             <div class="script-sec-title"><span style="background:#008B3C"></span>Cierre y Despedida</div>
             <p class="stxt">Con esto he terminado la gestion por mi parte, para completar el tramite solo falta que firme el contrato que le ha llegado a su telefono y a su mail. El proceso de firma de este es muy sencillo, pero si tiene alguna duda, tiene acceso a un video explicativo en la parte de abajo del link que le llega indicarle igualmente, que dispone de <strong>14 dias para poder desistir</strong> su contrato por ultimo, informarle que dispone de un telefono gratuito <strong>900 535 689</strong> de Gana Energia. Para finalizar agradecerle la confianza depositada y darle la bienvenida a Gana Energia. Gracias y que pase un buen dia.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- REPSOL -->
+      <div class="sv" id="sv-repsol">
+        <div class="script-big-card">
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#FF5000"></span>Apertura</div>
+            <p class="stxt">Buenas tardes, le llamamos de <strong>Evaria colaborador oficial de Repsol</strong>. ¿Podria hablar con <span class="blank blg">(nombre del cliente)</span>? El motivo de nuestra llamada es confirmar que los datos facilitados por usted son correctos, le informo que la conversacion esta siendo grabada hoy <span id="rep-fecha" style="display:inline-block;border-bottom:2px solid #FF5000;padding:0 6px;font-weight:700;color:#FF5000;min-width:90px;text-align:center">25/05/2026</span> a las <span id="rep-hora" style="display:inline-block;border-bottom:2px solid #FF5000;padding:0 6px;font-weight:700;color:#FF5000;min-width:55px;text-align:center">15:23</span> horas.</p>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#e07b00"></span>Datos personales del cliente</div>
+            <div class="step-list">
+              <div class="step-row"><span class="stn">1</span><div>¿Nos podria facilitar su <strong>nombre y apellidos</strong>? <span class="blank blg">(nombre y apellidos)</span> y su <strong>DNI / NIE</strong> <span class="blank bsm">(DNI)</span></div></div>
+              <div class="step-row"><span class="stn">2</span><div>¿Seria tan amable de indicarnos la <strong>fecha de nacimiento</strong>? <span class="blank">(fecha de nacimiento)</span></div></div>
+              <div class="step-row"><span class="stn">3</span><div>¿Me podria confirmar la <strong>direccion completa</strong> del punto de suministro? <span class="blank blg">(direccion completa)</span></div></div>
+              <div class="step-row"><span class="stn">4</span><div>¿Nos podria facilitar su <strong>telefono</strong> de contacto? <span class="blank">(telefono)</span></div></div>
+              <div class="step-row"><span class="stn">5</span><div>¿Nos podria facilitar su <strong>correo electronico</strong> para el envio del contrato y acceso al area cliente? <span class="blank blg">(correo electronico)</span></div></div>
+              <div class="step-row"><span class="stn">6</span><div>¿Nos podria facilitar el <strong>numero de cuenta (IBAN)</strong> donde domiciliar los recibos? <span class="blank blg">(IBAN completo)</span></div></div>
+            </div>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#0d5c9e"></span>Verificacion de productos contratados</div>
+            <p class="nota">Lee unicamente los apartados que apliquen segun lo contratado</p>
+            <div class="prod-grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px">
+              <div class="prod-block" style="margin:0">
+                <strong>💡 Luz · Tarifa Tranquilísima Promo</strong>
+                Ha realizado la contratacion de su suministro de luz con CUPS <span class="blank bsm">(CUPS)</span> bajo la tarifa <strong>Tranquilísima Promo</strong> a <strong>0,1399 €/kWh</strong> (24h) y potencia a <strong>33,40 €/kW·año</strong> (0,0915 €/kW·día), con <strong>precio fijo durante 5 años</strong> y sin permanencia.
+                <div style="margin-top:8px"><span class="ry">✓ CLIENTE: SI</span></div>
+              </div>
+              <div class="prod-block" style="margin:0">
+                <strong>☀️ Luz · Tarifa Solar (Batería Virtual)</strong>
+                Ha realizado la contratacion de su suministro con placas solares bajo la tarifa <strong>Solar con Batería Virtual</strong> a <strong>0,1699 €/kWh</strong>, compensación de excedentes a <strong>0,06 €/kWh</strong> y cuota de batería virtual de <strong>1,99 €/mes</strong>.
+                <div style="margin-top:8px"><span class="ry">✓ CLIENTE: SI</span></div>
+              </div>
+              <div class="prod-block" style="margin:0;border-left:3px solid var(--blue2)">
+                <strong>🔥 Gas · Tarifa Gas Ahorro RL.1</strong>
+                Ha realizado la contratacion de su suministro de gas con CUPS <span class="blank bsm">(CUPS)</span> bajo la tarifa <strong>Gas Ahorro RL.1</strong> con termino variable a <strong>0,0899 €/kWh</strong> y termino fijo a <strong>6,90 €/mes</strong> (0,2300 €/día) sin permanencia.
+                <div style="margin-top:8px"><span class="ry">✓ CLIENTE: SI</span></div>
+              </div>
+              <div class="prod-block" style="margin:0;border-left:3px solid var(--green)">
+                <strong>🛠️ Servicios de Mantenimiento Repsol</strong>
+                Ha contratado el servicio <strong style="color:var(--green)">Tu Asistente 24h Plus</strong> (5,78 €/mes con 2 primeros meses gratis) y/o <strong style="color:var(--green)">Tu Asistente Gas</strong> (9,08 €/mes).
+                <div style="margin-top:8px"><span class="ry">✓ CLIENTE: SI</span></div>
+              </div>
+            </div>
+            <div class="prod-block" style="background:rgba(255,80,0,0.06);border-left:3px solid #FF5000">
+              <strong>🎁 Promocion y Saldo Waylet</strong>
+              Disfruta de las ventajas de Repsol con saldo de regalo en la app <strong>Waylet</strong> utilizable en facturas y repostajes (hasta 60€ en solar / 20€ con servicios adicionales).
+            </div>
+          </div>
+          <div class="script-section">
+            <div class="script-sec-title"><span style="background:#008B3C"></span>Cierre y Despedida</div>
+            <p class="stxt">Con esto queda gestionada la solicitud de contratacion con Repsol. Le recordamos que dispone de <strong>14 dias naturales de desistimiento</strong> sin penalizacion y que el cambio de suministro se realizara sin cortes en unos 15 dias laborables. Para cualquier consulta dispone del telefono gratuito de atencion <strong>900 118 866</strong> (asistencia 24h <strong>900 10 17 21</strong>). Gracias por su confianza y bienvenido a Repsol.</p>
           </div>
         </div>
       </div>
@@ -7568,6 +7626,17 @@ function escapeHtml(str) {
     Bono "Para Ti": 100€ de bonificación divididos en 5 facturas (-20€/factura)
     Gas RL.1: TV=0,096 TF=0,250 €/dia (7,5€/mes) · RL.2: TV=0,095 TF=0,4867 (14,6€/mes) · RL.3: TV=0,094 TF=1,0233 (30,7€/mes)
     Impuesto electrico: 5,11%
+
+  REPSOL: PVP 2026 Peninsula
+    - Tarifa Tranquilísima Promo (2.0TD <10kW): TE=0,1399 €/kWh · TP1=TP2=33,40 €/kW·año (0,0915 €/kW·día)
+      Tu Asistente 24h Plus: 5,78 €/mes (100% dto los 2 primeros meses) · Saldo Waylet: 0 / 20 / 20 €
+      Precio kWh fijo durante 5 años · Sin permanencia
+    - Tarifa Solar (Autoconsumo con placas y Batería Virtual): TE=0,1699 €/kWh · TP1=TP2=0,099726 €/kW·día
+      Cuota Batería Virtual: 1,99 €/mes · Excedentes: 0,06 €/kWh
+      Asistente 24h Plus: 6,99 €/mes (2 meses gratis) · 60 € regalo saldo Waylet
+    - Gas Ahorro: RL1 TV=0,0899 TF=6,90 €/mes (0,2300 €/día) · RL2 TV=0,0899 TF=13,90 €/mes · RL3 TV=0,0899 TF=22,90 €/mes
+      Tu Asistente Gas: 9,08 €/mes · Sin permanencia
+    Impuesto electrico: 5,11%
 */
 
 function isPlanAhoraActive() {
@@ -7656,6 +7725,26 @@ const BASE = {
       {n:'Gana Gas RL2', tv:0.0882, tf:0.272333},
       {n:'Gana Gas RL3', tv:0.0848, tf:0.6440}
     ]
+  },
+  repsol:{
+    name:'Repsol', color:'#FF5000',
+    tp1:0.091507, tp2:0.091507,
+    te_sin:0.1399, te_con:0.1399,
+    precio_excedente:0.06,
+    sva_luz:5.78, sva_gas:9.08,
+    gas_rl1:{tf:0.230000, tv:0.089900},
+    gas_rl2:{tf:0.463333, tv:0.089900},
+    gas_rl3:{tf:0.763333, tv:0.089900},
+    imp_electrico:0.0511,
+    tarifas_luz:[
+      {n:'Tarifa Tranquilísima Promo', te:0.1399, tp1:0.091507, tp2:0.091507, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Asistente 24h Plus 2 meses gratis · Regalo saldo Waylet'},
+      {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'}
+    ],
+    tarifas_gas:[
+      {n:'Gas Ahorro RL1', tv:0.0899, tf:0.230000, nota:'Peaje RL.1 hasta 5.000 kWh/año · Fijo 6,90 €/mes · Tu Asistente Gas 9,08 €/mes'},
+      {n:'Gas Ahorro RL2', tv:0.0899, tf:0.463333, nota:'Peaje RL.2 de 5.000 a 15.000 kWh/año · Fijo 13,90 €/mes'},
+      {n:'Gas Ahorro RL3', tv:0.0899, tf:0.763333, nota:'Peaje RL.3 más de 15.000 kWh/año · Fijo 22,90 €/mes'}
+    ]
   }
 };
 
@@ -7668,10 +7757,11 @@ let CC = {
   iberdrola:{ te:RATES.iberdrola.te_sin, tp1:RATES.iberdrola.tp1, tp2:RATES.iberdrola.tp2, gtv:RATES.iberdrola.gas_rl1.tv, gtf:RATES.iberdrola.gas_rl1.tf, precio_excedente:RATES.iberdrola.precio_excedente },
   naturgy:  { te:RATES.naturgy.te_sin,   tp1:RATES.naturgy.tp1,   tp2:RATES.naturgy.tp2,   gtv:RATES.naturgy.gas_rl1.tv,   gtf:RATES.naturgy.gas_rl1.tf,   precio_excedente:RATES.naturgy.precio_excedente },
   endesa:   { te:RATES.endesa.te_sin,    tp1:RATES.endesa.tp1,    tp2:RATES.endesa.tp2,    gtv:RATES.endesa.gas_rl1.tv,    gtf:RATES.endesa.gas_rl1.tf,    precio_excedente:RATES.endesa.precio_excedente },
-  gana:     { te:RATES.gana.te_sin,      tp1:RATES.gana.tp1,      tp2:RATES.gana.tp2,      gtv:RATES.gana.gas_rl1.tv,      gtf:RATES.gana.gas_rl1.tf,      precio_excedente:RATES.gana.precio_excedente }
+  gana:     { te:RATES.gana.te_sin,      tp1:RATES.gana.tp1,      tp2:RATES.gana.tp2,      gtv:RATES.gana.gas_rl1.tv,      gtf:RATES.gana.gas_rl1.tf,      precio_excedente:RATES.gana.precio_excedente },
+  repsol:   { te:RATES.repsol.te_sin,    tp1:RATES.repsol.tp1,    tp2:RATES.repsol.tp2,    gtv:RATES.repsol.gas_rl1.tv,    gtf:RATES.repsol.gas_rl1.tf,    precio_excedente:RATES.repsol.precio_excedente }
 };
 
-let activeCias = {iberdrola:true, naturgy:true, endesa:true, gana:true};
+let activeCias = {iberdrola:true, naturgy:true, endesa:true, gana:true, repsol:true};
 
 const PANELS = {
   gerenteHub:  {title:'Gerencia', sub:'Central de control, gestión y registros de la plataforma', color:'#d97706', icon:'<rect x="3" y="3" width="7" height="9"></rect><rect x="14" y="3" width="7" height="5"></rect><rect x="14" y="12" width="7" height="9"></rect><rect x="3" y="16" width="7" height="5"></rect>'},
@@ -10464,7 +10554,8 @@ function switchCia(id){
     naturgy:'#E85D3A',
     'naturgy-cif':'#E85D3A',
     endesa:'#00A8E0',
-    gana:'#E30613'
+    gana:'#E30613',
+    repsol:'#FF5000'
   };
   const bgTints={
     iberdrola:'rgba(0, 139, 60, 0.08)',
@@ -10472,7 +10563,8 @@ function switchCia(id){
     naturgy:'rgba(232, 93, 58, 0.08)',
     'naturgy-cif':'rgba(232, 93, 58, 0.08)',
     endesa:'rgba(0, 168, 224, 0.08)',
-    gana:'rgba(227, 6, 19, 0.08)'
+    gana:'rgba(227, 6, 19, 0.08)',
+    repsol:'rgba(255, 80, 0, 0.08)'
   };
   document.querySelectorAll('#panel-scripts .ctab').forEach(t=>{
     t.classList.remove('active');
@@ -10520,18 +10612,20 @@ function setTarifasTab(tab) {
 }
 
 function renderCondiciones(){
-  const cias=['iberdrola','naturgy','endesa','gana'];
+  const cias=['iberdrola','naturgy','endesa','gana','repsol'];
   const serviceFilesLuz = {
     'iberdrola': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO IBERDROLA/PACK IBERDROLA HOGAR.pdf',
     'naturgy': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO NATURGY/SERVIELECTRIC.pdf',
     'endesa': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO ENDESA/Proteccion Luz 360.png',
-    'gana': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO GANAENERGIA/SERVICIO LUZ GANA ENERGIA.PNG'
+    'gana': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO GANAENERGIA/SERVICIO LUZ GANA ENERGIA.PNG',
+    'repsol': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO REPSOL/SERVICIOS MANTENIMIENTO REPSOL.pdf'
   };
   const serviceFilesGas = {
     'iberdrola': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO IBERDROLA/PACK MANTENIMIENTO GAS.pdf',
     'naturgy': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO NATURGY/SERVIGAS.pdf',
     'endesa': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO ENDESA/Servicio Gas Endesa.png',
-    'gana': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO GANAENERGIA/SERVICIO GAS GANA ENERGIA.PNG'
+    'gana': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO GANAENERGIA/SERVICIO GAS GANA ENERGIA.PNG',
+    'repsol': 'ServiciosCompanias/SERVICIOS MANTENIMIENTO REPSOL/SERVICIOS MANTENIMIENTO REPSOL.pdf'
   };
   
   // ── PESTAÑA: TARIFAS DE LUZ ──
@@ -10552,6 +10646,10 @@ function renderCondiciones(){
     } else if (id === 'naturgy') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (id === 'gana') {
+      retrocomision = '12 meses';
+    } else if (id === 'repsol') {
+      retrocomision = '12 meses';
+    } else if (id === 'repsol') {
       retrocomision = '12 meses';
     }
 
@@ -10680,6 +10778,9 @@ function renderCondiciones(){
     } else if (r.tarifas_luz.length > 1 && id === 'endesa') {
       potHtml = `<span>Potencia Luz 24H: TP1 ${r.tarifas_luz[0].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(3)} €/kW·dia</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia Solar Plus: TP1 ${r.tarifas_luz[1].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[1].tp2.toFixed(3)} €/kW·dia</span>`;
+    } else if (r.tarifas_luz.length > 1 && id === 'repsol') {
+      potHtml = `<span>Potencia Tranquilísima: TP1 0,0915 · TP2 0,0915 €/kW·día (33,40 €/kW·año)</span>
+                 <br><span style="margin-top:2px;display:inline-block">Potencia Solar: TP1 0,099726 · TP2 0,099726 €/kW·día</span>`;
     } else {
       potHtml = `<span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(3)} €/kW·dia</span>`;
     }
@@ -10730,6 +10831,8 @@ function renderCondiciones(){
     } else if (id === 'naturgy') {
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (id === 'gana') {
+      retrocomision = '12 meses';
+    } else if (id === 'repsol') {
       retrocomision = '12 meses';
     }
 
@@ -11069,6 +11172,46 @@ const PROCEDIMIENTOS = {
       'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
       'Cambios de potencia: Permitido en Gana Energía. Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
     ]
+  },
+  repsol: {
+    name: 'Repsol',
+    color: '#FF5000',
+    residencial: {
+      docs: [
+        'Lectura de texto legal obligatorio / grabación telefónica.',
+        'DNI o NIE en vigor del titular.',
+        'CUPS del suministro (luz o gas).',
+        'Datos de contacto (teléfono y correo electrónico).',
+        'Número de cuenta bancaria (IBAN) para domiciliación.'
+      ],
+      process: [
+        'Se realiza la contratación telefónica con la lectura y aceptación del texto legal.',
+        'El cliente recibe el contrato por correo electrónico / SMS para su confirmación digital.',
+        'Activación del contrato y acceso al Área Cliente / app de Repsol en un plazo aproximado de 15 días (sin corte de suministro ni trámites adicionales).'
+      ]
+    },
+    pymes: {
+      docs: [
+        'Lectura de texto legal.',
+        'DNI / NIE del representante legal o apoderado.',
+        'CIF de la empresa / sociedad o documento acreditativo de autónomo.',
+        'Factura actual completa o CUPS del suministro.',
+        'Número de cuenta bancaria (IBAN).'
+      ],
+      process: [
+        'Contratación corporativa con lectura de texto legal.',
+        'Envío de contrato al correo de la empresa para revisión y firma electrónica.',
+        'Activación del suministro en unos 15 días laborables sin interrupción del servicio.'
+      ]
+    },
+    requisitos: [
+      'Sin permanencia ni penalización por baja anticipada.',
+      '14 días naturales de desistimiento legal desde la contratación.',
+      'Tarifa Tranquilísima Promo: Precio del kWh fijo garantizado durante 5 años.',
+      'Tu Asistente 24h Plus: 100% de descuento (gratis) los 2 primeros meses en suministro de luz.',
+      'Suministros con placas solares / autoconsumo: Tarifa Solar con batería virtual (+1,99 €/mes) y compensación de excedentes a 0,06 €/kWh.',
+      'Regalo de saldo Waylet para facturas y repostajes en estaciones de servicio según promoción (hasta 60€ en solar y 20€ con servicios adicionales).'
+    ]
   }
 };
 
@@ -11076,7 +11219,8 @@ const procColors = {
   iberdrola: { main: '#008B3C', bg: 'rgba(0, 139, 96, 0.08)' },
   naturgy: { main: '#E85D3A', bg: 'rgba(232, 93, 58, 0.08)' },
   endesa: { main: '#00A8E0', bg: 'rgba(0, 168, 224, 0.08)' },
-  gana: { main: '#E30613', bg: 'rgba(227, 6, 19, 0.08)' }
+  gana: { main: '#E30613', bg: 'rgba(227, 6, 19, 0.08)' },
+  repsol: { main: '#FF5000', bg: 'rgba(255, 80, 0, 0.08)' }
 };
 
 function setProcCia(ciaId) {
@@ -11088,7 +11232,7 @@ function renderProcedimientos() {
   const container = document.getElementById('proc-render');
   if (!container) return;
   
-  const cias = ['iberdrola', 'naturgy', 'endesa', 'gana'];
+  const cias = ['iberdrola', 'naturgy', 'endesa', 'gana', 'repsol'];
   const procData = PROCEDIMIENTOS[currentProcCia];
   
   let html = `
@@ -11317,14 +11461,16 @@ function calcComp(){
       { id: 'naturgy', type: 'standard' },
       { id: 'endesa', type: 'standard' },
       { id: 'gana', type: 'gana_24h' },
-      { id: 'gana', type: 'gana_mercado' }
+      { id: 'gana', type: 'gana_mercado' },
+      { id: 'repsol', type: 'standard' }
     ];
   } else {
     offers = [
       { id: 'iberdrola', type: 'standard' },
       { id: 'naturgy', type: 'standard' },
       { id: 'endesa', type: 'standard' },
-      { id: 'gana', type: 'standard' }
+      { id: 'gana', type: 'standard' },
+      { id: 'repsol', type: 'standard' }
     ];
   }
 
@@ -11371,6 +11517,19 @@ function calcComp(){
         {n:'Solar Plus', te:0.164, tp1:0.091, tp2:0.091, te_sin:0.145, te_con:0.145, desc_sin:0.1158, desc_con:0.1158, nota:'Tarifa Solar Plus con excedentes (+2€/mes Batería Virtual)', extra_bateria_virtual:2.00, nota_extra:'"Fuera de Andalucía y Extremadura el precio final es 0.153 €/kWh"'}
       ];
     }
+    if (cia === 'repsol' && excedente > 0) {
+      r.name = isCif ? 'Repsol Solar (Precio CIF)' : 'Repsol Solar';
+      r.tp1 = 0.099726;
+      r.tp2 = 0.099726;
+      r.te_sin = 0.1699;
+      r.te_con = 0.1699;
+      r.precio_excedente = 0.06;
+      r.sva_luz = 6.99;
+      r.coste_bateria_virtual_activa = 1.99;
+      r.tarifas_luz = [
+        {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'}
+      ];
+    }
     
     // Potencia y energia
     let luzPot = 0;
@@ -11412,9 +11571,13 @@ function calcComp(){
     if (cia === 'endesa' && excedente > 0) {
       cuotaBateriaVirtualEndesa = 2.00 * (dias / 30);
     }
+    let cuotaBateriaVirtualRepsol = 0;
+    if (cia === 'repsol' && excedente > 0) {
+      cuotaBateriaVirtualRepsol = 1.99 * (dias / 30);
+    }
     
     const totalKwh = kwh1 + kwh2 + kwh3;
-    const baseElec = luzPot + luzP1 + luzP2 + luzP3 + costeGestion + cuotaBateriaVirtualEndesa;
+    const baseElec = luzPot + luzP1 + luzP2 + luzP3 + costeGestion + cuotaBateriaVirtualEndesa + cuotaBateriaVirtualRepsol;
 
     // Gas
     let gasVar = 0, gasFij = 0;
@@ -11498,6 +11661,8 @@ function calcComp(){
         tariffName = (excedente > 0 ? 'Solar Plus' : 'Luz 24H') + (isCif ? ' (CIF)' : '');
       } else if (cia === 'gana') {
         tariffName = (off.type === 'gana_mercado' ? 'Precio de Mercado' : 'Plan 24 Horas') + (isCif ? ' (CIF)' : '');
+      } else if (cia === 'repsol') {
+        tariffName = (excedente > 0 ? 'Tarifa Solar (BV)' : 'Tranquilísima Promo') + (isCif ? ' (CIF)' : '');
       }
     } else {
       const rlName = band.toUpperCase();
@@ -11505,6 +11670,7 @@ function calcComp(){
       else if (cia === 'naturgy') tariffName = `Gas Por Uso ${rlName}`;
       else if (cia === 'endesa') tariffName = `Gas Endesa ${rlName}`;
       else if (cia === 'gana') tariffName = `Gana Gas ${rlName}`;
+      else if (cia === 'repsol') tariffName = `Gas Ahorro ${rlName}`;
     }
 
     const ahorro = actual > 0 ? actual - total : null;
@@ -11512,7 +11678,7 @@ function calcComp(){
       key, cia, type: off.type, isLocked, r, tariffName, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
       excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
       dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
-      costeGestion, cuotaBateriaVirtualEndesa, bateriaVirtual, appliedBateriaVirtual
+      costeGestion, cuotaBateriaVirtualEndesa, cuotaBateriaVirtualRepsol, bateriaVirtual, appliedBateriaVirtual
     };
   });
 
@@ -11671,6 +11837,8 @@ function renderInvCards(results, useSva){
       retrocomision = '0-2 meses 100% / 2-4 meses 50%';
     } else if (cia === 'gana') {
       retrocomision = '12 meses';
+    } else if (cia === 'repsol') {
+      retrocomision = '12 meses';
     }
     
     const logoHtml = `<span class="cdot" style="background:${r.color}"></span>`;
@@ -11678,6 +11846,17 @@ function renderInvCards(results, useSva){
     let cardExtraBadges = '';
     if (res.cuotaBateriaVirtualEndesa > 0) {
       cardExtraBadges += '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">+2€/mes Batería Virtual</span>';
+    }
+    if (res.cuotaBateriaVirtualRepsol > 0) {
+      cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">+1,99€/mes Batería Virtual</span>';
+      cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🎁 60€ Saldo Waylet</span>';
+    }
+    const isRepsolTranquilisima = (cia === 'repsol' && compMode === 'luz' && !(res.cuotaBateriaVirtualRepsol > 0));
+    if (isRepsolTranquilisima) {
+      cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🛡️ 5 años precio fijo</span>';
+      if (useSva) {
+        cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:700;background:rgba(5,150,105,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(5,150,105,0.2);">Tu Asistente 24h Plus (2 meses gratis)</span>';
+      }
     }
     const isEndesa24h = (cia === 'endesa' && compMode === 'luz' && !(res.cuotaBateriaVirtualEndesa > 0));
     if (isEndesa24h) {
@@ -11868,6 +12047,7 @@ function renderSummary(results, actual){
             ${isPlanAhora ? '<span style="font-size:10.5px;color:#059669;font-weight:800;background:rgba(5,150,105,0.1);padding:1px 6px;border-radius:4px;border:1px solid rgba(5,150,105,0.25);">⚡ Plan Ahora</span>' : ''}
             ${isPlanAhora ? '<span style="font-size:10.5px;color:#dc2626;font-weight:700;background:rgba(220,38,38,0.08);padding:1px 5px;border-radius:4px;border:1px solid rgba(220,38,38,0.18);">🚫 Sin tarjetas</span>' : ''}
             ${r.cuotaBateriaVirtualEndesa > 0 ? '<span style="font-size:10.5px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:1px 5px;border-radius:4px;">(+2€/mes BV)</span>' : ''}
+            ${r.cuotaBateriaVirtualRepsol > 0 ? '<span style="font-size:10.5px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:1px 5px;border-radius:4px;">(+1,99€/mes BV)</span>' : ''}
             ${(r.cia === 'endesa' && isLuz && !(r.cuotaBateriaVirtualEndesa > 0)) ? '<span style="font-size:10.5px;color:#7c3aed;font-weight:800;background:rgba(124,58,237,0.1);padding:1px 5px;border-radius:4px;border:1px solid rgba(124,58,237,0.25);">🛍️ Black Friday + 100€ Para Ti</span>' : ''}
           </div>
           ${isBest?'<span class="badge-best" style="margin-left:6px;background:#059669;color:#fff;font-weight:800;padding:2px 6px;border-radius:4px;font-size:10.5px;">🏆 Mayor Ahorro</span>':''}
@@ -11905,7 +12085,7 @@ function printCompanyOffer(key) {
     cia, type, r, luzPot, luzP1, luzP2, luzP3, totalKwh, gasVar, gasFij, baseElec, impElec, alq, svaLuzAmt, svaGasAmt,
     excPrice, excAmt, excOffset, subtotalNoExc, subtotal, ivaAmt, total, ahorro,
     dias, iva, kwh1, kwh2, kwh3, gas, pot1, pot2, actual, band, excedente, useSva,
-    costeGestion, cuotaBateriaVirtualEndesa, appliedBateriaVirtual
+    costeGestion, cuotaBateriaVirtualEndesa, cuotaBateriaVirtualRepsol, appliedBateriaVirtual
   } = targetRes;
 
   const ivaSelectEl = document.getElementById('f-iva');
@@ -11931,6 +12111,8 @@ function printCompanyOffer(key) {
     printColor = '#2563eb'; // Blue
   } else if (cia === 'gana') {
     printColor = '#0891b2'; // Cyan
+  } else if (cia === 'repsol') {
+    printColor = '#ea580c'; // Repsol Orange
   }
 
   const clientNameVal = document.getElementById('f-cliente-nombre') ? document.getElementById('f-cliente-nombre').value.trim() : '';
@@ -12007,6 +12189,13 @@ function printCompanyOffer(key) {
         concept: 'Batería Virtual Activa (Endesa)',
         calc: `2.00 €/mes prorrateado (${dias} días)`,
         val: `${f2(cuotaBateriaVirtualEndesa)} €`
+      });
+    }
+    if (cuotaBateriaVirtualRepsol > 0) {
+      rows.push({
+        concept: 'Batería Virtual Repsol',
+        calc: `1.99 €/mes prorrateado (${dias} días)`,
+        val: `${f2(cuotaBateriaVirtualRepsol)} €`
       });
     }
     if (excedente > 0 && !useSva) {
@@ -12236,6 +12425,32 @@ function printCompanyOffer(key) {
     `;
   }
 
+  if (cia === 'repsol' && compMode === 'luz' && (cuotaBateriaVirtualRepsol > 0)) {
+    html += `
+      <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <div>
+          <strong>☀️ Tarifa Solar Repsol (Batería Virtual):</strong> Excedentes compensados a <strong>0,06 €/kWh</strong> con cuota de batería virtual de <strong>1,99 €/mes</strong>.<br>
+          <strong>🎁 Saldo Waylet de Regalo:</strong> <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación para facturas y repostajes.
+        </div>
+        <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
+          60 € Saldo Waylet
+        </div>
+      </div>
+    `;
+  } else if (cia === 'repsol' && compMode === 'luz' && !(cuotaBateriaVirtualRepsol > 0)) {
+    html += `
+      <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 7px 12px; margin-bottom: 10px; font-size: 11px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 12px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <div>
+          <strong>🛡️ Tarifa Tranquilísima Promo:</strong> Precio fijo garantizado durante <strong>5 años</strong> sin permanencia ni penalizaciones.<br>
+          <strong>🛠️ Tu Asistente 24h Plus:</strong> <strong>100% de descuento (gratis)</strong> durante los 2 primeros meses.
+        </div>
+        <div style="text-align: right; font-weight: 800; font-size: 12.5px; color: #ea580c; white-space: nowrap;">
+          5 Años Precio Fijo
+        </div>
+      </div>
+    `;
+  }
+
   html += `
     <div class="print-section-title" style="font-size: 12px; font-weight: 800; color: var(--text); border-bottom: 2px solid var(--blue); padding-bottom: 4px; margin-bottom: 8px; text-transform: uppercase;">
       3. Compañia y Tarifa seleccionada
@@ -12452,6 +12667,7 @@ function getCompanyLogoUrl(ciaKey) {
   if (key.includes('naturgy')) return 'img-companias/naturgy.png';
   if (key.includes('endesa')) return 'img-companias/endesa.png';
   if (key.includes('gana')) return 'img-companias/gana.png';
+  if (key.includes('repsol')) return 'img-companias/repsol.svg';
   return '';
 }
 
@@ -12466,6 +12682,7 @@ function handleLogoError(img, cia) {
     else if (key.includes('naturgy')) img.src = 'img-companias/naturgy.png';
     else if (key.includes('endesa')) img.src = 'img-companias/endesa.png';
     else if (key.includes('gana')) img.src = 'img-companias/gana.png';
+    else if (key.includes('repsol')) img.src = 'img-companias/repsol.svg';
     return;
   }
   
@@ -12475,6 +12692,7 @@ function handleLogoError(img, cia) {
     else if (key.includes('naturgy')) img.src = 'Imagenes%20Compa%C3%B1%C3%ADa/Naturgy%20Logo.png';
     else if (key.includes('endesa')) img.src = 'Imagenes%20Compa%C3%B1%C3%ADa/Endesa%20Logo.png';
     else if (key.includes('gana')) img.src = 'Imagenes%20Compa%C3%B1%C3%ADa/GanaEnergia%20Logo.png';
+    else if (key.includes('repsol')) img.src = 'img-companias/repsol.svg';
     return;
   }
   
@@ -12486,6 +12704,7 @@ function handleLogoError(img, cia) {
   else if (key.includes('naturgy')) { color = '#E85D3A'; name = 'NATURGY'; }
   else if (key.includes('endesa')) { color = '#005CA9'; name = 'ENDESA'; }
   else if (key.includes('gana')) { color = '#00A859'; name = 'GANA ENERGÍA'; }
+  else if (key.includes('repsol')) { color = '#FF5000'; name = 'REPSOL'; }
   
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="130" height="38" viewBox="0 0 130 38"><rect width="130" height="38" rx="6" fill="${color}"/><text x="65" y="23" fill="#ffffff" font-family="system-ui, -apple-system, sans-serif" font-size="12" font-weight="800" text-anchor="middle">${name}</text></svg>`;
   img.src = 'data:image/svg+xml;utf8,' + encodeURIComponent(svg);
@@ -14889,6 +15108,8 @@ function updateClock(){
   const elNatCifFecha = document.getElementById('naturgy-cif-fecha');
   const elGaFecha = document.getElementById('gana-fecha');
   const elGaHora  = document.getElementById('gana-hora');
+  const elRepFecha = document.getElementById('rep-fecha');
+  const elRepHora  = document.getElementById('rep-hora');
   
   if(elIbFecha) elIbFecha.textContent = fecha;
   if(elIbHora)  elIbHora.textContent  = hora;
@@ -14897,6 +15118,8 @@ function updateClock(){
   if(elNatCifFecha) elNatCifFecha.textContent = fecha;
   if(elGaFecha) elGaFecha.textContent = fecha;
   if(elGaHora)  elGaHora.textContent  = hora;
+  if(elRepFecha) elRepFecha.textContent = fecha;
+  if(elRepHora)  elRepHora.textContent  = hora;
   
   // Reloj digital en Dashboard
   const elDbTime = document.getElementById('db-clock-time');
@@ -16777,14 +17000,16 @@ function getRenosurChatResponse(query) {
     const hasNaturgy = cleanQ.includes('naturgy');
     const hasEndesa = cleanQ.includes('endesa') || cleanQ.includes('hostezadis');
     const hasGana = cleanQ.includes('gana');
+    const hasRepsol = cleanQ.includes('repsol');
 
-    if (!hasIberdrola && !hasNaturgy && !hasEndesa && !hasGana) {
+    if (!hasIberdrola && !hasNaturgy && !hasEndesa && !hasGana && !hasRepsol) {
       return `<strong>Selecciona la compañía para ver su proceso de firma digital:</strong><br><br>` +
         `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
         `  <button onclick="sendQuickChatQuery('Firma Iberdrola')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Iberdrola (Doble SMS + Bienvenida)</button>` +
         `  <button onclick="sendQuickChatQuery('Firma Naturgy')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Naturgy (Consentimiento Previo + SMS Contrato)</button>` +
         `  <button onclick="sendQuickChatQuery('Firma Endesa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Endesa (SMS con PIN Temporal)</button>` +
         `  <button onclick="sendQuickChatQuery('Firma Gana Energia')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Gana Energía (2 PDFs + PIN SMS)</button>` +
+        `  <button onclick="sendQuickChatQuery('Firma Repsol')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">✍️ Repsol (SMS con PIN OTP + Confirmación)</button>` +
         `</div>`;
     }
 
@@ -16830,6 +17055,14 @@ function getRenosurChatResponse(query) {
              `4. <strong>PIN por SMS y Confirmación:</strong> Solicitar el código PIN por SMS, introducir el código recibido y pulsar el botón <strong>"Firmar"</strong>.<br><br>` +
              `<em>*Nota clave:* Es obligatorio descargar siempre los dos PDFs antes de introducir el código PIN.</em>`;
     }
+
+    if (hasRepsol) {
+      return `<strong>Repsol — Proceso de Firma Digital:</strong><br><br>` +
+             `1. <strong>SMS con Enlace de Firma Segura:</strong> El cliente recibe un SMS con el enlace al portal de contratación digital de Repsol.<br>` +
+             `2. <strong>Validación por PIN OTP:</strong> El titular introduce el código PIN de validación enviado a su teléfono móvil para firmar el contrato digital.<br>` +
+             `3. <strong>Activación y Asignación de Beneficios:</strong> El suministro se tramita sin cortes y los saldos de regalo de Waylet (hasta 60€) se asocian a su cuenta.<br><br>` +
+             `<em>*Nota operativa:* En canal telefónico asistido se realiza lectura obligatoria de las condiciones legales de contratación.</em>`;
+    }
   }
 
   // ── 1. CONSULTAS DE REQUISITOS, DOCUMENTACIÓN, PROCEDIMIENTO Y FIRMA POR COMPAÑÍA ──
@@ -16857,13 +17090,14 @@ function getRenosurChatResponse(query) {
     cleanQ.includes('dar de alta')
   );
 
-  const isCompanyDirect = cleanQ === 'naturgy' || cleanQ === 'iberdrola' || cleanQ === 'endesa' || cleanQ === 'gana' || cleanQ === 'gana energia' || cleanQ.startsWith('procedimiento ') || cleanQ.startsWith('requisitos ') || cleanQ.startsWith('documentos ');
+  const isCompanyDirect = cleanQ === 'naturgy' || cleanQ === 'iberdrola' || cleanQ === 'endesa' || cleanQ === 'gana' || cleanQ === 'gana energia' || cleanQ === 'repsol' || cleanQ.startsWith('procedimiento ') || cleanQ.startsWith('requisitos ') || cleanQ.startsWith('documentos ');
 
   if (isReqIntent || isCompanyDirect) {
     const hasIberdrola = cleanQ.includes('iberdrola');
     const hasNaturgy = cleanQ.includes('naturgy');
     const hasEndesa = cleanQ.includes('endesa') || cleanQ.includes('hostezadis');
     const hasGana = cleanQ.includes('gana');
+    const hasRepsol = cleanQ.includes('repsol');
 
     const isResidencial = cleanQ.includes('residencial') || cleanQ.includes('particular') || cleanQ.includes('particulares') || cleanQ.includes('hogar');
     const isCIF = cleanQ.includes('cif') || cleanQ.includes('pyme') || cleanQ.includes('pymes') || cleanQ.includes('empresa') || cleanQ.includes('empresas') || cleanQ.includes('autonomo') || cleanQ.includes('autonomos') || cleanQ.includes('sociedad');
@@ -17067,13 +17301,60 @@ function getRenosurChatResponse(query) {
       }
     }
 
-    if (!hasIberdrola && !hasNaturgy && !hasEndesa && !hasGana) {
+    // ── 1.5 REPSOL ──
+    if (hasRepsol) {
+      if (!isResidencial && !isCIF) {
+        return `<strong>¿Qué tipo de cliente deseas consultar para Repsol?</strong><br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Repsol Residencial')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">👤 Residencial (Particulares)</button>` +
+          `  <button onclick="sendQuickChatQuery('Procedimiento Repsol CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🏢 Autónomos / Pymes (CIF)</button>` +
+          `</div>`;
+      }
+      if (isResidencial) {
+        return `<strong>Repsol — Requisitos y Procedimiento Residencial (Particulares):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - Lectura de texto legal obligatorio / grabación telefónica.<br>` +
+               `  - DNI o NIE en vigor del titular.<br>` +
+               `  - CUPS del suministro (luz o gas) o factura reciente completa.<br>` +
+               `  - Datos de contacto (teléfono y correo electrónico).<br>` +
+               `  - Número de cuenta bancaria (IBAN) para domiciliación.<br><br>` +
+               `• <strong>Procedimiento de Firma:</strong><br>` +
+               `  - Envío de SMS con enlace al portal de firma y código PIN OTP.<br>` +
+               `  - Activación sin cortes en un plazo aproximado de 15 días laborables.<br><br>` +
+               `• <strong>Tarifas y Ventajas Destacadas:</strong><br>` +
+               `  - <strong>Tarifa Tranquilísima Promo:</strong> Precio fijo del kWh garantizado durante 5 años (0,1399 €/kWh). Sin permanencia.<br>` +
+               `  - <strong>Tarifa Solar (Batería Virtual):</strong> Cuota 1,99 €/mes, compensación de excedentes a 0,06 €/kWh y 60 € de regalo en saldo Waylet.<br>` +
+               `  - <strong>Servicios de Mantenimiento (SVA):</strong> Tu Asistente 24h Plus (2 meses gratis, luego 5,78 €/mes en Tranquilísima o 6,99 €/mes en Solar); Tu Asistente Gas 9,08 €/mes.<br>` +
+               `  - <strong>Retrocomisión:</strong> 12 meses.<br><br>` +
+               `• <strong>Normas Operativas:</strong><br>` +
+               `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (contrato alquiler, escrituras, IBI).<br>` +
+               `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.`;
+      }
+      if (isCIF) {
+        return `<strong>Repsol — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
+               `• <strong>Documentación necesaria:</strong><br>` +
+               `  - Lectura de texto legal obligatorio.<br>` +
+               `  - DNI / NIE del representante legal o apoderado.<br>` +
+               `  - CIF de la empresa / sociedad o acreditación de autónomo.<br>` +
+               `  - Factura actual completa del suministro o CUPS.<br>` +
+               `  - Cuenta bancaria (IBAN).<br><br>` +
+               `• <strong>Procedimiento de Firma:</strong><br>` +
+               `  - Envío de contrato corporativo por correo/SMS con PIN de seguridad para firma digital.<br><br>` +
+               `• <strong>Normas Operativas:</strong><br>` +
+               `  - Sin permanencia ni penalización económica.<br>` +
+               `  - Retrocomisión: 12 meses.<br>` +
+               `  - Altas nuevas: Obligatorio CIE.`;
+      }
+    }
+
+    if (!hasIberdrola && !hasNaturgy && !hasEndesa && !hasGana && !hasRepsol) {
       return `<strong>Requisitos y Procedimientos de Contratación por Compañía:</strong><br><br>` +
              `• <strong>Iberdrola:</strong> Lectura legal + DNI/NIE ambas caras (obligatorio). Firma por doble SMS (Protección de Datos + Contrato) + llamada de bienvenida. Límite estricto 75 años.<br><br>` +
              `• <strong>Naturgy:</strong> Lectura legal. Firma por WhatsApp/SMS con validación de DNI + llamada. Mayores de 75 años con año ficticio + Observaciones. No se permiten cambios de potencia.<br><br>` +
              `• <strong>Endesa:</strong> DNI/NIE + Factura. Firma por SMS con PIN o grabación de voz. No permite cambios de potencia ni SVA (Servicio de Asistencia de la Comercializadora) en &lt;3 kW o Ceuta/Melilla. No acepta empadronamiento para cambio de titular.<br><br>` +
              `• <strong>Gana Energía:</strong> DNI/NIE + Factura. Firma en 4 pasos (Descargar 2 PDFs → Marcar leído → Pedir PIN SMS → Firmar). No acepta empadronamiento para cambio de titular.<br><br>` +
-             `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Naturgy?") para elegir entre Particular o CIF.*</em>`;
+             `• <strong>Repsol:</strong> Lectura legal + DNI/NIE + Factura/CUPS. Firma por SMS con PIN OTP. Tranquilísima 5 años precio fijo (0,1399 €/kWh), Solar BV 1,99 €/mes (excedentes 0,06 €/kWh + 60€ Waylet) y Gas Ahorro (0,0899 €/kWh). Retrocomisión 12 meses.<br><br>` +
+             `<em>*Pregúntame por una compañía específica (ej: "¿Qué se necesita para Repsol?") para elegir entre Particular o CIF.*</em>`;
     }
   }
 
@@ -17237,6 +17518,45 @@ function getRenosurChatResponse(query) {
         ],
         exclusions: "Averías que excedan el límite de materiales de 300€ (se facturará presupuesto adicional)."
       }
+    },
+    repsol: {
+      luz: {
+        name: "Tu Asistente 24h Plus",
+        family: "Electricidad / Bricolaje / Fontanería / Cerrajería / Cristalería / Electrodomésticos",
+        modalidad: "Tu Asistente 24 horas Plus.",
+        price_no_tax: "4,78 €/mes (aprox)",
+        price_with_tax: "5,78 €/mes (en Solar: 6,99 €/mes)",
+        promo: "100% de descuento (gratis) los 2 primeros meses.",
+        billing: "Mensual.",
+        permanencia: "Sin permanencia.",
+        carencia: "Sin carencia indicada.",
+        warranty: "Garantía en reparaciones.",
+        includes: [
+          "Asistencia técnica urgente en menos de 3 horas las 24 horas del día.",
+          "3 horas de mano de obra gratis y 50 € en materiales para averías de fontanería, cristalería, electricidad o cerrajería.",
+          "Reparación de electrodomésticos (lavadora, frigorífico, lavavajillas, etc.).",
+          "100% de descuento los 2 primeros meses de contratación (gratis)."
+        ],
+        exclusions: "Aparatos o instalaciones de uso comercial o industrial no doméstico."
+      },
+      gas: {
+        name: "Tu Asistente Gas",
+        family: "Gas / Calefacción",
+        modalidad: "Tu Asistente Gas.",
+        price_no_tax: "7,50 €/mes (aprox)",
+        price_with_tax: "9,08 €/mes",
+        promo: "No indicada.",
+        billing: "Mensual.",
+        permanencia: "Sin permanencia.",
+        carencia: "Sin carencia indicada.",
+        warranty: "Garantía en reparaciones.",
+        includes: [
+          "Mantenimiento y revisión periódica de la instalación de gas y caldera/calentador.",
+          "Asistencia técnica urgente ante averías en el sistema de gas y calefacción.",
+          "Desplazamiento y mano de obra incluidos."
+        ],
+        exclusions: "Instalaciones comerciales o comunitarias."
+      }
     }
   };
 
@@ -17250,6 +17570,9 @@ function getRenosurChatResponse(query) {
     cleanQ.includes('sva') || 
     cleanQ.includes('asistencia') || 
     cleanQ.includes('manitas') || 
+    cleanQ.includes('tu asistente') || 
+    cleanQ.includes('asistente 24h') || 
+    cleanQ.includes('asistente gas') || 
     cleanQ.includes('servielectric') || 
     cleanQ.includes('servigas') || 
     cleanQ.includes('proteccion luz 360') || 
@@ -17265,6 +17588,7 @@ function getRenosurChatResponse(query) {
     const hasNaturgy = cleanQ.includes('naturgy');
     const hasEndesa = cleanQ.includes('endesa') || cleanQ.includes('hostezadis');
     const hasGana = cleanQ.includes('gana');
+    const hasRepsol = cleanQ.includes('repsol') || cleanQ.includes('asistente');
 
     const asksLuzOnly = (cleanQ.includes('luz') || cleanQ.includes('electr')) && !cleanQ.includes('gas') && !cleanQ.includes('caldera');
     const asksGasOnly = (cleanQ.includes('gas') || cleanQ.includes('caldera') || cleanQ.includes('calefac')) && !cleanQ.includes('luz') && !cleanQ.includes('electr');
@@ -17399,6 +17723,40 @@ function getRenosurChatResponse(query) {
         `• <strong>Condiciones:</strong> Garantía de 12 meses (1 año) en cada reparación.`;
     }
 
+    // ── 5. REPSOL ──
+    if (hasRepsol) {
+      if (asksLuzOnly || cleanQ.includes('tu asistente 24h') || cleanQ.includes('asistente 24h') || cleanQ.includes('asistente plus') || cleanQ.includes('24 horas plus')) {
+        return `<strong>Tu Asistente 24 horas Plus (Servicio de Asistencia de Luz de Repsol):</strong><br><br>` +
+          `• <strong>Precio:</strong> <strong>5,78 €/mes</strong> en Tranquilísima Promo (6,99 €/mes en Solar).<br>` +
+          `• <strong>Promoción:</strong> <strong>100% de descuento (gratis) los 2 primeros meses</strong>.<br>` +
+          `• <strong>Coberturas incluidas:</strong><br>` +
+          `  - <strong>Asistencia urgente:</strong> En menos de 3 horas las 24 horas del día ante averías eléctricas urgentes.<br>` +
+          `  - <strong>Mano de obra y materiales:</strong> 3 horas de mano de obra gratis y hasta <strong>50 € en materiales</strong> para fontanería, cristalería, electricidad o cerrajería.<br>` +
+          `  - <strong>Electrodomésticos:</strong> Reparación de averías en electrodomésticos (lavadora, frigorífico, lavavajillas, etc.).<br>` +
+          `• <strong>Condiciones:</strong> Sin permanencia ni penalización por baja anticipada.`;
+      }
+      if (asksGasOnly || cleanQ.includes('tu asistente gas') || cleanQ.includes('asistente gas')) {
+        return `<strong>Tu Asistente Gas (Servicio de Mantenimiento de Gas de Repsol):</strong><br><br>` +
+          `• <strong>Precio:</strong> <strong>9,08 €/mes</strong>.<br>` +
+          `• <strong>Coberturas incluidas:</strong><br>` +
+          `  - <strong>Revisión periódica oficial:</strong> Mantenimiento y control periódico de la instalación receptora individual, caldera y sistema de calefacción.<br>` +
+          `  - <strong>Asistencia y averías:</strong> Servicio técnico ante averías en gas y agua caliente.<br>` +
+          `  - <strong>Desplazamiento y mano de obra incluidos</strong> en las intervenciones autorizadas.<br>` +
+          `• <strong>Condiciones:</strong> Sin permanencia ni penalización.`;
+      }
+      // Ambos servicios de Repsol
+      return `<strong>Servicios de Asistencia y Mantenimiento de Repsol (Luz y Gas):</strong><br><br>` +
+        `<h3>1. LUZ: Tu Asistente 24 horas Plus</h3>` +
+        `• <strong>Precio:</strong> <strong>5,78 €/mes</strong> en Tranquilísima (6,99 €/mes en Solar).<br>` +
+        `• <strong>Promoción:</strong> <strong>100% de descuento (gratis) los 2 primeros meses</strong>.<br>` +
+        `• <strong>Coberturas:</strong> Urgencias <3h, 3h de mano de obra gratis + 50€ en materiales (electricidad, fontanería, cerrajería, cristalería) y reparación de electrodomésticos.<br>` +
+        `• <strong>Condiciones:</strong> Sin permanencia.<br><br>` +
+        `<h3>2. GAS: Tu Asistente Gas</h3>` +
+        `• <strong>Precio:</strong> <strong>9,08 €/mes</strong>.<br>` +
+        `• <strong>Coberturas:</strong> Mantenimiento y revisión periódica de instalación de gas y caldera/calentador, asistencia técnica urgente y desplazamiento/mano de obra incluidos.<br>` +
+        `• <strong>Condiciones:</strong> Sin permanencia.`;
+    }
+
     // ── CONSULTA GENERAL DE SERVICIOS (TODAS LAS COMPAÑÍAS) ──
     return `<strong>Servicios de Asistencia y Mantenimiento (Por Compañía):</strong><br><br>` +
       `<h3>1. IBERDROLA</h3>` +
@@ -17413,7 +17771,10 @@ function getRenosurChatResponse(query) {
       `<h3>4. GANA ENERGÍA</h3>` +
       `• <strong>Luz (Servicio Manitas):</strong> 4,25 €/mes (0,1374 €/día). Urgencias 24h <3h (luz/cerrajería), manitas con desplazamientos gratis.<br>` +
       `• <strong>Gas (Servicio Gas):</strong> 9,38 €/mes (0,3027 €/día). Revisión bienal de caldera, averías con materiales hasta 300€, mano de obra y desplazamiento incluidos.<br><br>` +
-      `<em>*Pregúntame por una compañía específica (ej: "Servicios Iberdrola" o "Servicios Naturgy") para ver el desglose completo de sus dos servicios.*</em>`;
+      `<h3>5. REPSOL</h3>` +
+      `• <strong>Luz (Tu Asistente 24h Plus):</strong> 5,78 €/mes (¡2 meses gratis!). Urgencias <3h, 3h mano de obra + 50€ materiales y electrodomésticos.<br>` +
+      `• <strong>Gas (Tu Asistente Gas):</strong> 9,08 €/mes. Revisión periódica de gas y caldera con asistencia técnica incluida.<br><br>` +
+      `<em>*Pregúntame por una compañía específica (ej: "Servicios Repsol" o "Servicios Iberdrola") para ver el desglose completo de sus dos servicios.*</em>`;
   }
 
   // ── BASE DE DATOS DE TARIFAS DE LUZ Y GAS ──
@@ -17559,6 +17920,46 @@ function getRenosurChatResponse(query) {
         mantenimiento: "9,38 €/mes",
         retrocomision: "12 meses"
       }
+    },
+    repsol: {
+      luz: {
+        tranquilisima: {
+          name: "Repsol Tranquilísima Promo",
+          base: "0,1399 €/kWh",
+          sin_mantenimiento: "0,1399 €/kWh (Precio garantizado 5 años)",
+          con_mantenimiento: "0,1399 €/kWh (Tu Asistente 24h Plus: 2 meses gratis, luego 5,78 €/mes)",
+          descuento_sin_mantenimiento: "0%",
+          descuento_con_mantenimiento: "Tu Asistente 24h Plus con 2 meses gratis",
+          potencia: "TP1: 0,091507 €/kW-día | TP2: 0,091507 €/kW-día (33,40 €/kW-año)",
+          excedentes: "0,06 €/kWh",
+          mantenimiento: "5,78 €/mes (Tu Asistente 24h Plus - 2 meses gratis)",
+          permanencia: "Sin permanencia ni penalización.",
+          retrocomision: "12 meses",
+          nota: "Precio de la energía fijo durante 5 años. Saldo Waylet promocional."
+        },
+        solar: {
+          name: "Repsol Tarifa Solar (Batería Virtual)",
+          base: "0,1699 €/kWh",
+          sin_mantenimiento: "0,1699 €/kWh",
+          con_mantenimiento: "0,1699 €/kWh (+6,99 €/mes Asistente 24h Plus con 2 meses gratis)",
+          descuento_sin_mantenimiento: "0%",
+          descuento_con_mantenimiento: "Asistente 24h Plus con 2 meses gratis",
+          potencia: "TP1: 0,099726 €/kW-día | TP2: 0,099726 €/kW-día",
+          excedentes: "0,06 €/kWh",
+          bateria_virtual: "1,99 €/mes",
+          mantenimiento: "6,99 €/mes (Asistente 24h Plus - 2 meses gratis)",
+          permanencia: "Sin permanencia.",
+          retrocomision: "12 meses",
+          regalo: "60 € de regalo en saldo Waylet al finalizar la contratación."
+        }
+      },
+      gas: {
+        rl1: "TV (Término Variable): 0,089900 €/kWh | TF (Término Fijo): 0,230000 €/día (Equivalente mensual: 6,90 €/mes)",
+        rl2: "TV (Término Variable): 0,089900 €/kWh | TF (Término Fijo): 0,463333 €/día (Equivalente mensual: 13,90 €/mes)",
+        rl3: "TV (Término Variable): 0,089900 €/kWh | TF (Término Fijo): 0,763333 €/día (Equivalente mensual: 22,90 €/mes)",
+        mantenimiento: "9,08 €/mes (Tu Asistente Gas)",
+        retrocomision: "12 meses"
+      }
     }
   };
 
@@ -17695,6 +18096,44 @@ function getRenosurChatResponse(query) {
       "• <strong>Retrocomisión:</strong> 12 meses";
   }
 
+  // 11. Repsol Tranquilísima Promo
+  if (q.includes('tranquilisima') || q.includes('tranquilísima') || (q.includes('repsol') && (q.includes('luz') || q.includes('fijo') || q.includes('tranquila')) && !q.includes('solar') && !q.includes('placa') && !q.includes('gas'))) {
+    return "<strong>Repsol — Tarifa Tranquilísima Promo:</strong><br><br>" +
+      "• <strong>Término de Energía:</strong> <strong>0,1399 €/kWh</strong> (Precio fijo garantizado durante 5 años)<br>" +
+      "• <strong>Término de Potencia:</strong> TP1: <strong>0,091507 €/kW·día</strong> | TP2: <strong>0,091507 €/kW·día</strong> (33,40 €/kW·año)<br>" +
+      "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
+      "• <strong>Mantenimiento Luz (Tu Asistente 24h Plus):</strong> 5,78 €/mes (100% de descuento / gratis los 2 primeros meses)<br>" +
+      "• <strong>Ventajas Waylet:</strong> Saldo de regalo Waylet para repostajes y facturas.<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia ni penalización económica.<br>" +
+      "• <strong>Retrocomisión:</strong> 12 meses";
+  }
+
+  // 12. Repsol Solar (Batería Virtual)
+  if (q.includes('repsol solar') || (q.includes('repsol') && (q.includes('solar') || q.includes('bateria virtual') || q.includes('batería virtual') || q.includes('placas')))) {
+    return "<strong>Repsol — Tarifa Solar (Batería Virtual):</strong><br><br>" +
+      "• <strong>Término de Energía 24h:</strong> <strong>0,1699 €/kWh</strong><br>" +
+      "• <strong>Término de Potencia:</strong> TP1 (Punta): <strong>0,099726 €/kW·día</strong> | TP2 (Valle): <strong>0,099726 €/kW·día</strong><br>" +
+      "• <strong>Compensación Excedentes:</strong> <strong>0,060000 €/kWh</strong> (0,06 €/kWh)<br>" +
+      "• <strong>Cuota Batería Virtual:</strong> <strong>1,99 €/mes</strong><br>" +
+      "• <strong>Mantenimiento Luz (Asistente 24h Plus):</strong> 6,99 €/mes (2 meses gratis)<br>" +
+      "• <strong>Regalo Waylet:</strong> <strong>60 € de regalo en saldo Waylet</strong> al finalizar la contratación (para facturas y repostajes).<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia.<br>" +
+      "• <strong>Retrocomisión:</strong> 12 meses";
+  }
+
+  // 13. Repsol Gas Ahorro
+  if (q.includes('repsol gas') || (q.includes('repsol') && q.includes('gas'))) {
+    return "<strong>Repsol — Tarifa Gas Ahorro:</strong><br><br>" +
+      "• <strong>Término Variable (Consumo):</strong> <strong>0,0899 €/kWh</strong> en todos los tramos (¡el más bajo del mercado en RL1!)<br>" +
+      "• <strong>Término Fijo según tramo:</strong><br>" +
+      "  - RL.1: <strong>6,90 €/mes</strong> (0,230000 €/día)<br>" +
+      "  - RL.2: <strong>13,90 €/mes</strong> (0,463333 €/día)<br>" +
+      "  - RL.3: <strong>22,90 €/mes</strong> (0,763333 €/día)<br>" +
+      "• <strong>Mantenimiento Gas (Tu Asistente Gas):</strong> 9,08 €/mes<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia.<br>" +
+      "• <strong>Retrocomisión:</strong> 12 meses";
+  }
+
   // ── GESTIÓN GENERAL DE TARIFAS Y PRECIOS ──
   const isTarifasQuery = q.includes('tarifa') || q.includes('precio') || q.includes('costar') || q.includes('cuesta') || q.includes('luz') || q.includes('gas') || q.includes('energia') || q.includes('energía') || q.includes('potencia') || q.includes('excedent') || q.includes('mantenimiento') || q.includes('descuento') || q.includes('cif') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3') || q.includes('punta') || q.includes('valle') || q.includes('llano') || q.includes('barat') || q.includes('gestión') || q.includes('gestion') || q.includes('permanencia') || q.includes('retro') || q.includes('kw') || q.includes('kwh') || q.includes('tarifas') || q.includes('precios');
 
@@ -17704,18 +18143,18 @@ function getRenosurChatResponse(query) {
       const isGasComp = q.includes('gas') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3');
       if (isGasComp) {
         if (q.includes('rl1')) {
-          return `Según los precios mostrados, el término variable más bajo de gas RL1 es <strong>Gana Energía</strong> (0,0903 €/kWh), y el término fijo diario más bajo también es de <strong>Gana Energía</strong> (0,1277 €/día o 3,83 €/mes). <strong>Endesa</strong> cuenta con 0,096 €/kWh de variable y 0,250 €/día de fijo (7,50 €/mes). <strong>Naturgy</strong> cuenta con 0,1010 €/kWh de variable y 0,175233 €/día de fijo (5,26 €/mes). <strong>Iberdrola</strong> cuenta con 0,1265 €/kWh sin mant. (0,1195 €/kWh con mant.) y término fijo sin descuento de 0,2183 €/día (6,55 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+          return `Según los precios mostrados, el término variable más bajo de gas RL1 es <strong>Repsol</strong> (0,0899 €/kWh) seguido de <strong>Gana Energía</strong> (0,0903 €/kWh), y el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,1277 €/día o 3,83 €/mes). <strong>Repsol</strong> cuenta con 0,0899 €/kWh de variable y 0,2300 €/día de fijo (6,90 €/mes). <strong>Endesa</strong> cuenta con 0,096 €/kWh de variable y 0,250 €/día de fijo (7,50 €/mes). <strong>Naturgy</strong> cuenta con 0,1010 €/kWh de variable y 0,175233 €/día de fijo (5,26 €/mes). <strong>Iberdrola</strong> cuenta con 0,1265 €/kWh sin mant. (0,1195 €/kWh con mant.) y término fijo sin descuento de 0,2183 €/día (6,55 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
         }
         if (q.includes('rl2')) {
-          return `Según los precios mostrados, el término variable más bajo de gas RL2 es <strong>Gana Energía</strong> (0,0882 €/kWh), y el término fijo diario más bajo también es de <strong>Gana Energía</strong> (0,2723 €/día o 8,17 €/mes). <strong>Endesa</strong> cuenta con 0,095 €/kWh de variable y 0,4867 €/día de fijo (14,60 €/mes). <strong>Naturgy</strong> cuenta con 0,098902 €/kWh de variable y 0,314118 €/día de fijo (9,42 €/mes). <strong>Iberdrola</strong> cuenta con 0,1253 €/kWh sin mant. (0,1184 €/kWh con mant.) y término fijo sin descuento de 0,3727 €/día (11,18 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+          return `Según los precios mostrados, el término variable más bajo de gas RL2 es <strong>Gana Energía</strong> (0,0882 €/kWh) seguido de <strong>Repsol</strong> (0,0899 €/kWh), y el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,2723 €/día o 8,17 €/mes). <strong>Repsol</strong> cuenta con 0,0899 €/kWh de variable y 0,463333 €/día de fijo (13,90 €/mes). <strong>Endesa</strong> cuenta con 0,095 €/kWh de variable y 0,4867 €/día de fijo (14,60 €/mes). <strong>Naturgy</strong> cuenta con 0,098902 €/kWh de variable y 0,314118 €/día de fijo (9,42 €/mes). <strong>Iberdrola</strong> cuenta con 0,1253 €/kWh sin mant. (0,1184 €/kWh con mant.) y término fijo sin descuento de 0,3727 €/día (11,18 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
         }
         if (q.includes('rl3')) {
-          return `Según los precios mostrados, el término variable más bajo de gas RL3 es <strong>Gana Energía</strong> (0,0848 €/kWh), y el término fijo diario más bajo también es de <strong>Gana Energía</strong> (0,6440 €/día o 19,32 €/mes). <strong>Endesa</strong> cuenta con 0,094 €/kWh de variable y 1,0233 €/día de fijo (30,70 €/mes). <strong>Naturgy</strong> cuenta con 0,095462 €/kWh de variable y 0,678697 €/día de fijo (20,36 €/mes). <strong>Iberdrola</strong> cuenta con 0,1253 €/kWh sin mant. (0,1184 €/kWh con mant.) y término fijo sin descuento de 0,7177 €/día (21,53 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
+          return `Según los precios mostrados, el término variable más bajo de gas RL3 es <strong>Gana Energía</strong> (0,0848 €/kWh) seguido de <strong>Repsol</strong> (0,0899 €/kWh), y el término fijo diario más bajo es de <strong>Gana Energía</strong> (0,6440 €/día o 19,32 €/mes). <strong>Endesa</strong> cuenta con 0,094 €/kWh de variable y 1,0233 €/día de fijo (30,70 €/mes). <strong>Naturgy</strong> cuenta con 0,095462 €/kWh de variable y 0,678697 €/día de fijo (20,36 €/mes). <strong>Iberdrola</strong> cuenta con 0,1253 €/kWh sin mant. (0,1184 €/kWh con mant.) y término fijo sin descuento de 0,7177 €/día (21,53 €/mes). <strong>Repsol</strong> cuenta con 0,0899 €/kWh de variable y 0,763333 €/día de fijo (22,90 €/mes). Por tanto, la tarifa globalmente más barata dependerá del consumo total final y de la duración del suministro.`;
         }
         return `<strong>Comparativa de Gas por tramos (precios variables de consumo):</strong><br><br>` +
-               `• <strong>RL1:</strong> Variable más bajo: Gana Energía (0,0903 €/kWh) | Fijo más bajo: Gana Energía (0,1277 €/día). Endesa: Var. 0,096 €/kWh | Fijo 0,250 €/día (7,50 €/mes). Naturgy: Var. 0,1010 €/kWh | Fijo 0,175233 €/día (5,26 €/mes). Iberdrola: Var. 0,1265 €/kWh (0,1195 €/kWh con mant.) | Fijo 0,2183 €/día (6,55 €/mes).<br>` +
-               `• <strong>RL2:</strong> Variable más bajo: Gana Energía (0,0882 €/kWh) | Fijo más bajo: Gana Energía (0,2723 €/día). Endesa: Var. 0,095 €/kWh | Fijo 0,4867 €/día (14,60 €/mes). Naturgy: Var. 0,098902 €/kWh | Fijo 0,314118 €/día (9,42 €/mes). Iberdrola: Var. 0,1253 €/kWh (0,1184 €/kWh con mant.) | Fijo 0,3727 €/día (11,18 €/mes).<br>` +
-               `• <strong>RL3:</strong> Variable más bajo: Gana Energía (0,0848 €/kWh) | Fijo más bajo: Gana Energía (0,6440 €/día). Endesa: Var. 0,094 €/kWh | Fijo 1,0233 €/día (30,70 €/mes). Naturgy: Var. 0,095462 €/kWh | Fijo 0,678697 €/día (20,36 €/mes). Iberdrola: Var. 0,1253 €/kWh (0,1184 €/kWh con mant.) | Fijo 0,7177 €/día (21,53 €/mes).<br><br>` +
+               `• <strong>RL1:</strong> Variable más bajo: Repsol (0,0899 €/kWh) y Gana Energía (0,0903 €/kWh) | Fijo más bajo: Gana Energía (0,1277 €/día). Repsol: Var. 0,0899 €/kWh | Fijo 0,2300 €/día (6,90 €/mes). Endesa: Var. 0,096 €/kWh | Fijo 0,250 €/día (7,50 €/mes). Naturgy: Var. 0,1010 €/kWh | Fijo 0,175233 €/día (5,26 €/mes). Iberdrola: Var. 0,1265 €/kWh (0,1195 €/kWh con mant.) | Fijo 0,2183 €/día (6,55 €/mes).<br>` +
+               `• <strong>RL2:</strong> Variable más bajo: Gana Energía (0,0882 €/kWh) y Repsol (0,0899 €/kWh) | Fijo más bajo: Gana Energía (0,2723 €/día). Repsol: Var. 0,0899 €/kWh | Fijo 0,4633 €/día (13,90 €/mes). Endesa: Var. 0,095 €/kWh | Fijo 0,4867 €/día (14,60 €/mes). Naturgy: Var. 0,098902 €/kWh | Fijo 0,314118 €/día (9,42 €/mes). Iberdrola: Var. 0,1253 €/kWh (0,1184 €/kWh con mant.) | Fijo 0,3727 €/día (11,18 €/mes).<br>` +
+               `• <strong>RL3:</strong> Variable más bajo: Gana Energía (0,0848 €/kWh) y Repsol (0,0899 €/kWh) | Fijo más bajo: Gana Energía (0,6440 €/día). Repsol: Var. 0,0899 €/kWh | Fijo 0,7633 €/día (22,90 €/mes). Endesa: Var. 0,094 €/kWh | Fijo 1,0233 €/día (30,70 €/mes). Naturgy: Var. 0,095462 €/kWh | Fijo 0,678697 €/día (20,36 €/mes). Iberdrola: Var. 0,1253 €/kWh (0,1184 €/kWh con mant.) | Fijo 0,7177 €/día (21,53 €/mes).<br><br>` +
                `<em>*Nota:* El precio final dependerá del consumo total mensual. No se puede afirmar que una compañía es globalmente la más barata sin realizar la estimación correspondiente.</em>`;
       }
       
@@ -17724,9 +18163,11 @@ function getRenosurChatResponse(query) {
       return `<strong>Comparativa rápida de tarifas de Luz (precio único 24h con descuento):</strong><br><br>` +
              ibLuzBest +
              `• <strong>Naturgy Por Uso Luz:</strong> 0,1230 €/kWh<br>` +
+             `• <strong>Repsol Tranquilísima Promo:</strong> 0,1399 €/kWh (precio fijo 5 años)<br>` +
              `• <strong>Gana Energía Plan 24 Horas:</strong> 0,1390 €/kWh<br>` +
              `• <strong>Endesa Luz 24H (Black Friday):</strong> 0,1484 €/kWh (0,1429 €/kWh con mant.) + 100€ en Para Ti (-20€ en 5 facturas)<br>` +
-             `• <strong>Endesa Solar Plus:</strong> 0,145 €/kWh (+2€/mes BV)<br><br>` +
+             `• <strong>Endesa Solar Plus:</strong> 0,145 €/kWh (+2€/mes BV)<br>` +
+             `• <strong>Repsol Solar:</strong> 0,1699 €/kWh (excedentes a 0,06 €/kWh, BV 1,99€/mes, 60€ saldo Waylet)<br><br>` +
              `<em>*Nota:* El precio por kWh por sí solo no determina cuál es la tarifa de luz más barata globalmente, ya que también influyen los costes de potencia contratada, consumos, servicios de mantenimiento e impuestos.</em>`;
     }
 
@@ -17734,14 +18175,16 @@ function getRenosurChatResponse(query) {
     let company = null;
     if (q.includes('iberdrola') || q.includes('especial') || q.includes('impulsa') || q.includes('ahora')) company = 'iberdrola';
     else if (q.includes('naturgy') || q.includes('por uso')) company = 'naturgy';
-    else if (q.includes('endesa') || q.includes('solar') || q.includes('black friday') || q.includes('para ti')) company = 'endesa';
+    else if (q.includes('endesa') || q.includes('black friday') || q.includes('para ti') || (q.includes('solar') && !q.includes('repsol'))) company = 'endesa';
     else if (q.includes('gana')) company = 'gana';
+    else if (q.includes('repsol') || q.includes('tranquilisima') || q.includes('tranquilísima') || q.includes('waylet')) company = 'repsol';
 
     const compNames = {
       iberdrola: 'Iberdrola',
       naturgy: 'Naturgy',
       endesa: 'Endesa',
-      gana: 'Gana Energía'
+      gana: 'Gana Energía',
+      repsol: 'Repsol'
     };
 
     // Si la consulta es genérica sin compañía ("precios", "tarifas", "cuanto cuesta")
@@ -17752,11 +18195,12 @@ function getRenosurChatResponse(query) {
         `  <button onclick="sendQuickChatQuery('Tarifas Naturgy')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🟠 Naturgy</button>` +
         `  <button onclick="sendQuickChatQuery('Tarifas Endesa')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔵 Endesa</button>` +
         `  <button onclick="sendQuickChatQuery('Tarifas Gana Energia')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🟢 Gana Energía</button>` +
+        `  <button onclick="sendQuickChatQuery('Tarifas Repsol')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">🔴 Repsol</button>` +
         `</div>`;
     }
 
     const isGas = q.includes('gas') || q.includes('rl1') || q.includes('rl2') || q.includes('rl3') || q.includes('rl.1') || q.includes('rl.2') || q.includes('rl.3');
-    const isLuz = q.includes('luz') || q.includes('electricidad') || q.includes('kwh') || q.includes('kw') || q.includes('potencia') || q.includes('excedent') || q.includes('ahora') || q.includes('impulsa') || q.includes('especial') || q.includes('por uso') || q.includes('solar') || q.includes('mercado') || q.includes('24h') || q.includes('24 horas');
+    const isLuz = q.includes('luz') || q.includes('electricidad') || q.includes('kwh') || q.includes('kw') || q.includes('potencia') || q.includes('excedent') || q.includes('ahora') || q.includes('impulsa') || q.includes('especial') || q.includes('por uso') || q.includes('solar') || q.includes('mercado') || q.includes('24h') || q.includes('24 horas') || q.includes('tranquilisima') || q.includes('tranquilísima');
 
     // ── PASO 1: Si no especifica ni luz ni gas -> Preguntar si Luz o Gas
     if (!isLuz && !isGas) {
@@ -17794,6 +18238,13 @@ function getRenosurChatResponse(query) {
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
           `  <button onclick="sendQuickChatQuery('Gana Energia Plan 24 Horas')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Plan 24 Horas (Precio Fijo) — 0,149 €/kWh</button>` +
           `  <button onclick="sendQuickChatQuery('Gana Energia Precio de Mercado')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Precio de Mercado (Variable Indexada / 3 tramos)</button>` +
+          `</div>`;
+      }
+      if (company === 'repsol') {
+        return `<strong>Tarifas de Luz de Repsol disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
+          `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
+          `  <button onclick="sendQuickChatQuery('Repsol Tranquilisima')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tranquilísima Promo (Precio fijo 5 años) — 0,1399 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Repsol Solar')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Solar (Batería Virtual 1,99€ + 60€ Waylet) — 0,1699 €/kWh</button>` +
           `</div>`;
       }
     }
