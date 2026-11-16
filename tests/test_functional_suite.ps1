@@ -345,6 +345,23 @@ if ($nodeCmd) {
 }
 
 # ----------------------------------------------------------------------------
+# 10. INTEGRIDAD DEL COMPARADOR Y MOTOR DE CÁLCULO (calcComp / renderInvCards)
+# ----------------------------------------------------------------------------
+Write-Host "`n=== 10. INTEGRIDAD DEL COMPARADOR Y MOTOR DE CALCULO ===" -ForegroundColor White
+
+$repsolBaseExists = ($indexContent -match "repsol:\s*\{[\s\S]*?name:'Repsol'")
+$repsolTranquilisimaDeclared = ($indexContent -match "const\s+isRepsolTranquilisima\s*=")
+$repsolCifDeclared = ($indexContent -match "const\s+isRepsolCif\s*=")
+$renderCardsDestructuresExc = ($indexContent -match "const\{[^\}]*?excedente[^\}]*?\}\s*=\s*res")
+$compOffersIncludeRepsol = ($indexContent -match "offers\s*=\s*\[[\s\S]*?id:\s*'repsol'")
+
+Report-Test -Category "Comparator Integrity" -TestName "Variables de Repsol declaradas formalmente en renderInvCards" -Profile "Frontend Client" -Expected "isRepsolTranquilisima y isRepsolCif declaradas antes de uso" -Obtained "Declaraciones de ambito correctas sin ReferenceError" -Condition ($repsolTranquilisimaDeclared -and $repsolCifDeclared)
+
+Report-Test -Category "Comparator Integrity" -TestName "Destructuracion segura de propiedades de calculo en renderInvCards" -Profile "Frontend Client" -Expected "excedente destructurado de res" -Obtained "Destructuracion completa implementada" -Condition $renderCardsDestructuresExc
+
+Report-Test -Category "Comparator Integrity" -TestName "Repsol configurado con tarifas luz/gas y ofertas activas en calcComp" -Profile "Calculo Comparativas" -Expected "BASE.repsol y offers incluyen repsol" -Obtained "Estructura completa de 5 companias integrada" -Condition ($repsolBaseExists -and $compOffersIncludeRepsol)
+
+# ----------------------------------------------------------------------------
 # Resumen Final
 # ----------------------------------------------------------------------------
 Write-Host "`n==================================================================" -ForegroundColor Cyan

@@ -11715,7 +11715,7 @@ function calcComp(){
       r.tarifas_luz = [
         {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'}
       ];
-    } else if (cia === 'repsol' && isCif) {
+    } else if (cia === 'repsol' && isCif && compMode === 'luz') {
       r.name = 'Repsol Tarifa Tranquilísima (CIF)';
       r.tp1 = 0.099726;
       r.tp2 = 0.099726;
@@ -12019,7 +12019,7 @@ function renderInvCards(results, useSva){
   const isCif = document.getElementById('f-cif') ? document.getElementById('f-cif').checked : false;
   const firstNonLockedIdx = results.findIndex(res => !res.isLocked);
   document.getElementById('comp-cards').innerHTML=results.map((res,idx)=>{
-    const{cia,r,total,ahorro,actual,tariffName,isLocked}=res;
+    const{cia,r,total,ahorro,actual,tariffName,isLocked,excedente}=res;
     const isPlanAhora = res.cia === 'iberdrola' && res.type === 'ahora';
     const best = !isLocked && idx === firstNonLockedIdx;
     const aPos=ahorro>0, aNeg=ahorro<0;
@@ -12045,6 +12045,7 @@ function renderInvCards(results, useSva){
       cardExtraBadges += '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">+2€/mes Batería Virtual</span>';
     }
     const isRepsolCif = (cia === 'repsol' && compMode === 'luz' && isCif && !(res.cuotaBateriaVirtualRepsol > 0));
+    const isRepsolTranquilisima = (cia === 'repsol' && compMode === 'luz' && !isCif && !(res.cuotaBateriaVirtualRepsol > 0));
     if (isRepsolCif) {
       cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🏢 Tarifa CIF / Pymes</span>';
       cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🎁 60€ Saldo Waylet</span>';
@@ -12129,7 +12130,7 @@ function renderInvCards(results, useSva){
 
     let promoRepsolBannerHtml = '';
     if (cia === 'repsol') {
-      const isSolarOffer = (res.cuotaBateriaVirtualRepsol > 0 || excedente > 0);
+      const isSolarOffer = (res.cuotaBateriaVirtualRepsol > 0 || (typeof excedente !== 'undefined' && excedente > 0) || (res.excedente && res.excedente > 0));
       let wayletHighlightBadge = '';
       let wayletTierText = '';
       if (isSolarOffer) {
