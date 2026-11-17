@@ -7076,14 +7076,16 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
           color: var(--t2);
           margin-top: 2px;
         }
-        .promo-company-grid {
-          display: grid;
-          grid-template-columns: repeat(2, 1fr);
-          gap: 18px;
-          margin-bottom: 28px;
+        .promo-company-section {
+          margin-bottom: 34px;
         }
-        @media (max-width: 980px) {
-          .promo-company-grid {
+        .promo-two-col {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: 16px;
+        }
+        @media (max-width: 920px) {
+          .promo-two-col {
             grid-template-columns: 1fr;
           }
         }
@@ -7184,37 +7186,220 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
         }
       </style>
       
-      <!-- Filtro de Categorías de Promociones -->
+      <!-- Filtro de Categorías de Promociones por Compañía -->
       <div class="promo-filter-nav">
         <button type="button" class="promo-filter-btn active" id="btn-promo-filter-all" onclick="switchPromoCategory('all', this)">
           <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-          Todas las Promociones
+          Todas las Compañías
         </button>
-        <button type="button" class="promo-filter-btn" id="btn-promo-filter-comp" onclick="switchPromoCategory('companias', this)">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
-          Comercializadoras (Repsol / Naturgy)
+        <button type="button" class="promo-filter-btn" id="btn-promo-filter-ib" onclick="switchPromoCategory('iberdrola', this)">
+          <span style="width:10px;height:10px;border-radius:50%;background:#008B3C;display:inline-block;flex-shrink:0;"></span>
+          1. Iberdrola (Supermercados)
         </button>
-        <button type="button" class="promo-filter-btn" id="btn-promo-filter-sup" onclick="switchPromoCategory('supermercados', this)">
-          <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-          Tarjetas Supermercados (Iberdrola)
+        <button type="button" class="promo-filter-btn" id="btn-promo-filter-nat" onclick="switchPromoCategory('naturgy', this)">
+          <span style="width:10px;height:10px;border-radius:50%;background:#00a3e0;display:inline-block;flex-shrink:0;"></span>
+          2. Naturgy (Moeve gow)
+        </button>
+        <button type="button" class="promo-filter-btn" id="btn-promo-filter-rep" onclick="switchPromoCategory('repsol', this)">
+          <span style="width:10px;height:10px;border-radius:50%;background:#FF5000;display:inline-block;flex-shrink:0;"></span>
+          3. Repsol (Waylet)
         </button>
       </div>
 
-      <!-- ════════ SECCIÓN 1: PROMOCIONES COMERCIALIZADORAS (REPSOL & NATURGY) ════════ -->
-      <div id="promo-sec-companias" style="margin-bottom: 26px;">
+      <!-- ════════ 1. IBERDROLA: TARJETAS DE SUPERMERCADO ════════ -->
+      <div id="promo-sec-supermercados" class="promo-company-section">
         <div class="promo-section-header">
           <div class="promo-section-title-wrap">
-            <div class="promo-section-icon" style="background: rgba(255, 80, 0, 0.1); color: #FF5000;">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <div class="promo-section-icon" style="background: rgba(0, 139, 60, 0.12); color: #008B3C; border: 1px solid rgba(0, 139, 60, 0.25);">
+              <span style="font-weight: 900; font-size: 15px;">1</span>
             </div>
             <div>
-              <h3 class="promo-section-title">Promociones Comerciales de Compañías</h3>
-              <div class="promo-section-subtitle">Campañas oficiales de captación, bonificaciones en saldo Waylet / Moeve gow y descuentos en repostajes.</div>
+              <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                <img src="img-companias/iberdrola.png" alt="Iberdrola" style="height: 24px; max-width: 95px; object-fit: contain;">
+                <h3 class="promo-section-title" style="color: #008B3C;">Iberdrola — Promociones y Tarjetas de Supermercado</h3>
+              </div>
+              <div class="promo-section-subtitle">Tarjetas regalo físicas o electrónicas para compras en grandes superficies, exclusivas para contrataciones con Iberdrola.</div>
             </div>
           </div>
         </div>
 
-        <div class="promo-company-grid">
+        <!-- Banner de Normas e Importante sobre Promociones -->
+        <div class="promo-rules-banner">
+          <div class="promo-rules-title">
+            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #dc2626;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
+            CONDICIONES OBLIGATORIAS:
+          </div>
+          <div class="promo-rules-items">
+            <div class="promo-rule-chip">
+              <span class="promo-chip-badge ib">IBERDROLA</span>
+              <span>Solo contratos con <strong>Iberdrola</strong></span>
+            </div>
+            <div class="promo-rule-chip" style="border-color: rgba(220,38,38,0.3); background: rgba(220,38,38,0.04);">
+              <span class="promo-chip-badge" style="background:#dc2626;">PLAN AHORA</span>
+              <span><strong>Sin tarjetas promocionales</strong></span>
+            </div>
+            <div class="promo-rule-chip">
+              <span class="promo-chip-badge cif">CIF / PYMES</span>
+              <span>Máximo <strong>30 €</strong> (nunca 50 €)</span>
+            </div>
+            <div class="promo-rule-chip">
+              <span class="promo-chip-badge ccpp">CCPP</span>
+              <span>Comunidades <strong>totalmente excluidas</strong></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="promociones-grid" id="promociones-container">
+          <!-- Se cargara dinamicamente -->
+        </div>
+      </div>
+
+      <!-- ════════ SECCIONES 2 Y 3: NATURGY & REPSOL ════════ -->
+      <div id="promo-sec-companias">
+
+        <!-- ════════ 2. NATURGY: CARBURANTE MOEVE GOW ════════ -->
+        <div id="promo-sec-naturgy" class="promo-company-section">
+          <div class="promo-section-header">
+            <div class="promo-section-title-wrap">
+              <div class="promo-section-icon" style="background: rgba(0, 163, 224, 0.12); color: #0284c7; border: 1px solid rgba(0, 163, 224, 0.25);">
+                <span style="font-weight: 900; font-size: 15px;">2</span>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <img src="img-companias/naturgy.png" alt="Naturgy" style="height: 22px; max-width: 85px; object-fit: contain;">
+                  <span style="font-weight: 900; color: #002d72; font-size: 16px;">&amp; Moeve gow</span>
+                  <h3 class="promo-section-title" style="color: #00a3e0;">Naturgy — Promoción Carburante Moeve gow (Hasta 40 € en Saldo)</h3>
+                </div>
+                <div class="promo-section-subtitle">Bonificación en saldo Moeve gow y monedero Naturgy al repostar + ahorro continuo de 10 a 30 cts./litro.</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- CARD NATURGY & MOEVE GOW: 40€ BONIFICACIÓN -->
+          <div class="promo-card" style="border-top: 4px solid #00a3e0;">
+            <div class="promo-card-header" style="background: linear-gradient(to right, rgba(0,163,224,0.06), transparent);">
+              <div style="display: flex; align-items: center; gap: 10px;">
+                <div style="display: flex; align-items: center; gap: 6px;">
+                  <img src="img-companias/naturgy.png" alt="Naturgy" style="height: 22px; max-width: 80px; object-fit: contain;">
+                  <span style="font-weight: 900; color: #002d72; font-size: 15px;">&amp; Moeve gow</span>
+                </div>
+                <div>
+                  <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text);">Ahorra con Naturgy y Moeve gow</h4>
+                  <div style="font-size: 12px; color: var(--t2); font-weight: 600;">Hasta 40 € en saldo + hasta 30 cts./litro en repostajes</div>
+                </div>
+              </div>
+              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
+                <span style="font-size: 11px; font-weight: 800; color: #0369a1; background: rgba(0,163,224,0.12); border: 1px solid rgba(0,163,224,0.3); padding: 3px 8px; border-radius: 6px;">
+                  40 € EN CARBURANTE
+                </span>
+                <span style="font-size: 11px; font-weight: 800; color: #15803d; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); padding: 3px 8px; border-radius: 6px;">
+                  ACTIVA
+                </span>
+              </div>
+            </div>
+
+            <div class="promo-card-body">
+              <div class="promo-two-col">
+                <!-- Operativa y Reglas Obligatorias -->
+                <div style="background: var(--bg); border: 1.5px solid rgba(0,163,224,0.3); border-radius: 8px; padding: 12px 14px; display: flex; flex-direction: column; justify-content: space-between;">
+                  <div>
+                    <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
+                      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00a3e0" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+                      <span style="font-size: 12px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 0.3px;">
+                        Operativa de asignación de los 40 €:
+                      </span>
+                    </div>
+                    <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: var(--text); line-height: 1.45;">
+                      <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <span style="background: rgba(0,163,224,0.15); color: #0284c7; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 1px; white-space: nowrap;">2 REPOSTAJES</span>
+                        <span>Se asignarán los <strong>40 €</strong> en el saldo gow y monedero Naturgy al efectuar <strong>2 repostajes en Moeve</strong>: <strong>20 € en el primer repostaje</strong> y <strong>20 € en el segundo repostaje</strong>.</span>
+                      </div>
+                      <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <span style="background: rgba(0,163,224,0.15); color: #0284c7; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 1px; white-space: nowrap;">A LOS 30 DÍAS</span>
+                        <span>Aplicable a partir de los <strong>30 días de la firma del contrato</strong>, siempre y cuando el contrato <strong>siga activo</strong> en ese momento.</span>
+                      </div>
+                      <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <span style="background: rgba(0,163,224,0.15); color: #0284c7; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 1px; white-space: nowrap;">MÍNIMO 30 €</span>
+                        <span>Cada repostaje debe ser <strong>igual o superior a 30 €</strong> (≥ 30 €).</span>
+                      </div>
+                      <div style="display: flex; align-items: flex-start; gap: 8px;">
+                        <span style="background: rgba(0,163,224,0.15); color: #0284c7; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 1px; white-space: nowrap;">EMAIL MOEVE</span>
+                        <span>Entre <strong>30 y 40 días</strong> del alta en Naturgy, el cliente recibirá de Moeve un email para realizar el primer repostaje dentro de la promoción.</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Acumulación Continua en Repostajes -->
+                <div style="display: flex; flex-direction: column;">
+                  <span style="font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.4px;">
+                    Acumulación continua en cada repostaje (Moeve gow):
+                  </span>
+                  <div style="display: grid; grid-template-columns: 1fr; gap: 7px; margin-top: 8px;">
+                    <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                      <div>
+                        <div style="font-size: 11px; color: var(--t3); font-weight: 600;">Coche + Luz o Gas</div>
+                        <div style="font-size: 11.5px; font-weight: 700; color: var(--text);">Suministro básico</div>
+                      </div>
+                      <div style="font-size: 16px; font-weight: 900; color: #00a3e0; white-space: nowrap;">10 <span style="font-size: 11px; font-weight: 700;">cts./l</span></div>
+                    </div>
+                    <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                      <div>
+                        <div style="font-size: 11px; color: var(--t3); font-weight: 600;">Coche + Luz/Gas + Mantenimiento</div>
+                        <div style="font-size: 11.5px; font-weight: 700; color: var(--text);">Con Servielectric / Servigas</div>
+                      </div>
+                      <div style="font-size: 16px; font-weight: 900; color: #00a3e0; white-space: nowrap;">15 <span style="font-size: 11px; font-weight: 700;">cts./l</span></div>
+                    </div>
+                    <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                      <div>
+                        <div style="font-size: 11px; color: var(--t3); font-weight: 600;">Coche + Luz + Gas + Mantenimiento</div>
+                        <div style="font-size: 11.5px; font-weight: 700; color: var(--text);">Dual + SVA</div>
+                      </div>
+                      <div style="font-size: 16px; font-weight: 900; color: #00a3e0; white-space: nowrap;">20 <span style="font-size: 11px; font-weight: 700;">cts./l</span></div>
+                    </div>
+                    <div style="background: var(--bg); border: 1.5px solid rgba(0,163,224,0.4); border-radius: 8px; padding: 9px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
+                      <div>
+                        <div style="font-size: 11px; color: var(--t3); font-weight: 600;">Coche + Luz/Gas + Solar + Mant.</div>
+                        <div style="font-size: 11.5px; font-weight: 700; color: var(--text);">Pack Integral Solar</div>
+                      </div>
+                      <div style="font-size: 16px; font-weight: 900; color: #0284c7; white-space: nowrap;">30 <span style="font-size: 11px; font-weight: 700;">cts./l</span></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Miniatura y Botón -->
+              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 8px; padding-top: 10px; border-top: 1px solid var(--border);">
+                <div onclick="openServiceDocumentModal('img-companias/promocion-naturgy-moeve-gow-40.jpg', 'Promoción Naturgy & Moeve gow — 40€')" style="cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; transition: border-color 0.15s;" onmouseover="this.style.borderColor='#00a3e0'" onmouseout="this.style.borderColor='var(--border)'">
+                  <img src="img-companias/promocion-naturgy-moeve-gow-40.jpg" alt="Cartel Naturgy Moeve" style="width: 32px; height: 42px; object-fit: cover; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                  <span style="font-size: 11.5px; font-weight: 700; color: var(--t2);">Ver miniatura</span>
+                </div>
+                <button type="button" onclick="openServiceDocumentModal('img-companias/promocion-naturgy-moeve-gow-40.jpg', 'Promoción Naturgy & Moeve gow — 40€')" style="display: inline-flex; align-items: center; gap: 6px; background: #00a3e0; color: #fff; border: none; border-radius: 7px; padding: 8px 14px; font-size: 12.5px; font-weight: 800; cursor: pointer; transition: background 0.15s; box-shadow: 0 2px 6px rgba(0,163,224,0.25);" onmouseover="this.style.background='#0284c7'" onmouseout="this.style.background='#00a3e0'">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                  Ver Cartel Oficial Naturgy & Moeve
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- ════════ 3. REPSOL: OFICIAL WAYLET ════════ -->
+        <div id="promo-sec-repsol" class="promo-company-section">
+          <div class="promo-section-header">
+            <div class="promo-section-title-wrap">
+              <div class="promo-section-icon" style="background: rgba(255, 80, 0, 0.12); color: #FF5000; border: 1px solid rgba(255, 80, 0, 0.25);">
+                <span style="font-weight: 900; font-size: 15px;">3</span>
+              </div>
+              <div>
+                <div style="display: flex; align-items: center; gap: 8px; flex-wrap: wrap;">
+                  <img src="img-companias/repsol.svg" alt="Repsol" style="height: 24px; max-width: 95px; object-fit: contain;">
+                  <h3 class="promo-section-title" style="color: #FF5000;">Repsol — Promoción Oficial Waylet (Hasta 100 € en Saldo)</h3>
+                </div>
+                <div class="promo-section-subtitle">Campañas oficiales de captación con saldo Waylet para facturas y repostajes + descuentos continuos en combustible. Válida hasta el 30 de noviembre de 2026.</div>
+              </div>
+            </div>
+          </div>
+
           <!-- CARD REPSOL: HASTA 100€ WAYLET -->
           <div class="promo-card" style="border-top: 4px solid #FF5000;">
             <div class="promo-card-header" style="background: linear-gradient(to right, rgba(255,80,0,0.06), transparent);">
@@ -7266,44 +7451,46 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
                 </div>
               </div>
 
-              <!-- Calendario de reparto -->
-              <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 14px;">
-                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF5000" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
-                  <span style="font-size: 12px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 0.3px;">
-                    Reparto del saldo Waylet durante el primer año:
-                  </span>
+              <div class="promo-two-col">
+                <!-- Calendario de reparto -->
+                <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 12px 14px;">
+                  <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 8px;">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#FF5000" stroke-width="2.5"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                    <span style="font-size: 12px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 0.3px;">
+                      Reparto del saldo Waylet durante el primer año:
+                    </span>
+                  </div>
+                  <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center;">
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;">
+                      <div style="font-size: 14px; font-weight: 800; color: #FF5000;">25%</div>
+                      <div style="font-size: 10.5px; font-weight: 600; color: var(--t2);">A los 3 meses</div>
+                    </div>
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;">
+                      <div style="font-size: 14px; font-weight: 800; color: #FF5000;">25%</div>
+                      <div style="font-size: 10.5px; font-weight: 600; color: var(--t2);">A los 6 meses</div>
+                    </div>
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;">
+                      <div style="font-size: 14px; font-weight: 800; color: #FF5000;">25%</div>
+                      <div style="font-size: 10.5px; font-weight: 600; color: var(--t2);">A los 9 meses</div>
+                    </div>
+                    <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;">
+                      <div style="font-size: 14px; font-weight: 800; color: #FF5000;">25%</div>
+                      <div style="font-size: 10.5px; font-weight: 600; color: var(--t2);">A los 12 meses</div>
+                    </div>
+                  </div>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; text-align: center;">
-                  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;">
-                    <div style="font-size: 14px; font-weight: 800; color: #FF5000;">25%</div>
-                    <div style="font-size: 10.5px; font-weight: 600; color: var(--t2);">A los 3 meses</div>
-                  </div>
-                  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;">
-                    <div style="font-size: 14px; font-weight: 800; color: #FF5000;">25%</div>
-                    <div style="font-size: 10.5px; font-weight: 600; color: var(--t2);">A los 6 meses</div>
-                  </div>
-                  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;">
-                    <div style="font-size: 14px; font-weight: 800; color: #FF5000;">25%</div>
-                    <div style="font-size: 10.5px; font-weight: 600; color: var(--t2);">A los 9 meses</div>
-                  </div>
-                  <div style="background: var(--surface); border: 1px solid var(--border); border-radius: 6px; padding: 6px 4px;">
-                    <div style="font-size: 14px; font-weight: 800; color: #FF5000;">25%</div>
-                    <div style="font-size: 10.5px; font-weight: 600; color: var(--t2);">A los 12 meses</div>
-                  </div>
-                </div>
-              </div>
 
-              <!-- Ahorro continuo en combustible Waylet -->
-              <div style="background: rgba(255,80,0,0.04); border: 1px dashed rgba(255,80,0,0.3); border-radius: 8px; padding: 10px 14px;">
-                <div style="font-size: 12px; font-weight: 800; color: #c2410c; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
-                  <span>⛽</span> Descuentos continuos en repostajes con Waylet:
-                </div>
-                <div style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 11.5px; font-weight: 700; color: var(--text);">
-                  <span style="background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;">🚗 Coche: <strong>10 cts./l</strong></span>
-                  <span style="background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;">🚗💡 Coche y Luz: <strong>20 cts./l</strong></span>
-                  <span style="background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;">🚗💡🔥 Luz y Gas: <strong>30 cts./l</strong></span>
-                  <span style="background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;">🚗💡🔥☀️ Luz, Gas y Solar: <strong>40 cts./l</strong></span>
+                <!-- Ahorro continuo en combustible Waylet -->
+                <div style="background: rgba(255,80,0,0.04); border: 1px dashed rgba(255,80,0,0.3); border-radius: 8px; padding: 10px 14px;">
+                  <div style="font-size: 12px; font-weight: 800; color: #c2410c; margin-bottom: 4px; display: flex; align-items: center; gap: 6px;">
+                    <span>⛽</span> Descuentos continuos en repostajes con Waylet:
+                  </div>
+                  <div style="display: flex; flex-wrap: wrap; gap: 6px; font-size: 11.5px; font-weight: 700; color: var(--text);">
+                    <span style="background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;">🚗 Coche: <strong>10 cts./l</strong></span>
+                    <span style="background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;">🚗💡 Coche y Luz: <strong>20 cts./l</strong></span>
+                    <span style="background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;">🚗💡🔥 Luz y Gas: <strong>30 cts./l</strong></span>
+                    <span style="background: var(--surface); border: 1px solid var(--border); padding: 3px 8px; border-radius: 5px;">🚗💡🔥☀️ Luz, Gas y Solar: <strong>40 cts./l</strong></span>
+                  </div>
                 </div>
               </div>
 
@@ -7320,155 +7507,8 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
               </div>
             </div>
           </div>
-
-          <!-- CARD NATURGY & MOEVE GOW: 40€ BONIFICACIÓN -->
-          <div class="promo-card" style="border-top: 4px solid #00a3e0;">
-            <div class="promo-card-header" style="background: linear-gradient(to right, rgba(0,163,224,0.06), transparent);">
-              <div style="display: flex; align-items: center; gap: 10px;">
-                <div style="display: flex; align-items: center; gap: 6px;">
-                  <img src="img-companias/naturgy.png" alt="Naturgy" style="height: 22px; max-width: 80px; object-fit: contain;">
-                  <span style="font-weight: 900; color: #002d72; font-size: 15px;">&amp; Moeve gow</span>
-                </div>
-                <div>
-                  <h4 style="margin: 0; font-size: 16px; font-weight: 800; color: var(--text);">Ahorra con Naturgy y Moeve gow</h4>
-                  <div style="font-size: 12px; color: var(--t2); font-weight: 600;">Hasta 40 € en saldo + hasta 30 cts./litro en repostajes</div>
-                </div>
-              </div>
-              <div style="display: flex; align-items: center; gap: 6px; flex-wrap: wrap;">
-                <span style="font-size: 11px; font-weight: 800; color: #0369a1; background: rgba(0,163,224,0.12); border: 1px solid rgba(0,163,224,0.3); padding: 3px 8px; border-radius: 6px;">
-                  40 € EN CARBURANTE
-                </span>
-                <span style="font-size: 11px; font-weight: 800; color: #15803d; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.3); padding: 3px 8px; border-radius: 6px;">
-                  ACTIVA
-                </span>
-              </div>
-            </div>
-
-            <div class="promo-card-body">
-              <!-- Operativa y Reglas Obligatorias -->
-              <div style="background: var(--bg); border: 1.5px solid rgba(0,163,224,0.3); border-radius: 8px; padding: 12px 14px;">
-                <div style="display: flex; align-items: center; gap: 6px; margin-bottom: 10px;">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#00a3e0" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
-                  <span style="font-size: 12px; font-weight: 800; color: var(--text); text-transform: uppercase; letter-spacing: 0.3px;">
-                    Operativa de asignación de los 40 €:
-                  </span>
-                </div>
-                <div style="display: flex; flex-direction: column; gap: 8px; font-size: 12.5px; color: var(--text); line-height: 1.45;">
-                  <div style="display: flex; align-items: flex-start; gap: 8px;">
-                    <span style="background: rgba(0,163,224,0.15); color: #0284c7; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 1px; white-space: nowrap;">2 REPOSTAJES</span>
-                    <span>Se asignarán los <strong>40 €</strong> en el saldo gow y monedero Naturgy al efectuar <strong>2 repostajes en Moeve</strong>: <strong>20 € en el primer repostaje</strong> y <strong>20 € en el segundo repostaje</strong>.</span>
-                  </div>
-                  <div style="display: flex; align-items: flex-start; gap: 8px;">
-                    <span style="background: rgba(0,163,224,0.15); color: #0284c7; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 1px; white-space: nowrap;">A LOS 30 DÍAS</span>
-                    <span>Aplicable a partir de los <strong>30 días de la firma del contrato</strong>, siempre y cuando el contrato <strong>siga activo</strong> en ese momento.</span>
-                  </div>
-                  <div style="display: flex; align-items: flex-start; gap: 8px;">
-                    <span style="background: rgba(0,163,224,0.15); color: #0284c7; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 1px; white-space: nowrap;">MÍNIMO 30 €</span>
-                    <span>Cada repostaje debe ser <strong>igual o superior a 30 €</strong> (≥ 30 €).</span>
-                  </div>
-                  <div style="display: flex; align-items: flex-start; gap: 8px;">
-                    <span style="background: rgba(0,163,224,0.15); color: #0284c7; font-weight: 800; font-size: 11px; padding: 2px 6px; border-radius: 4px; margin-top: 1px; white-space: nowrap;">EMAIL MOEVE</span>
-                    <span>Entre <strong>30 y 40 días</strong> del alta en Naturgy, el cliente recibirá de Moeve un email para realizar el primer repostaje dentro de la promoción.</span>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Acumulación Continua en Repostajes -->
-              <div>
-                <span style="font-size: 12px; font-weight: 800; color: var(--t2); text-transform: uppercase; letter-spacing: 0.4px;">
-                  Acumulación continua en cada repostaje (Moeve gow):
-                </span>
-                <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 8px;">
-                  <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                    <div>
-                      <div style="font-size: 11px; color: var(--t3); font-weight: 600;">Coche + Luz o Gas</div>
-                      <div style="font-size: 11.5px; font-weight: 700; color: var(--text);">Suministro básico</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 900; color: #00a3e0; white-space: nowrap;">10 <span style="font-size: 11px; font-weight: 700;">cts./l</span></div>
-                  </div>
-                  <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                    <div>
-                      <div style="font-size: 11px; color: var(--t3); font-weight: 600;">Coche + Luz/Gas + Mantenimiento</div>
-                      <div style="font-size: 11.5px; font-weight: 700; color: var(--text);">Con Servielectric / Servigas</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 900; color: #00a3e0; white-space: nowrap;">15 <span style="font-size: 11px; font-weight: 700;">cts./l</span></div>
-                  </div>
-                  <div style="background: var(--bg); border: 1.5px solid var(--border); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                    <div>
-                      <div style="font-size: 11px; color: var(--t3); font-weight: 600;">Coche + Luz + Gas + Mantenimiento</div>
-                      <div style="font-size: 11.5px; font-weight: 700; color: var(--text);">Dual + SVA</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 900; color: #00a3e0; white-space: nowrap;">20 <span style="font-size: 11px; font-weight: 700;">cts./l</span></div>
-                  </div>
-                  <div style="background: var(--bg); border: 1.5px solid rgba(0,163,224,0.4); border-radius: 8px; padding: 10px 12px; display: flex; align-items: center; justify-content: space-between; gap: 8px;">
-                    <div>
-                      <div style="font-size: 11px; color: var(--t3); font-weight: 600;">Coche + Luz/Gas + Solar + Mant.</div>
-                      <div style="font-size: 11.5px; font-weight: 700; color: var(--text);">Pack Integral Solar</div>
-                    </div>
-                    <div style="font-size: 16px; font-weight: 900; color: #0284c7; white-space: nowrap;">30 <span style="font-size: 11px; font-weight: 700;">cts./l</span></div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Miniatura y Botón -->
-              <div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: auto; padding-top: 10px; border-top: 1px solid var(--border);">
-                <div onclick="openServiceDocumentModal('img-companias/promocion-naturgy-moeve-gow-40.jpg', 'Promoción Naturgy & Moeve gow — 40€')" style="cursor: pointer; display: flex; align-items: center; gap: 10px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; padding: 5px 10px; transition: border-color 0.15s;" onmouseover="this.style.borderColor='#00a3e0'" onmouseout="this.style.borderColor='var(--border)'">
-                  <img src="img-companias/promocion-naturgy-moeve-gow-40.jpg" alt="Cartel Naturgy Moeve" style="width: 32px; height: 42px; object-fit: cover; border-radius: 3px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
-                  <span style="font-size: 11.5px; font-weight: 700; color: var(--t2);">Ver miniatura</span>
-                </div>
-                <button type="button" onclick="openServiceDocumentModal('img-companias/promocion-naturgy-moeve-gow-40.jpg', 'Promoción Naturgy & Moeve gow — 40€')" style="display: inline-flex; align-items: center; gap: 6px; background: #00a3e0; color: #fff; border: none; border-radius: 7px; padding: 8px 14px; font-size: 12.5px; font-weight: 800; cursor: pointer; transition: background 0.15s; box-shadow: 0 2px 6px rgba(0,163,224,0.25);" onmouseover="this.style.background='#0284c7'" onmouseout="this.style.background='#00a3e0'">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
-                  Ver Cartel Oficial Naturgy & Moeve
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ════════ SECCIÓN 2: TARJETAS SUPERMERCADO (IBERDROLA) ════════ -->
-      <div id="promo-sec-supermercados">
-        <div class="promo-section-header">
-          <div class="promo-section-title-wrap">
-            <div class="promo-section-icon" style="background: rgba(0, 139, 60, 0.1); color: #008B3C;">
-              <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
-            </div>
-            <div>
-              <h3 class="promo-section-title">Tarjetas Promocionales de Supermercado</h3>
-              <div class="promo-section-subtitle">Tarjetas regalo físicas o electrónicas exclusivas para contrataciones con Iberdrola.</div>
-            </div>
-          </div>
         </div>
 
-        <!-- Banner de Normas e Importante sobre Promociones -->
-        <div class="promo-rules-banner">
-          <div class="promo-rules-title">
-            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" style="color: #dc2626;"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>
-            CONDICIONES OBLIGATORIAS:
-          </div>
-          <div class="promo-rules-items">
-            <div class="promo-rule-chip">
-              <span class="promo-chip-badge ib">IBERDROLA</span>
-              <span>Solo contratos con <strong>Iberdrola</strong></span>
-            </div>
-            <div class="promo-rule-chip" style="border-color: rgba(220,38,38,0.3); background: rgba(220,38,38,0.04);">
-              <span class="promo-chip-badge" style="background:#dc2626;">PLAN AHORA</span>
-              <span><strong>Sin tarjetas promocionales</strong></span>
-            </div>
-            <div class="promo-rule-chip">
-              <span class="promo-chip-badge cif">CIF / PYMES</span>
-              <span>Máximo <strong>30 €</strong> (nunca 50 €)</span>
-            </div>
-            <div class="promo-rule-chip">
-              <span class="promo-chip-badge ccpp">CCPP</span>
-              <span>Comunidades <strong>totalmente excluidas</strong></span>
-            </div>
-          </div>
-        </div>
-
-        <div class="promociones-grid" id="promociones-container">
-          <!-- Se cargara dinamicamente -->
-        </div>
       </div>
     </div>
 
@@ -9409,17 +9449,36 @@ function savePromocionesConfig(config) {
 function switchPromoCategory(cat, btn) {
   document.querySelectorAll('.promo-filter-btn').forEach(b => b.classList.remove('active'));
   if (btn) btn.classList.add('active');
+  const secIb = document.getElementById('promo-sec-supermercados');
+  const secNat = document.getElementById('promo-sec-naturgy');
+  const secRep = document.getElementById('promo-sec-repsol');
   const secComp = document.getElementById('promo-sec-companias');
-  const secSup = document.getElementById('promo-sec-supermercados');
+
   if (cat === 'all') {
+    if (secIb) secIb.style.display = 'block';
+    if (secNat) secNat.style.display = 'block';
+    if (secRep) secRep.style.display = 'block';
     if (secComp) secComp.style.display = 'block';
-    if (secSup) secSup.style.display = 'block';
-  } else if (cat === 'companias') {
-    if (secComp) secComp.style.display = 'block';
-    if (secSup) secSup.style.display = 'none';
-  } else if (cat === 'supermercados') {
+  } else if (cat === 'iberdrola' || cat === 'supermercados') {
+    if (secIb) secIb.style.display = 'block';
+    if (secNat) secNat.style.display = 'none';
+    if (secRep) secRep.style.display = 'none';
     if (secComp) secComp.style.display = 'none';
-    if (secSup) secSup.style.display = 'block';
+  } else if (cat === 'naturgy') {
+    if (secIb) secIb.style.display = 'none';
+    if (secNat) secNat.style.display = 'block';
+    if (secRep) secRep.style.display = 'none';
+    if (secComp) secComp.style.display = 'block';
+  } else if (cat === 'repsol') {
+    if (secIb) secIb.style.display = 'none';
+    if (secNat) secNat.style.display = 'none';
+    if (secRep) secRep.style.display = 'block';
+    if (secComp) secComp.style.display = 'block';
+  } else if (cat === 'companias') {
+    if (secIb) secIb.style.display = 'none';
+    if (secNat) secNat.style.display = 'block';
+    if (secRep) secRep.style.display = 'block';
+    if (secComp) secComp.style.display = 'block';
   }
 }
 
