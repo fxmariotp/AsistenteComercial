@@ -392,6 +392,17 @@ $repsolIndexadaConfigured = ($indexContent.IndexOf("n:'Tarifa Indexada'") -ge 0 
                              $indexContent.IndexOf("repsol_indexada") -ge 0)
 Report-Test -Category "Comparator Integrity" -TestName "Repsol Tarifa Indexada implementada (P1 0.209, P2 0.221, P3 0.299, Potencia 0.075903/0.001987)" -Profile "Tarifas Repsol" -Expected "Tarifas_luz, calcComp y desglose con precios de energia indexada y potencia sin bloqueo obligatorio SVA" -Obtained "Implementacion integra de Repsol Tarifa Indexada" -Condition $repsolIndexadaConfigured
 
+$repsolIndexadaSvaConfigured = ($indexContent.IndexOf("Tu Asistente 24h Plus (5,78€/mes)") -ge 0 -and
+                                $indexContent.IndexOf("Asistente 24h Pyme (9,99€/mes)") -ge 0 -and
+                                $indexContent.IndexOf("60€ Saldo Waylet") -ge 0 -and
+                                $indexContent.IndexOf("Disponible con o sin servicio") -ge 0)
+Report-Test -Category "Comparator Integrity" -TestName "Repsol Indexada permite incluir servicio de mantenimiento (SVA 40€ / 60€ Waylet)" -Profile "Reglas de Negocio Repsol" -Expected "Posibilidad de tramitar con o sin SVA asignando Asistente 24h Plus / Pyme y bonificacion Waylet" -Obtained "Tarifa Indexada con servicio opcional completamente integrada" -Condition $repsolIndexadaSvaConfigured
+
+$repsolCondicionesIgualConfigured = ($indexContent.IndexOf("id === 'repsol'") -ge 0 -and
+                                     $indexContent.IndexOf("Precios iguales sin y con mantenimiento") -ge 0 -and
+                                     $indexContent.IndexOf("conMantHtml = '<span style=""color:var(--t3)"">igual</span>'") -ge 0)
+Report-Test -Category "Comparator Integrity" -TestName "Condiciones Repsol muestra igual en Sin y Con mantenimiento" -Profile "UI / UX Condiciones" -Expected "Columnas Sin Mantenimiento y Con Mantenimiento muestran 'igual' en todo Repsol" -Obtained "Visualizacion unificada de precios sin diferencias por mantenimiento en Repsol" -Condition $repsolCondicionesIgualConfigured
+
 # ----------------------------------------------------------------------------
 # 11. PROMOCIONES COMERCIALES (REPSOL WAYLET & NATURGY MOEVE GOW)
 # ----------------------------------------------------------------------------
