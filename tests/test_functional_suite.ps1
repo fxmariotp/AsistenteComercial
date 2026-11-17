@@ -416,23 +416,26 @@ Write-Host "`n=== 11. PROMOCIONES COMERCIALES (REPSOL & NATURGY) ===" -Foregroun
 $repsolImgExists = Test-Path "$PWD/img-companias/promocion-repsol-waylet-100.jpg"
 $repsolPromoInHtml = ($indexContent.IndexOf("promocion-repsol-waylet-100.jpg") -ge 0 -and
                       $indexContent.IndexOf("Tu energía, con ventajas") -ge 0 -and
+                      $indexContent.IndexOf("Luz o Gas + mínimo 1 SVA") -ge 0 -and
+                      $indexContent.IndexOf("Luz y Gas + mínimo 1 SVA") -ge 0 -and
+                      $indexContent.IndexOf("40 €") -ge 0 -and
+                      $indexContent.IndexOf("60 €") -ge 0 -and
                       $indexContent.IndexOf("100 €") -ge 0 -and
                       $indexContent.IndexOf("30 de noviembre de 2026") -ge 0 -and
                       $indexContent.IndexOf("A los 3 meses") -ge 0)
 
-Report-Test -Category "Promociones Comerciales" -TestName "Promocion Repsol Waylet (Hasta 100€) registrada con desglose e imagen" -Profile "Frontend Promociones" -Expected "Imagen oficial existente, escala 40/60/100€, reparto trimestral 25% y vigencia nov 2026" -Obtained "Estructura completa de Repsol Waylet integrada con modal y cartel oficial" -Condition ($repsolImgExists -and $repsolPromoInHtml)
+Report-Test -Category "Promociones Comerciales" -TestName "Promocion Repsol Waylet clarificada (40€ / 60€ / 100€) registrada con cartel oficial" -Profile "Frontend Promociones" -Expected "Escala clarificada: Luz o Gas 40€, Luz o Gas + 1 SVA 60€, Luz y Gas + 1 SVA 100€, reparto trimestral 25% y vigencia nov 2026" -Obtained "Estructura clarificada de Repsol Waylet integrada con modal y cartel oficial" -Condition ($repsolImgExists -and $repsolPromoInHtml)
 
-$naturgyImgExists = Test-Path "$PWD/img-companias/promocion-naturgy-moeve-gow-40.jpg"
-$naturgyPromoInHtml = ($indexContent.IndexOf("promocion-naturgy-moeve-gow-40.jpg") -ge 0 -and
+$naturgyImgExists = Test-Path "$PWD/img-companias/promocion-naturgy-moeve-gow.jpg"
+$naturgyPromoInHtml = ($indexContent.IndexOf("promocion-naturgy-moeve-gow.jpg") -ge 0 -and
                        $indexContent.IndexOf("Ahorra con Naturgy y Moeve gow") -ge 0 -and
-                       $indexContent.IndexOf("20 € en el primer repostaje") -ge 0 -and
-                       $indexContent.IndexOf("20 € en el segundo repostaje") -ge 0 -and
-                       $indexContent.IndexOf("30 días de la firma") -ge 0 -and
-                       $indexContent.IndexOf("igual o superior a 30 €") -ge 0 -and
-                       $indexContent.IndexOf("30 y 40 días") -ge 0 -and
-                       $indexContent.IndexOf("10 a 30") -ge 0)
+                       $indexContent.IndexOf("15") -ge 0 -and
+                       $indexContent.IndexOf("20") -ge 0 -and
+                       $indexContent.IndexOf("25") -ge 0 -and
+                       $indexContent.IndexOf("35") -ge 0 -and
+                       $indexContent.IndexOf("Acumulación directa en saldo Moeve gow") -ge 0)
 
-Report-Test -Category "Promociones Comerciales" -TestName "Promocion Naturgy & Moeve gow (40€) registrada con operativa completa" -Profile "Frontend Promociones" -Expected "Imagen oficial, 2 repostajes de 20€, >=30€, email 30-40 dias, contrato activo y 10-30 cts/l" -Obtained "Operativa detallada y acumulacion continua integradas con modal" -Condition ($naturgyImgExists -and $naturgyPromoInHtml)
+Report-Test -Category "Promociones Comerciales" -TestName "Promocion Naturgy & Moeve gow actualizada a ahorro por litro (15 a 35 cts./l)" -Profile "Frontend Promociones" -Expected "Imagen oficial, eliminacion del bono 40€ y 4 tramos de ahorro continuo de 15 a 35 cts./l" -Obtained "Tramos de ahorro de 15, 20, 25 y 35 cts./l integrados con cartel oficial" -Condition ($naturgyImgExists -and $naturgyPromoInHtml)
 
 $promoFilterNavValid = ($indexContent.IndexOf("switchPromoCategory") -ge 0 -and
                         $indexContent.IndexOf("promo-sec-companias") -ge 0 -and
