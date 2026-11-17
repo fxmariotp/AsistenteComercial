@@ -8208,7 +8208,7 @@ const BASE = {
     imp_electrico:0.0511,
     tarifas_luz:[
       {n:'Plan 24 Horas', te:0.149, tp1:0.0990, tp2:0.0990, nota:'Precio unico 24h sin permanencia'},
-      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.17}, {p:'P2 (Llano)', te:0.18}, {p:'P3 (Valle)', te:0.26}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestion (+5.00 €/mes)'}
+      {n:'Precio de Mercado', dh:true, periodos:[{p:'P1 (Punta)', te:0.184}, {p:'P2 (Llano)', te:0.196}, {p:'P3 (Valle)', te:0.274}], tp1:0.0760, tp2:0.0020, nota:'Coste de gestion (+5.00 €/mes)'}
     ],
     tarifas_gas:[
       {n:'Gana Gas RL1', tv:0.0903, tf:0.127667},
@@ -12132,9 +12132,9 @@ function calcComp(){
       r.name = isCif ? 'Gana Energia Precio de Mercado (Precio CIF)' : 'Gana Energia Precio de Mercado';
       // Usar tarifa indexada "Precio de Mercado" para Gana Energia
       luzPot = (pot1 * 0.076 + pot2 * 0.002) * dias;
-      luzP1 = kwh1 * 0.17;
-      luzP2 = kwh2 * 0.18;
-      luzP3 = kwh3 * 0.26;
+      luzP1 = kwh1 * 0.184;
+      luzP2 = kwh2 * 0.196;
+      luzP3 = kwh3 * 0.274;
       costeGestion = (5.00 / 30) * dias;
     } else if (cia === 'gana' && off.type === 'gana_24h') {
       // Usar tarifa plana estandar "Plan Online 24h" para Gana Energia
@@ -12270,18 +12270,19 @@ function calcComp(){
   });
 
   results.sort((a,b)=>{
-    // Gana Energía SIEMPRE la última, ahorre lo que ahorre
+    // 1. Las ofertas bloqueadas por cualquier motivo (ej. solo con mantenimiento sin SVA activo)
+    // se colocan AUTOMÁTICAMENTE LAS ÚLTIMAS de todas.
+    if (a.isLocked && !b.isLocked) return 1;
+    if (!a.isLocked && b.isLocked) return -1;
+
+    // 2. Si ambas están disponibles (o ambas bloqueadas), Gana Energía siempre la última de su bloque
     const isGanaA = (a.cia === 'gana');
     const isGanaB = (b.cia === 'gana');
     if (isGanaA && !isGanaB) return 1;
     if (!isGanaA && isGanaB) return -1;
     if (isGanaA && isGanaB) return a.total - b.total;
 
-    // Las ofertas bloqueadas (ej. Plan Ahora sin SVA) van al final de las disponibles
-    if (a.isLocked && !b.isLocked) return 1;
-    if (!a.isLocked && b.isLocked) return -1;
-
-    // Mayor ahorro primero (menor total primero)
+    // 3. Mayor ahorro primero (menor total primero)
     return a.total - b.total;
   });
   window.lastCompResults = results; // Save for print report
@@ -12810,20 +12811,20 @@ function printCompanyOffer(key) {
       // Indexada Gana Energia
       rows.push({
         concept: 'Consumo P1 (Punta)',
-        calc: `${kwh1.toFixed(2)} kWh × 0.17 €/kWh`,
+        calc: `${kwh1.toFixed(2)} kWh × 0.184 €/kWh`,
         val: `${f2(luzP1)} €`
       });
       if (kwh2 > 0) {
         rows.push({
           concept: 'Consumo P2 (Llano)',
-          calc: `${kwh2.toFixed(2)} kWh × 0.18 €/kWh`,
+          calc: `${kwh2.toFixed(2)} kWh × 0.196 €/kWh`,
           val: `${f2(luzP2)} €`
         });
       }
       if (kwh3 > 0) {
         rows.push({
           concept: 'Consumo P3 (Valle)',
-          calc: `${kwh3.toFixed(2)} kWh × 0.26 €/kWh`,
+          calc: `${kwh3.toFixed(2)} kWh × 0.274 €/kWh`,
           val: `${f2(luzP3)} €`
         });
       }
@@ -18671,7 +18672,7 @@ function getRenosurChatResponse(query) {
         },
         mercado: {
           name: "Precio de Mercado",
-          base: "Tarifa variable indexada. P1 (Punta): 0,17 €/kWh | P2 (Llano): 0,18 €/kWh | P3 (Valle): 0,26 €/kWh",
+          base: "Tarifa variable indexada. P1 (Punta): 0,184 €/kWh | P2 (Llano): 0,196 €/kWh | P3 (Valle): 0,274 €/kWh",
           sin_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
           con_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
           descuento_sin_mantenimiento: "Ese dato no aparece en la información disponible de esta tarifa.",
@@ -18871,9 +18872,9 @@ function getRenosurChatResponse(query) {
   if (q.includes('precio de mercado') || (q.includes('gana') && (q.includes('mercado') || q.includes('indexad')))) {
     return "<strong>Gana Energía — Precio de Mercado (Variable / Indexada):</strong><br><br>" +
       "• <strong>Término de Energía por Tramos:</strong><br>" +
-      "  - P1 (Punta): <strong>0,17 €/kWh</strong><br>" +
-      "  - P2 (Llano): <strong>0,18 €/kWh</strong><br>" +
-      "  - P3 (Valle): <strong>0,26 €/kWh</strong><br><br>" +
+      "  - P1 (Punta): <strong>0,184 €/kWh</strong><br>" +
+      "  - P2 (Llano): <strong>0,196 €/kWh</strong><br>" +
+      "  - P3 (Valle): <strong>0,274 €/kWh</strong><br><br>" +
       "• <strong>Coste de Gestión del Suministro:</strong> <strong>+5,00 €/mes</strong><br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,0760 €/kW·día</strong> | TP2: <strong>0,0020 €/kW·día</strong><br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +

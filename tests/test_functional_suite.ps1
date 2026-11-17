@@ -368,6 +368,18 @@ Report-Test -Category "Comparator Integrity" -TestName "Repsol Luz exige obligat
 
 Report-Test -Category "Comparator Integrity" -TestName "Bloqueo de Repsol Luz en comparador sin SVA" -Profile "Motor de Comparacion" -Expected "isRepsolLuzLocked bloquea la oferta si no hay SVA activo" -Obtained "Bloqueo de seguridad para evitar tramitacion no permitida" -Condition $repsolLuzLockLogic
 
+$lockedTariffsSortedLast = ($indexContent -match "if\s*\(a\.isLocked\s*&&\s*!b\.isLocked\)\s*return\s*1;\s*[\r\n\s]*if\s*\(!a\.isLocked\s*&&\s*b\.isLocked\)\s*return\s*-1;")
+Report-Test -Category "Comparator Integrity" -TestName "Tarifas bloqueadas se ordenan automaticamente al final de la comparativa" -Profile "Motor de Comparacion" -Expected "Regla a.isLocked evaluada prioritariamente para situar bloqueadas las ultimas" -Obtained "Criterio de ordenacion prioritario para tarifas bloqueadas implementado" -Condition $lockedTariffsSortedLast
+
+$ganaMercadoPricesUpdated = ($indexContent.IndexOf("te:0.184") -ge 0 -and
+                             $indexContent.IndexOf("te:0.196") -ge 0 -and
+                             $indexContent.IndexOf("te:0.274") -ge 0 -and
+                             $indexContent.IndexOf("kwh1 * 0.184") -ge 0 -and
+                             $indexContent.IndexOf("kwh2 * 0.196") -ge 0 -and
+                             $indexContent.IndexOf("kwh3 * 0.274") -ge 0 -and
+                             $indexContent.IndexOf("pot1 * 0.076 + pot2 * 0.002") -ge 0)
+Report-Test -Category "Comparator Integrity" -TestName "Gana Energia Precio de Mercado actualizado (P1 0.184, P2 0.196, P3 0.274, Potencia 0.076/0.002)" -Profile "Tarifas Gana Energia" -Expected "Tarifas_luz, calcComp y desglose con nuevos precios de energia y potencia" -Obtained "Actualizacion completa en motor de calculo y base de tarifas" -Condition $ganaMercadoPricesUpdated
+
 # ----------------------------------------------------------------------------
 # 11. PROMOCIONES COMERCIALES (REPSOL WAYLET & NATURGY MOEVE GOW)
 # ----------------------------------------------------------------------------
