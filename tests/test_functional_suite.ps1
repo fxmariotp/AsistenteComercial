@@ -403,6 +403,11 @@ $repsolCondicionesIgualConfigured = ($indexContent.IndexOf("id === 'repsol'") -g
                                      $indexContent.IndexOf("conMantHtml = '<span style=""color:var(--t3)"">igual</span>'") -ge 0)
 Report-Test -Category "Comparator Integrity" -TestName "Condiciones Repsol muestra igual en Sin y Con mantenimiento" -Profile "UI / UX Condiciones" -Expected "Columnas Sin Mantenimiento y Con Mantenimiento muestran 'igual' en todo Repsol" -Obtained "Visualizacion unificada de precios sin diferencias por mantenimiento en Repsol" -Condition $repsolCondicionesIgualConfigured
 
+$repsolSinHorariosPymeConfigured = ($indexContent.IndexOf("n:'Tarifa Sin Horarios PYME (CIF)'") -ge 0 -and
+                                    $indexContent.IndexOf("Tarifa Sin Horarios PYME (CIF)") -ge 0 -and
+                                    $indexContent.IndexOf("n:'Tarifa Indexada'") -lt $indexContent.IndexOf("n:'Tarifa Sin Horarios PYME (CIF)'"))
+Report-Test -Category "Comparator Integrity" -TestName "Tarifa Sin Horarios PYME (CIF) renombrada y situada al final en condiciones" -Profile "Tarifas Repsol" -Expected "Nombre actualizado a Tarifa Sin Horarios PYME (CIF) y situada en ultimo puesto tras Indexada" -Obtained "Tarifa renombrada y reordenada en el ultimo lugar de tarifas_luz" -Condition $repsolSinHorariosPymeConfigured
+
 # ----------------------------------------------------------------------------
 # 11. PROMOCIONES COMERCIALES (REPSOL WAYLET & NATURGY MOEVE GOW)
 # ----------------------------------------------------------------------------
