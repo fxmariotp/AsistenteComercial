@@ -380,6 +380,18 @@ $ganaMercadoPricesUpdated = ($indexContent.IndexOf("te:0.184") -ge 0 -and
                              $indexContent.IndexOf("pot1 * 0.076 + pot2 * 0.002") -ge 0)
 Report-Test -Category "Comparator Integrity" -TestName "Gana Energia Precio de Mercado actualizado (P1 0.184, P2 0.196, P3 0.274, Potencia 0.076/0.002)" -Profile "Tarifas Gana Energia" -Expected "Tarifas_luz, calcComp y desglose con nuevos precios de energia y potencia" -Obtained "Actualizacion completa en motor de calculo y base de tarifas" -Condition $ganaMercadoPricesUpdated
 
+$repsolIndexadaConfigured = ($indexContent.IndexOf("n:'Tarifa Indexada'") -ge 0 -and
+                             $indexContent.IndexOf("te:0.209") -ge 0 -and
+                             $indexContent.IndexOf("te:0.221") -ge 0 -and
+                             $indexContent.IndexOf("te:0.299") -ge 0 -and
+                             $indexContent.IndexOf("0.075903") -ge 0 -and
+                             $indexContent.IndexOf("0.001987") -ge 0 -and
+                             $indexContent.IndexOf("kwh1 * 0.209") -ge 0 -and
+                             $indexContent.IndexOf("kwh2 * 0.221") -ge 0 -and
+                             $indexContent.IndexOf("kwh3 * 0.299") -ge 0 -and
+                             $indexContent.IndexOf("repsol_indexada") -ge 0)
+Report-Test -Category "Comparator Integrity" -TestName "Repsol Tarifa Indexada implementada (P1 0.209, P2 0.221, P3 0.299, Potencia 0.075903/0.001987)" -Profile "Tarifas Repsol" -Expected "Tarifas_luz, calcComp y desglose con precios de energia indexada y potencia sin bloqueo obligatorio SVA" -Obtained "Implementacion integra de Repsol Tarifa Indexada" -Condition $repsolIndexadaConfigured
+
 # ----------------------------------------------------------------------------
 # 11. PROMOCIONES COMERCIALES (REPSOL WAYLET & NATURGY MOEVE GOW)
 # ----------------------------------------------------------------------------

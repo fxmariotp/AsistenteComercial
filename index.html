@@ -8124,6 +8124,8 @@ function escapeHtml(str) {
       Asistente 24h Plus: 6,99 €/mes (2 meses gratis) · 60 € regalo saldo Waylet
     - Tarifa Tranquilísima (CIF): TE=0,1499 €/kWh · TP1=TP2=0,099726 €/kW·día
       Asistente 24h Pyme: 9,99 €/mes · 60 € regalo saldo Waylet
+    - Tarifa Indexada (2.0TD variable): P1=0,209000 €/kWh · P2=0,221000 €/kWh · P3=0,299000 €/kWh · CREP=0,025000 €/kWh
+      TP1=0,075903 €/kW·día · TP2=0,001987 €/kW·día · No incluye asistente (sin SVA obligatorio) · 40 € regalo saldo Waylet
     - Gas Ahorro: RL1 TV=0,0899 TF=6,90 €/mes (0,2300 €/día) · RL2 TV=0,0899 TF=13,90 €/mes · RL3 TV=0,0899 TF=22,90 €/mes
       Tu Asistente Gas: 9,08 €/mes · Sin permanencia
     Impuesto electrico: 5,11%
@@ -8229,7 +8231,8 @@ const BASE = {
     tarifas_luz:[
       {n:'Tarifa Tranquilísima', te:0.1399, tp1:0.091507, tp2:0.091507, solo_mantenimiento:true, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Solo con servicio (Asistente 24h Plus 2 meses gratis) · Regalo saldo Waylet'},
       {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, solo_mantenimiento:true, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · Solo con servicio · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'},
-      {n:'Tarifa Tranquilísima (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, solo_mantenimiento:true, nota:'Tarifa 24h Autónomos y Pymes (CIF) · Solo con servicio (Asistente 24h Pyme 9,99€/mes) · 60€ Saldo Waylet'}
+      {n:'Tarifa Tranquilísima (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, solo_mantenimiento:true, nota:'Tarifa 24h Autónomos y Pymes (CIF) · Solo con servicio (Asistente 24h Pyme 9,99€/mes) · 60€ Saldo Waylet'},
+      {n:'Tarifa Indexada', dh:true, periodos:[{p:'P1 (Punta)', te:0.209000}, {p:'P2 (Llano)', te:0.221000}, {p:'P3 (Valle)', te:0.299000}], tp1:0.075903, tp2:0.001987, solo_mantenimiento:false, nota:'Tarifa variable indexada · CREP 0,025 €/kWh · No incluye asistente · 40€ Regalo Saldo Waylet'}
     ],
     tarifas_gas:[
       {n:'Gas Ahorro RL1', tv:0.0899, tf:0.230000, nota:'Peaje RL.1 hasta 5.000 kWh/año · Fijo 6,90 €/mes · Con y sin servicio (Tu Asistente Gas 9,08 €/mes)'},
@@ -11294,7 +11297,8 @@ function renderCondiciones(){
     } else if (r.tarifas_luz.length > 1 && id === 'repsol') {
       potHtml = `<span>Potencia Tranquilísima: TP1 0,0915 · TP2 0,0915 €/kW·día (33,40 €/kW·año)</span>
                  <br><span style="margin-top:2px;display:inline-block">Potencia Solar: TP1 0,099726 · TP2 0,099726 €/kW·día</span>
-                 <br><span style="margin-top:2px;display:inline-block">Potencia CIF / Pymes: TP1 0,099726 · TP2 0,099726 €/kW·día</span>`;
+                 <br><span style="margin-top:2px;display:inline-block">Potencia CIF / Pymes: TP1 0,099726 · TP2 0,099726 €/kW·día</span>
+                 <br><span style="margin-top:2px;display:inline-block">Potencia Indexada: TP1 0,075903 · TP2 0,001987 €/kW·día</span>`;
     } else {
       potHtml = `<span>Potencia: TP1 ${r.tarifas_luz[0].tp1.toFixed(3)} · TP2 ${r.tarifas_luz[0].tp2.toFixed(3)} €/kW·dia</span>`;
     }
@@ -11316,7 +11320,11 @@ function renderCondiciones(){
       <div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">
         <span>Excedentes: <strong style="color:var(--text);">${r.precio_excedente.toFixed(3)} €/kWh</strong></span>
         <span>${svaHtml}</span>
-        ${id === 'repsol' ? `<button onclick="openServiceDocumentModal('img-companias/repsol-cif-ficha.png', 'Tarifa Luz CIF / Pymes — Repsol')" style="display:inline-flex;align-items:center;gap:5px;color:#c2410c;background:rgba(234,88,12,0.08);border-radius:6px;border:1px solid rgba(234,88,12,0.25);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.15)'" onmouseout="this.style.background='rgba(234,88,12,0.08)'">
+        ${id === 'repsol' ? `<button onclick="openServiceDocumentModal('img-companias/repsol-indexada-ficha.jpg', 'Tarifa Luz Indexada — Repsol')" style="display:inline-flex;align-items:center;gap:5px;color:#c2410c;background:rgba(234,88,12,0.08);border-radius:6px;border:1px solid rgba(234,88,12,0.25);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.15)'" onmouseout="this.style.background='rgba(234,88,12,0.08)'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+          Ficha Indexada (P1 0,209 · P2 0,221 · P3 0,299)
+        </button>
+        <button onclick="openServiceDocumentModal('img-companias/repsol-cif-ficha.png', 'Tarifa Luz CIF / Pymes — Repsol')" style="display:inline-flex;align-items:center;gap:5px;color:#c2410c;background:rgba(234,88,12,0.08);border-radius:6px;border:1px solid rgba(234,88,12,0.25);cursor:pointer;font-weight:700;font-size:12px;padding:5px 11px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.15)'" onmouseout="this.style.background='rgba(234,88,12,0.08)'">
           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
           Ficha CIF (0,1499 €/kWh)
         </button>
@@ -11745,6 +11753,7 @@ const PROCEDIMIENTOS = {
       '14 días naturales de desistimiento legal desde la contratación.',
       'Tarifa Tranquilísima: Precio del kWh fijo garantizado durante 5 años.',
       'Tarifa Tranquilísima (CIF): 0,1499 €/kWh, potencia 0,099726 €/kW·día, Asistente 24h Pyme 9,99 €/mes y 60 € de regalo en saldo Waylet.',
+      'Tarifa Indexada: Tarifa variable con discriminación horaria en 3 periodos (P1 0,209 · P2 0,221 · P3 0,299 €/kWh, CREP 0,025 €/kWh). No incluye asistente (no obligatorio). 40 € de regalo en saldo Waylet.',
       'Tu Asistente 24h Plus: 100% de descuento (gratis) los 2 primeros meses en suministro de luz.',
       'Suministros con placas solares / autoconsumo: Tarifa Solar con batería virtual (+1,99 €/mes) y compensación de excedentes a 0,06 €/kWh.',
       'Regalo de saldo Waylet para facturas y repostajes en estaciones de servicio según promoción (hasta 60€ en solar y 20€ con servicios adicionales).'
@@ -12037,7 +12046,8 @@ function calcComp(){
       { id: 'endesa', type: 'standard' },
       { id: 'gana', type: 'gana_24h' },
       { id: 'gana', type: 'gana_mercado' },
-      { id: 'repsol', type: 'standard' }
+      { id: 'repsol', type: 'standard' },
+      { id: 'repsol', type: 'repsol_indexada' }
     ];
   } else {
     offers = [
@@ -12053,7 +12063,7 @@ function calcComp(){
     const cia = off.id;
     const key = cia + '_' + off.type;
     const isPlanAhoraLocked = (compMode === 'luz' && off.type === 'ahora' && !useSva);
-    const isRepsolLuzLocked = (compMode === 'luz' && cia === 'repsol' && !useSva);
+    const isRepsolLuzLocked = (compMode === 'luz' && cia === 'repsol' && !useSva) && (off.type !== 'repsol_indexada');
     const isLocked = isPlanAhoraLocked || isRepsolLuzLocked;
     let r={...RATES[cia]};
     if (isCif) {
@@ -12136,6 +12146,15 @@ function calcComp(){
       luzP2 = kwh2 * 0.196;
       luzP3 = kwh3 * 0.274;
       costeGestion = (5.00 / 30) * dias;
+    } else if (cia === 'repsol' && off.type === 'repsol_indexada') {
+      r.name = isCif ? 'Repsol Tarifa Indexada (Precio CIF)' : 'Repsol Tarifa Indexada';
+      r.tp1 = 0.075903;
+      r.tp2 = 0.001987;
+      luzPot = (pot1 * 0.075903 + pot2 * 0.001987) * dias;
+      luzP1 = kwh1 * 0.209;
+      luzP2 = kwh2 * 0.221;
+      luzP3 = kwh3 * 0.299;
+      costeGestion = 0;
     } else if (cia === 'gana' && off.type === 'gana_24h') {
       // Usar tarifa plana estandar "Plan Online 24h" para Gana Energia
       r.name = isCif ? 'Gana Energia 24h (Precio CIF)' : 'Gana Energia 24h';
@@ -12249,7 +12268,11 @@ function calcComp(){
       } else if (cia === 'gana') {
         tariffName = (off.type === 'gana_mercado' ? 'Precio de Mercado' : 'Plan 24 Horas') + (isCif ? ' (CIF)' : '');
       } else if (cia === 'repsol') {
-        tariffName = (excedente > 0 ? 'Tarifa Solar (BV)' : (isCif ? 'Tarifa Tranquilísima (CIF)' : 'Tarifa Tranquilísima')) + (isCif && excedente > 0 ? ' (CIF)' : '');
+        if (off.type === 'repsol_indexada') {
+          tariffName = 'Tarifa Indexada' + (isCif ? ' (CIF)' : '');
+        } else {
+          tariffName = (excedente > 0 ? 'Tarifa Solar (BV)' : (isCif ? 'Tarifa Tranquilísima (CIF)' : 'Tarifa Tranquilísima')) + (isCif && excedente > 0 ? ' (CIF)' : '');
+        }
       }
     } else {
       const rlName = band.toUpperCase();
@@ -12436,9 +12459,17 @@ function renderInvCards(results, useSva){
     if (res.cuotaBateriaVirtualEndesa > 0) {
       cardExtraBadges += '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">+2€/mes Batería Virtual</span>';
     }
-    const isRepsolCif = (cia === 'repsol' && compMode === 'luz' && isCif && !(res.cuotaBateriaVirtualRepsol > 0));
-    const isRepsolTranquilisima = (cia === 'repsol' && compMode === 'luz' && !isCif && !(res.cuotaBateriaVirtualRepsol > 0));
-    if (isRepsolCif) {
+    const isRepsolIndexada = (cia === 'repsol' && compMode === 'luz' && res.type === 'repsol_indexada');
+    const isRepsolCif = (cia === 'repsol' && compMode === 'luz' && isCif && !(res.cuotaBateriaVirtualRepsol > 0) && !isRepsolIndexada);
+    const isRepsolTranquilisima = (cia === 'repsol' && compMode === 'luz' && !isCif && !(res.cuotaBateriaVirtualRepsol > 0) && !isRepsolIndexada);
+    if (isRepsolIndexada) {
+      cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">📊 Tarifa Indexada (3 tramos)</span>';
+      cardExtraBadges += '<span style="font-size:11px;color:#2563eb;font-weight:700;background:rgba(37,99,235,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(37,99,235,0.2);">ℹ️ No incluye asistente</span>';
+      cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🎁 40€ Saldo Waylet</span>';
+      if (useSva) {
+        cardExtraBadges += '<span style="font-size:11px;color:#059669;font-weight:700;background:rgba(5,150,105,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(5,150,105,0.2);">Tu Asistente 24h Plus Opcional</span>';
+      }
+    } else if (isRepsolCif) {
       cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🏢 Tarifa CIF / Pymes</span>';
       cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">🎁 60€ Saldo Waylet</span>';
       if (useSva) {
@@ -12455,7 +12486,7 @@ function renderInvCards(results, useSva){
     }
     if (res.isRepsolLuzLocked) {
       cardExtraBadges += '<span style="font-size:11px;color:#b91c1c;font-weight:800;background:rgba(220,38,38,0.12);padding:2px 8px;border-radius:4px;border:1px solid rgba(220,38,38,0.25);display:inline-flex;align-items:center;gap:4px;">🔒 Requiere SVA (Luz solo con servicio)</span>';
-    } else if (cia === 'repsol' && compMode === 'luz') {
+    } else if (cia === 'repsol' && compMode === 'luz' && !isRepsolIndexada) {
       cardExtraBadges += '<span style="font-size:11px;color:#ea580c;font-weight:700;background:rgba(234,88,12,0.08);padding:2px 7px;border-radius:4px;border:1px solid rgba(234,88,12,0.2);">⚡ Solo con servicio</span>';
     }
     const isEndesa24h = (cia === 'endesa' && compMode === 'luz' && !(res.cuotaBateriaVirtualEndesa > 0));
@@ -12552,6 +12583,9 @@ function renderInvCards(results, useSva){
       if (isSolarOffer) {
         wayletHighlightBadge = '🚗💡🔥☀️ Coche, Luz, Gas y Solar: 40 cts./l + 60€ Saldo';
         wayletTierText = 'Con tu tarifa Solar con placas acumulas el <strong>descuento máximo de 40 cts./l de saldo</strong> en tus repostajes pagando con Waylet, además de <strong>60 € de regalo</strong> en saldo Waylet.';
+      } else if (isRepsolIndexada) {
+        wayletHighlightBadge = '🚗💡 Repsol Indexada: 20 cts./l + 40€ Saldo';
+        wayletTierText = 'Con la <strong>Tarifa Indexada de Repsol</strong> acumulas <strong>20 cts./l de saldo</strong> en tus repostajes pagando con Waylet, además de <strong>40 € de regalo en saldo Waylet</strong> al finalizar la contratación (para facturas y repostajes). No incluye asistente obligatorio.';
       } else if (isCif) {
         wayletHighlightBadge = '🏢🚗💡 Repsol CIF / Pymes: 20 cts./l + 60€ Saldo';
         wayletTierText = 'Con la tarifa de Luz 24h para Autónomos y Pymes (CIF) acumulas <strong>20 cts./l de saldo</strong> en tus repostajes pagando con Waylet, además de <strong>60 € de regalo</strong> en saldo Waylet al finalizar la contratación.';
@@ -12581,6 +12615,10 @@ function renderInvCards(results, useSva){
               <span style="font-size:11px;font-weight:800;color:#ea580c;background:rgba(234,88,12,0.12);padding:3px 9px;border-radius:6px;border:1px solid rgba(234,88,12,0.25);">
                 ${wayletHighlightBadge}
               </span>
+              ${isRepsolIndexada ? `<button type="button" onclick="openServiceDocumentModal('img-companias/repsol-indexada-ficha.jpg', 'Tarifa Luz Indexada — Repsol')" style="background:rgba(234,88,12,0.12);color:#c2410c;border:1px solid rgba(234,88,12,0.25);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.22)'" onmouseout="this.style.background='rgba(234,88,12,0.12)'">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
+                Ficha Indexada
+              </button>` : ''}
               ${isCif ? `<button type="button" onclick="openServiceDocumentModal('img-companias/repsol-cif-ficha.png', 'Tarifa Luz CIF / Pymes — Repsol')" style="background:rgba(234,88,12,0.12);color:#c2410c;border:1px solid rgba(234,88,12,0.25);border-radius:6px;padding:4px 9px;font-size:11px;font-weight:700;cursor:pointer;display:inline-flex;align-items:center;gap:4px;transition:all 0.15s;" onmouseover="this.style.background='rgba(234,88,12,0.22)'" onmouseout="this.style.background='rgba(234,88,12,0.12)'">
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/><line x1="9" y1="21" x2="9" y2="9"/></svg>
                 Ficha CIF
@@ -12828,6 +12866,27 @@ function printCompanyOffer(key) {
           val: `${f2(luzP3)} €`
         });
       }
+    } else if (type === 'repsol_indexada') {
+      // Indexada Repsol
+      rows.push({
+        concept: 'Consumo P1 (Punta)',
+        calc: `${kwh1.toFixed(2)} kWh × 0.209 €/kWh`,
+        val: `${f2(luzP1)} €`
+      });
+      if (kwh2 > 0) {
+        rows.push({
+          concept: 'Consumo P2 (Llano)',
+          calc: `${kwh2.toFixed(2)} kWh × 0.221 €/kWh`,
+          val: `${f2(luzP2)} €`
+        });
+      }
+      if (kwh3 > 0) {
+        rows.push({
+          concept: 'Consumo P3 (Valle)',
+          calc: `${kwh3.toFixed(2)} kWh × 0.299 €/kWh`,
+          val: `${f2(luzP3)} €`
+        });
+      }
     } else {
       // Estandar de la compañia (tarifa plana 24h)
       const totalCons = kwh1 + kwh2 + kwh3;
@@ -12839,7 +12898,7 @@ function printCompanyOffer(key) {
         val: `${f2(totalVal)} €`
       });
     }
-    const tp1Rate = (type === 'gana_mercado' ? 0.076 : r.tp1);
+    const tp1Rate = (type === 'gana_mercado' ? 0.076 : (type === 'repsol_indexada' ? 0.075903 : r.tp1));
     const tp1Disp = (tp1Rate != null && tp1Rate.toString().split('.')[1]?.length > 3) ? tp1Rate.toString() : tp1Rate.toFixed(3);
     rows.push({
       concept: 'Potencia Punta',
@@ -12847,7 +12906,7 @@ function printCompanyOffer(key) {
       val: `${f2(pot1 * tp1Rate * dias)} €`
     });
     if (pot2 > 0) {
-      const tp2Rate = (type === 'gana_mercado' ? 0.002 : r.tp2);
+      const tp2Rate = (type === 'gana_mercado' ? 0.002 : (type === 'repsol_indexada' ? 0.001987 : r.tp2));
       const tp2Disp = (tp2Rate != null && tp2Rate.toString().split('.')[1]?.length > 3) ? tp2Rate.toString() : tp2Rate.toFixed(3);
       rows.push({
         concept: 'Potencia Valle',
@@ -13112,6 +13171,18 @@ function printCompanyOffer(key) {
         </div>
         <div style="text-align: right; font-weight: 800; font-size: 11.5px; color: #ea580c; white-space: nowrap;">
           60 € Saldo Waylet
+        </div>
+      </div>
+    `;
+  } else if (cia === 'repsol' && compMode === 'luz' && type === 'repsol_indexada') {
+    html += `
+      <div style="border: 1.5px solid #fb923c; background: #fff7ed; border-radius: 6px; padding: 5px 10px; margin-bottom: 6px; font-size: 10px; color: #9a3412; page-break-inside: avoid; display: flex; align-items: center; justify-content: space-between; gap: 10px; -webkit-print-color-adjust: exact; print-color-adjust: exact;">
+        <div>
+          <strong>📊 Repsol Tarifa Indexada:</strong> Tarifa variable con discriminación horaria (P1 0,209 · P2 0,221 · P3 0,299 €/kWh, CREP 0,025 €/kWh) y potencia a <strong>0,075903 / 0,001987 €/kW·día</strong>.<br>
+          <strong>ℹ️ Sin asistente obligatorio:</strong> No incluye asistente ni mantenimiento obligatorio. <strong>🎁 Saldo Waylet:</strong> <strong>40 € de regalo</strong> en saldo Waylet al finalizar la contratación.
+        </div>
+        <div style="text-align: right; font-weight: 800; font-size: 11.5px; color: #ea580c; white-space: nowrap;">
+          40 € Saldo Waylet
         </div>
       </div>
     `;
@@ -18738,6 +18809,21 @@ function getRenosurChatResponse(query) {
           permanencia: "Sin permanencia.",
           retrocomision: "6 meses",
           regalo: "60 € de regalo en saldo Waylet al finalizar la contratación."
+        },
+        indexada: {
+          name: "Repsol Tarifa Indexada",
+          base: "Tarifa variable indexada. P1 (Punta): 0,209000 €/kWh | P2 (Llano): 0,221000 €/kWh | P3 (Valle): 0,299000 €/kWh",
+          sin_mantenimiento: "0,209 / 0,221 / 0,299 €/kWh (No incluye asistente / No obligatorio)",
+          con_mantenimiento: "0,209 / 0,221 / 0,299 €/kWh",
+          descuento_sin_mantenimiento: "0%",
+          descuento_con_mantenimiento: "0%",
+          potencia: "TP1 (Punta): 0,075903 €/kW·día | TP2 (Valle): 0,001987 €/kW·día",
+          excedentes: "0,06 €/kWh",
+          gestion: "0,00 €/mes",
+          mantenimiento: "No incluye asistente (Opcional)",
+          permanencia: "Sin permanencia.",
+          retrocomision: "6 meses",
+          nota: "Tarifa variable indexada con CREP de 0,025000 €/kWh incluido en cada periodo. 40 € de regalo en saldo Waylet al contratar."
         }
       },
       gas: {
@@ -18884,7 +18970,7 @@ function getRenosurChatResponse(query) {
   }
 
   // 11. Repsol Tarifa Tranquilísima
-  if ((q.includes('tranquilisima') || q.includes('tranquilísima') || (q.includes('repsol') && (q.includes('luz') || q.includes('fijo') || q.includes('tranquila')))) && !q.includes('solar') && !q.includes('placa') && !q.includes('gas') && !q.includes('cif') && !q.includes('pyme') && !q.includes('pymes') && !q.includes('empresa') && !q.includes('empresas') && !q.includes('autonomo') && !q.includes('autónomo') && !q.includes('negocio')) {
+  if ((q.includes('tranquilisima') || q.includes('tranquilísima') || (q.includes('repsol') && (q.includes('luz') || q.includes('fijo') || q.includes('tranquila')))) && !q.includes('indexada') && !q.includes('variable') && !q.includes('mercado') && !q.includes('solar') && !q.includes('placa') && !q.includes('gas') && !q.includes('cif') && !q.includes('pyme') && !q.includes('pymes') && !q.includes('empresa') && !q.includes('empresas') && !q.includes('autonomo') && !q.includes('autónomo') && !q.includes('negocio')) {
     return "<strong>Repsol — Tarifa Tranquilísima:</strong><br><br>" +
       "• <strong>Término de Energía:</strong> <strong>0,1399 €/kWh</strong> (Precio fijo garantizado durante 5 años)<br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,091507 €/kW·día</strong> | TP2: <strong>0,091507 €/kW·día</strong> (33,40 €/kW·año)<br>" +
@@ -18893,6 +18979,27 @@ function getRenosurChatResponse(query) {
       "• <strong>Ventajas Waylet:</strong> Saldo de regalo Waylet para repostajes y facturas.<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia ni penalización económica.<br>" +
       "• <strong>Retrocomisión:</strong> 6 meses";
+  }
+
+  // 11b. Repsol Tarifa Indexada
+  if ((q.includes('repsol') && (q.includes('indexada') || q.includes('mercado') || q.includes('crep') || q.includes('variable'))) || q.includes('repsol indexada')) {
+    return "<strong>Repsol — Tarifa Indexada (Luz Variable con discriminación horaria):</strong><br><br>" +
+      "• <strong>Término de Energía (3 tramos con CREP 0,025 €/kWh incluido):</strong><br>" +
+      "  - <strong>P1 (Punta):</strong> <strong>0,209000 €/kWh</strong> (0,184 + 0,025)<br>" +
+      "  - <strong>P2 (Llano):</strong> <strong>0,221000 €/kWh</strong> (0,196 + 0,025)<br>" +
+      "  - <strong>P3 (Valle):</strong> <strong>0,299000 €/kWh</strong> (0,274 + 0,025)<br>" +
+      "• <strong>Coste de Representación (CREP):</strong> <strong>0,025000 €/kWh</strong> en todos los tramos.<br>" +
+      "• <strong>Término de Potencia (Término fijo):</strong><br>" +
+      "  - <strong>TP1 (Punta):</strong> <strong>0,075903 €/kW·día</strong><br>" +
+      "  - <strong>TP2 (Valle):</strong> <strong>0,001987 €/kW·día</strong><br>" +
+      "• <strong>Asistencia / Mantenimiento:</strong> <strong>No incluye asistente</strong> (No contarás con asistencia inmediata ante imprevistos. No requiere mantenimiento obligatorio para su tramitación).<br>" +
+      "• <strong>Regalo Waylet:</strong> <strong>40 € de regalo en saldo Waylet</strong> al finalizar la contratación (para facturas y repostajes).<br>" +
+      "• <strong>Descuentos en carburante Waylet:</strong> <strong>20 cts./l de saldo</strong> en tus repostajes pagando con Waylet.<br>" +
+      "• <strong>Permanencia:</strong> Sin permanencia.<br>" +
+      "• <strong>Retrocomisión:</strong> 6 meses" +
+      `<div style=\"margin-top:8px;\"><button onclick=\"openServiceDocumentModal('img-companias/repsol-indexada-ficha.jpg', 'Tarifa Luz Indexada — Repsol')\" style=\"display:inline-flex;align-items:center;gap:6px;color:#c2410c;background:rgba(234,88,12,0.1);border-radius:6px;border:1px solid rgba(234,88,12,0.3);cursor:pointer;font-weight:700;font-size:12.5px;padding:7px 12px;transition:all 0.15s;\" onmouseover=\"this.style.background='rgba(234,88,12,0.2)'\" onmouseout=\"this.style.background='rgba(234,88,12,0.1)'\">` +
+      `<svg width=\"14\" height=\"14\" viewBox=\"0 0 24 24\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"2.5\"><rect x=\"3\" y=\"3\" width=\"18\" height=\"18\" rx=\"2\"/><line x1=\"3\" y1=\"9\" x2=\"21\" y2=\"9\"/><line x1=\"9\" y1=\"21\" x2=\"9\" y2=\"9\"/></svg>` +
+      `Ver Ficha Oficial Tarifa Indexada Repsol</button></div>`;
   }
 
   // 12. Repsol Solar (Batería Virtual)
@@ -19093,6 +19200,7 @@ function getRenosurChatResponse(query) {
         return `<strong>Tarifas de Luz de Repsol disponibles:</strong><br>Selecciona cuál de las tarifas deseas consultar:<br><br>` +
           `<div style="display: flex; flex-direction: column; gap: 8px; margin-top: 4px;">` +
           `  <button onclick="sendQuickChatQuery('Repsol Tranquilisima')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tarifa Tranquilísima (Precio fijo 5 años) — 0,1399 €/kWh</button>` +
+          `  <button onclick="sendQuickChatQuery('Repsol Indexada')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tarifa Indexada (3 tramos · CREP 0,025) — 40€ Waylet</button>` +
           `  <button onclick="sendQuickChatQuery('Repsol Tranquilisima CIF')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Tarifa Tranquilísima (CIF) — 0,1499 €/kWh + 60€ Waylet</button>` +
           `  <button onclick="sendQuickChatQuery('Repsol Solar')" style="background: var(--blue-bg); border: 1px solid rgba(53,127,191,0.2); color: var(--blue); padding: 9px 14px; border-radius: var(--rs); font-size: 13.5px; font-weight: 700; text-align: left; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='var(--blue)'; this.style.color='white'" onmouseout="this.style.background='var(--blue-bg)'; this.style.color='var(--blue)'">⚡ Solar (Batería Virtual 1,99€ + 60€ Waylet) — 0,1699 €/kWh</button>` +
           `</div>`;
