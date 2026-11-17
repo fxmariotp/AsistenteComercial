@@ -369,6 +369,38 @@ Report-Test -Category "Comparator Integrity" -TestName "Repsol Luz exige obligat
 Report-Test -Category "Comparator Integrity" -TestName "Bloqueo de Repsol Luz en comparador sin SVA" -Profile "Motor de Comparacion" -Expected "isRepsolLuzLocked bloquea la oferta si no hay SVA activo" -Obtained "Bloqueo de seguridad para evitar tramitacion no permitida" -Condition $repsolLuzLockLogic
 
 # ----------------------------------------------------------------------------
+# 11. PROMOCIONES COMERCIALES (REPSOL WAYLET & NATURGY MOEVE GOW)
+# ----------------------------------------------------------------------------
+Write-Host "`n=== 11. PROMOCIONES COMERCIALES (REPSOL & NATURGY) ===" -ForegroundColor White
+
+$repsolImgExists = Test-Path "$PWD/img-companias/promocion-repsol-waylet-100.jpg"
+$repsolPromoInHtml = ($indexContent.IndexOf("promocion-repsol-waylet-100.jpg") -ge 0 -and
+                      $indexContent.IndexOf("Tu energía, con ventajas") -ge 0 -and
+                      $indexContent.IndexOf("100 €") -ge 0 -and
+                      $indexContent.IndexOf("30 de noviembre de 2026") -ge 0 -and
+                      $indexContent.IndexOf("A los 3 meses") -ge 0)
+
+Report-Test -Category "Promociones Comerciales" -TestName "Promocion Repsol Waylet (Hasta 100€) registrada con desglose e imagen" -Profile "Frontend Promociones" -Expected "Imagen oficial existente, escala 40/60/100€, reparto trimestral 25% y vigencia nov 2026" -Obtained "Estructura completa de Repsol Waylet integrada con modal y cartel oficial" -Condition ($repsolImgExists -and $repsolPromoInHtml)
+
+$naturgyImgExists = Test-Path "$PWD/img-companias/promocion-naturgy-moeve-gow-40.jpg"
+$naturgyPromoInHtml = ($indexContent.IndexOf("promocion-naturgy-moeve-gow-40.jpg") -ge 0 -and
+                       $indexContent.IndexOf("Ahorra con Naturgy y Moeve gow") -ge 0 -and
+                       $indexContent.IndexOf("20 € en el primer repostaje") -ge 0 -and
+                       $indexContent.IndexOf("20 € en el segundo repostaje") -ge 0 -and
+                       $indexContent.IndexOf("30 días de la firma") -ge 0 -and
+                       $indexContent.IndexOf("igual o superior a 30 €") -ge 0 -and
+                       $indexContent.IndexOf("30 y 40 días") -ge 0 -and
+                       $indexContent.IndexOf("10 a 30") -ge 0)
+
+Report-Test -Category "Promociones Comerciales" -TestName "Promocion Naturgy & Moeve gow (40€) registrada con operativa completa" -Profile "Frontend Promociones" -Expected "Imagen oficial, 2 repostajes de 20€, >=30€, email 30-40 dias, contrato activo y 10-30 cts/l" -Obtained "Operativa detallada y acumulacion continua integradas con modal" -Condition ($naturgyImgExists -and $naturgyPromoInHtml)
+
+$promoFilterNavValid = ($indexContent.IndexOf("switchPromoCategory") -ge 0 -and
+                        $indexContent.IndexOf("promo-sec-companias") -ge 0 -and
+                        $indexContent.IndexOf("promo-sec-supermercados") -ge 0)
+
+Report-Test -Category "Promociones Comerciales" -TestName "Navegacion por categorias de promociones (Companías y Supermercados)" -Profile "UI / UX Promociones" -Expected "Filtros por categoria y secciones independientes preservando supermercados Iberdrola" -Obtained "Sistema de filtrado categorizado implementado" -Condition $promoFilterNavValid
+
+# ----------------------------------------------------------------------------
 # Resumen Final
 # ----------------------------------------------------------------------------
 Write-Host "`n==================================================================" -ForegroundColor Cyan
