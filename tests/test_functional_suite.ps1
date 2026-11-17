@@ -444,6 +444,26 @@ $promoFilterNavValid = ($indexContent.IndexOf("switchPromoCategory") -ge 0 -and
 Report-Test -Category "Promociones Comerciales" -TestName "Navegacion por categorias de promociones (Companías y Supermercados)" -Profile "UI / UX Promociones" -Expected "Filtros por categoria y secciones independientes preservando supermercados Iberdrola" -Obtained "Sistema de filtrado categorizado implementado" -Condition $promoFilterNavValid
 
 # ----------------------------------------------------------------------------
+# 12. DOCUMENTACIÓN Y PROCEDIMIENTOS ENDESA
+# ----------------------------------------------------------------------------
+Write-Host "`n=== 12. DOCUMENTACIÓN Y PROCEDIMIENTOS ENDESA ===" -ForegroundColor White
+
+$endesaConsentExists = Test-Path "$PWD/INFO Y DOCS ENDESA/Consentimiento Endesa.pdf"
+$endesaPoderExists = Test-Path "$PWD/INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf"
+
+$endesaInScripts = ($indexContent.IndexOf("sv-endesa") -ge 0 -and
+                    $indexContent.IndexOf("Consentimiento Endesa.pdf") -ge 0 -and
+                    $indexContent.IndexOf("CARTA DE CERTIFICACION DE PODER.pdf") -ge 0)
+
+$endesaInProc = ($indexContent.IndexOf("PROCEDIMIENTOS") -ge 0 -and
+                 $indexContent.IndexOf("currentProcCia === 'endesa'") -ge 0 -and
+                 $indexContent.IndexOf("Documentos Oficiales de Endesa (Descarga y Visualización Directa)") -ge 0 -and
+                 $indexContent.IndexOf("Consentimiento Endesa") -ge 0 -and
+                 $indexContent.IndexOf("Carta de Certificación de Poder") -ge 0)
+
+Report-Test -Category "Procedimientos" -TestName "Documentos de Endesa (Consentimiento y Certificación de Poder) integrados en Textos Legales y Procedimientos" -Profile "Frontend Documentación" -Expected "Archivos PDF existentes, modal de visualizacion y botones de descarga tanto en guiones legales como en el panel de procedimientos" -Obtained "Integracion completa de ambos documentos con modal interactivo y descarga directa" -Condition ($endesaConsentExists -and $endesaPoderExists -and $endesaInScripts -and $endesaInProc)
+
+# ----------------------------------------------------------------------------
 # Resumen Final
 # ----------------------------------------------------------------------------
 Write-Host "`n==================================================================" -ForegroundColor Cyan

@@ -5438,12 +5438,20 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
                 <div id="endesa-centro" style="padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--rs);font-size:16px;font-weight:700;color:var(--blue);background:var(--blue-bg);min-height:44px">—</div>
               </div>
             </div>
-            <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 12px; flex-wrap: wrap;">
-              <a href="INFO Y DOCS ENDESA/Consentimiento Endesa.pdf" download="Consentimiento Endesa.pdf" class="btn btn-secondary" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: rgba(0, 168, 224, 0.08); border: 1.5px solid rgba(0, 168, 224, 0.25); color: #00A8E0;" onmouseover="this.style.background='rgba(0, 168, 224, 0.15)'" onmouseout="this.style.background='rgba(0, 168, 224, 0.08)'">
+            <div style="margin-top: 14px; display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap;">
+              <button type="button" onclick="openServiceDocumentModal('INFO Y DOCS ENDESA/Consentimiento Endesa.pdf', 'Consentimiento Endesa')" class="btn btn-secondary" style="font-size: 13px; padding: 8px 13px; display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 168, 224, 0.08); border: 1.5px solid rgba(0, 168, 224, 0.25); color: #00A8E0; cursor: pointer;" onmouseover="this.style.background='rgba(0, 168, 224, 0.15)'" onmouseout="this.style.background='rgba(0, 168, 224, 0.08)'">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Ver Consentimiento
+              </button>
+              <a href="INFO Y DOCS ENDESA/Consentimiento Endesa.pdf" download="Consentimiento Endesa.pdf" class="btn btn-secondary" style="font-size: 13px; padding: 8px 13px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: rgba(0, 168, 224, 0.08); border: 1.5px solid rgba(0, 168, 224, 0.25); color: #00A8E0;" onmouseover="this.style.background='rgba(0, 168, 224, 0.15)'" onmouseout="this.style.background='rgba(0, 168, 224, 0.08)'">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-bottom: -1px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 Descargar Consentimiento
               </a>
-              <a href="INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf" download="CARTA DE CERTIFICACION DE PODER.pdf" class="btn btn-secondary" style="font-size: 13px; padding: 8px 14px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: rgba(0, 168, 224, 0.08); border: 1.5px solid rgba(0, 168, 224, 0.25); color: #00A8E0;" onmouseover="this.style.background='rgba(0, 168, 224, 0.15)'" onmouseout="this.style.background='rgba(0, 168, 224, 0.08)'">
+              <button type="button" onclick="openServiceDocumentModal('INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf', 'Carta de Certificación de Poder — Endesa')" class="btn btn-secondary" style="font-size: 13px; padding: 8px 13px; display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 168, 224, 0.08); border: 1.5px solid rgba(0, 168, 224, 0.25); color: #00A8E0; cursor: pointer;" onmouseover="this.style.background='rgba(0, 168, 224, 0.15)'" onmouseout="this.style.background='rgba(0, 168, 224, 0.08)'">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                Ver Certificación de Poder
+              </button>
+              <a href="INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf" download="CARTA DE CERTIFICACION DE PODER.pdf" class="btn btn-secondary" style="font-size: 13px; padding: 8px 13px; display: inline-flex; align-items: center; gap: 6px; text-decoration: none; background: rgba(0, 168, 224, 0.08); border: 1.5px solid rgba(0, 168, 224, 0.25); color: #00A8E0;" onmouseover="this.style.background='rgba(0, 168, 224, 0.15)'" onmouseout="this.style.background='rgba(0, 168, 224, 0.08)'">
                 <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" style="margin-bottom: -1px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
                 Descargar Certificación de Poder
               </a>
@@ -11750,7 +11758,9 @@ const PROCEDIMIENTOS = {
     residencial: {
       docs: [
         'DNI o NIE vigente del titular.',
-        'Factura actual completa.'
+        'Factura actual completa.',
+        'Documento de <strong>Consentimiento Endesa</strong> (<a href="INFO Y DOCS ENDESA/Consentimiento Endesa.pdf" download="Consentimiento Endesa.pdf" style="color:#00A8E0;font-weight:700;text-decoration:underline;">Descargar</a> | <span onclick="openServiceDocumentModal(\'INFO Y DOCS ENDESA/Consentimiento Endesa.pdf\', \'Consentimiento Endesa\')" style="color:#00A8E0;font-weight:700;cursor:pointer;text-decoration:underline;">Ver PDF</span>) para autorizaciones y cambio de titularidad.',
+        'Justo título en caso de cambio de titularidad (contrato de alquiler, escrituras de compraventa o IBI; en Endesa NO sirve el empadronamiento).'
       ],
       process: [
         'El cliente recibe un mensaje SMS con un enlace de firma segura de Endesa.',
@@ -11763,6 +11773,8 @@ const PROCEDIMIENTOS = {
         'DNI / NIE del representante legal.',
         'Factura actual completa.',
         'CIF de la empresa / sociedad.',
+        '<strong>Carta de Certificación de Poder</strong> (<a href="INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf" download="CARTA DE CERTIFICACION DE PODER.pdf" style="color:#00A8E0;font-weight:700;text-decoration:underline;">Descargar</a> | <span onclick="openServiceDocumentModal(\'INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf\', \'Carta de Certificación de Poder — Endesa\')" style="color:#00A8E0;font-weight:700;cursor:pointer;text-decoration:underline;">Ver PDF</span>) para acreditar facultades y representación legal.',
+        'Documento de <strong>Consentimiento Endesa</strong> (<a href="INFO Y DOCS ENDESA/Consentimiento Endesa.pdf" download="Consentimiento Endesa.pdf" style="color:#00A8E0;font-weight:700;text-decoration:underline;">Descargar</a> | <span onclick="openServiceDocumentModal(\'INFO Y DOCS ENDESA/Consentimiento Endesa.pdf\', \'Consentimiento Endesa\')" style="color:#00A8E0;font-weight:700;cursor:pointer;text-decoration:underline;">Ver PDF</span>).',
         'Escritura de constitución o Recibo de autónomo. (No suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo)'
       ],
       process: [
@@ -11775,6 +11787,7 @@ const PROCEDIMIENTOS = {
       'Si la potencia contratada es inferior a 3 kW, no se puede añadir ningún SVA (Servicio de Asistencia de la Comercializadora).',
       'Si el cliente tiene más de 75 años, se debe introducir un año ficticio de nacimiento en la ficha y posteriormente aclarar la edad real del cliente en el campo de Observaciones.',
       'Cambio de titularidad: Es obligatorio aportar un justo título (como un contrato de alquiler, escrituras de compra-venta o IBI. En Endesa NO sirve el empadronamiento).',
+      '**Documentos Oficiales Disponibles:** Tienes a tu disposición en este panel de Procedimientos y en Textos Legales el **Consentimiento Endesa** y la **Carta de Certificación de Poder** para visualizar o descargar directamente.',
       'Grabación / Guión legal: El texto de verificación Cosmos Mobile para Endesa NO es de uso general; es de uso exclusivo para la gestora Hostezadis al realizar un cambio de titularidad.',
       'Altas nuevas: Para dar de alta un nuevo suministro es obligatorio aportar el CIE (Certificado de Instalación Eléctrica).',
       'Cambios de potencia: En Endesa NO podemos hacer cambio de potencia (en Naturgy tampoco se permiten; solo en Iberdrola y Gana Energía). Subir la potencia cuesta aproximadamente 50€ por cada kW incrementado; bajar la potencia cuesta aproximadamente 9€ en total (independientemente de los kW que se bajen, sin límite).'
@@ -11992,6 +12005,76 @@ function renderProcedimientos() {
               Abrir LeadsRepsol
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"></polyline></svg>
             </a>
+          </div>
+        </div>
+      </div>
+    ` : ''}
+
+    ${currentProcCia === 'endesa' ? `
+      <!-- Banner Documentos Oficiales Endesa (Consentimiento y Certificación de Poder) -->
+      <div style="background: rgba(0, 168, 224, 0.07); border: 2px solid #00A8E0; border-radius: var(--r); padding: 22px; margin-bottom: 24px; box-shadow: var(--shadow);">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; flex-wrap: wrap;">
+          <div style="flex: 1; min-width: 280px;">
+            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 8px;">
+              <span style="background: #00A8E0; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 6px; text-transform: uppercase; letter-spacing: 0.5px;">Documentación Oficial Endesa</span>
+              <span style="font-size: 12.5px; color: var(--t2); font-weight: 700;">Modelos para Contratación y Cambio de Titularidad</span>
+            </div>
+            <h4 style="margin: 0 0 10px 0; font-size: 16.5px; font-weight: 800; color: #0284c7; display: flex; align-items: center; gap: 8px;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              Documentos Oficiales de Endesa (Descarga y Visualización Directa)
+            </h4>
+            <p style="margin: 0 0 14px 0; font-size: 13.5px; color: var(--text); line-height: 1.55;">
+              Para contrataciones, trámites de representación y cambios de titularidad con Endesa (o a través de la gestora Hostezadis), dispone de los modelos oficiales descargables e interactivos:
+            </p>
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; margin-top: 10px;">
+              
+              <!-- Doc 1: Consentimiento Endesa -->
+              <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <span style="font-size: 20px;">📄</span>
+                    <strong style="font-size: 14px; color: var(--text);">Consentimiento Endesa</strong>
+                  </div>
+                  <p style="margin: 0; font-size: 12.5px; color: var(--t2); line-height: 1.45;">
+                    Documento oficial de consentimiento informado para tramitación y cambios de titularidad con Endesa.
+                  </p>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                  <button type="button" onclick="openServiceDocumentModal('INFO Y DOCS ENDESA/Consentimiento Endesa.pdf', 'Consentimiento Endesa')" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 168, 224, 0.12); color: #0284c7; border: 1px solid rgba(0, 168, 224, 0.3); border-radius: 6px; padding: 7px 12px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='rgba(0, 168, 224, 0.2)'" onmouseout="this.style.background='rgba(0, 168, 224, 0.12)'">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Ver PDF
+                  </button>
+                  <a href="INFO Y DOCS ENDESA/Consentimiento Endesa.pdf" download="Consentimiento Endesa.pdf" style="display: inline-flex; align-items: center; gap: 6px; background: #00A8E0; color: #fff; border: none; border-radius: 6px; padding: 7px 14px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; transition: background 0.15s; box-shadow: 0 2px 6px rgba(0,168,224,0.25);" onmouseover="this.style.background='#0284c7'" onmouseout="this.style.background='#00A8E0'">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Descargar Consentimiento
+                  </a>
+                </div>
+              </div>
+
+              <!-- Doc 2: Carta de Certificación de Poder -->
+              <div style="background: var(--surface); border: 1.5px solid var(--border); border-radius: 8px; padding: 14px 16px; display: flex; flex-direction: column; justify-content: space-between; gap: 10px;">
+                <div>
+                  <div style="display: flex; align-items: center; gap: 8px; margin-bottom: 4px;">
+                    <span style="font-size: 20px;">📜</span>
+                    <strong style="font-size: 14px; color: var(--text);">Carta de Certificación de Poder</strong>
+                  </div>
+                  <p style="margin: 0; font-size: 12.5px; color: var(--t2); line-height: 1.45;">
+                    Modelo para acreditar facultades y representación legal ante Endesa para contratos de empresas o autónomos (CIF).
+                  </p>
+                </div>
+                <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 4px;">
+                  <button type="button" onclick="openServiceDocumentModal('INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf', 'Carta de Certificación de Poder — Endesa')" style="display: inline-flex; align-items: center; gap: 6px; background: rgba(0, 168, 224, 0.12); color: #0284c7; border: 1px solid rgba(0, 168, 224, 0.3); border-radius: 6px; padding: 7px 12px; font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.15s;" onmouseover="this.style.background='rgba(0, 168, 224, 0.2)'" onmouseout="this.style.background='rgba(0, 168, 224, 0.12)'">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+                    Ver PDF
+                  </button>
+                  <a href="INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf" download="CARTA DE CERTIFICACION DE PODER.pdf" style="display: inline-flex; align-items: center; gap: 6px; background: #00A8E0; color: #fff; border: none; border-radius: 6px; padding: 7px 14px; font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; transition: background 0.15s; box-shadow: 0 2px 6px rgba(0,168,224,0.25);" onmouseover="this.style.background='#0284c7'" onmouseout="this.style.background='#00A8E0'">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+                    Descargar Certificación de Poder
+                  </a>
+                </div>
+              </div>
+
+            </div>
           </div>
         </div>
       </div>
@@ -17312,6 +17395,7 @@ const SEARCH_INDEX = [
   // Procedimientos y Requisitos por Compañía
   { title: "Procedimiento y Requisitos: Naturgy (Consentimiento Previo)", keywords: ["procedimiento naturgy", "requisitos naturgy", "documentos naturgy", "consentimiento naturgy", "consentimiento previo naturgy"], action: () => { showPanel('procedimientos', document.getElementById('btn-nav-procedimientos')); setProcCia('naturgy'); } },
   { title: "Procedimiento y Requisitos: Repsol (Firma Previa Lead en LeadsRepsol)", keywords: ["procedimiento repsol", "requisitos repsol", "documentos repsol", "leadsrepsol", "lead repsol", "firma repsol"], action: () => { showPanel('procedimientos', document.getElementById('btn-nav-procedimientos')); setProcCia('repsol'); } },
+  { title: "Procedimiento y Requisitos: Endesa (Documentos Oficiales)", keywords: ["procedimiento endesa", "requisitos endesa", "documentos endesa", "consentimiento endesa", "carta de certificacion de poder", "carta poder endesa", "hostezadis"], action: () => { showPanel('procedimientos', document.getElementById('btn-nav-procedimientos')); setProcCia('endesa'); } },
 
   // Promociones
   { title: "Promociones: Carrefour", keywords: ["carrefour", "promociones", "tarjeta", "regalo", "supermercado", "correo", "postal"], action: () => showPanel('promociones', document.getElementById('btn-nav-promociones')) },
@@ -18164,7 +18248,8 @@ function getRenosurChatResponse(query) {
         return `<strong>Endesa — Requisitos y Procedimiento Residencial (Particulares):</strong><br><br>` +
                `• <strong>Documentación necesaria:</strong><br>` +
                `  - DNI o NIE vigente del titular.<br>` +
-               `  - Factura actual completa del suministro.<br><br>` +
+               `  - Factura actual completa del suministro.<br>` +
+               `  - Documento de <strong>Consentimiento Endesa</strong> para autorizaciones y cambio de titularidad.<br><br>` +
                `• <strong>Procedimiento de Firma:</strong><br>` +
                `  - SMS con enlace de firma digital segura → validar PIN temporal recibido y firmar online.<br>` +
                `  - (En campañas específicas autorizadas, el proceso puede realizarse mediante grabación de voz telefónica directa).<br><br>` +
@@ -18174,7 +18259,10 @@ function getRenosurChatResponse(query) {
                `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras o IBI). <strong>NO sirve el certificado de empadronamiento</strong>.<br>` +
                `  - <strong>Grabación / Guión legal:</strong> El texto de verificación "Cosmos Mobile" es exclusivo de la gestora Hostezadis para cambios de titularidad.<br>` +
                `  - <strong>Altas nuevas / Reactivaciones:</strong> Obligatorio aportar el CIE.<br>` +
-               `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Endesa</strong> (contratar con potencia actual).`;
+               `  - <strong>Cambios de potencia:</strong> <strong>NO se permite realizar cambios de potencia en Endesa</strong> (contratar con potencia actual).<br><br>` +
+               `<div style=\"display:flex;gap:8px;flex-wrap:wrap;\">` +
+               `<button onclick=\"openServiceDocumentModal('INFO Y DOCS ENDESA/Consentimiento Endesa.pdf', 'Consentimiento Endesa')\" style=\"display:inline-flex;align-items:center;gap:6px;color:#0284c7;background:rgba(0,168,224,0.1);border-radius:6px;border:1px solid rgba(0,168,224,0.3);cursor:pointer;font-weight:700;font-size:12px;padding:6px 11px;\">📄 Ver Consentimiento Endesa</button>` +
+               `</div>`;
       }
       if (isCIF) {
         return `<strong>Endesa — Requisitos y Procedimiento Autónomos y Pymes (CIF):</strong><br><br>` +
@@ -18182,6 +18270,8 @@ function getRenosurChatResponse(query) {
                `  - DNI/NIE del representante legal o administrador.<br>` +
                `  - Factura actual completa del suministro.<br>` +
                `  - CIF de la empresa/sociedad.<br>` +
+               `  - <strong>Carta de Certificación de Poder</strong> para acreditar representación legal.<br>` +
+               `  - Documento de <strong>Consentimiento Endesa</strong> firmado.<br>` +
                `  - Escritura de constitución o recibo de autónomo (no suele ser necesario, pero de vez en cuando las compañías podrían pedirlo; siempre es bueno adjuntarlo).<br><br>` +
                `• <strong>Procedimiento de Firma:</strong><br>` +
                `  - SMS o email con enlace al portal de firma corporativa → verificar datos fiscales y firmar digitalmente.<br><br>` +
@@ -18189,7 +18279,11 @@ function getRenosurChatResponse(query) {
                `  - <strong>Servicio de Asistencia de la Comercializadora (SVA):</strong> Prohibido en Ceuta y Melilla o potencia &lt; 3 kW.<br>` +
                `  - <strong>Cambio de titularidad:</strong> Justo título obligatorio (alquiler, escrituras o IBI). <strong>NO sirve empadronamiento</strong>.<br>` +
                `  - <strong>Altas nuevas:</strong> Obligatorio aportar el CIE.<br>` +
-               `  - <strong>Cambios de potencia:</strong> <strong>NO permitidos en Endesa</strong>.`;
+               `  - <strong>Cambios de potencia:</strong> <strong>NO permitidos en Endesa</strong>.<br><br>` +
+               `<div style=\"display:flex;gap:8px;flex-wrap:wrap;\">` +
+               `<button onclick=\"openServiceDocumentModal('INFO Y DOCS ENDESA/Consentimiento Endesa.pdf', 'Consentimiento Endesa')\" style=\"display:inline-flex;align-items:center;gap:6px;color:#0284c7;background:rgba(0,168,224,0.1);border-radius:6px;border:1px solid rgba(0,168,224,0.3);cursor:pointer;font-weight:700;font-size:12px;padding:6px 11px;\">📄 Ver Consentimiento Endesa</button>` +
+               `<button onclick=\"openServiceDocumentModal('INFO Y DOCS ENDESA/CARTA DE CERTIFICACION DE PODER.pdf', 'Carta de Certificación de Poder — Endesa')\" style=\"display:inline-flex;align-items:center;gap:6px;color:#0284c7;background:rgba(0,168,224,0.1);border-radius:6px;border:1px solid rgba(0,168,224,0.3);cursor:pointer;font-weight:700;font-size:12px;padding:6px 11px;\">📜 Ver Certificación de Poder</button>` +
+               `</div>`;
       }
     }
 
