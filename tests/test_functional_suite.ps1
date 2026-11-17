@@ -361,12 +361,12 @@ Report-Test -Category "Comparator Integrity" -TestName "Destructuracion segura d
 
 Report-Test -Category "Comparator Integrity" -TestName "Repsol configurado con tarifas luz/gas y ofertas activas en calcComp" -Profile "Calculo Comparativas" -Expected "BASE.repsol y offers incluyen repsol" -Obtained "Estructura completa de 5 companias integrada" -Condition ($repsolBaseExists -and $compOffersIncludeRepsol)
 
-$repsolLuzSoloMantenimiento = ($indexContent -match "n:'Tarifa Tranquilísima'[\s\S]*?solo_mantenimiento:true")
-$repsolLuzLockLogic = ($indexContent -match "isRepsolLuzLocked\s*=\s*\(compMode\s*===\s*'luz'\s*&&\s*cia\s*===\s*'repsol'\s*&&\s*!useSva\)")
+$repsolTranquilisimaSinSva = ($indexContent -match "n:'Tarifa Tranquilísima'[\s\S]*?solo_mantenimiento:false")
+$repsolTranquilisimaUnlocked = ($indexContent -match "isRepsolLuzLocked\s*=\s*\(compMode\s*===\s*'luz'\s*&&\s*cia\s*===\s*'repsol'\s*&&\s*!useSva[\s\S]*?\(isCif\s*\|\|\s*\(excedente\s*>\s*0\)\)")
 
-Report-Test -Category "Comparator Integrity" -TestName "Repsol Luz exige obligatoriamente servicio de mantenimiento" -Profile "Reglas de Negocio Repsol" -Expected "solo_mantenimiento:true en tarifas_luz de Repsol" -Obtained "Configuracion de solo_mantenimiento aplicada a Repsol Luz" -Condition $repsolLuzSoloMantenimiento
+Report-Test -Category "Comparator Integrity" -TestName "Repsol Tarifa Tranquilísima permite contratación sin SVA" -Profile "Reglas de Negocio Repsol" -Expected "solo_mantenimiento:false en Tarifa Tranquilísima de Repsol" -Obtained "Tarifa Tranquilísima configurada para contratación con o sin servicio" -Condition $repsolTranquilisimaSinSva
 
-Report-Test -Category "Comparator Integrity" -TestName "Bloqueo de Repsol Luz en comparador sin SVA" -Profile "Motor de Comparacion" -Expected "isRepsolLuzLocked bloquea la oferta si no hay SVA activo" -Obtained "Bloqueo de seguridad para evitar tramitacion no permitida" -Condition $repsolLuzLockLogic
+Report-Test -Category "Comparator Integrity" -TestName "Desbloqueo de Tarifa Tranquilísima en comparador sin SVA" -Profile "Motor de Comparacion" -Expected "isRepsolLuzLocked no bloquea Tarifa Tranquilísima cuando useSva es falso" -Obtained "Tarifa Tranquilísima disponible en comparativa y propuesta sin exigir SVA obligatorio" -Condition $repsolTranquilisimaUnlocked
 
 $lockedTariffsSortedLast = ($indexContent -match "if\s*\(a\.isLocked\s*&&\s*!b\.isLocked\)\s*return\s*1;\s*[\r\n\s]*if\s*\(!a\.isLocked\s*&&\s*b\.isLocked\)\s*return\s*-1;")
 Report-Test -Category "Comparator Integrity" -TestName "Tarifas bloqueadas se ordenan automaticamente al final de la comparativa" -Profile "Motor de Comparacion" -Expected "Regla a.isLocked evaluada prioritariamente para situar bloqueadas las ultimas" -Obtained "Criterio de ordenacion prioritario para tarifas bloqueadas implementado" -Condition $lockedTariffsSortedLast

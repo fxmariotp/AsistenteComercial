@@ -5595,7 +5595,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
 
             <div style="background: rgba(255, 80, 0, 0.06); border: 1px dashed rgba(255, 80, 0, 0.35); border-radius: 8px; padding: 14px 18px; font-size: 13px; color: var(--t2); line-height: 1.55; text-align: left;">
               ℹ️ <strong>Tramitación directa:</strong> Aportar <strong>DNI + Factura</strong> (+ IBAN para domiciliación).<br>
-              ⚡ <strong>Servicio en Luz:</strong> La tarifa <strong>Tranquilísima se tramita obligatoriamente con servicio</strong> de mantenimiento (Tu Asistente 24h Plus con 2 meses gratis, luego 5,78 €/mes). En cambio, la <strong>Tarifa Indexada y el Gas se pueden tramitar con o sin servicio</strong> (opcional).<br>
+              ⚡ <strong>Servicio en Luz:</strong> Tanto la tarifa <strong>Tranquilísima como la Tarifa Indexada y el Gas se pueden tramitar con o sin servicio</strong> de mantenimiento (Tu Asistente 24h Plus con 2 meses gratis en luz o Tu Asistente Gas).<br>
               ⚠️ <strong>Paso previo obligatorio (LeadsRepsol):</strong> Antes de subir el contrato tienen que firmar el lead que se genere desde el enlace de <a href="https://colaboradores.repsolluzygas.com/solicitud?user=BMra8LVRBibEoCjGvUUC%2Bw1ZqhM%2BtWC9e258TkszIt0%3D&amp;agency=DISHOGAR&amp;channel=54&amp;origen=220&amp;referidor=1" target="_blank" rel="noopener noreferrer" style="color: #ea580c; font-weight: 700;">LeadsRepsol</a>. Posteriormente el cliente recibe el SMS para la firma digital del contrato <strong>sin verificación posterior</strong> ni llamadas de confirmación.
             </div>
           </div>
@@ -8315,7 +8315,7 @@ const BASE = {
     gas_rl3:{tf:0.763333, tv:0.089900},
     imp_electrico:0.0511,
     tarifas_luz:[
-      {n:'Tarifa Tranquilísima', te:0.1399, tp1:0.091507, tp2:0.091507, solo_mantenimiento:true, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Solo con servicio (Asistente 24h Plus 2 meses gratis) · Regalo saldo Waylet'},
+      {n:'Tarifa Tranquilísima', te:0.1399, tp1:0.091507, tp2:0.091507, solo_mantenimiento:false, nota:'Precio único 24h sin permanencia · 5 años precio fijo · Disponible con o sin servicio (Tu Asistente 24h) · Saldo Waylet'},
       {n:'Tarifa Solar (Batería Virtual)', te:0.1699, tp1:0.099726, tp2:0.099726, cuota_bateria_virtual:1.99, sva_luz:6.99, solo_mantenimiento:true, nota:'Tarifa para autoconsumo con placas (+1,99€/mes Batería Virtual) · Excedente 0,06 €/kWh · Solo con servicio · 60€ Waylet · Asistente 24h Plus 2 meses gratis (6,99€/mes)'},
       {n:'Tarifa Indexada', dh:true, periodos:[{p:'P1 (Punta)', te:0.209000}, {p:'P2 (Llano)', te:0.221000}, {p:'P3 (Valle)', te:0.299000}], tp1:0.075903, tp2:0.001987, sva_luz:5.78, solo_mantenimiento:false, nota:'Tarifa variable indexada · CREP 0,025 €/kWh · Disponible con o sin servicio (Tu Asistente 24h) · 40€ / 60€ Regalo Saldo Waylet'},
       {n:'Tarifa Sin Horarios PYME (CIF)', te:0.1499, tp1:0.099726, tp2:0.099726, sva_luz:9.99, solo_mantenimiento:true, nota:'Tarifa 24h Autónomos y Pymes (CIF) · Solo con servicio (Asistente 24h Pyme 9,99€/mes) · 60€ Saldo Waylet'}
@@ -12253,7 +12253,7 @@ function calcComp(){
     const cia = off.id;
     const key = cia + '_' + off.type;
     const isPlanAhoraLocked = (compMode === 'luz' && off.type === 'ahora' && !useSva);
-    const isRepsolLuzLocked = (compMode === 'luz' && cia === 'repsol' && !useSva) && (off.type !== 'repsol_indexada');
+    const isRepsolLuzLocked = (compMode === 'luz' && cia === 'repsol' && !useSva && off.type !== 'repsol_indexada') && (isCif || (excedente > 0));
     const isLocked = isPlanAhoraLocked || isRepsolLuzLocked;
     let r={...RATES[cia]};
     if (isCif) {
@@ -19199,8 +19199,8 @@ function getRenosurChatResponse(query) {
       "• <strong>Término de Energía:</strong> <strong>0,1399 €/kWh</strong> (Precio fijo garantizado durante 5 años)<br>" +
       "• <strong>Término de Potencia:</strong> TP1: <strong>0,091507 €/kW·día</strong> | TP2: <strong>0,091507 €/kW·día</strong> (33,40 €/kW·año)<br>" +
       "• <strong>Compensación Excedentes:</strong> 0,06 €/kWh<br>" +
-      "• <strong>Mantenimiento Luz (Tu Asistente 24h Plus):</strong> 5,78 €/mes (100% de descuento / gratis los 2 primeros meses)<br>" +
-      "• <strong>Ventajas Waylet:</strong> Saldo de regalo Waylet para repostajes y facturas.<br>" +
+      "• <strong>Mantenimiento Luz (Tu Asistente 24h Plus):</strong> Opcional. Se puede tramitar con o sin servicio (5,78 €/mes con 2 meses gratis).<br>" +
+      "• <strong>Ventajas Waylet:</strong> 40 € de regalo en saldo Waylet (o 60 € si contrata con servicio de mantenimiento SVA) + ahorro continuado en repostajes.<br>" +
       "• <strong>Permanencia:</strong> Sin permanencia ni penalización económica.<br>" +
       "• <strong>Retrocomisión:</strong> 6 meses";
   }
