@@ -1028,20 +1028,20 @@ console.log("\n\x1b[37m=== CASO 8: Gestión autorizada de vacaciones (api/vacaci
     `Status: ${addOwnHttp.res.statusCode} | Payload: ${JSON.stringify(addOwnHttp.res._jsonData)}`
   );
 
-  // 8.5 Comercial intentando superar los 26 días laborables de cupo -> HTTP 400
+  // 8.5 Comercial intentando superar los 25 días laborables de cupo -> HTTP 400
   const maxDays = [];
-  for (let d = 1; d <= 26; d++) {
+  for (let d = 1; d <= 25; d++) {
     maxDays.push({ fecha: `2026-08-${d < 10 ? '0' + d : d}` });
   }
   apiVacaciones._setGetVacationCountForTesting((dni, cb) => {
-    cb(null, maxDays); // 26 días ya consumidos
+    cb(null, maxDays); // 25 días ya consumidos
   });
 
   const limitHttp = createMockHttp({ method: 'POST' });
   limitHttp.req.body = { action: 'add', dni: '00000001A', fecha: '2026-12-01' };
   apiVacaciones(limitHttp.req, limitHttp.res);
   report(
-    "api/vacaciones -> Rechaza con HTTP 400 superar el límite de 26 días laborables",
+    "api/vacaciones -> Rechaza con HTTP 400 superar el límite de 25 días laborables",
     limitHttp.res.statusCode === 400,
     `Status: ${limitHttp.res.statusCode} | Error: ${limitHttp.res._jsonData?.error}`
   );

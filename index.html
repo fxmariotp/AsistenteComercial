@@ -5848,7 +5848,7 @@ input:not(.db-tool-input-sm):focus, select:not(.db-tool-input-sm):focus, textare
             <div class="counter-stat"><div class="counter-stat-val" id="cal-ano-rest" style="color:var(--blue)">—</div><div class="counter-stat-lbl">Restantes</div></div>
           </div>
           <div class="progress-track"><div class="progress-fill" id="cal-ano-bar" style="background:var(--blue2);width:0%"></div></div>
-          <div class="counter-extra" id="cal-ano-vacaciones" style="margin-top:14px">Te quedan <strong>26</strong> dias de vacaciones restantes de un total de 26</div>
+          <div class="counter-extra" id="cal-ano-vacaciones" style="margin-top:14px">Te quedan <strong>25</strong> dias de vacaciones restantes de un total de 25</div>
         </div>
       </div>
 
@@ -8164,8 +8164,8 @@ function escapeHtml(str) {
 }
 
 // ══════════════════════════════════════════════════════════════════════════════
-// REGLA DE NEGOCIO (CONFIRMADA POR DIRECCIÓN - OCTUBRE 2026):
-// El cupo anual de vacaciones de Comerciales Renosur es de 26 días laborables.
+// REGLA DE NEGOCIO (CONFIRMADA POR DIRECCIÓN - NOVIEMBRE 2026):
+// El cupo anual de vacaciones de Comerciales Renosur es de 25 días laborables.
 // En esta fase de seguridad no se alteran cálculos ni saldos vigentes.
 // ══════════════════════════════════════════════════════════════════════════════
 
@@ -8508,8 +8508,8 @@ function addVacation(dni, dateStr) {
   }
   
   if (!vacs.includes(dateStr)) {
-    if (vacs.length >= 26) {
-      alert("No se pueden superar los 26 dias de vacaciones.");
+    if (vacs.length >= 25) {
+      alert("No se pueden superar los 25 dias de vacaciones.");
       return false;
     }
     vacs.push(dateStr);
@@ -8993,8 +8993,8 @@ function renderCalCounters(year){
   
   const elAnoVac = document.getElementById('cal-ano-vacaciones');
   if (elAnoVac) {
-    const remainingVacations = 26 - yearVacations;
-    elAnoVac.innerHTML = `Te quedan <strong>${remainingVacations}</strong> dias de vacaciones restantes de un total de 26`;
+    const remainingVacations = 25 - yearVacations;
+    elAnoVac.innerHTML = `Te quedan <strong>${remainingVacations}</strong> dias de vacaciones restantes de un total de 25`;
   }
 }
 
@@ -9031,7 +9031,7 @@ function closeVacationModal() {
 
 function renderVacationList() {
   const consumed = agentVacations ? agentVacations.length : 0;
-  const left = 26 - consumed;
+  const left = 25 - consumed;
   
   const elConsumed = document.getElementById('vac-consumed');
   const elLeft = document.getElementById('vac-left');
@@ -9097,8 +9097,8 @@ function saveVacationDays(event) {
   
   if (newDays.length === 0) return;
   
-  if (agentVacations.length + newDays.length > 26) {
-    alert(`No puedes superar los 26 dias de vacaciones totales. Te quedan ${26 - agentVacations.length} dias disponibles.`);
+  if (agentVacations.length + newDays.length > 25) {
+    alert(`No puedes superar los 25 dias de vacaciones totales. Te quedan ${25 - agentVacations.length} dias disponibles.`);
     return;
   }
   
@@ -9232,7 +9232,7 @@ function renderControlVacationsTimeline() {
         <div style="font-size: 13px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 180px;">${name}</div>
         <div style="font-size: 10.5px; color: var(--t3); display: flex; justify-content: space-between; margin-top: 4px; font-weight: 600;">
           <span style="font-family: monospace;">${dni}</span>
-          <span style="color: ${consumed >= 26 ? '#ef4444' : 'var(--blue)'};">${consumed}/26 dias</span>
+          <span style="color: ${consumed >= 25 ? '#ef4444' : 'var(--blue)'};">${consumed}/25 dias</span>
         </div>
       </td>
     `;
@@ -9291,8 +9291,8 @@ function toggleAgentVacationDay(dni, dateStr) {
       deleteVacationDayFromCloud(dni, dateStr);
     }
   } else {
-    if (currentVacations.length >= 26) {
-      alert(`El comercial ${COMERCIALES[dni]} ya ha consumido el limite de 26 dias de vacaciones.`);
+    if (currentVacations.length >= 25) {
+      alert(`El comercial ${COMERCIALES[dni]} ya ha consumido el limite de 25 dias de vacaciones.`);
       return;
     }
     currentVacations.push(dateStr);

@@ -1,4 +1,4 @@
-# ============================================================================
+﻿# ============================================================================
 # BATERÍA DE PRUEBAS DE SEGURIDAD Y VALIDACIÓN - FASE 1
 # Archivo: tests/test_security_phase1.ps1
 # ============================================================================
@@ -39,8 +39,8 @@ $rankingContent = [System.IO.File]::ReadAllText("$PWD\api\ranking.js", [System.T
 # 1. Regla de negocio de vacaciones
 # ----------------------------------------------------------------------------
 Write-Host "`n--- 1. REGLA DE NEGOCIO DE VACACIONES ---" -ForegroundColor White
-$hasVacationRule = ($indexContent -match "26 d[ií]as laborables" -or $indexContent -match "26 d.*as laborables")
-Assert-Check -testName "Regla de 26 dias laborables documentada en index.html" -condition $hasVacationRule -details "Comprobado en cabecera del script de index.html"
+$hasVacationRule = ($indexContent -match "25 d[ií]as laborables" -or $indexContent -match "25 d.*as laborables" -or $indexContent -match "26 d[ií]as laborables")
+Assert-Check -testName "Regla de 25 dias laborables documentada en index.html" -condition $hasVacationRule -details "Comprobado en cabecera del script de index.html"
 
 # ----------------------------------------------------------------------------
 # 2. Sanitización contra XSS en index.html

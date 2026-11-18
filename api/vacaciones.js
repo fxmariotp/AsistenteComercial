@@ -2,7 +2,7 @@
 // API: GESTIÓN AUTORIZADA DE VACACIONES (INSERT / DELETE / BULK_ADD)
 // Archivo: api/vacaciones.js
 // ============================================================================
-// Permite a comerciales gestionar sus propias vacaciones (hasta 26 días laborables)
+// Permite a comerciales gestionar sus propias vacaciones (hasta 25 días laborables)
 // y a gerentes gestionar las vacaciones de cualquier comercial de la plantilla.
 // REGLAS DE SEGURIDAD:
 // 1. Exige token Bearer de sesión válido verificado con Supabase Auth.
@@ -10,7 +10,7 @@
 // 3. Comerciales solo pueden modificar su propio DNI (profile.dni === dni).
 // 4. Gerentes pueden modificar cualquier DNI (profile.rol === 'gerente').
 // 5. Evaria y perfiles inactivos son denegados con HTTP 403 Forbidden.
-// 6. Aplica la regla estricta de cupo anual máximo: 26 días laborables.
+// 6. Aplica la regla estricta de cupo anual máximo: 25 días laborables.
 // ============================================================================
 
 const https = require('https');
@@ -379,7 +379,7 @@ async function handler(req, res) {
         });
       }
 
-      // 8. Validación del cupo anual máximo (26 días laborables) para 'add' y 'bulk_add'
+      // 8. Validación del cupo anual máximo (25 días laborables) para 'add' y 'bulk_add'
       if (action === 'add' || action === 'bulk_add') {
         getVacationCountImpl(targetDni, (countErr, existingRows) => {
           if (countErr) {
@@ -392,18 +392,18 @@ async function handler(req, res) {
           const existingDates = new Set((existingRows || []).map(r => r.fecha));
 
           if (action === 'add') {
-            if (!existingDates.has(fecha) && existingDates.size >= 26) {
+            if (!existingDates.has(fecha) && existingDates.size >= 25) {
               return sendJson(res, 400, {
                 success: false,
-                error: "No se pueden superar los 26 días laborables de vacaciones anuales."
+                error: "No se pueden superar los 25 días laborables de vacaciones anuales."
               });
             }
           } else if (action === 'bulk_add') {
             const combined = new Set([...existingDates, ...fechas]);
-            if (combined.size > 26) {
+            if (combined.size > 25) {
               return sendJson(res, 400, {
                 success: false,
-                error: "La asignación masiva excede el cupo máximo de 26 días laborables de vacaciones."
+                error: "La asignación masiva excede el cupo máximo de 25 días laborables de vacaciones."
               });
             }
           }

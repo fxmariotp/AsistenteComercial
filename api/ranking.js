@@ -3,7 +3,7 @@
 // Archivo: api/ranking.js
 // ============================================================================
 // REGLA DE NEGOCIO CONFIRMADA POR DIRECCIÓN:
-// El cupo anual de vacaciones de Comerciales Renosur es de 26 días laborables.
+// El cupo anual de vacaciones de Comerciales Renosur es de 25 días laborables.
 // ============================================================================
 
 const https = require('https');

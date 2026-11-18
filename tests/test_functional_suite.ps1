@@ -44,6 +44,7 @@ $migrationContent = [System.IO.File]::ReadAllText("$PWD\migrations\20261008_secu
 $rollbackContent = [System.IO.File]::ReadAllText("$PWD\migrations\data_transition_and_rollback.sql", [System.Text.Encoding]::UTF8)
 $baseSchemaContent = [System.IO.File]::ReadAllText("$PWD\migrations\20261007_base_schema.sql", [System.Text.Encoding]::UTF8)
 $appScriptContent = [System.IO.File]::ReadAllText("$PWD\google_apps_script\ranking_receiver.gs", [System.Text.Encoding]::UTF8)
+$vacacionesContent = [System.IO.File]::ReadAllText("$PWD\api\vacaciones.js", [System.Text.Encoding]::UTF8)
 
 # ----------------------------------------------------------------------------
 # 1. ACCESO SIN ALTERNATIVAS INSEGURAS (Punto 1)
@@ -254,9 +255,9 @@ Report-Test -Category "SQL Policies" -TestName "tareas restringe SELECT estricta
 $revokeRolesFromAuth = ($migrationContent.IndexOf("REVOKE ALL ON TABLE public.agentes_roles FROM PUBLIC, anon, authenticated;") -ge 0)
 Report-Test -Category "SQL Policies" -TestName "Revocacion total de agentes_roles a PUBLIC, anon y authenticated" -Profile "Transicion" -Expected "REVOKE ALL FROM PUBLIC, anon, authenticated" -Obtained "Revocacion de permisos aplicada" -Condition $revokeRolesFromAuth
 
-# 7.4 Documentacion de la regla de 26 dias laborables
-$documentedVacationRule = ($indexContent.IndexOf("laborables") -ge 0 -and $comisionesContent.IndexOf("laborables") -ge 0 -and $migrationContent.IndexOf("laborables") -ge 0)
-Report-Test -Category "Business Rules" -TestName "Regla de 26 dias laborables documentada en frontend, APIs y SQL" -Profile "Direccion" -Expected "Documentacion formal en 3 capas" -Obtained "Presente y confirmada en index.html, comisiones y SQL" -Condition $documentedVacationRule
+# 7.4 Documentacion de la regla de 25 dias laborables
+$documentedVacationRule = ($indexContent.IndexOf("25 días laborables") -ge 0 -and $comisionesContent.IndexOf("25 días laborables") -ge 0 -and $vacacionesContent.IndexOf("25 días laborables") -ge 0)
+Report-Test -Category "Business Rules" -TestName "Regla de 25 dias laborables documentada en frontend, APIs y SQL" -Profile "Direccion" -Expected "Documentacion formal en 3 capas" -Obtained "Presente y confirmada en index.html, comisiones y api/vacaciones.js" -Condition $documentedVacationRule
 
 # ----------------------------------------------------------------------------
 # 8. VERIFICACIÓN DE REMEDIACIONES DE REVISIÓN (LOS 7 PUNTOS)
@@ -462,6 +463,26 @@ $endesaInProc = ($indexContent.IndexOf("PROCEDIMIENTOS") -ge 0 -and
                  $indexContent.IndexOf("Carta de Certificación de Poder") -ge 0)
 
 Report-Test -Category "Procedimientos" -TestName "Documentos de Endesa (Consentimiento y Certificación de Poder) integrados en Textos Legales y Procedimientos" -Profile "Frontend Documentación" -Expected "Archivos PDF existentes, modal de visualizacion y botones de descarga tanto en guiones legales como en el panel de procedimientos" -Obtained "Integracion completa de ambos documentos con modal interactivo y descarga directa" -Condition ($endesaConsentExists -and $endesaPoderExists -and $endesaInScripts -and $endesaInProc)
+
+# ----------------------------------------------------------------------------
+# 13. CUPO ANUAL DE VACACIONES (25 DÍAS LABORABLES)
+# ----------------------------------------------------------------------------
+Write-Host "`n=== 13. CUPO ANUAL DE VACACIONES (25 DÍAS LABORABLES) ===" -ForegroundColor White
+
+$frontendVacationsValid = ($indexContent.IndexOf("Te quedan <strong>25</strong> dias de vacaciones restantes de un total de 25") -ge 0 -and
+                           $indexContent.IndexOf("const remainingVacations = 25 - yearVacations;") -ge 0 -and
+                           $indexContent.IndexOf("const left = 25 - consumed;") -ge 0 -and
+                           $indexContent.IndexOf("No se pueden superar los 25 dias de vacaciones.") -ge 0 -and
+                           $indexContent.IndexOf("No puedes superar los 25 dias de vacaciones totales.") -ge 0 -and
+                           $indexContent.IndexOf("consumed >= 25") -ge 0 -and
+                           $indexContent.IndexOf("limite de 25 dias de vacaciones") -ge 0)
+
+$backendVacationsValid = ($vacacionesContent.IndexOf("existingDates.size >= 25") -ge 0 -and
+                          $vacacionesContent.IndexOf("combined.size > 25") -ge 0 -and
+                          $vacacionesContent.IndexOf("No se pueden superar los 25 días laborables de vacaciones anuales.") -ge 0 -and
+                          $vacacionesContent.IndexOf("La asignación masiva excede el cupo máximo de 25 días laborables de vacaciones.") -ge 0)
+
+Report-Test -Category "Vacaciones" -TestName "Cupo total anual de vacaciones reducido a 25 días en frontend y backend" -Profile "Control de Vacaciones" -Expected "Límite estricto de 25 días en contadores, alertas, timeline y validación API" -Obtained "Sincronización completa de 25 días laborables en index.html y api/vacaciones.js" -Condition ($frontendVacationsValid -and $backendVacationsValid)
 
 # ----------------------------------------------------------------------------
 # Resumen Final
