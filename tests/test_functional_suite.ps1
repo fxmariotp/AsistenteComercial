@@ -485,6 +485,18 @@ $backendVacationsValid = ($vacacionesContent.IndexOf("existingDates.size >= 25")
 Report-Test -Category "Vacaciones" -TestName "Cupo total anual de vacaciones reducido a 25 días en frontend y backend" -Profile "Control de Vacaciones" -Expected "Límite estricto de 25 días en contadores, alertas, timeline y validación API" -Obtained "Sincronización completa de 25 días laborables en index.html y api/vacaciones.js" -Condition ($frontendVacationsValid -and $backendVacationsValid)
 
 # ----------------------------------------------------------------------------
+# 14. TABLA DE COMISIONES (GAS SIN SERVICIO 10 €)
+# ----------------------------------------------------------------------------
+Write-Host "`n=== 14. TABLA DE COMISIONES Y RAPPEL ===" -ForegroundColor White
+
+$gasSinServicioTableValid = ($indexContent.IndexOf("Gas sin servicio (de cualquier compañía)") -ge 0 -and
+                             $indexContent.IndexOf('<td style="text-align: center; font-weight: 700; color: var(--text);">10 €</td>') -ge 0)
+
+$gasSinServicioBotValid = ($indexContent.IndexOf("<em>Gas sin servicio (cualquier Cía):</em> <strong>10 €</strong> (fijo en todos los tramos)") -ge 0)
+
+Report-Test -Category "Comisiones Fijas" -TestName "Gas sin servicio (cualquier compañía) fijado en 10 € de comisión fija" -Profile "Tabla Comisiones" -Expected "Comisión fija de 10 € en tabla visual y base de conocimiento bot" -Obtained "Actualizado a 10 € en tabla de comisiones y asistente virtual" -Condition ($gasSinServicioTableValid -and $gasSinServicioBotValid)
+
+# ----------------------------------------------------------------------------
 # Resumen Final
 # ----------------------------------------------------------------------------
 Write-Host "`n==================================================================" -ForegroundColor Cyan
