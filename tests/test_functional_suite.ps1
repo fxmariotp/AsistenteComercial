@@ -497,6 +497,25 @@ $gasSinServicioBotValid = ($indexContent.IndexOf("<em>Gas sin servicio (cualquie
 Report-Test -Category "Comisiones Fijas" -TestName "Gas sin servicio (cualquier compañía) fijado en 10 € de comisión fija" -Profile "Tabla Comisiones" -Expected "Comisión fija de 10 € en tabla visual y base de conocimiento bot" -Obtained "Actualizado a 10 € en tabla de comisiones y asistente virtual" -Condition ($gasSinServicioTableValid -and $gasSinServicioBotValid)
 
 # ----------------------------------------------------------------------------
+# 15. PROVINCIAS Y PDV EN TEXTO LEGAL DE NATURGY
+# ----------------------------------------------------------------------------
+Write-Host "`n=== 15. PROVINCIAS Y PDV EN TEXTO LEGAL DE NATURGY ===" -ForegroundColor White
+
+$naturgyProvValid = ($indexContent.IndexOf('<option value="A coruña">A Coruña</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Sevilla">Álava</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Sevilla">Madrid</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Sevilla">Barcelona</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Toledo">Guadalajara</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Toledo">Toledo</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Lleida">Lleida</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Cádiz">Cádiz</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Málaga">Málaga</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Jaén">Jaén</option>') -ge 0 -and
+                     $indexContent.IndexOf('<option value="Ciudad Real">Ciudad Real</option>') -ge 0)
+
+Report-Test -Category "Textos Legales" -TestName "Mapeo actualizado de Provincias Venta a Provincias PDV en Naturgy" -Profile "Guion Naturgy" -Expected "Provincias reasignadas según tabla oficial (ej. Madrid/Bcn/Álava -> Sevilla, Guadalajara -> Toledo, etc.)" -Obtained "Selector #naturgy-prov completamente actualizado con los 52 destinos PDV" -Condition $naturgyProvValid
+
+# ----------------------------------------------------------------------------
 # Resumen Final
 # ----------------------------------------------------------------------------
 Write-Host "`n==================================================================" -ForegroundColor Cyan
